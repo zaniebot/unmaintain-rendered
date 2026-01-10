@@ -1,0 +1,189 @@
+```yaml
+number: 18934
+title: "[ty] Type narrowing in comprehensions"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: david/fix-680
+created_at: 2025-06-25T07:55:38Z
+updated_at: 2025-06-25T09:30:29Z
+url: https://github.com/astral-sh/ruff/pull/18934
+synced_at: 2026-01-10T18:39:09Z
+```
+
+# [ty] Type narrowing in comprehensions
+
+---
+
+_Pull request opened by @sharkdp on 2025-06-25 07:55_
+
+## Summary
+
+Add type narrowing inside comprehensions:
+
+```py
+def _(xs: list[int | None]):
+    [reveal_type(x) for x in xs if x is not None]  # revealed: int
+```
+
+closes https://github.com/astral-sh/ty/issues/680
+
+## Test Plan
+
+* New Markdown tests
+* Made sure the example from https://github.com/astral-sh/ty/issues/680 now checks without errors
+* Made sure that all removed ecosystem diagnostics were actually false positives
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-06-25 07:55_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-06-25 07:55_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-06-25 07:55_
+
+---
+
+_Label `ty` added by @sharkdp on 2025-06-25 07:55_
+
+---
+
+_Converted to draft by @sharkdp on 2025-06-25 07:55_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-25 07:59_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+kornia (https://github.com/kornia/kornia)
+- warning[possibly-unbound-attribute] kornia/geometry/transform/affwarp.py:816:24: Attribute `size` on type `Unknown | None` is possibly unbound
+- Found 805 diagnostics
++ Found 804 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- warning[possibly-unbound-attribute] kopf/_core/engines/admission.py:429:20: Attribute `check` on type `Selector | None` is possibly unbound
+- Found 131 diagnostics
++ Found 130 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[unresolved-attribute] src/graphql/validation/rules/possible_type_extensions.py:35:13: Type `DefinitionNode` has no attribute `name`
+- Found 382 diagnostics
++ Found 381 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
+- error[unresolved-attribute] flake8_pyi/visitor.py:2090:17: Type `expr` has no attribute `id`
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- error[invalid-argument-type] tests/utils.py:62:15: Argument to function `abs` is incorrect: Expected `SupportsAbs[Unknown]`, found `int | float | Vector`
+- warning[possibly-unbound-attribute] tests/utils.py:63:11: Attribute `length` on type `int | float | Vector` is possibly unbound
+- Found 21 diagnostics
++ Found 19 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- warning[possibly-unbound-attribute] src/schemathesis/cli/commands/run/handlers/output.py:1051:27: Attribute `id` on type `Transition | None` is possibly unbound
+- Found 311 diagnostics
++ Found 310 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[unresolved-attribute] src/_pytest/assertion/rewrite.py:1032:25: Type `expr` has no attribute `id`
+- Found 641 diagnostics
++ Found 640 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- error[non-subscriptable] win32/Demos/win32wnet/testwnet.py:61:21: Cannot subscript object of type `None` with no `__getitem__` method
+- error[non-subscriptable] win32/test/test_win32wnet.py:148:25: Cannot subscript object of type `None` with no `__getitem__` method
+- Found 2115 diagnostics
++ Found 2113 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- warning[possibly-unbound-attribute] psycopg/psycopg/conninfo.py:84:31: Attribute `decode` on type `bytes | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/pq/test_pgconn.py:136:33: Attribute `decode` on type `bytes | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/pq/test_pgconn.py:141:33: Attribute `decode` on type `bytes | None` is possibly unbound
+- Found 906 diagnostics
++ Found 903 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[unresolved-attribute] scrapy/item.py:38:27: Type `type` has no attribute `_class`
+- Found 1155 diagnostics
++ Found 1154 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[unsupported-operator] optuna/visualization/_timeline.py:63:13: Operator `-` is unsupported between objects of type `Unknown | datetime | None` and `datetime | None`
+- error[unsupported-operator] tests/storages_tests/test_storages.py:328:13: Operator `<` is not supported for types `None` and `datetime`, in comparing `datetime | None` with `datetime`
+- error[unsupported-operator] tests/storages_tests/test_storages.py:333:13: Operator `<` is not supported for types `datetime` and `None`, in comparing `datetime` with `datetime | None`
+- error[unsupported-operator] tests/storages_tests/test_storages.py:333:36: Operator `<` is not supported for types `None` and `datetime`, in comparing `datetime | None` with `datetime`
+- Found 963 diagnostics
++ Found 959 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- error[unresolved-attribute] tests/test_generic_consistency.py:27:29: Type `expr` has no attribute `id`
+- Found 463 diagnostics
++ Found 462 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[non-subscriptable] examples/contrib/portfile.py:29:38: Cannot subscript object of type `None` with no `__getitem__` method
+- Found 1828 diagnostics
++ Found 1827 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[invalid-argument-type] openlibrary/catalog/marc/parse.py:523:28: Argument to function `read_author_person` is incorrect: Expected `MarcFieldBase`, found `str | MarcFieldBase`
+- Found 718 diagnostics
++ Found 717 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- warning[possibly-unbound-attribute] sklearn/linear_model/_least_angle.py:580:18: Attribute `dtype` on type `Unknown | None | (Unknown & ~None & ~Literal[False] & ~Literal["auto"] & ~Literal[True])` is possibly unbound
+- Found 2295 diagnostics
++ Found 2294 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- error[unresolved-attribute] sympy/matrices/expressions/_shape.py:61:24: Type `Expr` has no attribute `shape`
+- error[unresolved-attribute] sympy/testing/tests/test_code_quality.py:94:35: Type `expr` has no attribute `id`
+- Found 17911 diagnostics
++ Found 17909 diagnostics
+
+```
+</details>
+
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-06-25 08:00_
+
+---
+
+_Marked ready for review by @sharkdp on 2025-06-25 08:54_
+
+---
+
+_@AlexWaygood approved on 2025-06-25 09:26_
+
+---
+
+_Merged by @sharkdp on 2025-06-25 09:30_
+
+---
+
+_Closed by @sharkdp on 2025-06-25 09:30_
+
+---
+
+_Branch deleted on 2025-06-25 09:30_
+
+---

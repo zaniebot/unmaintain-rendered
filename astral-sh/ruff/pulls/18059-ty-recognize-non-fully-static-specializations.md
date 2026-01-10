@@ -1,0 +1,557 @@
+```yaml
+number: 18059
+title: "[ty] recognize non-fully-static specializations"
+type: pull_request
+state: closed
+author: carljm
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: cjm/generic-is-fully-static
+created_at: 2025-05-12T23:35:19Z
+updated_at: 2025-06-26T18:03:43Z
+url: https://github.com/astral-sh/ruff/pull/18059
+synced_at: 2026-01-10T18:39:08Z
+```
+
+# [ty] recognize non-fully-static specializations
+
+---
+
+_Pull request opened by @carljm on 2025-05-12 23:35_
+
+## Summary
+
+Recognize that e.g. `list[Unknown]` is not a fully-static type.
+
+Does not address the pre-existing TODO for recognizing that subclasses of dynamic are not fully-static.
+
+## Test Plan
+
+Added mdtests.
+
+
+---
+
+_Review requested from @AlexWaygood by @carljm on 2025-05-12 23:35_
+
+---
+
+_Review requested from @sharkdp by @carljm on 2025-05-12 23:35_
+
+---
+
+_Review requested from @dcreager by @carljm on 2025-05-12 23:35_
+
+---
+
+_Label `ty` added by @carljm on 2025-05-12 23:35_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-12 23:38_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+dacite (https://github.com/konradhalas/dacite)
++ error[missing-argument] dacite/cache.py:25:5: No argument provided for required parameter `self` of function `cache_clear`
++ error[not-iterable] dacite/core.py:89:23: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] dacite/generics.py:105:22: Object of type `dict_items[str, Any]` is not iterable
+- Found 24 diagnostics
++ Found 27 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ error[not-iterable] mypy_primer/main.py:305:57: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[missing-argument] mypy_primer/main.py:330:19: No argument provided for required parameter `self` of function `__call__`
++ error[not-iterable] mypy_primer/main.py:345:61: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[missing-argument] mypy_primer/model.py:131:20: No argument provided for required parameter `self` of function `__call__`
++ error[missing-argument] mypy_primer/model.py:147:16: No argument provided for required parameter `self` of function `__call__`
++ error[missing-argument] mypy_primer/type_checker.py:26:12: No argument provided for required parameter `self` of function `__call__`
++ error[missing-argument] mypy_primer/type_checker.py:92:11: No argument provided for required parameter `self` of function `__call__`
++ error[missing-argument] mypy_primer/utils.py:160:12: No argument provided for required parameter `self` of function `__call__`
+- Found 18 diagnostics
++ Found 26 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
++ error[not-iterable] paroxython/derived_labels_db.py:190:63: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[call-non-callable] paroxython/flatten_ast.py:480:8: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:481:19: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:481:35: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:481:43: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:481:52: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:482:10: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:483:19: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:483:44: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:483:52: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:483:65: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:484:8: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:485:19: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:485:37: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:485:45: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:485:54: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:486:8: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:487:19: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:487:40: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:489:19: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:489:35: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:489:43: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:489:52: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:516:17: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:516:29: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:517:15: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:517:28: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:517:34: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[call-non-callable] paroxython/flatten_ast.py:517:48: Method `__getitem__` of type `Overload[(self, key: Literal[0], /) -> Unknown, (self, key: int | str, /) -> Unknown]` is not callable on object of type `Match[Unknown]`
++ error[not-iterable] paroxython/parse_program.py:316:44: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] paroxython/parse_program.py:333:56: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] paroxython/recommend_programs.py:264:40: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[not-iterable] paroxython/recommend_programs.py:272:50: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 17 diagnostics
++ Found 50 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ error[not-iterable] pytest_robotframework/__init__.py:254:64: Object of type `dict_items[str, Unknown]` is not iterable
+- Found 234 diagnostics
++ Found 235 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
++ error[not-iterable] nion/utils/Color.py:285:43: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 22 diagnostics
++ Found 23 diagnostics
+
+parso (https://github.com/davidhalter/parso)
++ error[not-iterable] parso/cache.py:157:28: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[not-iterable] parso/cache.py:162:38: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] parso/normalizer.py:29:40: Object of type `Any | dict_items[Any, Any]` may not be iterable
++ error[not-iterable] parso/pgen2/generator.py:201:47: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] parso/pgen2/generator.py:265:30: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 82 diagnostics
++ Found 87 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
++ error[not-iterable] chess/engine.py:1549:28: Object of type `Unknown | ItemsView[str, @Todo(Inference of subscript on special form)] | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] chess/svg.py:166:35: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 58 diagnostics
++ Found 60 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ error[call-non-callable] beartype/_cave/_caveabc.py:81:20: Method `__getitem__` of type `def __getitem__(self, key: str, /) -> Any` is not callable on object of type `MappingProxyType[str, Any]`
++ error[call-non-callable] beartype/_cave/_cavefast.py:336:37: Method `__getitem__` of type `def __getitem__(self, key: str, /) -> Any` is not callable on object of type `MappingProxyType[str, Any]`
++ error[invalid-assignment] beartype/_cave/_cavefast.py:909:1: Object of type `<class 'dict_items[Unknown, Unknown]'>` is not assignable to `type`
++ error[invalid-assignment] beartype/_cave/_cavefast.py:916:1: Object of type `<class 'dict_keys[Unknown, Unknown]'>` is not assignable to `type`
++ error[invalid-assignment] beartype/_cave/_cavefast.py:923:1: Object of type `<class 'dict_values[Unknown, Unknown]'>` is not assignable to `type`
++ error[not-iterable] beartype/_data/cls/datacls.py:256:44: Object of type `dict_items[str, Any]` is not iterable
++ error[missing-argument] beartype/_data/func/datafunc.py:18:48: No argument provided for required parameter `self` of function `items`
++ error[not-iterable] beartype/_data/hint/pep/sign/datapepsignmap.py:518:13: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] beartype/_data/hint/pep/sign/datapepsignmap.py:528:13: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] beartype/_data/hint/pep/sign/datapepsignmap.py:537:13: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[no-matching-overload] beartype/_decor/_type/_pep/_decortypepep557.py:170:23: No overload of function `get` matches arguments
++ error[missing-argument] beartype/_decor/_type/decortype.py:165:34: No argument provided for required parameter `self` of function `items`
++ error[missing-argument] beartype/_decor/_type/decortype.py:165:34: No argument provided for required parameter `self` of function `items`
++ error[missing-argument] beartype/_decor/_type/decortype.py:165:34: No argument provided for required parameter `self` of function `items`
++ error[invalid-return-type] beartype/_util/func/utilfunccodeobj.py:268:12: Return type does not match returned value: Expected `CodeType | None`, found `None | (Any & CodeType) | CodeType | (Any & property) | property`
++ error[unsupported-operator] beartype/_util/hint/pep/proposal/pep589.py:106:13: Operator `&` is unsupported between objects of type `dict_keys[str, Any]` and `Unknown | frozenset[Unknown]`
++ error[not-iterable] beartype/door/_cls/util/doorclsget.py:195:22: Object of type `dict_keys[Unknown, Unknown]` is not iterable
++ error[not-iterable] beartype/door/_cls/util/doorclsget.py:212:25: Object of type `dict_values[Unknown, Unknown]` is not iterable
+- Found 555 diagnostics
++ Found 573 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ error[non-subscriptable] bidict/_base.py:54:26: Cannot subscript object of type `<class 'tuple[@Todo(Generic tuple specializations), ...]'>` with no `__getitem__` method
+- Found 15 diagnostics
++ Found 16 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ error[not-iterable] aioredis/client.py:2715:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] aioredis/sentinel.py:184:34: Object of type `dict_items[str, Unknown]` is not iterable
+- Found 34 diagnostics
++ Found 36 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
++ error[not-iterable] src/attr/_funcs.py:388:17: Object of type `dict_items[str, Unknown]` is not iterable
++ error[not-iterable] src/attr/_make.py:929:42: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[no-matching-overload] tests/test_make.py:1592:16: No overload of function `sorted` matches arguments
+- Found 603 diagnostics
++ Found 606 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
++ error[not-iterable] src/pegen/__main__.py:96:26: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] src/pegen/parser_generator.py:237:17: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/pegen/parser_generator.py:281:26: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/pegen/sccutils.py:87:17: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/pegen/sccutils.py:92:40: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/pegen/sccutils.py:96:54: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/pegen/sccutils.py:116:72: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/pegen/utils.py:99:23: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 56 diagnostics
++ Found 64 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
++ error[not-iterable] more_itertools/more.py:817:53: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[missing-argument] more_itertools/more.py:1925:18: No argument provided for required parameter `obj` of function `__call__`
++ error[no-matching-overload] more_itertools/more.py:1930:17: No overload of function `sorted` matches arguments
++ error[no-matching-overload] more_itertools/more.py:2760:15: No overload of function `__new__` matches arguments
++ error[not-iterable] more_itertools/more.py:3214:32: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] more_itertools/more.py:4967:32: Object of type `dict_items[str, Unknown]` is not iterable
++ error[no-matching-overload] more_itertools/recipes.py:551:16: No overload of function `__new__` matches arguments
++ error[no-matching-overload] more_itertools/recipes.py:553:22: No overload of function `__new__` matches arguments
+- Found 51 diagnostics
++ Found 59 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
++ error[not-iterable] pyp.py:210:41: Object of type `Unknown | dict_values[Unknown, Unknown]` may not be iterable
++ error[not-iterable] pyp.py:478:72: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
+- Found 10 diagnostics
++ Found 12 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
++ error[call-non-callable] sop/__init__.py:438:13: Method `__getitem__` of type `def __getitem__(self, key: str, /) -> Any` is not callable on object of type `MappingProxyType[str, Any]`
++ error[call-non-callable] sop/__init__.py:439:13: Method `__getitem__` of type `def __getitem__(self, key: str, /) -> Any` is not callable on object of type `MappingProxyType[str, Any]`
+- Found 2 diagnostics
++ Found 4 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:63: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:63: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:69: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:69: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:77: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:77: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:84: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/gaussian_illumination.py:162:84: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:120:61: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:120:61: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:120:67: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:120:67: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:227:67: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:227:67: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:227:73: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/linear_illumination.py:227:73: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/salt_pepper_noise.py:127:56: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/salt_pepper_noise.py:127:56: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
+- error[invalid-argument-type] kornia/augmentation/_2d/intensity/salt_pepper_noise.py:127:64: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[float, float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/salt_pepper_noise.py:127:64: Argument to bound method `__init__` is incorrect: Expected `tuple[int | float, int | float]`, found `(int & tuple[Unknown, ...] & ~float) | (tuple[int | float, int | float] & tuple[Unknown, ...] & ~float) | tuple[(int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float, (int & tuple[Unknown, ...] & float) | (float & tuple[Unknown, ...]) | (tuple[int | float, int | float] & tuple[Unknown, ...] & float) | float] | tuple[@Todo(map_with_boundness: intersections with negative contributions), @Todo(map_with_boundness: intersections with negative contributions)]`
++ error[not-iterable] kornia/augmentation/utils/helpers.py:381:17: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/augmentation/utils/helpers.py:409:17: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/augmentation/utils/helpers.py:486:94: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/contrib/models/efficient_vit/utils/network.py:40:23: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/core/mixin/image_module.py:62:96: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/core/mixin/image_module.py:70:40: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/core/module.py:68:96: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/core/module.py:76:40: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/feature/lightglue_onnx/lightglue.py:164:29: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/feature/loftr/loftr.py:200:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/feature/mkd.py:251:51: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/models/_hf_models/hf_onnx_community.py:88:27: Object of type `dict_items[str, Any] | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] kornia/nerf/samplers.py:128:20: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/nerf/samplers.py:256:43: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/testing/__init__.py:106:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/testing/__init__.py:274:82: Object of type `dict_keys[str, Sequence[Any]]` is not iterable
++ error[not-iterable] kornia/testing/__init__.py:286:44: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/utils/helpers.py:361:65: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] kornia/utils/helpers.py:381:23: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/utils/image_print.py:300:36: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/x/trainer.py:109:28: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kornia/x/utils.py:99:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 963 diagnostics
++ Found 985 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
++ error[not-iterable] koda_validate/dataclasses.py:145:39: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] koda_validate/dictionary.py:1035:25: Object of type `dict_items[Any, Validator[Any]]` is not iterable
++ error[not-iterable] koda_validate/namedtuple.py:138:39: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] koda_validate/serialization/json_schema.py:224:25: Object of type `dict_items[Any, Validator[Any]]` is not iterable
++ error[not-iterable] koda_validate/signature.py:228:35: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] koda_validate/signature.py:295:35: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] koda_validate/typeddict.py:143:39: Object of type `dict_items[str, Any]` is not iterable
+- Found 54 diagnostics
++ Found 61 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[not-iterable] kopf/_cogs/configs/conventions.py:154:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kopf/_cogs/structs/bodies.py:243:60: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kopf/_cogs/structs/bodies.py:269:59: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kopf/_cogs/structs/dicts.py:66:55: Object of type `Any | dict_items[Any, Any]` may not be iterable
++ error[missing-argument] kopf/_core/actions/invocation.py:81:21: No argument provided for required parameter `value` of function `set`
++ error[not-iterable] kopf/_core/engines/activities.py:144:34: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[not-iterable] kopf/_core/engines/activities.py:152:43: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] kopf/_core/engines/admission.py:453:25: Object of type `@Todo(map_with_boundness: intersections with negative contributions) | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] kopf/_core/engines/daemons.py:286:31: Object of type `dict_values[Unknown, Daemon]` is not iterable
++ error[not-iterable] kopf/_core/engines/daemons.py:430:35: Object of type `dict_values[Unknown, Daemon]` is not iterable
++ error[not-iterable] kopf/_kits/webhooks.py:397:45: Object of type `dict_values[Unknown, Unknown]` is not iterable
+- Found 191 diagnostics
++ Found 202 diagnostics
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
++ error[not-iterable] mypy_protobuf/main.py:1045:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] mypy_protobuf/main.py:1077:21: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 46 diagnostics
++ Found 48 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ error[not-iterable] starlette/datastructures.py:140:63: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] starlette/datastructures.py:145:69: Object of type `dict_items[str, Any]` is not iterable
++ error[missing-argument] tests/test_concurrency.py:37:5: No argument provided for required parameter `value` of function `set`
+- Found 185 diagnostics
++ Found 188 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ error[not-iterable] strawberry/channels/handlers/http_handler.py:69:27: Object of type `dict_items[Unknown, list[Unknown]]` is not iterable
++ error[not-iterable] strawberry/cli/commands/codegen.py:44:38: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] strawberry/codemods/annotated_unions.py:150:30: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] strawberry/experimental/pydantic/_compat.py:110:33: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] strawberry/experimental/pydantic/_compat.py:116:37: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] strawberry/experimental/pydantic/_compat.py:234:41: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] strawberry/experimental/pydantic/_compat.py:240:37: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
+- error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `type & ~<Protocol with members 'to_pydantic'>`
++ error[invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to function `fields` is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type & ~<Protocol with members 'to_pydantic'>`
++ error[not-iterable] strawberry/experimental/pydantic/error_type.py:91:32: Object of type `Any | dict_items[Any, Any]` may not be iterable
++ error[not-iterable] strawberry/experimental/pydantic/object_type.py:149:34: Object of type `Any | dict_items[Any, Any]` may not be iterable
++ error[not-iterable] strawberry/experimental/pydantic/object_type.py:156:36: Object of type `Any | dict_items[Any, Any]` may not be iterable
+- error[invalid-argument-type] strawberry/experimental/pydantic/utils.py:54:51: Argument to function `fields` is incorrect: Expected `DataclassInstance`, found `type`
++ error[invalid-argument-type] strawberry/experimental/pydantic/utils.py:54:51: Argument to function `fields` is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type`
++ error[not-iterable] strawberry/extensions/tracing/opentelemetry.py:111:72: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] strawberry/federation/schema.py:276:36: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- warning[unused-ignore-comment] strawberry/printer/printer.py:106:60: Unused blanket `type: ignore` directive
++ error[not-iterable] strawberry/printer/printer.py:127:22: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] strawberry/relay/fields.py:144:41: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] strawberry/relay/types.py:429:36: Object of type `Any | dict_items[Any, Any]` may not be iterable
++ error[not-iterable] strawberry/schema_codegen/__init__.py:792:68: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] strawberry/test/client.py:164:28: Object of type `dict_items[str, Mapping[Unknown, Unknown]]` is not iterable
++ error[not-iterable] strawberry/test/client.py:191:34: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] strawberry/types/object_type.py:130:29: Object of type `dict_items[str, Any]` is not iterable
+- Found 458 diagnostics
++ Found 476 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ error[not-iterable] alerta/database/backends/mongodb/base.py:71:31: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/database/backends/mongodb/base.py:77:30: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/database/backends/mongodb/base.py:1266:48: Object of type `dict_items[str, Unknown]` is not iterable
++ error[not-iterable] alerta/database/backends/postgres/base.py:426:56: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/database/backends/postgres/base.py:430:58: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[missing-argument] alerta/models/enums.py:105:28: No argument provided for required parameter `self` of function `values`
++ error[not-iterable] alerta/webhooks/grafana.py:48:60: Object of type `@Todo(map_with_boundness: intersections with negative contributions) | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/webhooks/grafana.py:50:23: Object of type `@Todo(map_with_boundness: intersections with negative contributions) | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/webhooks/grafana.py:73:65: Object of type `@Todo(map_with_boundness: intersections with negative contributions) | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/webhooks/grafana.py:75:23: Object of type `@Todo(map_with_boundness: intersections with negative contributions) | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] alerta/webhooks/prometheus.py:64:36: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 483 diagnostics
++ Found 494 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ error[not-iterable] porcupine/plugins/editorconfig.py:321:24: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[unsupported-operator] porcupine/plugins/filetypes.py:31:27: Operator `&` is unsupported between objects of type `dict_keys[Unknown, Unknown]` and `dict_keys[Unknown, Unknown]`
++ error[not-iterable] porcupine/plugins/filetypes.py:114:35: Object of type `dict_items[str, dict[str, Any]]` is not iterable
++ error[not-iterable] porcupine/plugins/filetypes.py:128:27: Object of type `dict_items[str, dict[str, Any]]` is not iterable
++ error[not-iterable] porcupine/plugins/filetypes.py:192:28: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] porcupine/plugins/git_status.py:108:25: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[unsupported-operator] porcupine/plugins/git_status.py:115:17: Operator `&` is unsupported between objects of type `dict_keys[Unknown, Unknown]` and `dict_keys[Unknown, Unknown]`
++ error[not-iterable] porcupine/plugins/git_status.py:117:37: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] porcupine/plugins/highlight/pygments_highlighter.py:112:28: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] porcupine/plugins/matching_paren.py:13:51: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] porcupine/tabs.py:34:38: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[not-iterable] porcupine/textutils.py:638:21: Object of type `Unknown | dict_values[Unknown, Unknown]` may not be iterable
+- Found 109 diagnostics
++ Found 121 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
++ error[not-iterable] httpx_caching/_policy.py:551:26: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 32 diagnostics
++ Found 33 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ error[invalid-assignment] src/trio/_core/_run.py:1839:9: Object of type `def send(self, arg: Outcome[object], /) -> Any` is not assignable to attribute `_next_send_fn` of type `((Any, /) -> object) | None`
++ error[unresolved-attribute] src/trio/_core/_tests/test_asyncgen.py:307:38: Type `property` has no attribute `f_locals`
++ error[unresolved-attribute] src/trio/_core/_tests/test_asyncgen.py:311:38: Type `property` has no attribute `f_locals`
++ error[not-iterable] src/trio/_core/_tests/test_instrumentation.py:291:22: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/trio/_core/_tests/test_run.py:1633:17: Object of type `dict_values[Unknown, Unknown]` is not iterable
++ error[missing-argument] src/trio/_core/_tests/test_run.py:2140:5: No argument provided for required parameter `value` of function `set`
++ error[no-matching-overload] src/trio/_core/_tests/test_run.py:2142:12: No overload of function `get` matches arguments
++ error[no-matching-overload] src/trio/_core/_tests/test_run.py:2154:12: No overload of function `get` matches arguments
++ error[missing-argument] src/trio/_core/_tests/test_run.py:2179:5: No argument provided for required parameter `value` of function `set`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:17:5: No argument provided for required parameter `obj` of function `put_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:18:18: No argument provided for required parameter `self` of function `get_batch`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:20:9: No argument provided for required parameter `self` of function `get_batch_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:21:5: No argument provided for required parameter `obj` of function `put_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:22:5: No argument provided for required parameter `obj` of function `put_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:23:5: No argument provided for required parameter `obj` of function `put_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:24:12: No argument provided for required parameter `self` of function `get_batch_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:26:12: No argument provided for required parameter `self` of function `empty`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:27:12: No argument provided for required parameter `self` of function `qsize`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:28:5: No argument provided for required parameter `obj` of function `put_nowait`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:29:16: No argument provided for required parameter `self` of function `empty`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:30:12: No argument provided for required parameter `self` of function `qsize`
++ error[missing-argument] src/trio/_core/_tests/test_unbounded_queue.py:32:13: No argument provided for required parameter `self` of function `statistics`
++ error[invalid-context-manager] src/trio/_core/_tests/test_windows.py:143:18: Object of type `memoryview[Unknown]` cannot be used with `with` because it does not correctly implement `__enter__` or `__exit__`
++ error[invalid-context-manager] src/trio/_highlevel_socket.py:106:22: Object of type `memoryview[Unknown]` cannot be used with `with` because it does not correctly implement `__enter__` or `__exit__`
++ error[not-iterable] src/trio/_signals.py:65:41: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[missing-argument] src/trio/_socket.py:771:18: No argument provided for required parameter `self` of function `items`
++ error[missing-argument] src/trio/_socket.py:771:18: No argument provided for required parameter `self` of function `items`
++ error[missing-argument] src/trio/_socket.py:771:18: No argument provided for required parameter `self` of function `items`
++ error[not-iterable] src/trio/_tests/test_abc.py:25:30: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/trio/_tests/test_exports.py:98:25: Object of type `dict_items[str, Any]` is not iterable
++ error[missing-argument] src/trio/_tests/test_exports.py:496:24: No argument provided for required parameter `self` of function `keys`
++ error[missing-argument] src/trio/_tests/test_highlevel_generic.py:46:11: No argument provided for required parameter `data` of function `send_all`
++ error[missing-argument] src/trio/_tests/test_highlevel_generic.py:47:11: No argument provided for required parameter `self` of function `wait_send_all_might_not_block`
++ error[missing-argument] src/trio/_tests/test_highlevel_generic.py:54:11: No argument provided for required parameter `self` of function `send_eof`
++ error[missing-argument] src/trio/_tests/test_highlevel_generic.py:62:11: No argument provided for required parameter `self` of function `send_eof`
++ error[missing-argument] src/trio/_tests/test_highlevel_generic.py:73:11: No argument provided for required parameter `self` of function `aclose`
++ error[missing-argument] src/trio/_tests/test_highlevel_generic.py:94:15: No argument provided for required parameter `self` of function `aclose`
++ error[not-iterable] src/trio/_tests/test_highlevel_socket.py:314:24: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/trio/_tests/test_path.py:213:31: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:468:20: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `server_side`
++ error[missing-argument] src/trio/_tests/test_ssl.py:470:19: No argument provided for required parameter `data` of function `send_all`
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:476:20: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `server_side`
++ error[missing-argument] src/trio/_tests/test_ssl.py:478:19: No argument provided for required parameter `data` of function `send_all`
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:524:16: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `context`
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:525:16: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `server_side`
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:526:16: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `server_hostname`
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:528:13: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `asfdasdfsa`
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:538:13: Can not assign object of `Literal[True]` to attribute `server_side` on type `SSLStream[@Todo(async `with` statement)]` with custom `__setattr__` method.
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:540:13: Can not assign object of `Literal["asdf"]` to attribute `server_hostname` on type `SSLStream[@Todo(async `with` statement)]` with custom `__setattr__` method.
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:545:9: Can not assign object of `SSLContext` to attribute `context` on type `SSLStream[@Todo(async `with` statement)]` with custom `__setattr__` method.
++ error[unresolved-attribute] src/trio/_tests/test_ssl.py:546:16: Type `SSLStream[@Todo(async `with` statement)]` has no attribute `context`
++ error[missing-argument] src/trio/_tests/test_ssl.py:548:19: No argument provided for required parameter `self` of function `do_handshake`
++ error[missing-argument] src/trio/_tests/test_ssl.py:768:19: No argument provided for required parameter `data` of function `send_all`
++ error[missing-argument] src/trio/_tests/test_ssl.py:776:19: No argument provided for required parameter `self` of function `wait_send_all_might_not_block`
++ error[missing-argument] src/trio/_tests/test_ssl.py:1130:19: No argument provided for required parameter `self` of function `aclose`
++ error[not-iterable] src/trio/_tools/gen_exports.py:292:37: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[invalid-context-manager] src/trio/_unix_pipes.py:139:18: Object of type `memoryview[Unknown]` cannot be used with `with` because it does not correctly implement `__enter__` or `__exit__`
++ error[missing-argument] src/trio/_util.py:226:46: No argument provided for required parameter `self` of function `items`
++ error[missing-argument] src/trio/_util.py:226:46: No argument provided for required parameter `self` of function `items`
++ error[missing-argument] src/trio/_util.py:226:46: No argument provided for required parameter `self` of function `items`
++ error[unsupported-operator] src/trio/testing/_fake_net.py:75:37: Operator `+` is unsupported between objects of type `Literal[0]` and `property`
++ error[invalid-context-manager] src/trio/testing/_fake_net.py:76:14: Object of type `memoryview[Unknown]` cannot be used with `with` because it does not correctly implement `__enter__` or `__exit__`
++ error[not-iterable] src/trio/testing/_raises_group.py:887:45: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/trio/testing/_trio_test.py:36:30: Object of type `dict_values[str, Unknown]` is not iterable
++ error[not-iterable] src/trio/testing/_trio_test.py:43:35: Object of type `dict_values[str, Unknown]` is not iterable
+- Found 1076 diagnostics
++ Found 1141 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
++ error[not-iterable] src/check_jsonschema/cli/main_command.py:27:48: Object of type `dict_keys[str, dict[str, Any]]` is not iterable
++ error[not-iterable] src/check_jsonschema/parsers/__init__.py:64:34: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/check_jsonschema/regex_variants.py:87:35: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] src/check_jsonschema/regex_variants.py:89:25: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] src/check_jsonschema/regex_variants.py:134:35: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] src/check_jsonschema/regex_variants.py:135:25: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] src/check_jsonschema/schema_loader/main.py:32:41: Object of type `dict_items[str, dict[str, Any]]` is not iterable
++ error[not-iterable] src/check_jsonschema/transforms/azure_pipelines.py:82:23: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 67 diagnostics
++ Found 75 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
++ error[call-non-callable] src/websockets/extensions/permessage_deflate.py:194:24: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
+- warning[redundant-cast] src/websockets/legacy/auth.py:163:37: Value is already of type `Iterable[Unknown | tuple[@Todo(Generic tuple specializations), ...]]`
++ error[invalid-context-manager] src/websockets/sync/client.py:642:14: Object of type `memoryview[Unknown]` cannot be used with `with` because it does not correctly implement `__enter__` or `__exit__`
+- Found 115 diagnostics
++ Found 116 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ error[call-non-callable] tests/test_buffers.py:159:12: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
++ error[call-non-callable] tests/test_buffers.py:162:9: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
++ error[call-non-callable] tests/test_buffers.py:168:5: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
++ error[call-non-callable] tests/test_buffers.py:176:9: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
++ error[not-iterable] tests/test_gil_scoped.py:146:23: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] tests/test_pytypes.py:449:41: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] tests/test_pytypes.py:450:46: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[call-non-callable] tests/test_stl_binders.py:77:12: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
++ error[call-non-callable] tests/test_stl_binders.py:78:5: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
++ error[call-non-callable] tests/test_stl_binders.py:82:23: Method `__getitem__` of type `Overload[(self, key: SupportsIndex | @Todo(full tuple[...] support), /) -> Unknown, (self, key: slice[Any, Any, Any], /) -> memoryview[Unknown]]` is not callable on object of type `memoryview[Unknown]`
+- Found 243 diagnostics
++ Found 253 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ error[not-iterable] src/graphql/execution/collect_fields.py:418:34: Object of type `dict_items[str, RefSet[@Todo(Inference of subscript on special form)]]` is not iterable
++ error[not-iterable] src/graphql/language/ast.py:186:27: Object of type `dict_items[str, Any]` is not iterable
++ error[not-iterable] src/graphql/type/definition.py:1100:62: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/type/definition.py:1107:31: Object of type `dict_items[Unknown, Unknown] | @Todo(dict comprehension type)` may not be iterable
++ error[not-iterable] src/graphql/type/validate.py:130:43: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[no-matching-overload] src/graphql/type/validate.py:558:35: No overload of function `__new__` matches arguments
++ error[no-matching-overload] src/graphql/type/validate.py:565:29: No overload of function `__new__` matches arguments
++ error[no-matching-overload] src/graphql/type/validate.py:565:57: No overload of function `__new__` matches arguments
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:157:34: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:201:32: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:212:44: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:245:34: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:271:47: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:378:47: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:414:41: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:453:30: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:622:31: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] src/graphql/utilities/find_breaking_changes.py:629:31: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[invalid-argument-type] src/graphql/validation/rules/unique_argument_definition_names.py:77:46: Argument to function `group_by` is incorrect: Expected `(Unknown, /) -> Unknown`, found `attrgetter[Unknown]`
++ error[not-iterable] src/graphql/validation/rules/unique_argument_definition_names.py:78:36: Object of type `dict_items[Unknown, list[Unknown]]` is not iterable
++ error[invalid-argument-type] src/graphql/validation/rules/unique_argument_names.py:34:46: Argument to function `group_by` is incorrect: Expected `(Unknown, /) -> Unknown`, found `attrgetter[Unknown]`
++ error[not-iterable] src/graphql/validation/rules/unique_argument_names.py:36:36: Object of type `dict_items[Unknown, list[Unknown]]` is not iterable
++ error[invalid-argument-type] src/graphql/validation/rules/unique_variable_names.py:30:35: Argument to function `group_by` is incorrect: Expected `(Unknown, /) -> Unknown`, found `attrgetter[Unknown]`
++ error[not-iterable] src/graphql/validation/rules/unique_variable_names.py:33:46: Object of type `dict_items[Unknown, list[Unknown]]` is not iterable
++ error[no-matching-overload] tests/language/test_predicates.py:21:17: No overload of function `sorted` matches arguments
++ error[not-iterable] tests/language/test_predicates.py:24:26: Object of type `dict_values[str, Any]` is not iterable
++ error[invalid-argument-type] tests/type/test_validation.py:1009:53: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1024:57: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1034:58: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1304:53: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1323:57: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1337:58: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1418:52: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1437:56: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1451:58: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1535:52: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1550:56: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[invalid-argument-type] tests/type/test_validation.py:1560:58: Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -> object) | None`, found `Unknown | attrgetter[Unknown]`
++ error[not-iterable] tests/utilities/test_type_info.py:198:36: Object of type `dict_items[Unknown, Unknown]` is not iterable
+- Found 411 diagnostics
++ Found 450 diagnostics
+
+pylox (https://github.com/sco1/pylox)
++ error[not-iterable] pylox/builtins/py_builtins.py:389:23: Object of type `Unknown | dict_items[Unknown, Unknown]` may not be iterable
++ error[not-iterable] tool/generate_ast.py:195:14: Object of type `Unknown | dict_keys[Unknown, Unknown]` may not be iterable
++ error[not-iterable] tool/generate_ast.py:196:14: Object of type `Unknown | dict_keys[Unknown, Unknown]` may not be iterable
+- Found 25 diagnostics
++ Found 28 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ error[not-iterable] sockeye/config.py:83:28: Object of type `dict_items[str, Unknown]` is not iterable
++ error[not-iterable] sockeye/convert_deepspeed.py:73:73: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[no-matching-overload] sockeye/lexicon.py:190:30: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sockeye/lexicon.py:190:30: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sockeye/lexicon.py:190:30: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sockeye/lexicon.py:198:49: No overload of function `sorted` matches arguments
++ error[not-iterable] sockeye/model.py:489:28: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/rerank.py:116:56: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/train.py:80:17: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/training.py:471:46: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/training.py:883:28: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/utils.py:585:25: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/utils.py:650:24: Object of type `dict_items[Unknown, Unknown]` is not iterable
++ error[not-iterable] sockeye/vocab.py:102:29: Object of type `dict_items[Unknown, int]` is not iterable
++ error[not-iterable] test/unit/test_arguments.py:424:46: Object of type ...*[Comment body truncated]*
+
+---
+
+_Comment by @AlexWaygood on 2025-05-12 23:44_
+
+Your changes look great to me but that primer report is pretty concerning. I have no idea why these changes would make us start thinking that `dict[Unknown, Unknown]` isn't iterable...!
+
+---
+
+_Comment by @carljm on 2025-05-12 23:44_
+
+Hmm, clearly this will need some investigation of the primer results.
+
+---
+
+_Converted to draft by @carljm on 2025-05-12 23:44_
+
+---
+
+_Closed by @carljm on 2025-06-26 18:03_
+
+---

@@ -1,0 +1,359 @@
+```yaml
+number: 16644
+title: "[`ruff`] Stabilize `unraw-re-pattern` (`RUF039`)"
+type: pull_request
+state: closed
+author: ntBre
+labels:
+  - rule
+assignees: []
+base: micha/ruff-0.10
+head: brent/ruf039-0.10
+created_at: 2025-03-11T19:17:49Z
+updated_at: 2025-06-21T11:28:43Z
+url: https://github.com/astral-sh/ruff/pull/16644
+synced_at: 2026-01-10T18:39:08Z
+```
+
+# [`ruff`] Stabilize `unraw-re-pattern` (`RUF039`)
+
+---
+
+_Pull request opened by @ntBre on 2025-03-11 19:17_
+
+Summary
+--
+
+Stabilizes RUF039 and moves its tests out of `preview_rules`.
+
+Test Plan
+--
+
+2 closed issues 3 days after the rule was added, otherwise no issues. However, there's a chance we need a better autofix for regexes involving escapes. We'll need to see the ecosystem check for this.
+
+
+---
+
+_Label `rule` added by @ntBre on 2025-03-11 19:17_
+
+---
+
+_Added to milestone `v0.10` by @ntBre on 2025-03-11 19:17_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-03-11 19:22_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/brent%2Fruf039-0.10)
+
+### Merging #16644 will **degrade performances by 12.73%**
+
+<sub>Comparing <code>brent/ruf039-0.10</code> (b107666) with <code>micha/ruff-0.10</code> (85f7871)</sub>
+
+
+
+### Summary
+
+`❌ 1` regressions  
+`✅ 31` untouched benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/brent%2Fruf039-0.10)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `` red_knot_check_file[incremental] `` | 4.8 ms | 5.5 ms | -12.73% |
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-03-11 19:24_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+223 -0 violations, +0 -0 fixes in 14 projects; 41 projects unchanged)
+
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L222'>rasa/utils/io.py:222:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L223'>rasa/utils/io.py:223:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L224'>rasa/utils/io.py:224:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L225'>rasa/utils/io.py:225:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L226'>rasa/utils/io.py:226:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L227'>rasa/utils/io.py:227:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L228'>rasa/utils/io.py:228:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L229'>rasa/utils/io.py:229:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L230'>rasa/utils/io.py:230:9:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L231'>rasa/utils/io.py:231:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+42 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/airflow/api_fastapi/core_api/routes/public/providers.py#L35'>airflow/api_fastapi/core_api/routes/public/providers.py:35:19:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/airflow/cli/commands/remote_commands/provider_command.py#L33'>airflow/cli/commands/remote_commands/provider_command.py:33:19:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/dev/breeze/src/airflow_breeze/params/build_prod_params.py#L93'>dev/breeze/src/airflow_breeze/params/build_prod_params.py:93:21:</a> RUF039 [*] First argument to `re.match()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/dev/breeze/src/airflow_breeze/utils/run_tests.py#L125'>dev/breeze/src/airflow_breeze/utils/run_tests.py:125:19:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/dev/perf/dags/elastic_dag.py#L73'>dev/perf/dags/elastic_dag.py:73:19:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/docs/exts/docs_build/lint_checks.py#L49'>docs/exts/docs_build/lint_checks.py:49:46:</a> RUF039 [*] First argument to `re.findall()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/helm_tests/airflow_aux/test_pod_template_file.py#L358'>helm_tests/airflow_aux/test_pod_template_file.py:358:26:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/helm_tests/airflow_aux/test_pod_template_file.py#L370'>helm_tests/airflow_aux/test_pod_template_file.py:370:26:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/helm_tests/airflow_aux/test_pod_template_file.py#L407'>helm_tests/airflow_aux/test_pod_template_file.py:407:26:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/apache/airflow/blob/85487a8002872baf78ee1cc28eff6443597105bc/helm_tests/airflow_aux/test_pod_template_file.py#L59'>helm_tests/airflow_aux/test_pod_template_file.py:59:26:</a> RUF039 [*] First argument to `re.search()` is not raw string
+... 32 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+67 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/RELEASING/changelog.py#L275'>RELEASING/changelog.py:275:26:</a> RUF039 [*] First argument to `re.match()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/athena.py#L30'>superset/db_engine_specs/athena.py:30:5:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/bigquery.py#L81'>superset/db_engine_specs/bigquery.py:81:5:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/bigquery.py#L82'>superset/db_engine_specs/bigquery.py:82:5:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/bigquery.py#L95'>superset/db_engine_specs/bigquery.py:95:5:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L29'>superset/db_engine_specs/denodo.py:29:46:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L30'>superset/db_engine_specs/denodo.py:30:48:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L32'>superset/db_engine_specs/denodo.py:32:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L35'>superset/db_engine_specs/denodo.py:35:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L37'>superset/db_engine_specs/denodo.py:37:46:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L39'>superset/db_engine_specs/denodo.py:39:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L41'>superset/db_engine_specs/denodo.py:41:43:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L43'>superset/db_engine_specs/denodo.py:43:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L46'>superset/db_engine_specs/denodo.py:46:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/apache/superset/blob/d3ba2755e8ed3d5a2fe5b5e6eba1bc629ad84f44/superset/db_engine_specs/denodo.py#L49'>superset/db_engine_specs/denodo.py:49:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+... 52 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/agent_fns/python_comment_agent.py#L274'>crazy_functions/agent_fns/python_comment_agent.py:274:42:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/agent_fns/python_comment_agent.py#L275'>crazy_functions/agent_fns/python_comment_agent.py:275:45:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/vector_fns/general_file_loader.py#L18'>crazy_functions/vector_fns/general_file_loader.py:18:27:</a> RUF039 First argument to `re.sub()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/vector_fns/general_file_loader.py#L20'>crazy_functions/vector_fns/general_file_loader.py:20:39:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/vector_fns/general_file_loader.py#L32'>crazy_functions/vector_fns/general_file_loader.py:32:27:</a> RUF039 First argument to `re.sub()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/vector_fns/general_file_loader.py#L33'>crazy_functions/vector_fns/general_file_loader.py:33:27:</a> RUF039 First argument to `re.sub()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/crazy_functions/vector_fns/general_file_loader.py#L53'>crazy_functions/vector_fns/general_file_loader.py:53:51:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/multi_language.py#L131'>multi_language.py:131:32:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/shared_utils/text_mask.py#L76'>shared_utils/text_mask.py:76:36:</a> RUF039 First argument to `re.compile()` is not raw string
++ <a href='https://github.com/binary-husky/gpt_academic/blob/045cdb15d86c262a55ede6dd9c84a5ab63dcc797/tests/test_python_auto_docstring.py#L200'>tests/test_python_auto_docstring.py:200:42:</a> RUF039 First argument to `re.compile()` is not raw string
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/strings.py#L91'>src/bokeh/util/strings.py:91:19:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/strings.py#L92'>src/bokeh/util/strings.py:92:19:</a> RUF039 First argument to `re.sub()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/core/test_templates.py#L48'>tests/unit/bokeh/core/test_templates.py:48:19:</a> RUF039 First argument to `re.sub()` is not raw bytes literal
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/io/test_export.py#L203'>tests/unit/bokeh/io/test_export.py:203:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/io/test_export.py#L204'>tests/unit/bokeh/io/test_export.py:204:13:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/io/test_export.py#L205'>tests/unit/bokeh/io/test_export.py:205:13:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/io/test_export.py#L206'>tests/unit/bokeh/io/test_export.py:206:9:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L211'>tests/unit/bokeh/server/test_server__server.py:211:28:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/server/test_server__server.py#L219'>tests/unit/bokeh/server/test_server__server.py:219:36:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/backends/__init__.py#L1592'>ibis/backends/__init__.py:1592:17:</a> RUF039 [*] First argument to `re.match()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/backends/athena/__init__.py#L298'>ibis/backends/athena/__init__.py:298:37:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/backends/flink/__init__.py#L323'>ibis/backends/flink/__init__.py:323:17:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/backends/sql/compilers/pyspark.py#L360'>ibis/backends/sql/compilers/pyspark.py:360:27:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/backends/tests/test_client.py#L1062'>ibis/backends/tests/test_client.py:1062:13:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/backends/tests/test_client.py#L1083'>ibis/backends/tests/test_client.py:1083:13:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/common/tests/test_patterns.py#L246'>ibis/common/tests/test_patterns.py:246:31:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/common/tests/test_patterns.py#L246'>ibis/common/tests/test_patterns.py:246:65:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/ibis-project/ibis/blob/1045dbea46eacd86cfae5208aa7e6ef05b0312ca/ibis/tests/expr/test_selectors.py#L116'>ibis/tests/expr/test_selectors.py:116:39:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/centromere/ctx.py#L479'>src/latch_cli/centromere/ctx.py:479:26:</a> RUF039 [*] First argument to `re.match()` is not raw string
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/services/init/init.py#L304'>src/latch_cli/services/init/init.py:304:18:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/services/init/init.py#L311'>src/latch_cli/services/init/init.py:311:18:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/latchbio/latch/blob/66920c3cd06ceb02109db8525c62b5569f5c459b/src/latch_cli/services/register/register.py#L59'>src/latch_cli/services/register/register.py:59:36:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/db.py#L151'>lnbits/db.py:151:34:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+21 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/io/formats/excel.py#L421'>pandas/io/formats/excel.py:421:35:</a> RUF039 [*] First argument to `re.search()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/io/formats/style_render.py#L2523'>pandas/io/formats/style_render.py:2523:28:</a> RUF039 First argument to `re.findall()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/io/formats/style_render.py#L2525'>pandas/io/formats/style_render.py:2525:28:</a> RUF039 First argument to `re.findall()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/io/formats/style_render.py#L2528'>pandas/io/formats/style_render.py:2528:32:</a> RUF039 First argument to `re.findall()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/io/formats/style_render.py#L2530'>pandas/io/formats/style_render.py:2530:32:</a> RUF039 First argument to `re.findall()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/tests/dtypes/test_inference.py#L462'>pandas/tests/dtypes/test_inference.py:462:44:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/tests/dtypes/test_inference.py#L473'>pandas/tests/dtypes/test_inference.py:473:43:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/tests/extension/test_arrow.py#L1803'>pandas/tests/extension/test_arrow.py:1803:25:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/tests/frame/methods/test_replace.py#L1368'>pandas/tests/frame/methods/test_replace.py:1368:28:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/pandas-dev/pandas/blob/40a81803e707a053af2612e67a7752fe6f6fa1b4/pandas/tests/indexes/datetimes/test_date_range.py#L787'>pandas/tests/indexes/datetimes/test_date_range.py:787:29:</a> RUF039 [*] First argument to `re.split()` is not raw string
+... 11 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/build">pypa/build</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/build/blob/e9adbf04f98745185ffb6552a7088a8ec12cfe2f/tests/test_integration.py#L31'>tests/test_integration.py:31:21:</a> RUF039 [*] First argument to `re.compile()` is not raw string
++ <a href='https://github.com/pypa/build/blob/e9adbf04f98745185ffb6552a7088a8ec12cfe2f/tests/test_integration.py#L32'>tests/test_integration.py:32:21:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-poetry/poetry">python-poetry/poetry</a> (+16 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/console/logging/formatters/builder_formatter.py#L11'>src/poetry/console/logging/formatters/builder_formatter.py:11:26:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/console/logging/formatters/builder_formatter.py#L13'>src/poetry/console/logging/formatters/builder_formatter.py:13:26:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/console/logging/formatters/builder_formatter.py#L15'>src/poetry/console/logging/formatters/builder_formatter.py:15:26:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/console/logging/formatters/builder_formatter.py#L18'>src/poetry/console/logging/formatters/builder_formatter.py:18:17:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/mixology/solutions/providers/python_requirement_solution_provider.py#L22'>src/poetry/mixology/solutions/providers/python_requirement_solution_provider.py:22:13:</a> RUF039 [*] First argument to `re.match()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/mixology/solutions/providers/python_requirement_solution_provider.py#L23'>src/poetry/mixology/solutions/providers/python_requirement_solution_provider.py:23:13:</a> RUF039 [*] First argument to `re.match()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/puzzle/provider.py#L736'>src/poetry/puzzle/provider.py:736:21:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/utils/dependency_specification.py#L192'>src/poetry/utils/dependency_specification.py:192:13:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/tests/config/test_config.py#L58'>tests/config/test_config.py:58:46:</a> RUF039 [*] First argument to `re.sub()` is not raw string
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/tests/conftest.py#L378'>tests/conftest.py:378:20:</a> RUF039 [*] First argument to `re.compile()` is not raw string
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF039 | 223 | 223 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @ntBre on 2025-03-11 20:48_
+
+The first rasa case is pretty annoying (it looks like @MichaReiser flagged this in the [original PR](https://github.com/astral-sh/ruff/pull/14446) too):
+https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/utils/io.py#L221-L231
+
+It involves an implicitly-concatenated string, so it gets 10 instances of RUF039 in the same snippet. 8 of them involve Unicode escapes (`\U...`) and won't be auto-fixable.
+
+superset has some implicitly-concatentated strings with multiple diagnostics too. I'm not sure if we can handle this better, and these are auto-fixable at least.
+
+Almost all of the gpt_academic cases have escapes and no auto-fixes.
+
+bokeh is mostly auto-fixable but has one concatenated string with 4 diagnostics.
+
+### Summary
+I looked at all of the results in the comment, and I would say that the majority have an  auto-fix. I think getting multiple diagnostics for implicitly-concatenated strings is probably the most annoying aspect, but I don't think we can do much about that, short of joining the string, which doesn't seem right at all.
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-12 04:43_
+
+I think `RUF039` can still be made quite a bit smarter. Let's not stabilize it yet.
+
+---
+
+_Comment by @MichaReiser on 2025-03-12 08:02_
+
+> superset has some implicitly-concatentated strings with multiple diagnostics too. I'm not sure if we can handle this better, and these are auto-fixable at least.
+
+We could create a signal diagnostic with a single fix for all parts but it has the downside that we couldn't provide a fix if any of the parts aren't autofixable, but that's probably desired to avoid creating strings with mixed normal and raw string parts. 
+
+We could also make the raw string autofix understand which escape sequences are supported in regex.compile, so that the majority of regex patterns becomes autofixable. 
+
+@InSyncWithFoo what are the improvements you have in mind?
+
+Holding back on this rule and creating a follow up issue does make sense to me
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-12 15:55_
+
+> what are the improvements you have in mind?
+
+Not anything concrete yet, but I think it is possible to merge the diagnostics for implicitly concatenated string parts when they are the same (fixes, applicability). The fix could use some work too.
+
+---
+
+_Comment by @ntBre on 2025-03-12 16:06_
+
+Sounds good, I can close this for now. @InSyncWithFoo do you want to open the issue to track follow-up work? I'm happy to if not.
+
+---
+
+_Closed by @ntBre on 2025-03-12 16:06_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-12 16:17_
+
+I think I'll do that tomorrow, once I'm done with what I'm currently doing.
+
+---
+
+_Branch deleted on 2025-05-01 15:31_
+
+---

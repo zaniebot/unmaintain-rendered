@@ -1,0 +1,771 @@
+```yaml
+number: 18607
+title: "[ty] Filter overloads based on `Any` / `Unknown`"
+type: pull_request
+state: merged
+author: dhruvmanila
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: dhruv/overload-step-5
+created_at: 2025-06-10T08:23:10Z
+updated_at: 2025-06-17T10:05:11Z
+url: https://github.com/astral-sh/ruff/pull/18607
+synced_at: 2026-01-10T18:39:08Z
+```
+
+# [ty] Filter overloads based on `Any` / `Unknown`
+
+---
+
+_Pull request opened by @dhruvmanila on 2025-06-10 08:23_
+
+## Summary
+
+Closes: astral-sh/ty#552
+
+This PR adds support for step 5 of the overload call evaluation algorithm which specifies:
+
+> For all arguments, determine whether all possible materializations of the argument’s type are
+> assignable to the corresponding parameter type for each of the remaining overloads. If so,
+> eliminate all of the subsequent remaining overloads.
+
+The algorithm works in two parts:
+
+1. Find out the participating parameter indexes. These are the parameters that aren't gradual equivalent to one or more parameter types at the same index in other overloads.
+2. Loop over each overload and check whether that would be the _final_ overload for the argument types i.e., the remaining overloads will never be matched against these argument types
+
+For step 1, the participating parameter indexes are computed by just comparing whether all the parameter types at the corresponding index for all the overloads are **gradual equivalent**.
+
+The step 2 of the algorithm used is described in [this comment](https://github.com/astral-sh/ty/issues/552#issuecomment-2969165421).
+
+## Test Plan
+
+Update the overload call tests.
+
+
+---
+
+_Label `ty` added by @dhruvmanila on 2025-06-10 08:23_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-10 08:26_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+dacite (https://github.com/konradhalas/dacite)
+- error[non-subscriptable] dacite/generics.py:68:24: Cannot subscript object of type `ParamSpec` with no `__getitem__` method
+- Found 24 diagnostics
++ Found 23 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
+- error[call-non-callable] src/pegen/grammar.py:30:16: Object of type `None` is not callable
+- Found 53 diagnostics
++ Found 52 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- warning[possibly-unbound-attribute] parso/python/prefix.py:84:19: Attribute `group` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] parso/python/prefix.py:85:17: Attribute `group` on type `Unknown | Match[str] | None` is possibly unbound
+- warning[possibly-unbound-attribute] parso/python/prefix.py:96:17: Attribute `end` on type `Unknown | Match[str] | None` is possibly unbound
+- Found 83 diagnostics
++ Found 80 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[invalid-argument-type] chess/svg.py:170:19: Argument to function `_color` is incorrect: Expected `str`, found `str | None`
+- Found 36 diagnostics
++ Found 35 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[invalid-argument-type] pyinstrument/session.py:109:13: Argument to bound method `__init__` is incorrect: Expected `list[str]`, found `Any | None`
+- Found 86 diagnostics
++ Found 85 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[unresolved-attribute] tests/test_make.py:144:14: Type `Literal[42]` has no attribute `default`
+- Found 608 diagnostics
++ Found 607 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- warning[possibly-unbound-implicit-call] koda_validate/serialization/errors.py:179:16: Method `__getitem__` of type `str | None` is possibly unbound
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[invalid-assignment] starlette/endpoints.py:36:9: Object of type `Any | None` is not assignable to `(Request, /) -> Any`
+- warning[possibly-unbound-attribute] starlette/requests.py:115:20: Attribute `endswith` on type `Unknown | None` is possibly unbound
+- error[unsupported-operator] starlette/requests.py:116:17: Operator `+=` is unsupported between objects of type `None` and `Literal["/"]`
++ error[type-assertion-failure] tests/test_config.py:21:5: Argument does not have asserted type `str | None`
+- Found 172 diagnostics
++ Found 170 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- warning[possibly-unbound-attribute] src/werkzeug/middleware/http_proxy.py:108:16: Attribute `encode` on type `str | None` is possibly unbound
+- Found 452 diagnostics
++ Found 451 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ warning[division-by-zero] dulwich/contrib/diffstat.py:160:27: Cannot divide object of type `float` by zero
++ warning[division-by-zero] dulwich/contrib/diffstat.py:161:27: Cannot divide object of type `float` by zero
+- error[call-non-callable] dulwich/fastexport.py:50:25: Object of type `None` is not callable
+- error[unsupported-operator] dulwich/porcelain.py:2040:33: Operator `+` is unsupported between objects of type `Unknown | LiteralString` and `Literal[b"\n"]`
+
+comtypes (https://github.com/enthought/comtypes)
++ warning[unused-ignore-comment] comtypes/_comobject.py:400:24: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] comtypes/_post_coinit/misc.py:76:19: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] comtypes/_post_coinit/unknwn.py:406:19: Unused blanket `type: ignore` directive
+- error[non-subscriptable] comtypes/safearray.py:170:25: Cannot subscript object of type `c_void_p` with no `__getitem__` method
+- error[non-subscriptable] comtypes/safearray.py:312:46: Cannot subscript object of type `c_void_p` with no `__getitem__` method
+- error[non-subscriptable] comtypes/safearray.py:318:29: Cannot subscript object of type `c_void_p` with no `__getitem__` method
+- error[non-subscriptable] comtypes/safearray.py:346:32: Cannot subscript object of type `c_void_p` with no `__getitem__` method
+- error[non-subscriptable] comtypes/safearray.py:352:56: Cannot subscript object of type `c_void_p` with no `__getitem__` method
+- error[invalid-super-argument] comtypes/safearray.py:393:13: `type[c_void_p]` is not a valid class
+- error[unresolved-attribute] comtypes/test/test_imfattributes.py:33:9: Type `c_void_p` has no attribute `SetUINT32`
+- error[unresolved-attribute] comtypes/test/test_imfattributes.py:34:25: Type `c_void_p` has no attribute `GetUINT32`
+- error[invalid-return-type] comtypes/typeinfo.py:388:16: Return type does not match returned value: expected `tuple[str, str | None, int, str | None]`, found `tuple[None, None, Unknown, None]`
+- Found 568 diagnostics
++ Found 562 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
++ warning[unused-ignore-comment] httpx_caching/_policy.py:216:76: Unused blanket `type: ignore` directive
+- error[non-subscriptable] httpx_caching/_heuristics.py:64:70: Cannot subscript object of type `None` with no `__getitem__` method
+- error[invalid-argument-type] httpx_caching/_heuristics.py:130:32: Argument to function `timegm` is incorrect: Expected `tuple[int, ...] | struct_time`, found `None`
+- Found 28 diagnostics
++ Found 27 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[no-matching-overload] porcupine/plugins/autoindent.py:80:20: No overload of bound method `split` matches arguments
+- error[no-matching-overload] porcupine/plugins/autoindent.py:105:21: No overload of bound method `replace` matches arguments
+- error[invalid-argument-type] porcupine/plugins/comment_selected_lines.py:42:45: Argument to function `already_commented` is incorrect: Expected `str`, found `Unknown | Path`
+- error[invalid-argument-type] porcupine/plugins/comment_selected_lines.py:43:68: Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | Path`
+- error[invalid-argument-type] porcupine/plugins/comment_selected_lines.py:45:55: Argument to bound method `insert` is incorrect: Expected `str`, found `Unknown | Path`
+- error[invalid-argument-type] porcupine/plugins/comment_selected_lines.py:61:41: Argument to function `already_commented` is incorrect: Expected `str`, found `Unknown | Path`
+- error[invalid-argument-type] porcupine/plugins/comment_selected_lines.py:68:70: Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | Path`
+- error[invalid-argument-type] porcupine/plugins/comment_selected_lines.py:72:54: Argument to bound method `insert` is incorrect: Expected `str`, found `Unknown | Path`
+- error[invalid-assignment] porcupine/plugins/filetypes.py:239:13: Object of type `Unknown | Path` is not assignable to `str | None`
+- warning[possibly-unbound-attribute] porcupine/plugins/langserver.py:377:28: Attribute `language_id` on type `Unknown | Path` is possibly unbound
+- Found 80 diagnostics
++ Found 70 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[invalid-return-type] strawberry/types/maybe.py:41:12: Return type does not match returned value: expected `bool`, found `(type & ~AlwaysTruthy) | bool`
+- error[non-subscriptable] strawberry/utils/typing.py:399:13: Cannot subscript object of type `type` with no `__class_getitem__` method
+- Found 427 diagnostics
++ Found 425 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- warning[possibly-unbound-implicit-call] pydantic/_internal/_generate_schema.py:291:23: Method `__getitem__` of type `Any | None` is possibly unbound
+- Found 763 diagnostics
++ Found 762 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[unresolved-attribute] src/graphql/utilities/type_info.py:202:21: Type `None` has no attribute `of_type`
+- error[unresolved-attribute] src/graphql/utilities/type_info.py:210:27: Type `None` has no attribute `fields`
+- error[unresolved-attribute] src/graphql/utilities/type_info.py:224:26: Type `None` has no attribute `values`
++ warning[unused-ignore-comment] src/graphql/validation/rules/custom/no_deprecated.py:98:54: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] src/graphql/validation/rules/custom/no_deprecated.py:77:31: Type `None` has no attribute `fields`
+- error[unresolved-attribute] src/graphql/validation/rules/custom/no_deprecated.py:82:41: Type `None` has no attribute `name`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:80:38: Type `None` has no attribute `fields`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:80:38: Type `None` has no attribute `fields`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:80:38: Type `None` has no attribute `fields`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:86:35: Type `None` has no attribute `name`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:91:12: Type `None` has no attribute `is_one_of`
+- error[invalid-argument-type] src/graphql/validation/rules/values_of_correct_type.py:93:37: Argument to function `validate_one_of_input_object` is incorrect: Expected `GraphQLInputObjectType`, found `None`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:101:65: Type `None` has no attribute `fields`
+- error[unresolved-attribute] src/graphql/validation/rules/values_of_correct_type.py:105:49: Type `None` has no attribute `name`
+- Found 438 diagnostics
++ Found 426 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[unsupported-operator] sockeye/data_io.py:176:74: Operator `/` is unsupported between objects of type `int` and `int | float | None`
+- error[unsupported-operator] sockeye/data_io.py:193:27: Operator `*` is unsupported between objects of type `int | Unknown` and `int | float | None`
+- Found 356 diagnostics
++ Found 354 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- warning[possibly-unbound-attribute] rich/box.py:87:39: Attribute `ascii` on type `Unknown | None` is possibly unbound
+- error[invalid-return-type] rich/box.py:89:16: Return type does not match returned value: expected `Box`, found `Unknown | None | Box`
+- error[invalid-return-type] rich/box.py:99:16: Return type does not match returned value: expected `Box`, found `Unknown | None`
+- error[invalid-return-type] rich/style.py:611:16: Return type does not match returned value: expected `Style`, found `int`
+- error[invalid-return-type] rich/style.py:624:16: Return type does not match returned value: expected `Style`, found `int`
+- Found 392 diagnostics
++ Found 387 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- warning[possibly-unbound-attribute] stone/backends/obj_c_helpers.py:227:22: Attribute `replace` on type `Unknown | None` is possibly unbound
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:232:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:235:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:256:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:260:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:264:22: Operator `+` is unsupported between objects of type `Literal["nullable "]` and `LiteralString | Unknown | None`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:280:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:283:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:287:22: Operator `+` is unsupported between objects of type `Literal["nullable "]` and `LiteralString | Unknown | None`
+- error[unsupported-operator] stone/backends/obj_c_helpers.py:289:13: Operator `+=` is unsupported between objects of type `None` and `Literal[""]`
+- error[unsupported-operator] stone/backends/swift.py:287:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift.py:289:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift.py:306:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift.py:308:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift.py:310:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift_helpers.py:152:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift_helpers.py:154:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift_helpers.py:157:40: Operator `+` is unsupported between objects of type `LiteralString | Unknown | None` and `Literal["?"]`
+- error[unsupported-operator] stone/backends/swift_helpers.py:169:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift_helpers.py:171:22: Operator `+` is unsupported between objects of type `Unknown | None` and `LiteralString`
+- error[unsupported-operator] stone/backends/swift_helpers.py:173:62: Operator `+` is unsupported between objects of type `LiteralString | Unknown | None` and `Literal["?"]`
+- Found 170 diagnostics
++ Found 149 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[invalid-argument-type] mkosi/config.py:5681:21: Argument is incorrect: Expected `str`, found `Any | None`
+- Found 227 diagnostics
++ Found 226 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- warning[redundant-cast] src/schemathesis/specs/graphql/schemas.py:158:16: Value is already of type `str`
+- error[invalid-return-type] src/schemathesis/specs/openapi/parameters.py:38:16: Return type does not match returned value: expected `str`, found `Unknown | None`
+- Found 417 diagnostics
++ Found 415 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[invalid-assignment] src/poetry/console/exceptions.py:101:5: Object of type `Literal[""]` is not assignable to `InitVar[str]`
+- warning[possibly-unbound-attribute] src/poetry/factory.py:145:33: Attribute `upper` on type `Any | None` is possibly unbound
+- Found 1027 diagnostics
++ Found 1025 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[call-non-callable] tornado/options.py:578:26: Object of type `None` is not callable
+- error[call-non-callable] tornado/options.py:579:26: Object of type `None` is not callable
+- error[call-non-callable] tornado/options.py:582:40: Object of type `None` is not callable
+- error[call-non-callable] tornado/options.py:584:27: Object of type `None` is not callable
+- error[invalid-argument-type] tornado/simple_httpclient.py:675:13: Argument to bound method `__init__` is incorrect: Expected `HTTPRequest`, found `Any | None`
+- error[unresolved-attribute] tornado/web.py:2897:16: Type `None` has no attribute `tzinfo`
+- error[unresolved-attribute] tornado/web.py:2898:28: Type `None` has no attribute `replace`
+- Found 325 diagnostics
++ Found 318 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[unresolved-attribute] test/test_datasets.py:475:18: Type `int` has no attribute `tolist`
+- warning[redundant-cast] torchvision/datasets/places365.py:135:21: Value is already of type `str`
+- error[invalid-argument-type] torchvision/tv_tensors/__init__.py:32:13: Argument to bound method `_wrap` is incorrect: Expected `BoundingBoxFormat | str`, found `Unknown | None`
+- error[invalid-argument-type] torchvision/tv_tensors/__init__.py:33:13: Argument to bound method `_wrap` is incorrect: Expected `tuple[int, int]`, found `Unknown | None`
+- error[invalid-argument-type] torchvision/tv_tensors/__init__.py:36:41: Argument to bound method `_wrap` is incorrect: Expected `tuple[int, int]`, found `Unknown | None`
+- Found 1539 diagnostics
++ Found 1534 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-return-type] src/hydra_zen/wrapper/_implementations.py:945:16: Return type does not match returned value: expected `DataClass_`, found `@Todo(unsupported type[X] special form) | (((...) -> Any) & dict[Unknown, Unknown]) | (DataClass_ & dict[Unknown, Unknown]) | (list[Any] & dict[Unknown, Unknown]) | dict[Any, Any] | (((...) -> Any) & list[Unknown]) | (DataClass_ & list[Unknown]) | list[Any]`
+- error[invalid-argument-type] src/hydra_zen/wrapper/_implementations.py:1622:21: Argument to bound method `__init__` is incorrect: Expected `(Unknown, /) -> @Todo(Support for `typing.TypeAlias`)`, found `Any | None`
+- error[call-non-callable] src/hydra_zen/wrapper/_implementations.py:1627:24: Object of type `None` is not callable
+- error[call-non-callable] tests/annotations/behaviors.py:60:28: Object of type `Path` is not callable
+- error[call-non-callable] tests/annotations/behaviors.py:64:21: Object of type `Path` is not callable
+- error[call-non-callable] tests/annotations/declarations.py:167:17: Object of type `Path` is not callable
+- error[unresolved-attribute] tests/annotations/declarations.py:524:17: Type `<class 'int'>` has no attribute `_target_`
++ error[type-assertion-failure] tests/annotations/declarations.py:945:5: Argument does not have asserted type `PBuilds[@Todo(Support for `typing.TypeAlias`)]`
+- Found 604 diagnostics
++ Found 598 diagnostics
+
+twine (https://github.com/pypa/twine)
+- warning[redundant-cast] twine/auth.py:163:29: Value is already of type `str`
+- Found 15 diagnostics
++ Found 14 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[invalid-argument-type] paasta_tools/cli/cmds/spark_run.py:1265:13: Argument to function `get_instance_config` is incorrect: Expected `str`, found `str | None`
+- warning[possibly-unbound-attribute] paasta_tools/kubernetes_tools.py:1367:20: Attribute `get` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] paasta_tools/kubernetes_tools.py:1368:23: Attribute `get` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] paasta_tools/kubernetes_tools.py:1369:34: Attribute `get` on type `Unknown | None` is possibly unbound
+- error[invalid-assignment] paasta_tools/kubernetes_tools.py:2364:13: Object of type `Unknown & ~None` is not assignable to attribute `pod_anti_affinity` on type `Unknown | None`
+- error[unsupported-operator] paasta_tools/mesos/master.py:102:45: Operator `+` is unsupported between objects of type `str | None` and `Literal[":5055"]`
+- error[invalid-argument-type] paasta_tools/tron_tools.py:329:34: Argument to function `validate_pool` is incorrect: Expected `str`, found `str | None`
+- error[invalid-argument-type] paasta_tools/utils.py:1036:17: Argument to bound method `append` is incorrect: Expected `DockerVolume`, found `dict[Unknown, Unknown]`
+- error[invalid-return-type] paasta_tools/utils.py:3423:12: Return type does not match returned value: expected `InstanceConfigDict`, found `(Unknown & ~None) | dict[str, Any]`
+- warning[redundant-cast] paasta_tools/utils.py:4188:19: Value is already of type `list[str]`
+- Found 963 diagnostics
++ Found 953 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- warning[possibly-unbound-attribute] isort/deprecated/finders.py:81:31: Attribute `lower` on type `str | None` is possibly unbound
+- error[no-matching-overload] isort/deprecated/finders.py:83:30: No overload of bound method `__init__` matches arguments
+- warning[possibly-unbound-attribute] isort/settings.py:659:31: Attribute `lower` on type `str | None` is possibly unbound
+- error[invalid-argument-type] isort/settings.py:663:52: Argument to bound method `union` is incorrect: Expected `Iterable[Unknown]`, found `Any | None`
+- Found 53 diagnostics
++ Found 49 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- error[unsupported-operator] colour/io/luts/lut.py:1966:12: Operator `>` is not supported for types `None` and `int`, in comparing `Any | None` with `Literal[129]`
+- error[no-matching-overload] colour/io/luts/lut.py:1995:27: No overload of function `reshape` matches arguments
+- error[no-matching-overload] colour/io/luts/lut.py:1999:27: No overload of function `reshape` matches arguments
+- error[not-iterable] colour/models/rgb/ycbcr.py:499:24: Object of type `None` is not iterable
+- error[not-iterable] colour/models/rgb/ycbcr.py:500:34: Object of type `None` is not iterable
+- error[not-iterable] colour/models/rgb/ycbcr.py:635:34: Object of type `None` is not iterable
+- error[not-iterable] colour/models/rgb/ycbcr.py:638:24: Object of type `None` is not iterable
+- error[not-iterable] colour/models/rgb/ycbcr.py:748:34: Object of type `None` is not iterable
+- error[not-iterable] colour/models/rgb/ycbcr.py:863:34: Object of type `None` is not iterable
+- warning[possibly-unbound-attribute] colour/plotting/common.py:824:9: Attribute `text` on type `Any | None` is possibly unbound
+- error[invalid-return-type] colour/plotting/common.py:836:12: Return type does not match returned value: expected `tuple[Figure, Axes]`, found `tuple[Any, Any | None]`
+- warning[possibly-unbound-attribute] colour/plotting/common.py:862:9: Attribute `set_aspect` on type `Any | None` is possibly unbound
+- error[invalid-return-type] colour/plotting/common.py:872:12: Return type does not match returned value: expected `tuple[Figure, Axes3D]`, found `tuple[Any, Any | None]`
+- error[invalid-argument-type] colour/plotting/diagrams.py:448:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[@Todo(Support for `typing.TypeAlias`)]`, found `ndarray[tuple[int, int, int], dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/diagrams.py:462:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[@Todo(Support for `typing.TypeAlias`)]`, found `ndarray[tuple[int, int, int], dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/models.py:419:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[@Todo(Support for `typing.TypeAlias`)]`, found `ndarray[tuple[int, int, int], dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/temperature.py:230:9: Argument to bound method `__init__` is incorrect: Expected `Sequence[@Todo(Support for `typing.TypeAlias`)]`, found `ndarray[tuple[int, int, int], dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/temperature.py:474:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[@Todo(Support for `typing.TypeAlias`)]`, found `ndarray[tuple[int, int, int], dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/temperature.py:495:17: Argument to bound method `__init__` is incorrect: Expected `Sequence[@Todo(Support for `typing.TypeAlias`)]`, found `ndarray[tuple[int, int, int], dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/temperature.py:513:13: Argument to bound method `text` is incorrect: Expected `int | float`, found `ndarray[@Todo(Support for `typing.TypeAlias`), dtype[Unknown]]`
+- error[invalid-argument-type] colour/plotting/temperature.py:514:13: Argument to bound method `text` is incorrect: Expected `int | float`, found `ndarray[@Todo(Support for `typing.TypeAlias`), dtype[Unknown]]`
+- Found 559 diagnostics
++ Found 538 diagnostics
+
+altair (https://github.com/vega/altair)
+- error[invalid-return-type] altair/utils/schemapi.py:223:12: Return type does not match returned value: expected `str`, found `Any | None`
+- error[invalid-return-type] altair/vegalite/v5/api.py:4368:16: Return type does not match returned value: expected `list[DataFrameLike]`, found `DataFrameLike | None`
+- error[invalid-return-type] altair/vegalite/v5/api.py:4472:16: Return type does not match returned value: expected `list[DataFrameLike]`, found `DataFrameLike | None`
+- error[invalid-return-type] altair/vegalite/v5/api.py:4578:16: Return type does not match returned value: expected `list[DataFrameLike]`, found `DataFrameLike | None`
+- error[invalid-return-type] altair/vegalite/v5/api.py:4683:16: Return type does not match returned value: expected `list[DataFrameLike]`, found `DataFrameLike | None`
+- error[invalid-argument-type] tests/utils/test_data.py:82:16: Argument to function `len` is incorrect: Expected `Sized`, found `partial[Unknown]`
+- Found 1291 diagnostics
++ Found 1285 diagnostics
+
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
+- error[invalid-argument-type] pyppeteer/page.py:828:67: Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | None`
+- error[invalid-argument-type] pyppeteer/page.py:896:67: Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | None`
+- Found 102 diagnostics
++ Found 100 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[possibly-unbound-implicit-call] static_frame/core/bus.py:553:21: Method `__getitem__` of type `(Unknown & ~None) | Iterable[Unknown | type[FrameDeferred]]` is possibly unbound
++ warning[possibly-unbound-implicit-call] static_frame/core/bus.py:553:21: Method `__getitem__` of type `(Unknown & ~None) | Iterable[Unknown | type[FrameDeferred]] | Unknown` is possibly unbound
+- warning[possibly-unbound-attribute] static_frame/core/bus.py:571:40: Attribute `copy` on type `(Unknown & ~None) | Iterable[Unknown | type[FrameDeferred]]` is possibly unbound
++ warning[possibly-unbound-attribute] static_frame/core/bus.py:571:40: Attribute `copy` on type `(Unknown & ~None) | Iterable[Unknown | type[FrameDeferred]] | Unknown` is possibly unbound
+- error[invalid-argument-type] static_frame/core/join.py:102:42: Argument to function `nonzero_1d` is incorrect: Expected `ndarray[Unknown, Unknown]`, found `bool[bool] | @Todo(Support for `typing.TypeAlias`)`
++ warning[unused-ignore-comment] static_frame/core/series.py:1813:41: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/series.py:1815:41: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/test/unit/test_container_util.py:183:48: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/test/unit/test_container_util.py:203:53: Unused blanket `type: ignore` directive
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:128:26: Type `int | float` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:131:13: Type `ndarray[Any, Any]` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:134:26: Type `int | float` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:137:13: Type `ndarray[Any, Any]` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:147:13: Type `ndarray[Any, Any]` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:163:26: Type `int | float` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:166:13: Type `ndarray[Any, Any]` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:179:26: Type `int | float` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:207:26: Type `int | float` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:226:13: Type `ndarray[Any, Any]` has no attribute `to_pairs`
+- error[unresolved-attribute] static_frame/test/unit/test_container_util.py:235:13: Type `ndarray[Any, Any]` has no attribute `to_pairs`
++ warning[unused-ignore-comment] static_frame/test/unit/test_series.py:525:60: Unused blanket `type: ignore` directive
+- Found 1917 diagnostics
++ Found 1910 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[invalid-argument-type] scrapy/core/downloader/handlers/http11.py:98:13: Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
+- error[invalid-argument-type] scrapy/core/downloader/handlers/http11.py:99:13: Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
+- error[invalid-argument-type] scrapy/core/downloader/handlers/http11.py:545:17: Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
+- error[invalid-argument-type] scrapy/core/downloader/handlers/http11.py:546:17: Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
+- error[invalid-argument-type] scrapy/core/downloader/handlers/http11.py:547:17: Argument to bound method `__init__` is incorrect: Expected `bool`, found `Any | None`
+- error[invalid-argument-type] scrapy/core/http2/protocol.py:198:13: Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
+- error[invalid-argument-type] scrapy/core/http2/protocol.py:201:13: Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
+- error[unsupported-operator] scrapy/downloadermiddlewares/httpcompression.py:108:20: Operator `<` is not supported for types `int` and `None`, in comparing `int` with `Any | None`
+- error[unsupported-operator] scrapy/downloadermiddlewares/httpcompression.py:108:41: Operator `<=` is not supported for types `None` and `int`, in comparing `Any | None` with `int`
+- error[invalid-assignment] scrapy/exporters.py:250:9: Object of type `Any | None` is not assignable to `(Any, /) -> Any`
+- error[invalid-assignment] scrapy/exporters.py:351:9: Object of type `Any | None` is not assignable to `(Any, /) -> Any`
+- error[invalid-return-type] scrapy/extensions/throttle.py:52:16: Return type does not match returned value: expected `int | float`, found `Any | None`
+- error[unsupported-operator] scrapy/spidermiddlewares/httperror.py:62:12: Operator `in` is not supported for types `int` and `None`, in comparing `int` with `Any | None`
+- error[not-iterable] scrapy/spiders/crawl.py:178:36: Object of type `AsyncGenerator[Unknown, None]` is not iterable
+- error[invalid-assignment] tests/test_pipeline_files.py:348:5: Object of type `<class 'list'>` is not assignable to `list[str]`
+- error[invalid-assignment] tests/test_pipeline_files.py:349:5: Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- error[invalid-assignment] tests/test_pipeline_files.py:351:5: Object of type `<class 'list'>` is not assignable to `list[str]`
+- error[invalid-assignment] tests/test_pipeline_files.py:352:5: Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- error[invalid-assignment] tests/test_pipeline_images.py:292:5: Object of type `<class 'list'>` is not assignable to `list[str]`
+- error[invalid-assignment] tests/test_pipeline_images.py:293:5: Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- error[invalid-assignment] tests/test_pipeline_images.py:295:5: Object of type `<class 'list'>` is not assignable to `list[str]`
+- error[invalid-assignment] tests/test_pipeline_images.py:296:5: Object of type `<class 'list'>` is not assignable to `list[dict[str, str]]`
+- Found 1306 diagnostics
++ Found 1284 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[invalid-argument-type] tests/test_copy.py:128:21: Argument to function `register_hstore` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/test_sql.py:424:19: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_sql.py:430:9: Attribute `register` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:35:12: Attribute `name` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:39:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:40:12: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:41:12: Attribute `regtype` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:143:12: Attribute `name` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:151:31: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/test_typeinfo.py:151:41: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_array.py:158:5: Attribute `register` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_array.py:360:24: Argument to function `register_array` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:66:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:81:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:114:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:118:10: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:196:12: Attribute `name` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:197:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:198:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:198:24: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:199:16: Attribute `field_names` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:200:16: Attribute `field_types` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:202:16: Attribute `field_names` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:203:16: Attribute `field_types` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:266:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:267:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:268:16: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:269:17: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:285:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:305:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:306:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:333:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:334:12: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:350:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:352:21: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:352:31: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:356:50: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:359:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:361:21: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:361:31: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:366:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:368:21: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:368:31: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:375:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:376:23: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:377:12: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:378:34: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:382:10: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:389:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:390:23: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:391:12: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:392:34: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:396:10: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:407:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:408:12: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:430:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_composite.py:431:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:432:11: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:432:25: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:446:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:447:11: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_composite.py:473:24: Argument to function `register_composite` is incorrect: Expected `CompositeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_composite.py:474:11: Attribute `python_type` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:65:12: Attribute `name` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:66:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:67:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:67:24: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:68:16: Attribute `labels` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:69:12: Attribute `labels` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_enum.py:95:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:97:18: Attribute `labels` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_enum.py:112:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:114:18: Attribute `labels` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:116:40: Attribute `name` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_enum.py:127:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:130:18: Attribute `labels` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:132:40: Attribute `name` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_enum.py:142:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:157:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:170:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:237:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:241:36: Attribute `name` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_enum.py:251:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:262:5: Attribute `register` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_enum.py:265:36: Attribute `name` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_enum.py:277:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:300:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:313:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:327:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:343:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_enum.py:359:19: Argument to function `register_enum` is incorrect: Expected `EnumInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_hstore.py:96:21: Argument to function `register_hstore` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_hstore.py:97:32: Attribute `oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_hstore.py:106:21: Argument to function `register_hstore` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_hstore.py:107:36: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_hstore.py:108:31: Attribute `oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_hstore.py:116:21: Argument to function `register_hstore` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_hstore.py:117:35: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_hstore.py:119:39: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_hstore.py:121:32: Attribute `oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_hstore.py:135:21: Argument to function `register_hstore` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_hstore.py:142:21: Argument to function `register_hstore` is incorrect: Expected `TypeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_multirange.py:372:12: Attribute `name` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_multirange.py:373:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_multirange.py:374:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_multirange.py:374:24: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_multirange.py:375:12: Attribute `subtype_oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_multirange.py:397:25: Argument to function `register_multirange` is incorrect: Expected `MultirangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_multirange.py:407:25: Argument to function `register_multirange` is incorrect: Expected `MultirangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_multirange.py:419:25: Argument to function `register_multirange` is incorrect: Expected `MultirangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_multirange.py:432:25: Argument to function `register_multirange` is incorrect: Expected `MultirangeInfo`, found `Unknown | None`
+- warning[possibly-unbound-attribute] tests/types/test_range.py:289:12: Attribute `name` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_range.py:290:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_range.py:291:12: Attribute `oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_range.py:291:24: Attribute `array_oid` on type `Unknown | None` is possibly unbound
+- warning[possibly-unbound-attribute] tests/types/test_range.py:292:12: Attribute `subtype_oid` on type `Unknown | None` is possibly unbound
+- error[invalid-argument-type] tests/types/test_range.py:314:20: Argument to function `register_range` is incorrect: Expected `RangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_range.py:324:20: Argument to function `register_range` is incorrect: Expected `RangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_range.py:337:20: Argument to function `register_range` is incorrect: Expected `RangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_range.py:353:20: Argument to function `register_range` is incorrect: Expected `RangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_range.py:364:20: Argument to function `register_range` is incorrect: Expected `RangeInfo`, found `Unknown | None`
+- error[invalid-argument-type] tests/types/test_range.py:678:20: Argument to function `register_range` is incorrect: Expected `RangeInfo`, found `Unknown | None`
+- Found 1042 diagnostics
++ Found 920 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[invalid-assignment] pwndbg/dbg/gdb/__init__.py:1746:9: Object of type `str` is not assignable to `Literal["att", "intel"]`
+- Found 2333 diagnostics
++ Found 2332 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- error[invalid-argument-type] tests/test_mpi.py:322:25: Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `MappingProxyType[str, Any]`
+- Found 300 diagnostics
++ Found 299 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- error[invalid-return-type] bson/regex.py:133:16: Return type does not match returned value: expected `Pattern[_T]`, found `Pattern[str]`
+- Found 552 diagnostics
++ Found 551 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ warning[unused-ignore-comment] discord/ext/commands/converter.py:1332:57: Unused blanket `type: ignore` directive
+- error[call-non-callable] discord/ext/commands/converter.py:1335:16: Object of type `None` is not callable
+- warning[possibly-unbound-attribute] discord/ext/commands/converter.py:1340:20: Attribute `__name__` on type `(Any & ~<class 'bool'> & ~type[Any] & ~Converter[Unknown]) | (Any & ~<class 'bool'> & ~Converter[Unknown]) | (Any & ~type[Any] & ~Converter[Unknown]) | None | (Any & ~Converter[Unknown])` is possibly unbound
+- error[invalid-assignment] discord/guild.py:3346:9: Object of type `(EntityType & ~AlwaysFalsy) | (Any & ~AlwaysFalsy) | Any | None` is not assignable to `EntityType`
+- warning[possibly-unbound-attribute] discord/message.py:2687:16: Attribute `type` on type `Any | None` is possibly unbound
+- error[invalid-argument-type] discord/message.py:2802:42: Argument to function `format_dt` is incorrect: Expected `datetime`, found `None`
+- warning[possibly-unbound-attribute] discord/player.py:220:65: Attribute `pid` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:223:13: Attribute `kill` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:225:83: Attribute `pid` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:227:12: Attribute `poll` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:228:88: Attribute `pid` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:229:13: Attribute `communicate` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:230:93: Attribute `pid` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:230:103: Attribute `returncode` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:232:92: Attribute `pid` on type `Any | None` is possibly unbound
+- warning[possibly-unbound-attribute] discord/player.py:232:102: Attribute `returncode` on type `Any | None` is possibly unbound
+- error[unsupported-operator] discord/poll.py:452:52: Operator `-` is unsupported between objects of type `None` and `datetime`
+- error[invalid-assignment] discord/scheduled_event.py:497:9: Object of type `(EntityType & ~AlwaysFalsy) | (Any & ~AlwaysFalsy) | Any | None` is not assignable to `EntityType`
+- error[invalid-return-type] discord/ui/select.py:266:16: Return type does not match returned value: expected `list[@Todo(Support for `typing.TypeAlias`)]`, found `list[@Todo(Inference of subscript on special form)] | None`
+- error[invalid-argument-type] discord/ui/select.py:1071:27: Argument to function `issubclass` is incorrect: Expected `type`, found `Any | None`
+- Found 619 diagnostics
++ Found 601 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[invalid-argument-type] mitmproxy/io/compat.py:510:34: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `(Any & ~int) | None`
+- warning[possibly-unbound-attribute] mitmproxy/io/har.py:106:32: Attribute `encode` on type `(Unknown & str) | None` is possibly unbound
+- error[invalid-argument-type] mitmproxy/tools/main.py:114:17: Argument to bound method `call_soon_threadsafe` is incorrect: Expected `(...) -> object`, found `Any | None`
+- Found 2048 diagnostics
++ Found 2045 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-assignment] src/_pytest/raises.py:446:9: Object of type `type` is not assignable to `type[BaseException] | None`
++ warning[unused-ignore-comment] src/_pytest/unittest.py:235:29: Unused blanket `type: ignore` directive
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- error[unresolved-attribute] tests/test_frame.py:85:9: Type `int` has no attribute `view`
++ error[type-assertion-failure] tests/test_frame.py:1083:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1087:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1091:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1150:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1156:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:3487:15: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:3809:11: Argument does not have asserted type `DataFrame`
++ error[type-assertion-failure] tests/test_frame.py:3888:11: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_indexes.py:738:9: Argument does not have asserted type `IntervalIndex[Interval[int]]`
++ error[type-assertion-failure] tests/test_interval_index.py:53:9: Argument does not have asserted type `IntervalIndex[Interval[int]]`
++ error[type-assertion-failure] tests/test_interval_index.py:61:9: Argument does not have asserted type `IntervalIndex[Interval[int]]`
++ error[type-assertion-failure] tests/test_interval_index.py:74:11: Argument does not have asserted type `Index[Unknown]`
++ error[type-assertion-failure] tests/test_interval_index.py:89:11: Argument does not have asserted type `bool`
++ error[type-assertion-failure] tests/test_io.py:984:13: Argument does not have asserted type `dict[int, DataFrame]`
++ error[type-assertion-failure] tests/test_io.py:1126:13: Argument does not have asserted type `dict[int, DataFrame]`
++ error[type-assertion-failure] tests/test_pandas.py:858:11: Argument does not have asserted type `ndarray[Unknown, Unknown]`
++ error[type-assertion-failure] tests/test_pandas.py:859:11: Argument does not have asserted type `ndarray[Unknown, Unknown]`
++ error[type-assertion-failure] tests/test_pandas.py:878:11: Argument does not have asserted type `ndarray[Unknown, Unknown]`
++ error[type-assertion-failure] tests/test_pandas.py:879:11: Argument does not have asserted type `ndarray[Unknown, Unknown]`
++ error[type-assertion-failure] tests/test_pandas.py:884:11: Argument does not have asserted type `ndarray[Unknown, Unknown]`
++ error[type-assertion-failure] tests/test_pandas.py:885:11: Argument does not have asserted type `ndarray[Unknown, Unknown]`
++ error[type-assertion-failure] tests/test_pandas.py:913:9: Argument does not have asserted type `IntervalIndex[Interval[int]]`
+- error[type-assertion-failure] tests/test_resampler.py:333:15: Argument does not have asserted type `Unknown`
+- error[type-assertion-failure] tests/test_resampler.py:334:15: Argument does not have asserted type `Unknown`
+- error[type-assertion-failure] tests/test_resampler.py:335:15: Argument does not have asserted type `Unknown`
+- error[type-assertion-failure] tests/test_resampler.py:337:13: Argument does not have asserted type `Unknown`
+- error[type-assertion-failure] tests/test_resampler.py:341:13: Argument does not have asserted type `Unknown`
+- error[type-assertion-failure] tests/test_resampler.py:345:13: Argument does not have asserted type `Unknown`
+- error[type-assertion-failure] tests/test_resampler.py:355:11: Argument does not have asserted type `Unknown`
++ error[type-assertion-failure] tests/test_scalars.py:728:11: Argument does not have asserted type `TimedeltaIndex`
++ error[type-assertion-failure] tests/test_scalars.py:729:11: Argument does not have asserted type `TimedeltaIndex`
++ error[type-assertion-failure] tests/test_scalars.py:825:11: Argument does not have asserted type `TimedeltaSeries`
++ error[type-assertion-failure] tests/test_scalars.py:826:11: Argument does not have asserted type `TimedeltaSeries`
++ error[type-assertion-failure] tests/test_scalars.py:827:11: Argument does not have asserted type `TimedeltaIndex`
++ error[type-assertion-failure] tests/test_scalars.py:830:9: Argument does not have asserted type `TimedeltaIndex`
+- error[type-assertion-failure] tests/test_scalars.py:856:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:875:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:878:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:943:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:946:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1011:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1014:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
++ error[type-assertion-failure] tests/test_scalars.py:1027:9: Argument does not have asserted type `Series[bool]`
++ error[type-assertion-failure] tests/test_scalars.py:1030:9: Argument does not have asserted type `Series[bool]`
+- error[type-assertion-failure] tests/test_scalars.py:1286:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1287:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1289:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1290:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1330:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1331:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1333:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1334:11: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1380:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1383:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1388:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+- error[type-assertion-failure] tests/test_scalars.py:1391:9: Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
++ error[type-assertion-failure] tests/test_series.py:1229:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_series.py:1242:13: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_series.py:1305:11: Argument does not have asserted type `int | float`
++ error[type-assertion-failure] tests/test_series.py:3568:9: Argument does not have asserted type `Series[type]`
++ error[type-assertion-failure] tests/test_series.py:3660:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_timefuncs.py:1325:11: Argument does not have asserted type `TimestampSeries`
++ error[type-assertion-failure] tests/test_timefuncs.py:1331:11: Argument does not have asserted type `TimestampSeries`
+- Found 2840 diagnostics
++ Found 2850 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- error[unresolved-attribute] lib/Crypto/PublicKey/ElGamal.py:81:16: Type `int` has no attribute `inverse`
+- error[unresolved-attribute] lib/Crypto/PublicKey/ElGamal.py:197:28: Type `int` has no attribute `inverse`
+- Found 1536 diagnostics
++ Found 1534 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[unsupported-operator] mypy/build.py:3389:20: Operator `<` is not supported for types `None` and `int`, in comparing `int | None` with `int`
+- error[unsupported-operator] mypy/build.py:3507:32: Operator `<` is not supported for types `None` and `int`, in comparing `int | None` with `int`
+- error[invalid-argument-type] mypy/checker.py:1521:63: Argument to function `is_subtype` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:1683:39: Argument to function `is_unannotated_any` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2308:24: Argument to function `is_subtype` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2320:36: Argument to function `format_type_distinctly` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2320:36: Argument to function `format_type_distinctly` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2320:36: Argument to function `format_type_distinctly` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2327:28: Argument to function `is_equivalent` is incorrect: Expected `Type`, found `None | (ProperType & ~AnyType)`
+- error[invalid-argument-type] mypy/checker.py:2327:43: Argument to function `is_equivalent` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2335:28: Argument to function `is_subtype` is incorrect: Expected `Type`, found `None`
+- error[invalid-argument-type] mypy/checker.py:2335:33: Argument to function `is_subtype` is incorrect: Expected `Type`, found `None | (ProperType & ~AnyType)`
+- error[invalid-argument-type] mypy/checker.py:2536:30: Argument to function `has_bool_item` is incorrect: Expected `ProperType`, found `None`
+- error[invalid-argument-type] mypy/checker.py:4785:84: Argument to function `is_proper_subtype` is incorrect: Expecte...*[Comment body truncated]*
+
+---
+
+_Renamed from "[WIP] [ty] Filter overloads based on `Any` / `Unknown`" to "[ty] Filter overloads based on `Any` / `Unknown`" by @dhruvmanila on 2025-06-13 10:40_
+
+---
+
+_Comment by @dhruvmanila on 2025-06-13 10:42_
+
+~There's one TODO which is yet to be implemented that's described [here](https://github.com/astral-sh/ty/issues/552#issuecomment-2969052173) but I don't want to block that from receiving initial review.~
+
+Fixed this.
+
+---
+
+_Marked ready for review by @dhruvmanila on 2025-06-13 10:42_
+
+---
+
+_Review requested from @carljm by @dhruvmanila on 2025-06-13 10:42_
+
+---
+
+_Review requested from @AlexWaygood by @dhruvmanila on 2025-06-13 10:42_
+
+---
+
+_Review requested from @sharkdp by @dhruvmanila on 2025-06-13 10:42_
+
+---
+
+_Review requested from @dcreager by @dhruvmanila on 2025-06-13 10:42_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2025-06-16 22:35_
+
+---
+
+_@carljm approved on 2025-06-17 01:27_
+
+Nice!
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 03:59_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 03:59_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 04:00_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 04:03_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 04:35_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 04:38_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 04:55_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 04:59_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 05:02_
+
+---
+
+_@dhruvmanila reviewed on 2025-06-17 09:32_
+
+---
+
+_Comment by @dhruvmanila on 2025-06-17 10:05_
+
+**Ecosystem analysis:**
+
+Accessing a member of the dictionary when the default is `Unknown` produces `Unknown` instead. This might be resolved by https://github.com/astral-sh/ty/issues/669.
+
+```py
+def _(d: dict[str, str], default):
+    # revealed: Unknown (should be str | None)
+    reveal_type(d.get("hello", default))
+```
+
+I think most of the overloaded function calls are now returning `Unknown` thus they're considering the overload call as ambiguous which doesn't look correct in multiple cases because Pyright is able to infer them.
+
+There are multiple instances where it's due to missing features so the argument type would be `Unknown` which means that the argument type can materialize into any type, thus making most of the overload matching ambiguous. You can see this in the above example where the type of `default` is `Unknown`.
+
+---
+
+_Merged by @dhruvmanila on 2025-06-17 10:05_
+
+---
+
+_Closed by @dhruvmanila on 2025-06-17 10:05_
+
+---
+
+_Branch deleted on 2025-06-17 10:05_
+
+---
