@@ -1,0 +1,622 @@
+```yaml
+number: 10886
+title: "[pyflakes] Identify f-string without a placeholder in concatenated strings (F541)"
+type: pull_request
+state: closed
+author: samueljsb
+labels:
+  - rule
+assignees: []
+base: main
+head: demonstrate-issue-10885
+created_at: 2024-04-11T16:28:02Z
+updated_at: 2024-04-15T14:16:36Z
+url: https://github.com/astral-sh/ruff/pull/10886
+synced_at: 2026-01-10T22:37:01Z
+```
+
+# [pyflakes] Identify f-string without a placeholder in concatenated strings (F541)
+
+---
+
+_Pull request opened by @samueljsb on 2024-04-11 16:28_
+
+Prior to this change, an f-string without a placeholder that was
+implicitly concatenated with another f-string that _did_ have a
+placeholder would not be identified by F541. This happened because the
+escape hatch at the start of the check would exit early if *any* of the
+strings being concatenated were valid, allowing a good string to hide a
+bad one.
+
+This change moves the check inside the loop so it is evaluated against
+each (and therefore every) sub-string.
+
+Fixes #10885
+
+---
+
+_Comment by @dhruvmanila on 2024-04-12 05:39_
+
+Thanks! Are you interested in updating the rule to consider implicitly concatenated f-strings? I think there's a check at the start of rule function which discards any f-strings (implicitly concatenated or not) containing expression.
+
+---
+
+_Comment by @samueljsb on 2024-04-12 23:44_
+
+@dhruvmanila Thanks for the signpost! I think I've made the change that fixes the problem: the test seems to be passing for me locally now.
+
+---
+
+_Renamed from "[pyflakes] Demonstrate missed violation (F541)" to "[pyflakes] Identify f-string without a placeholder in concatenated strings (F541)" by @samueljsb on 2024-04-12 23:44_
+
+---
+
+_Comment by @github-actions[bot] on 2024-04-12 23:59_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+1169 -0 violations, +0 -0 fixes in 20 projects; 24 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/2919c6177aee6bb33ce61260e7213fe0ec6769e9/disnake/message.py#L2230'>disnake/message.py:2230:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/DisnakeDev/disnake/blob/2919c6177aee6bb33ce61260e7213fe0ec6769e9/test_bot/__main__.py#L48'>test_bot/__main__.py:48:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/DisnakeDev/disnake/blob/2919c6177aee6bb33ce61260e7213fe0ec6769e9/test_bot/__main__.py#L49'>test_bot/__main__.py:49:13:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+257 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/.github/scripts/download_pretrained.py#L62'>.github/scripts/download_pretrained.py:62:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L81'>examples/reminderbot/actions/actions.py:81:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L82'>examples/reminderbot/actions/actions.py:82:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L83'>examples/reminderbot/actions/actions.py:83:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L84'>examples/reminderbot/actions/actions.py:84:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/api.py#L48'>rasa/api.py:48:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/api.py#L49'>rasa/api.py:49:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/export.py#L64'>rasa/cli/export.py:64:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/export.py#L65'>rasa/cli/export.py:65:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/export.py#L93'>rasa/cli/export.py:93:13:</a> F541 [*] f-string without any placeholders
+... 247 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+96 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/fit_functions.py#L305'>src/plasmapy/analysis/fit_functions.py:305:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/floating_potential.py#L282'>src/plasmapy/analysis/swept_langmuir/floating_potential.py:282:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L119'>src/plasmapy/analysis/swept_langmuir/helpers.py:119:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L124'>src/plasmapy/analysis/swept_langmuir/helpers.py:124:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L88'>src/plasmapy/analysis/swept_langmuir/helpers.py:88:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L93'>src/plasmapy/analysis/swept_langmuir/helpers.py:93:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/ion_saturation_current.py#L221'>src/plasmapy/analysis/swept_langmuir/ion_saturation_current.py:221:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/diagnostics/langmuir.py#L131'>src/plasmapy/diagnostics/langmuir.py:131:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/diagnostics/langmuir.py#L162'>src/plasmapy/diagnostics/langmuir.py:162:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/diagnostics/thomson.py#L821'>src/plasmapy/diagnostics/thomson.py:821:13:</a> F541 [*] f-string without any placeholders
+... 86 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+145 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/cli/cli_config.py#L470'>airflow/cli/cli_config.py:470:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1157'>airflow/configuration.py:1157:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1172'>airflow/configuration.py:1172:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1187'>airflow/configuration.py:1187:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1270'>airflow/configuration.py:1270:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1370'>airflow/configuration.py:1370:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L268'>airflow/configuration.py:268:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/dag_processing/processor.py#L467'>airflow/dag_processing/processor.py:467:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/executors/executor_loader.py#L232'>airflow/executors/executor_loader.py:232:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/jobs/backfill_job_runner.py#L898'>airflow/jobs/backfill_job_runner.py:898:21:</a> F541 [*] f-string without any placeholders
+... 135 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+18 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/options.py#L762'>samcli/commands/_utils/options.py:762:18:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/options.py#L763'>samcli/commands/_utils/options.py:763:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/options.py#L764'>samcli/commands/_utils/options.py:764:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/init/interactive_init_flow.py#L440'>samcli/commands/init/interactive_init_flow.py:440:9:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/enrich.py#L586'>samcli/hook_packages/terraform/hooks/prepare/enrich.py:586:9:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/property_builder.py#L218'>samcli/hook_packages/terraform/hooks/prepare/property_builder.py:218:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/property_builder.py#L223'>samcli/hook_packages/terraform/hooks/prepare/property_builder.py:223:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/property_builder.py#L224'>samcli/hook_packages/terraform/hooks/prepare/property_builder.py:224:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/init/template_modifiers/application_insights_template_modifier.py#L76'>samcli/lib/init/template_modifiers/application_insights_template_modifier.py:76:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/remote_invoke/kinesis_invoke_executors.py#L129'>samcli/lib/remote_invoke/kinesis_invoke_executors.py:129:17:</a> F541 [*] f-string without any placeholders
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+356 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1399'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1399:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1557'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1557:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1697'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1697:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1837'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1837:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1977'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1977:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py#L155'>Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py:155:23:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py#L297'>Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py:297:33:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py#L298'>Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py:298:33:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AcalvioShadowplex/Integrations/acalvioapp/acalvioapp.py#L115'>Packs/AcalvioShadowplex/Integrations/acalvioapp/acalvioapp.py:115:26:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py#L154'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py:154:22:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py#L1889'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py:1889:28:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py#L1904'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py:1904:24:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py#L115'>Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py:115:29:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py#L124'>Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py:124:25:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py#L129'>Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py:129:25:</a> F541 [*] f-string without any placeholders
+... 341 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/docker/docker-py/blob/b6464dbed92b14b2c61d5ee49805fce041a3e083/docker/api/container.py#L890'>docker/api/container.py:890:21:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/molecule/testinfra/app/test_smoke.py#L91'>molecule/testinfra/app/test_smoke.py:91:9:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+6 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/datafusion/__init__.py#L380'>ibis/backends/datafusion/__init__.py:380:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/duckdb/__init__.py#L581'>ibis/backends/duckdb/__init__.py:581:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/polars/__init__.py#L136'>ibis/backends/polars/__init__.py:136:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/pyspark/__init__.py#L703'>ibis/backends/pyspark/__init__.py:703:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/sql/datatypes.py#L790'>ibis/backends/sql/datatypes.py:790:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/expr/types/relations.py#L3731'>ibis/expr/types/relations.py:3731:17:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ing-bank/probatus">ing-bank/probatus</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ing-bank/probatus/blob/ab672d451d96f3df8e6db664173d515f0a01c83f/probatus/feature_elimination/feature_elimination.py#L1159'>probatus/feature_elimination/feature_elimination.py:1159:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ing-bank/probatus/blob/ab672d451d96f3df8e6db664173d515f0a01c83f/probatus/feature_elimination/feature_elimination.py#L866'>probatus/feature_elimination/feature_elimination.py:866:21:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/e9e69d9d172bc6474bdd77147f7ecdaa1c87263a/lnbits/core/services.py#L145'>lnbits/core/services.py:145:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/lnbits/lnbits/blob/e9e69d9d172bc6474bdd77147f7ecdaa1c87263a/lnbits/core/services.py#L472'>lnbits/core/services.py:472:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/lnbits/lnbits/blob/e9e69d9d172bc6474bdd77147f7ecdaa1c87263a/lnbits/utils/exchange_rates.py#L268'>lnbits/utils/exchange_rates.py:268:17:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/client/entity_helper.py#L217'>pymilvus/client/entity_helper.py:217:25:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/orm/iterator.py#L451'>pymilvus/orm/iterator.py:451:25:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+61 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/examples/promptflow/basic/_utils.py#L50'>examples/promptflow/basic/_utils.py:50:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/artifact_dataset_sources.py#L79'>mlflow/data/artifact_dataset_sources.py:79:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_registry.py#L58'>mlflow/data/dataset_registry.py:58:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L115'>mlflow/data/dataset_source_registry.py:115:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L35'>mlflow/data/dataset_source_registry.py:35:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L79'>mlflow/data/dataset_source_registry.py:79:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L97'>mlflow/data/dataset_source_registry.py:97:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/huggingface_dataset.py#L149'>mlflow/data/huggingface_dataset.py:149:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/huggingface_dataset.py#L150'>mlflow/data/huggingface_dataset.py:150:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/huggingface_dataset.py#L223'>mlflow/data/huggingface_dataset.py:223:13:</a> F541 [*] f-string without any placeholders
+... 51 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F541 | 1169 | 1169 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+1169 -0 violations, +0 -0 fixes in 17 projects; 27 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/2919c6177aee6bb33ce61260e7213fe0ec6769e9/disnake/message.py#L2230'>disnake/message.py:2230:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/DisnakeDev/disnake/blob/2919c6177aee6bb33ce61260e7213fe0ec6769e9/test_bot/__main__.py#L48'>test_bot/__main__.py:48:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/DisnakeDev/disnake/blob/2919c6177aee6bb33ce61260e7213fe0ec6769e9/test_bot/__main__.py#L49'>test_bot/__main__.py:49:13:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+257 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/.github/scripts/download_pretrained.py#L62'>.github/scripts/download_pretrained.py:62:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L81'>examples/reminderbot/actions/actions.py:81:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L82'>examples/reminderbot/actions/actions.py:82:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L83'>examples/reminderbot/actions/actions.py:83:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/examples/reminderbot/actions/actions.py#L84'>examples/reminderbot/actions/actions.py:84:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/api.py#L48'>rasa/api.py:48:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/api.py#L49'>rasa/api.py:49:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/export.py#L64'>rasa/cli/export.py:64:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/export.py#L65'>rasa/cli/export.py:65:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/export.py#L93'>rasa/cli/export.py:93:13:</a> F541 [*] f-string without any placeholders
+... 247 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+96 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/fit_functions.py#L305'>src/plasmapy/analysis/fit_functions.py:305:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/floating_potential.py#L282'>src/plasmapy/analysis/swept_langmuir/floating_potential.py:282:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L119'>src/plasmapy/analysis/swept_langmuir/helpers.py:119:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L124'>src/plasmapy/analysis/swept_langmuir/helpers.py:124:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L88'>src/plasmapy/analysis/swept_langmuir/helpers.py:88:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/helpers.py#L93'>src/plasmapy/analysis/swept_langmuir/helpers.py:93:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/analysis/swept_langmuir/ion_saturation_current.py#L221'>src/plasmapy/analysis/swept_langmuir/ion_saturation_current.py:221:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/diagnostics/langmuir.py#L131'>src/plasmapy/diagnostics/langmuir.py:131:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/diagnostics/langmuir.py#L162'>src/plasmapy/diagnostics/langmuir.py:162:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/2a6cf7fc923724316fe45e6433d181637d63416e/src/plasmapy/diagnostics/thomson.py#L821'>src/plasmapy/diagnostics/thomson.py:821:13:</a> F541 [*] f-string without any placeholders
+... 86 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+145 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/cli/cli_config.py#L470'>airflow/cli/cli_config.py:470:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1157'>airflow/configuration.py:1157:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1172'>airflow/configuration.py:1172:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1187'>airflow/configuration.py:1187:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1270'>airflow/configuration.py:1270:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L1370'>airflow/configuration.py:1370:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/configuration.py#L268'>airflow/configuration.py:268:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/dag_processing/processor.py#L467'>airflow/dag_processing/processor.py:467:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/executors/executor_loader.py#L232'>airflow/executors/executor_loader.py:232:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/apache/airflow/blob/d03ba594b3158c127c1c1b3f1d0c31fb93104367/airflow/jobs/backfill_job_runner.py#L898'>airflow/jobs/backfill_job_runner.py:898:21:</a> F541 [*] f-string without any placeholders
+... 135 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+18 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/options.py#L762'>samcli/commands/_utils/options.py:762:18:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/options.py#L763'>samcli/commands/_utils/options.py:763:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/options.py#L764'>samcli/commands/_utils/options.py:764:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/init/interactive_init_flow.py#L440'>samcli/commands/init/interactive_init_flow.py:440:9:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/enrich.py#L586'>samcli/hook_packages/terraform/hooks/prepare/enrich.py:586:9:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/property_builder.py#L218'>samcli/hook_packages/terraform/hooks/prepare/property_builder.py:218:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/property_builder.py#L223'>samcli/hook_packages/terraform/hooks/prepare/property_builder.py:223:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/hook_packages/terraform/hooks/prepare/property_builder.py#L224'>samcli/hook_packages/terraform/hooks/prepare/property_builder.py:224:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/init/template_modifiers/application_insights_template_modifier.py#L76'>samcli/lib/init/template_modifiers/application_insights_template_modifier.py:76:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/remote_invoke/kinesis_invoke_executors.py#L129'>samcli/lib/remote_invoke/kinesis_invoke_executors.py:129:17:</a> F541 [*] f-string without any placeholders
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+356 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1399'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1399:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1557'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1557:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1697'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1697:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1837'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1837:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py#L1977'>Packs/ARIAPacketIntelligence/Integrations/ARIAPacketIntelligence/ARIAPacketIntelligence.py:1977:38:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py#L155'>Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py:155:23:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py#L297'>Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py:297:33:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py#L298'>Packs/AWS-SecurityHub/Integrations/AWSSecurityHubEventCollector/AWSSecurityHubEventCollector.py:298:33:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/AcalvioShadowplex/Integrations/acalvioapp/acalvioapp.py#L115'>Packs/AcalvioShadowplex/Integrations/acalvioapp/acalvioapp.py:115:26:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py#L154'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py:154:22:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py#L1889'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py:1889:28:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py#L1904'>Packs/Active_Directory_Query/Integrations/Active_Directory_Query/Active_Directory_Query.py:1904:24:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py#L115'>Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py:115:29:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py#L124'>Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py:124:25:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/demisto/content/blob/fcbd5022cb6c86ce3cb4d2b2b14a0a01f792f1b6/Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py#L129'>Packs/Active_Directory_Query/Scripts/IAMInitADUser/IAMInitADUser.py:129:25:</a> F541 [*] f-string without any placeholders
+... 341 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/docker/docker-py/blob/b6464dbed92b14b2c61d5ee49805fce041a3e083/docker/api/container.py#L890'>docker/api/container.py:890:21:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/molecule/testinfra/app/test_smoke.py#L91'>molecule/testinfra/app/test_smoke.py:91:9:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+6 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/datafusion/__init__.py#L380'>ibis/backends/datafusion/__init__.py:380:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/duckdb/__init__.py#L581'>ibis/backends/duckdb/__init__.py:581:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/polars/__init__.py#L136'>ibis/backends/polars/__init__.py:136:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/pyspark/__init__.py#L703'>ibis/backends/pyspark/__init__.py:703:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/backends/sql/datatypes.py#L790'>ibis/backends/sql/datatypes.py:790:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ibis-project/ibis/blob/f8370b1ab5bce469c6ca5a146bc36d8275486245/ibis/expr/types/relations.py#L3731'>ibis/expr/types/relations.py:3731:17:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ing-bank/probatus">ing-bank/probatus</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ing-bank/probatus/blob/ab672d451d96f3df8e6db664173d515f0a01c83f/probatus/feature_elimination/feature_elimination.py#L1159'>probatus/feature_elimination/feature_elimination.py:1159:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/ing-bank/probatus/blob/ab672d451d96f3df8e6db664173d515f0a01c83f/probatus/feature_elimination/feature_elimination.py#L866'>probatus/feature_elimination/feature_elimination.py:866:21:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/e9e69d9d172bc6474bdd77147f7ecdaa1c87263a/lnbits/core/services.py#L145'>lnbits/core/services.py:145:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/lnbits/lnbits/blob/e9e69d9d172bc6474bdd77147f7ecdaa1c87263a/lnbits/core/services.py#L472'>lnbits/core/services.py:472:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/lnbits/lnbits/blob/e9e69d9d172bc6474bdd77147f7ecdaa1c87263a/lnbits/utils/exchange_rates.py#L268'>lnbits/utils/exchange_rates.py:268:17:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/client/entity_helper.py#L217'>pymilvus/client/entity_helper.py:217:25:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/orm/iterator.py#L451'>pymilvus/orm/iterator.py:451:25:</a> F541 [*] f-string without any placeholders
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+61 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/examples/promptflow/basic/_utils.py#L50'>examples/promptflow/basic/_utils.py:50:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/artifact_dataset_sources.py#L79'>mlflow/data/artifact_dataset_sources.py:79:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_registry.py#L58'>mlflow/data/dataset_registry.py:58:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L115'>mlflow/data/dataset_source_registry.py:115:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L35'>mlflow/data/dataset_source_registry.py:35:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L79'>mlflow/data/dataset_source_registry.py:79:17:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/dataset_source_registry.py#L97'>mlflow/data/dataset_source_registry.py:97:13:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/huggingface_dataset.py#L149'>mlflow/data/huggingface_dataset.py:149:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/huggingface_dataset.py#L150'>mlflow/data/huggingface_dataset.py:150:21:</a> F541 [*] f-string without any placeholders
++ <a href='https://github.com/mlflow/mlflow/blob/988a74ebb17e79d392cbbc6b2a45ee5f842e6ef6/mlflow/data/huggingface_dataset.py#L223'>mlflow/data/huggingface_dataset.py:223:13:</a> F541 [*] f-string without any placeholders
+... 51 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F541 | 1169 | 1169 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-04-13 04:41_
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-04-13 04:41_
+
+---
+
+_Review requested from @dhruvmanila by @dhruvmanila on 2024-04-13 04:41_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ruff_linter/src/rules/pyflakes/rules/f_string_missing_placeholders.rs`:56 on 2024-04-15 09:21_
+
+I think we should move on to the next f-string instead of skipping the remaining ones.
+
+```suggestion
+            continue;
+```
+
+Otherwise any f-string without a placeholder which follows the one with a placeholder will not be checked:
+
+```py
+f"no placeholder" f"has {placeholder}" f"no placeholder"
+```
+
+Can you also add this as a test case?
+
+---
+
+_@dhruvmanila requested changes on 2024-04-15 09:22_
+
+Thank you! 
+
+This seems to be affecting a _lot_ of repositories. I think we should guard this with `--preview`. You'll need to use the `checker.settings.preview.is_enabled()` check.
+
+
+---
+
+_Comment by @AlexWaygood on 2024-04-15 10:23_
+
+As a matter of style, I personally prefer to have the quotation marks aligned if I have a multiline string, so I wouldn't welcome this change. I prefer the first out of the two of these, because the text starts at the same column on both lines. This makes it more readable in my opinion, even though the `f` is strictly redundant on the second string:
+
+```py
+x = (
+    f"A long sentence about {subject}"
+    f"that continues over multiple lines"
+)
+
+x = (
+    f"A long sentence about {subject}"
+    "that continues over multiple lines"
+)
+```
+
+
+
+---
+
+_Comment by @dhruvmanila on 2024-04-15 12:31_
+
+> As a matter of style, I personally prefer to have the quotation marks aligned if I have a multiline string, so I wouldn't welcome this change.
+
+I see, thanks for sharing your opinion. I actually prefer to _not_ have any redundant `f` in this case but no strong opinions here.
+
+---
+
+_Comment by @AlexWaygood on 2024-04-15 12:35_
+
+While my preference would be to keep the redundant `f` prefix there, I also don't have a _strong_ opinion either way. But I feel like it's not something I would appreciate a linter nagging me about (especially not in a pyflakes rule, as I'd generally have very high confidence in a pyflakes rule), since to me it definitely doesn't feel _obvious_ that removing the `f` is preferable
+
+---
+
+_Comment by @MichaReiser on 2024-04-15 12:55_
+
+I share @AlexWaygood opinion by I think this should be a different rule because it changes the rules intent: 
+
+> f-strings are a convenient way to format strings, but they are not necessary if there are no placeholder expressions to format. In this case, a regular string should be used instead, as an f-string without placeholders can be confusing for readers, who may expect such a placeholder to be present.
+
+The main purpose of the rule is to detect f-strings that should not be f-strings (although that's already stylistic). Only removing the f-string suffix from some of the string-literals doesn't change that the entire string is an f-string at runtime (the literals are all parsed into a single f-string by the parser). That means, the rule would start flagging literals that would remain f-strings at runtime and making them non-f-string doesn't change the semantic. 
+
+To me, this would be a formatting related lint. 
+
+---
+
+_Comment by @samueljsb on 2024-04-15 14:02_
+
+For what it's worth, the `flake8` version of this rule wouldn't detect this problem either. If this rule is intended to be compatible with the flake8 version then perhaps this *is* a different rule?
+
+---
+
+_Comment by @dhruvmanila on 2024-04-15 14:16_
+
+@samueljsb Yeah, I think it would make sense to possibly have this as a separate rule. We can discuss about this in the linked issue. I'll close this PR, sorry for the churn.
+
+---
+
+_Closed by @dhruvmanila on 2024-04-15 14:16_
+
+---

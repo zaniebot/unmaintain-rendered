@@ -1,0 +1,201 @@
+```yaml
+number: 11017
+title: "Allow `NoReturn`-like functions for `__str__`, `__len__`, etc."
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/raise
+created_at: 2024-04-18T21:21:40Z
+updated_at: 2024-04-18T23:00:24Z
+url: https://github.com/astral-sh/ruff/pull/11017
+synced_at: 2026-01-10T22:37:01Z
+```
+
+# Allow `NoReturn`-like functions for `__str__`, `__len__`, etc.
+
+---
+
+_Pull request opened by @charliermarsh on 2024-04-18 21:21_
+
+## Summary
+
+If the method always raises, we shouldn't raise a diagnostic for "returning a value of the wrong type".
+
+Closes https://github.com/astral-sh/ruff/issues/11016.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-18 21:21_
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2024-04-18 21:21_
+
+---
+
+_Comment by @github-actions[bot] on 2024-04-18 21:33_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+1 -1 violations, +0 -0 fixes in 2 projects; 42 projects unchanged)
+
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/342a9bd5cd923bd423e2add867b60f2ccf7be62d/zerver/lib/validator.py#L684'>zerver/lib/validator.py:684:9:</a> PLE0307 `__str__` does not return `str`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/62ca3fcbfc86fde45a771195df283364000fe3ba/indico/util/passwords.py#L69'>indico/util/passwords.py:69:25:</a> RUF100 [*] Unused `noqa` directive (unused: `PLE0307`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |
+| PLE0307 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+1 -8 violations, +0 -0 fixes in 6 projects; 38 projects unchanged)
+
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/a4ea72dfa86cff184f9ae7d27b747a0d21217c58/src/plasmapy/particles/particle_class.py#L174'>src/plasmapy/particles/particle_class.py:174:9:</a> PLE0304 `__bool__` does not return `bool`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/4b9b400cff77eed44149b1b28aa70a3532949f61/tests/models/test_mappedoperator.py#L76'>tests/models/test_mappedoperator.py:76:13:</a> PLE0304 `__bool__` does not return `bool`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/ibis-project/ibis/blob/93834f1e32203509d1bb72c0a534297ab8056e33/ibis/common/deferred.py#L101'>ibis/common/deferred.py:101:9:</a> PLE0304 `__bool__` does not return `bool`
+- <a href='https://github.com/ibis-project/ibis/blob/93834f1e32203509d1bb72c0a534297ab8056e33/ibis/expr/types/core.py#L166'>ibis/expr/types/core.py:166:9:</a> PLE0304 `__bool__` does not return `bool`
+- <a href='https://github.com/ibis-project/ibis/blob/93834f1e32203509d1bb72c0a534297ab8056e33/ibis/expr/types/relations.py#L831'>ibis/expr/types/relations.py:831:9:</a> PLE0303 `__len__` does not return a non-negative integer
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/f86f9f2239fa80dfa636fb71cc919050e607473a/pandas/core/arrays/base.py#L483'>pandas/core/arrays/base.py:483:9:</a> PLE0303 `__len__` does not return a non-negative integer
+- <a href='https://github.com/pandas-dev/pandas/blob/f86f9f2239fa80dfa636fb71cc919050e607473a/pandas/core/base.py#L349'>pandas/core/base.py:349:9:</a> PLE0303 `__len__` does not return a non-negative integer
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/342a9bd5cd923bd423e2add867b60f2ccf7be62d/zerver/lib/validator.py#L684'>zerver/lib/validator.py:684:9:</a> PLE0307 `__str__` does not return `str`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/62ca3fcbfc86fde45a771195df283364000fe3ba/indico/util/passwords.py#L69'>indico/util/passwords.py:69:25:</a> RUF100 [*] Unused `noqa` directive (unused: `PLE0307`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (4 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLE0304 | 4 | 0 | 4 | 0 | 0 |
+| PLE0303 | 3 | 0 | 3 | 0 | 0 |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |
+| PLE0307 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/resources/test/fixtures/pylint/invalid_return_type_str.py`:58 on 2024-04-18 22:16_
+
+```suggestion
+    def __str__(self):  # PLE0307 (returns None if x <= 0)
+```
+
+---
+
+_@AlexWaygood approved on 2024-04-18 22:17_
+
+Yeah, this makes sense!
+
+---
+
+_Merged by @charliermarsh on 2024-04-18 22:55_
+
+---
+
+_Closed by @charliermarsh on 2024-04-18 22:55_
+
+---
+
+_Branch deleted on 2024-04-18 22:55_
+
+---

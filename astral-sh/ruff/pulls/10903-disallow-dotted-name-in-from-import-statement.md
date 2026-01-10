@@ -1,0 +1,309 @@
+```yaml
+number: 10903
+title: "Disallow dotted name in `from ... import` statement"
+type: pull_request
+state: merged
+author: dhruvmanila
+labels:
+  - bug
+  - parser
+  - fuzzer
+assignees: []
+merged: true
+base: dhruv/parser
+head: dhruv/from-import-dot-name
+created_at: 2024-04-12T08:28:17Z
+updated_at: 2024-04-12T08:51:20Z
+url: https://github.com/astral-sh/ruff/pull/10903
+synced_at: 2026-01-10T22:37:01Z
+```
+
+# Disallow dotted name in `from ... import` statement
+
+---
+
+_Pull request opened by @dhruvmanila on 2024-04-12 08:28_
+
+## Summary
+
+Dotted names aren't allowed in `from ... import` statement. They're only allowed in `import` statement.
+
+### Alternative
+
+Another solution would be to parse the dotted name, check if there's a `.` in the parsed string and raise an error.
+
+I choose not to do this because it didn't make sense to do `contains` for every import name.
+
+## Test Plan
+
+Add invalid syntax test cases to verify the logic.
+
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-04-12 08:28_
+
+---
+
+_Label `parser` added by @dhruvmanila on 2024-04-12 08:28_
+
+---
+
+_Label `fuzzer` added by @dhruvmanila on 2024-04-12 08:28_
+
+---
+
+_Review requested from @MichaReiser by @dhruvmanila on 2024-04-12 08:28_
+
+---
+
+_@MichaReiser approved on 2024-04-12 08:32_
+
+---
+
+_Merged by @dhruvmanila on 2024-04-12 08:35_
+
+---
+
+_Closed by @dhruvmanila on 2024-04-12 08:35_
+
+---
+
+_Branch deleted on 2024-04-12 08:35_
+
+---
+
+_Comment by @github-actions[bot] on 2024-04-12 08:51_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+58 -569 violations, +0 -0 fixes in 14 projects; 30 projects unchanged)
+
+<details><summary><a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aiven/aiven-client/blob/d9bbcd295832eab0a2da6bf81e0ae00b9777308a/aiven/client/client.py#L159'>aiven/client/client.py:159:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+3 -35 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/analysis/tests/test_fit_functions.py#L241'>plasmapy/analysis/tests/test_fit_functions.py:241:13:</a> PLR6104 Use `*=` to perform an augmented assignment directly
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/analysis/tests/test_fit_functions.py#L263'>plasmapy/analysis/tests/test_fit_functions.py:263:13:</a> PLR6104 Use `*=` to perform an augmented assignment directly
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/analysis/time_series/running_moments.py#L61'>plasmapy/analysis/time_series/running_moments.py:61:5:</a> PLR6104 Use `-=` to perform an augmented assignment directly
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L413'>plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:413:13:</a> PLR6104 Use `/=` to perform an augmented assignment directly
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L419'>plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:419:13:</a> PLR6104 Use `/=` to perform an augmented assignment directly
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L830'>plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:830:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+... 27 additional changes omitted for rule PLR6104
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/formulary/collisions/helio/collisional_analysis.py#L238'>plasmapy/formulary/collisions/helio/collisional_analysis.py:238:9:</a> PLR0917 Too many positional arguments (12/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/formulary/collisions/helio/collisional_analysis.py#L238'>plasmapy/formulary/collisions/helio/collisional_analysis.py:238:9:</a> PLR0917 Too many positional arguments (12/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/particles/ionization_state.py#L705'>plasmapy/particles/ionization_state.py:705:12:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/40e94e4c1c88154a1b499e081bde902747256467/plasmapy/particles/ionization_state.py#L705'>plasmapy/particles/ionization_state.py:705:12:</a> PLW0177 Comparing against a NaN value; use `np.isnan` instead
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+3 -52 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/cli/commands/kubernetes_command.py#L84'>airflow/cli/commands/kubernetes_command.py:84:5:</a> PLR1730 [*] Replace `if` statement with `min_pending_minutes = max(min_pending_minutes, 5)`
++ <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/cli/commands/kubernetes_command.py#L84'>airflow/cli/commands/kubernetes_command.py:84:5:</a> PLR1730 [*] Replace `if` statement with `min_pending_minutes = min(min_pending_minutes, 5)`
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/io/path.py#L252'>airflow/io/path.py:252:13:</a> PLR6104 Use `/=` to perform an augmented assignment directly
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/io/path.py#L254'>airflow/io/path.py:254:13:</a> PLR6104 Use `/=` to perform an augmented assignment directly
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/kubernetes/pre_7_4_0_compatibility/kube_client.py#L89'>airflow/kubernetes/pre_7_4_0_compatibility/kube_client.py:89:5:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/kubernetes/pre_7_4_0_compatibility/kube_client.py#L90'>airflow/kubernetes/pre_7_4_0_compatibility/kube_client.py:90:5:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/models/taskinstance.py#L1635'>airflow/models/taskinstance.py:1635:21:</a> PLR6104 Use `/=` to perform an augmented assignment directly
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/models/taskinstance.py#L2171'>airflow/models/taskinstance.py:2171:13:</a> PLR1730 [*] Replace `if` statement with `min_backoff = max(min_backoff, 1)`
++ <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/models/taskinstance.py#L2171'>airflow/models/taskinstance.py:2171:13:</a> PLR1730 [*] Replace `if` statement with `min_backoff = min(min_backoff, 1)`
+- <a href='https://github.com/apache/airflow/blob/4a3caa2e35e8a61e49a8e00ab7d5148cd460797f/airflow/models/taskinstance.py#L3758'>airflow/models/taskinstance.py:3758:17:</a> B909 Mutation to loop iterable `new_dict` during iteration
+... 45 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+0 -128 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/_utils/table_print.py#L46'>samcli/commands/_utils/table_print.py:46:9:</a> PLR6104 Use `-=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/commands/init/interactive_event_bridge_flow.py#L174'>samcli/commands/init/interactive_event_bridge_flow.py:174:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/build/bundler.py#L178'>samcli/lib/build/bundler.py:178:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/deploy/deployer.py#L468'>samcli/lib/deploy/deployer.py:468:17:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/deploy/deployer.py#L814'>samcli/lib/deploy/deployer.py:814:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/schemas/cli_paginator.py#L27'>samcli/lib/schemas/cli_paginator.py:27:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/schemas/cli_paginator.py#L34'>samcli/lib/schemas/cli_paginator.py:34:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/schemas/cli_paginator.py#L38'>samcli/lib/schemas/cli_paginator.py:38:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/schemas/cli_paginator.py#L42'>samcli/lib/schemas/cli_paginator.py:42:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/aws/aws-sam-cli/blob/f7bf36fa3de91ee4369d4ef302c8b1c5b361bfbb/samcli/lib/schemas/cli_paginator.py#L59'>samcli/lib/schemas/cli_paginator.py:59:9:</a> PLR6104 Use `-=` to perform an augmented assignment directly
+... 118 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/server.py#L294'>src/bokeh/embed/server.py:294:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/resources.py#L379'>src/bokeh/resources.py:379:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/server/tornado.py#L307'>src/bokeh/server/tornado.py:307:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/server/tornado.py#L422'>src/bokeh/server/tornado.py:422:17:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/server/util.py#L96'>src/bokeh/server/util.py:96:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/token.py#L308'>src/bokeh/util/token.py:308:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_util.py#L462'>securedrop/pretty_bad_protocol/_util.py:462:5:</a> PLR6104 Use `%=` to perform an augmented assignment directly
+- <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/tests/test_journalist.py#L1864'>securedrop/tests/test_journalist.py:1864:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+0 -10 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/backends/bigquery/tests/unit/udf/test_usage.py#L25'>ibis/backends/bigquery/tests/unit/udf/test_usage.py:25:5:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/backends/druid/__init__.py#L61'>ibis/backends/druid/__init__.py:61:9:</a> PLR6104 Use `|=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/backends/exasol/__init__.py#L100'>ibis/backends/exasol/__init__.py:100:9:</a> PLR6104 Use `|=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/backends/pandas/executor.py#L630'>ibis/backends/pandas/executor.py:630:17:</a> PLR6104 Use `&=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/common/annotations.py#L287'>ibis/common/annotations.py:287:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/common/annotations.py#L289'>ibis/common/annotations.py:289:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/common/tests/test_numeric.py#L63'>ibis/common/tests/test_numeric.py:63:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/common/tests/test_numeric.py#L68'>ibis/common/tests/test_numeric.py:68:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/common/tests/test_numeric.py#L75'>ibis/common/tests/test_numeric.py:75:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/ibis-project/ibis/blob/cb906a6e9cf0278d29fda414e7143b0019059bde/ibis/expr/tests/test_api.py#L156'>ibis/expr/tests/test_api.py:156:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+3 -33 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/examples/example_bulkinsert_json.py#L142'>examples/example_bulkinsert_json.py:142:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/examples/example_bulkinsert_json.py#L224'>examples/example_bulkinsert_json.py:224:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/examples/example_bulkinsert_json.py#L247'>examples/example_bulkinsert_json.py:247:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/examples/example_bulkinsert_json.py#L249'>examples/example_bulkinsert_json.py:249:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/examples/example_bulkinsert_json.py#L251'>examples/example_bulkinsert_json.py:251:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/examples/example_bulkinsert_json.py#L253'>examples/example_bulkinsert_json.py:253:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+... 25 additional changes omitted for rule PLR6104
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/bulk_writer/buffer.py#L240'>pymilvus/bulk_writer/buffer.py:240:13:</a> PLR1730 [*] Replace `if` statement with `max` call
++ <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/bulk_writer/buffer.py#L240'>pymilvus/bulk_writer/buffer.py:240:13:</a> PLR1730 [*] Replace `if` statement with `min` call
++ <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/bulk_writer/buffer.py#L242'>pymilvus/bulk_writer/buffer.py:242:13:</a> PLR1730 [*] Replace `if` statement with `max` call
+- <a href='https://github.com/milvus-io/pymilvus/blob/989d15baccda0e98b6305303348406b84b20b520/pymilvus/bulk_writer/buffer.py#L242'>pymilvus/bulk_writer/buffer.py:242:13:</a> PLR1730 [*] Replace `if` statement with `min` call
+... 26 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+48 -179 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/asv_bench/benchmarks/algos/isin.py#L136'>asv_bench/benchmarks/algos/isin.py:136:13:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/asv_bench/benchmarks/arithmetic.py#L141'>asv_bench/benchmarks/arithmetic.py:141:13:</a> PLR6104 Use `//=` to perform an augmented assignment directly
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/_testing/contexts.py#L113'>pandas/_testing/contexts.py:113:5:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/compat/numpy/function.py#L107'>pandas/compat/numpy/function.py:107:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/compat/numpy/function.py#L168'>pandas/compat/numpy/function.py:168:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/compat/numpy/function.py#L200'>pandas/compat/numpy/function.py:200:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/compat/numpy/function.py#L229'>pandas/compat/numpy/function.py:229:9:</a> PLR6104 Use `+=` to perform an augmented assignment directly
+... 125 additional changes omitted for rule PLR6104
++ <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/arrays/arrow/array.py#L1403'>pandas/core/arrays/arrow/array.py:1403:29:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/arrays/arrow/array.py#L1403'>pandas/core/arrays/arrow/array.py:1403:29:</a> PLW0177 Comparing against a NaN value; use `np.isnan` instead
++ <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/arrays/categorical.py#L1563'>pandas/core/arrays/categorical.py:1563:82:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/arrays/categorical.py#L1563'>pandas/core/arrays/categorical.py:1563:82:</a> PLW0177 Comparing against a NaN value; use `np.isnan` instead
++ <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/arrays/string_arrow.py#L710'>pandas/core/arrays/string_arrow.py:710:20:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/arrays/string_arrow.py#L710'>pandas/core/arrays/string_arrow.py:710:20:</a> PLW0177 Comparing against a NaN value; use `np.isnan` instead
++ <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/base.py#L639'>pandas/core/base.py:639:34:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/base.py#L639'>pandas/core/base.py:639:34:</a> PLW0177 Comparing against a NaN value; use `np.isnan` instead
++ <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/internals/managers.py#L1000'>pandas/core/internals/managers.py:1000:48:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+- <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/internals/managers.py#L1000'>pandas/core/internals/managers.py:1000:48:</a> PLW0177 Comparing against a NaN value; use `np.isnan` instead
++ <a href='https://github.com/pandas-dev/pandas/blob/4fe49b160eace2016955878a1c10ebacc5f885f3/pandas/core/strings/accessor.py#L347'>pandas/core/strings/accessor.py:347:63:</a> PLW0117 Comparing against a NaN value; use `np.isnan` instead
+... 209 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/mypy/blob/e2fc1f28935806ca04b18fab277217f583b51594/mypy/build.py#L3200'>mypy/build.py:3200:21:</a> B909 Mutation to loop iterable `new` during iteration
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (6 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR6104 | 506 | 0 | 506 | 0 | 0 |
+| PLW0117 | 50 | 50 | 0 | 0 | 0 |
+| PLW0177 | 50 | 0 | 50 | 0 | 0 |
+| PLR1730 | 14 | 7 | 7 | 0 | 0 |
+| B909 | 5 | 0 | 5 | 0 | 0 |
+| PLR0917 | 2 | 1 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
