@@ -1,0 +1,381 @@
+```yaml
+number: 12546
+title: "[`flake8-builtins`] Implement import, lambda, and module shadowing"
+type: pull_request
+state: merged
+author: alex-700
+labels:
+  - rule
+  - preview
+assignees: []
+merged: true
+base: main
+head: latyshev/A-4-5-6
+created_at: 2024-07-28T00:24:38Z
+updated_at: 2025-06-10T20:46:11Z
+url: https://github.com/astral-sh/ruff/pull/12546
+synced_at: 2026-01-10T18:45:04Z
+```
+
+# [`flake8-builtins`] Implement import, lambda, and module shadowing
+
+---
+
+_Pull request opened by @alex-700 on 2024-07-28 00:24_
+
+…-shadowing
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+Extend `flake8-builtins` to imports, lambda-arguments, and modules to be consistent with original checker [flake8_builtins](https://github.com/gforcada/flake8-builtins/blob/main/flake8_builtins.py). 
+
+closes #12540 
+
+## Details
+
+- Implement builtin-import-shadowing (A004)
+  - Stop tracking imports shadowing in builtin-variable-shadowing (A001) in preview mode.
+- Implement builtin-lambda-argument-shadowing (A005)
+- Implement builtin-module-shadowing (A006)
+  - Add new option `linter.flake8_builtins.builtins_allowed_modules`
+## Test Plan
+
+cargo test
+
+<!-- How was it tested? -->
+
+
+---
+
+_Comment by @alex-700 on 2024-07-28 00:32_
+
+@charliermarsh 
+
+In the [commit](https://github.com/gforcada/flake8-builtins/commit/2ff0b74c38e4fa26d54c6be64a1025676f250f31) there was a change about changing import-checking from VariableShadowing to ImportShadowing. To be consistent here we need to change it here, by removing this block (and another one with `import_from`):
+https://github.com/astral-sh/ruff/blob/44d02009cbd644d4d62f2fbac1df437c47926f0d/crates/ruff_linter/src/checkers/ast/analyze/statement.rs#L602
+
+But this is the breaking change in stable rule A001. What is the right way to do this? 
+
+---
+
+_Comment by @charliermarsh on 2024-07-28 01:15_
+
+I think we should gate those blocks on "preview is disabled". So if you have preview enabled, `ImportShadowing` will catch them, and `VariableShadowing` will _not_. (But on stable, `VariableShadowing` can continue to catch them.)
+
+---
+
+_Comment by @github-actions[bot] on 2024-07-28 11:16_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+179 -1 violations, +0 -0 fixes in 12 projects; 42 projects unchanged)
+
+<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/performance_history_analysis.py#L24'>performance_history_analysis.py:24:18:</a> A004 Import `print` is shadowing a Python builtin
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/src/snowflake/cli/api/console/abc.py#L1'>src/snowflake/cli/api/console/abc.py:1:1:</a> A005 Module `abc` is shadowing a Python builtin module
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/src/snowflake/cli/api/console/enum.py#L1'>src/snowflake/cli/api/console/enum.py:1:1:</a> A005 Module `enum` is shadowing a Python builtin module
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/src/snowflake/cli/api/errno.py#L1'>src/snowflake/cli/api/errno.py:1:1:</a> A005 Module `errno` is shadowing a Python builtin module
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/src/snowflake/cli/api/output/types.py#L1'>src/snowflake/cli/api/output/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/src/snowflake/cli/api/utils/types.py#L1'>src/snowflake/cli/api/utils/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/740cd4559f0fecc012fea8bae5fd613d931c5871/src/snowflake/cli/plugins/cortex/types.py#L1'>src/snowflake/cli/plugins/cortex/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
+... 2 additional changes omitted for rule A005
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+25 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/api_connexion/types.py#L1'>airflow/api_connexion/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/api_internal/internal_api_call.py#L106'>airflow/api_internal/internal_api_call.py:106:37:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/compat/functools.py#L1'>airflow/compat/functools.py:1:1:</a> A005 Module `functools` is shadowing a Python builtin module
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/hooks/subprocess.py#L1'>airflow/hooks/subprocess.py:1:1:</a> A005 Module `subprocess` is shadowing a Python builtin module
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/io/utils/stat.py#L1'>airflow/io/utils/stat.py:1:1:</a> A005 Module `stat` is shadowing a Python builtin module
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/models/operator.py#L1'>airflow/models/operator.py:1:1:</a> A005 Module `operator` is shadowing a Python builtin module
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/operators/datetime.py#L1'>airflow/operators/datetime.py:1:1:</a> A005 Module `datetime` is shadowing a Python builtin module
+... 14 additional changes omitted for rule A005
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L41'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:41:43:</a> A004 Import `TimeoutError` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/clients/python/test_python_client.py#L36'>clients/python/test_python_client.py:36:22:</a> A004 Import `print` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/129911b2bf9ce4fe1fd3d377e9e1443c27f5ceb7/dev/check_files.py#L24'>dev/check_files.py:24:18:</a> A004 Import `print` is shadowing a Python builtin
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/advanced_data_type/types.py#L1'>superset/advanced_data_type/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/dashboards/permalink/types.py#L1'>superset/dashboards/permalink/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/distributed_lock/types.py#L1'>superset/distributed_lock/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/explore/permalink/types.py#L1'>superset/explore/permalink/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/key_value/types.py#L1'>superset/key_value/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py#L228'>superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py:228:27:</a> A006 Lambda argument `sum` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/3c971455e73dc4371d8321b635b4ff137687c46e/superset/reports/notifications/email.py#L1'>superset/reports/notifications/email.py:1:1:</a> A005 Module `email` is shadowing a Python builtin module
+... 7 additional changes omitted for rule A005
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+22 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L1'>src/bokeh/application/handlers/code.py:1:1:</a> A005 Module `code` is shadowing a Python builtin module
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/json.py#L1'>src/bokeh/command/subcommands/json.py:1:1:</a> A005 Module `json` is shadowing a Python builtin module
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/datetime.py#L1'>src/bokeh/core/property/datetime.py:1:1:</a> A005 Module `datetime` is shadowing a Python builtin module
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/enum.py#L1'>src/bokeh/core/property/enum.py:1:1:</a> A005 Module `enum` is shadowing a Python builtin module
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/json.py#L1'>src/bokeh/core/property/json.py:1:1:</a> A005 Module `json` is shadowing a Python builtin module
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/string.py#L1'>src/bokeh/core/property/string.py:1:1:</a> A005 Module `string` is shadowing a Python builtin module
+... 10 additional changes omitted for rule A005
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/validation/check.py#L36'>src/bokeh/core/validation/check.py:36:20:</a> A004 Import `Warning` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/validation/decorators.py#L34'>src/bokeh/core/validation/decorators.py:34:34:</a> A004 Import `Warning` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/validation/warnings.py#L37'>src/bokeh/core/validation/warnings.py:37:20:</a> A004 Import `Warning` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/callbacks.py#L25'>src/bokeh/models/callbacks.py:25:42:</a> A001 Variable `any` is shadowing a Python builtin
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch/functions/secrets.py#L1'>latch/functions/secrets.py:1:1:</a> A005 Module `secrets` is shadowing a Python builtin module
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch/registry/types.py#L1'>latch/registry/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch/registry/upstream_types/types.py#L1'>latch/registry/upstream_types/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch/types/glob.py#L1'>latch/types/glob.py:1:1:</a> A005 Module `glob` is shadowing a Python builtin module
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch/types/json.py#L1'>latch/types/json.py:1:1:</a> A005 Module `json` is shadowing a Python builtin module
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch_cli/exceptions/traceback.py#L1'>latch_cli/exceptions/traceback.py:1:1:</a> A005 Module `traceback` is shadowing a Python builtin module
+... 3 additional changes omitted for rule A005
++ <a href='https://github.com/latchbio/latch/blob/251a5b112ebf9adfc22b7680c0f96c6801264cde/latch_cli/main.py#L440'>latch_cli/main.py:440:49:</a> A004 Import `exec` is shadowing a Python builtin
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/9f3214cc030dc9436c6855a118cd4195deddcb58/pymilvus/client/types.py#L1'>pymilvus/client/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/milvus-io/pymilvus/blob/9f3214cc030dc9436c6855a118cd4195deddcb58/pymilvus/orm/types.py#L1'>pymilvus/orm/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+24 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/accounting/debugimporter/json.py#L1'>rotkehlchen/accounting/debugimporter/json.py:1:1:</a> A005 Module `json` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/accounting/export/csv.py#L1'>rotkehlchen/accounting/export/csv.py:1:1:</a> A005 Module `csv` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/accounting/structures/types.py#L1'>rotkehlchen/accounting/structures/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/accounting/types.py#L1'>rotkehlchen/accounting/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/api/v1/types.py#L1'>rotkehlchen/api/v1/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/assets/types.py#L1'>rotkehlchen/assets/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/chain/arbitrum_one/types.py#L1'>rotkehlchen/chain/arbitrum_one/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/chain/ethereum/interfaces/ammswap/types.py#L1'>rotkehlchen/chain/ethereum/interfaces/ammswap/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/chain/ethereum/modules/balancer/types.py#L1'>rotkehlchen/chain/ethereum/modules/balancer/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/rotki/rotki/blob/7d20d0a8a06e138484465360a5c4690fb837dedb/rotkehlchen/chain/ethereum/modules/liquity/statistics.py#L1'>rotkehlchen/chain/ethereum/modules/liquity/statistics.py:1:1:</a> A005 Module `statistics` is shadowing a Python builtin module
+... 14 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/yandex/ch-backup">yandex/ch-backup</a> (+6 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/yandex/ch-backup/blob/d3b11da4f1bcdf1c0943a3daf497f1c083dd3b9e/ch_backup/compression/gzip.py#L1'>ch_backup/compression/gzip.py:1:1:</a> A005 Module `gzip` is shadowing a Python builtin module
++ <a href='https://github.com/yandex/ch-backup/blob/d3b11da4f1bcdf1c0943a3daf497f1c083dd3b9e/ch_backup/logging.py#L1'>ch_backup/logging.py:1:1:</a> A005 Module `logging` is shadowing a Python builtin module
++ <a href='https://github.com/yandex/ch-backup/blob/d3b11da4f1bcdf1c0943a3daf497f1c083dd3b9e/ch_backup/profile.py#L1'>ch_backup/profile.py:1:1:</a> A005 Module `profile` is shadowing a Python builtin module
++ <a href='https://github.com/yandex/ch-backup/blob/d3b11da4f1bcdf1c0943a3daf497f1c083dd3b9e/ch_backup/storage/async_pipeline/stages/types.py#L1'>ch_backup/storage/async_pipeline/stages/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/yandex/ch-backup/blob/d3b11da4f1bcdf1c0943a3daf497f1c083dd3b9e/tests/integration/modules/datetime.py#L1'>tests/integration/modules/datetime.py:1:1:</a> A005 Module `datetime` is shadowing a Python builtin module
++ <a href='https://github.com/yandex/ch-backup/blob/d3b11da4f1bcdf1c0943a3daf497f1c083dd3b9e/tests/integration/modules/typing.py#L1'>tests/integration/modules/typing.py:1:1:</a> A005 Module `typing` is shadowing a Python builtin module
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/actions/typing.py#L1'>zerver/actions/typing.py:1:1:</a> A005 Module `typing` is shadowing a Python builtin module
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/data_import/slack.py#L707'>zerver/data_import/slack.py:707:16:</a> A006 Lambda argument `id` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/lib/profile.py#L1'>zerver/lib/profile.py:1:1:</a> A005 Module `profile` is shadowing a Python builtin module
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/lib/queue.py#L1'>zerver/lib/queue.py:1:1:</a> A005 Module `queue` is shadowing a Python builtin module
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/lib/types.py#L1'>zerver/lib/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/lib/url_preview/types.py#L1'>zerver/lib/url_preview/types.py:1:1:</a> A005 Module `types` is shadowing a Python builtin module
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/tests/test_link_embed.py#L11'>zerver/tests/test_link_embed.py:11:33:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/tests/test_push_notifications.py#L25'>zerver/tests/test_push_notifications.py:25:33:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/tornado/django_api.py#L11'>zerver/tornado/django_api.py:11:31:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/a43c0693b7ee065390f00612f9f685e899ef3959/zerver/views/typing.py#L1'>zerver/views/typing.py:1:1:</a> A005 Module `typing` is shadowing a Python builtin module
+... 1 additional changes omitted for rule A005
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zanieb/huggingface-notebooks">zanieb/huggingface-notebooks</a> (+25 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
++ diffusers/SDXL_DreamBooth_LoRA_.ipynb:cell 40:1:29: A004 Import `display` is shadowing a Python builtin
++ diffusers/geodiff_molecule_conformation.ipynb:cell 63:4:34: A004 Import `display` is shadowing a Python builtin
++ examples/accelerate_examples/simple_nlp_example.ipynb:cell 16:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/audio_classification.ipynb:cell 32:2:36: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling-tf.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling_from_scratch-tf.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling_from_scratch.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/multi_lingual_speech_recognition.ipynb:cell 25:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/multiple_choice-tf.ipynb:cell 24:4:29: A004 Import `display` is shadowing a Python builtin
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (+16 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
++ examples/Creating_slides_with_Assistants_API_and_DALL-E3.ipynb:cell 3:1:29: A004 Import `display` is shadowing a Python builtin
++ examples/Developing_hallucination_guardrails.ipynb:cell 2:2:29: A004 Import `display` is shadowing a Python builtin
++ examples/Fine_tuning_for_function_calling.ipynb:cell 10:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/GPT_with_vision_for_video_understanding.ipynb:cell 2:1:29: A004 Import `display` is shadowing a Python builtin
++ examples/How_to_call_functions_for_knowledge_retrieval.ipynb:cell 3:10:29: A004 Import `display` is shadowing a Python builtin
++ examples/How_to_combine_GPT4o_with_RAG_Outfit_Assistant.ipynb:cell 5:10:36: A004 Import `display` is shadowing a Python builtin
++ examples/Named_Entity_Recognition_to_enrich_text.ipynb:cell 9:9:29: A004 Import `display` is shadowing a Python builtin
++ examples/Parse_PDF_docs_for_RAG.ipynb:cell 5:20:18: A004 Import `print` is shadowing a Python builtin
++ examples/Question_answering_using_a_search_API.ipynb:cell 3:3:21: A004 Import `display` is shadowing a Python builtin
++ examples/Reproducible_outputs_with_the_seed_parameter.ipynb:cell 6:3:29: A004 Import `display` is shadowing a Python builtin
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (4 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| A005 | 104 | 104 | 0 | 0 | 0 |
+| A004 | 73 | 73 | 0 | 0 | 0 |
+| A006 | 2 | 2 | 0 | 0 | 0 |
+| A001 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Marked ready for review by @alex-700 on 2024-07-28 11:22_
+
+---
+
+_Comment by @alex-700 on 2024-07-28 11:31_
+
+Thanks @charliermarsh for the idea!
+
+> I think we should gate those blocks on "preview is disabled"
+
+Have done it this way. One tiny problem of it: if I understand the process correctly, we need to remove this check from A001 completely, once A004 will be stable. I put the `TODO` about this [here](https://github.com/astral-sh/ruff/blob/698e7b5530b0e78a61cf291d04a58ede7aa58bb1/crates/ruff_linter/src/checkers/ast/analyze/statement.rs#L600), but if you know more robust way to remember about this during stabilization (e.g. `assert` that A004 still in preview, when this `preview.is_disabled()`is activated), feel free to change it.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-29 00:59_
+
+---
+
+_@charliermarsh approved on 2024-07-29 01:37_
+
+Thanks!
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-07-29 01:37_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-07-29 01:37_
+
+---
+
+_Comment by @charliermarsh on 2024-07-29 01:38_
+
+@alex-700 -- I added a note to `codes.rs` so that we see it when we change from preview to stable.
+
+---
+
+_Renamed from "[`flake8_builtins`] implement builtin-[import,lambda-argument,module]…" to "[`flake8-builtins`] Implement import, lambda, and module shadowing" by @charliermarsh on 2024-07-29 01:38_
+
+---
+
+_Merged by @charliermarsh on 2024-07-29 01:42_
+
+---
+
+_Closed by @charliermarsh on 2024-07-29 01:42_
+
+---
+
+_Branch deleted on 2025-06-10 20:46_
+
+---

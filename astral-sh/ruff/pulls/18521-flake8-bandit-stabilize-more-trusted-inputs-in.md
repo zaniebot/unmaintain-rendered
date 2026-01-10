@@ -1,0 +1,196 @@
+```yaml
+number: 18521
+title: "[`flake8-bandit`] Stabilize more trusted inputs in `subprocess-without-shell-equals-true` (`S603`)"
+type: pull_request
+state: merged
+author: dylwil3
+labels:
+  - rule
+assignees: []
+merged: true
+base: brent/release-0.12.0
+head: dylan/stabilize-trusted-inputs
+created_at: 2025-06-06T23:18:16Z
+updated_at: 2025-06-08T18:07:47Z
+url: https://github.com/astral-sh/ruff/pull/18521
+synced_at: 2026-01-10T18:45:04Z
+```
+
+# [`flake8-bandit`] Stabilize more trusted inputs in `subprocess-without-shell-equals-true` (`S603`)
+
+---
+
+_Pull request opened by @dylwil3 on 2025-06-06 23:18_
+
+_No description provided._
+
+---
+
+_Label `rule` added by @dylwil3 on 2025-06-06 23:18_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-06 23:24_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+2 -80 violations, +0 -0 fixes in 6 projects; 49 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -59 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/airflow-core/src/airflow/cli/commands/dag_command.py#L207'>airflow-core/src/airflow/cli/commands/dag_command.py:207:14:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/airflow-core/tests/unit/utils/test_process_utils.py#L146'>airflow-core/tests/unit/utils/test_process_utils.py:146:30:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/airflow-core/tests/unit/utils/test_process_utils.py#L152'>airflow-core/tests/unit/utils/test_process_utils.py:152:23:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/airflow-core/tests/unit/utils/test_process_utils.py#L157'>airflow-core/tests/unit/utils/test_process_utils.py:157:23:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/airflow-core/tests/unit/utils/test_process_utils.py#L165'>airflow-core/tests/unit/utils/test_process_utils.py:165:25:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/airflow-core/tests/unit/utils/test_process_utils.py#L173'>airflow-core/tests/unit/utils/test_process_utils.py:173:25:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/dev/breeze/src/airflow_breeze/commands/main_command.py#L140'>dev/breeze/src/airflow_breeze/commands/main_command.py:140:26:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/dev/breeze/src/airflow_breeze/commands/main_command.py#L186'>dev/breeze/src/airflow_breeze/commands/main_command.py:186:27:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L151'>dev/breeze/src/airflow_breeze/commands/setup_commands.py:151:13:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L153'>dev/breeze/src/airflow_breeze/commands/setup_commands.py:153:17:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/dev/breeze/src/airflow_breeze/utils/reinstall.py#L43'>dev/breeze/src/airflow_breeze/utils/reinstall.py:43:21:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/dev/breeze/src/airflow_breeze/utils/reinstall.py#L50'>dev/breeze/src/airflow_breeze/utils/reinstall.py:50:23:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/kubernetes-tests/tests/kubernetes_tests/test_base.py#L127'>kubernetes-tests/tests/kubernetes_tests/test_base.py:127:19:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/kubernetes-tests/tests/kubernetes_tests/test_base.py#L206'>kubernetes-tests/tests/kubernetes_tests/test_base.py:206:21:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/google/tests/unit/google/cloud/log/test_gcs_task_handler_system.py#L78'>providers/google/tests/unit/google/cloud/log/test_gcs_task_handler_system.py:78:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/google/tests/unit/google/cloud/log/test_gcs_task_handler_system.py#L79'>providers/google/tests/unit/google/cloud/log/test_gcs_task_handler_system.py:79:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py#L67'>providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py:67:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py#L68'>providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py:68:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py#L83'>providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py:83:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py#L84'>providers/google/tests/unit/google/cloud/log/test_stackdriver_task_handler_system.py:84:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/breeze_cmd_line.py#L62'>scripts/ci/pre_commit/breeze_cmd_line.py:62:14:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/breeze_cmd_line.py#L78'>scripts/ci/pre_commit/breeze_cmd_line.py:78:11:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/breeze_cmd_line.py#L87'>scripts/ci/pre_commit/breeze_cmd_line.py:87:7:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/check_kubeconform.py#L30'>scripts/ci/pre_commit/check_kubeconform.py:30:13:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/check_kubeconform.py#L42'>scripts/ci/pre_commit/check_kubeconform.py:42:10:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/check_min_python_version.py#L34'>scripts/ci/pre_commit/check_min_python_version.py:34:9:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_fab_assets.py#L83'>scripts/ci/pre_commit/compile_fab_assets.py:83:18:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_fab_assets.py#L95'>scripts/ci/pre_commit/compile_fab_assets.py:95:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L35'>scripts/ci/pre_commit/compile_lint_ui.py:35:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L36'>scripts/ci/pre_commit/compile_lint_ui.py:36:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L39'>scripts/ci/pre_commit/compile_lint_ui.py:39:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L40'>scripts/ci/pre_commit/compile_lint_ui.py:40:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L41'>scripts/ci/pre_commit/compile_lint_ui.py:41:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L44'>scripts/ci/pre_commit/compile_lint_ui.py:44:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/scripts/ci/pre_commit/compile_lint_ui.py#L46'>scripts/ci/pre_commit/compile_lint_ui.py:46:5:</a> S603 `subprocess` call: check for execution of untrusted input
+... 24 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/5541dad32b4ed87ac843c53add71ee4ef1de92d2/scripts/change_detector.py#L148'>scripts/change_detector.py:148:65:</a> RUF100 [*] Unused `noqa` directive (unused: `S603`)
++ <a href='https://github.com/apache/superset/blob/5541dad32b4ed87ac843c53add71ee4ef1de92d2/setup.py#L33'>setup.py:33:73:</a> RUF100 [*] Unused `noqa` directive (unused: `S603`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -9 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/server_document/flask_server.py#L45'>examples/output/apis/server_document/flask_server.py:45:17:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/setup.py#L127'>setup.py:127:20:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/setup.py#L52'>setup.py:52:16:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_code_quality.py#L118'>tests/codebase/test_code_quality.py:118:13:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_no_request_host.py#L50'>tests/codebase/test_no_request_host.py:50:13:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_ruff.py#L33'>tests/codebase/test_ruff.py:33:12:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_bokehjs.py#L34'>tests/test_bokehjs.py:34:16:</a> S603 `subprocess` call: check for execution of untrusted input
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/rotki/rotki/blob/dbbc57b6313501fd0afd6e8ed002f79e705546fb/rotkehlchen/tests/unit/test_search.py#L60'>rotkehlchen/tests/unit/test_search.py:60:21:</a> S603 `subprocess` call: check for execution of untrusted input
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/yandex/ch-backup">yandex/ch-backup</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/yandex/ch-backup/blob/93f58c514acb5a8f641bd86a576a46654d94e4ba/images/clickhouse/entrypoint.py#L21'>images/clickhouse/entrypoint.py:21:5:</a> S603 `subprocess` call: check for execution of untrusted input
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -10 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/scripts/lib/check_rabbitmq_queue.py#L149'>scripts/lib/check_rabbitmq_queue.py:149:26:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/scripts/lib/puppet_cache.py#L25'>scripts/lib/puppet_cache.py:25:30:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/tools/lib/provision.py#L271'>tools/lib/provision.py:271:16:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/tools/lib/provision_inner.py#L109'>tools/lib/provision_inner.py:109:14:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/tools/lib/test_script.py#L125'>tools/lib/test_script.py:125:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/data_import/mattermost.py#L398'>zerver/data_import/mattermost.py:398:12:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/lib/test_fixtures.py#L344'>zerver/lib/test_fixtures.py:344:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/logging_handlers.py#L8'>zerver/logging_handlers.py:8:16:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/management/commands/compilemessages.py#L76'>zerver/management/commands/compilemessages.py:76:18:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/management/commands/makemessages.py#L241'>zerver/management/commands/makemessages.py:241:21:</a> S603 `subprocess` call: check for execution of untrusted input
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| S603 | 80 | 0 | 80 | 0 | 0 |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Added to milestone `v0.12` by @dylwil3 on 2025-06-06 23:28_
+
+---
+
+_@ntBre approved on 2025-06-08 15:47_
+
+---
+
+_Merged by @dylwil3 on 2025-06-08 18:07_
+
+---
+
+_Closed by @dylwil3 on 2025-06-08 18:07_
+
+---
+
+_Branch deleted on 2025-06-08 18:07_
+
+---

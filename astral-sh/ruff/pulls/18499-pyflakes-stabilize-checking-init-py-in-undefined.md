@@ -1,0 +1,210 @@
+```yaml
+number: 18499
+title: "[`pyflakes`] Stabilize checking `__init__.py` in `undefined-export` (`F822`)"
+type: pull_request
+state: closed
+author: dylwil3
+labels:
+  - rule
+assignees: []
+base: brent/release-0.12.0
+head: dylan/stabilize-undefined-export
+created_at: 2025-06-06T14:33:21Z
+updated_at: 2025-06-06T17:06:58Z
+url: https://github.com/astral-sh/ruff/pull/18499
+synced_at: 2026-01-10T18:45:04Z
+```
+
+# [`pyflakes`] Stabilize checking `__init__.py` in `undefined-export` (`F822`)
+
+---
+
+_Pull request opened by @dylwil3 on 2025-06-06 14:33_
+
+_No description provided._
+
+---
+
+_Added to milestone `v0.12` by @dylwil3 on 2025-06-06 14:33_
+
+---
+
+_Label `rule` added by @dylwil3 on 2025-06-06 14:33_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-06 14:39_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+310 -0 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)
+
+<details><summary><a href="https://github.com/PostHog/HouseWatch">PostHog/HouseWatch</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/PostHog/HouseWatch/blob/77a70fd5e8b18de37f044df434e95b46c4837f22/housewatch/tasks/__init__.py#L5'>housewatch/tasks/__init__.py:5:43:</a> F822 Undefined name `customer_report` in `__all__`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/airflow-core/src/airflow/datasets/__init__.py#L61'>airflow-core/src/airflow/datasets/__init__.py:61:12:</a> F822 Undefined name `Dataset` in `__all__`
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/airflow-core/src/airflow/datasets/__init__.py#L61'>airflow-core/src/airflow/datasets/__init__.py:61:23:</a> F822 Undefined name `DatasetAlias` in `__all__`
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/airflow-core/src/airflow/datasets/__init__.py#L61'>airflow-core/src/airflow/datasets/__init__.py:61:39:</a> F822 Undefined name `DatasetAll` in `__all__`
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/airflow-core/src/airflow/datasets/__init__.py#L61'>airflow-core/src/airflow/datasets/__init__.py:61:53:</a> F822 Undefined name `DatasetAny` in `__all__`
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/airflow-core/src/airflow/datasets/__init__.py#L61'>airflow-core/src/airflow/datasets/__init__.py:61:67:</a> F822 Undefined name `expand_alias_to_datasets` in `__all__`
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/utils/__init__.py#L19'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/utils/__init__.py:19:12:</a> F822 Undefined name `xcom_sidecar` in `__all__`
++ <a href='https://github.com/apache/airflow/blob/ff17dc6790d113c053f4a57845a9ea95b06f056a/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/utils/__init__.py#L19'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/utils/__init__.py:19:28:</a> F822 Undefined name `pod_manager` in `__all__`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+273 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L393'>libs/langchain/langchain/__init__.py:393:5:</a> F822 Undefined name `LLMChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L394'>libs/langchain/langchain/__init__.py:394:5:</a> F822 Undefined name `LLMCheckerChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L395'>libs/langchain/langchain/__init__.py:395:5:</a> F822 Undefined name `LLMMathChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L396'>libs/langchain/langchain/__init__.py:396:5:</a> F822 Undefined name `ArxivAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L397'>libs/langchain/langchain/__init__.py:397:5:</a> F822 Undefined name `GoldenQueryAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L398'>libs/langchain/langchain/__init__.py:398:5:</a> F822 Undefined name `SelfAskWithSearchChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L399'>libs/langchain/langchain/__init__.py:399:5:</a> F822 Undefined name `SerpAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L400'>libs/langchain/langchain/__init__.py:400:5:</a> F822 Undefined name `SerpAPIChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L401'>libs/langchain/langchain/__init__.py:401:5:</a> F822 Undefined name `SearxSearchWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L402'>libs/langchain/langchain/__init__.py:402:5:</a> F822 Undefined name `GoogleSearchAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L403'>libs/langchain/langchain/__init__.py:403:5:</a> F822 Undefined name `GoogleSerperAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L404'>libs/langchain/langchain/__init__.py:404:5:</a> F822 Undefined name `WolframAlphaAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L405'>libs/langchain/langchain/__init__.py:405:5:</a> F822 Undefined name `WikipediaAPIWrapper` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L406'>libs/langchain/langchain/__init__.py:406:5:</a> F822 Undefined name `Anthropic` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L407'>libs/langchain/langchain/__init__.py:407:5:</a> F822 Undefined name `Banana` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L408'>libs/langchain/langchain/__init__.py:408:5:</a> F822 Undefined name `CerebriumAI` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L409'>libs/langchain/langchain/__init__.py:409:5:</a> F822 Undefined name `Cohere` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L410'>libs/langchain/langchain/__init__.py:410:5:</a> F822 Undefined name `ForefrontAI` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L411'>libs/langchain/langchain/__init__.py:411:5:</a> F822 Undefined name `GooseAI` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L412'>libs/langchain/langchain/__init__.py:412:5:</a> F822 Undefined name `Modal` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L413'>libs/langchain/langchain/__init__.py:413:5:</a> F822 Undefined name `OpenAI` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L414'>libs/langchain/langchain/__init__.py:414:5:</a> F822 Undefined name `Petals` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L415'>libs/langchain/langchain/__init__.py:415:5:</a> F822 Undefined name `PipelineAI` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L416'>libs/langchain/langchain/__init__.py:416:5:</a> F822 Undefined name `StochasticAI` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L417'>libs/langchain/langchain/__init__.py:417:5:</a> F822 Undefined name `Writer` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L418'>libs/langchain/langchain/__init__.py:418:5:</a> F822 Undefined name `BasePromptTemplate` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L419'>libs/langchain/langchain/__init__.py:419:5:</a> F822 Undefined name `Prompt` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L420'>libs/langchain/langchain/__init__.py:420:5:</a> F822 Undefined name `FewShotPromptTemplate` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L421'>libs/langchain/langchain/__init__.py:421:5:</a> F822 Undefined name `PromptTemplate` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L422'>libs/langchain/langchain/__init__.py:422:5:</a> F822 Undefined name `ReActChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L423'>libs/langchain/langchain/__init__.py:423:5:</a> F822 Undefined name `Wikipedia` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L424'>libs/langchain/langchain/__init__.py:424:5:</a> F822 Undefined name `HuggingFaceHub` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L425'>libs/langchain/langchain/__init__.py:425:5:</a> F822 Undefined name `SagemakerEndpoint` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L426'>libs/langchain/langchain/__init__.py:426:5:</a> F822 Undefined name `HuggingFacePipeline` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L427'>libs/langchain/langchain/__init__.py:427:5:</a> F822 Undefined name `SQLDatabase` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L428'>libs/langchain/langchain/__init__.py:428:5:</a> F822 Undefined name `PowerBIDataset` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L429'>libs/langchain/langchain/__init__.py:429:5:</a> F822 Undefined name `FAISS` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L430'>libs/langchain/langchain/__init__.py:430:5:</a> F822 Undefined name `MRKLChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L431'>libs/langchain/langchain/__init__.py:431:5:</a> F822 Undefined name `VectorDBQA` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L432'>libs/langchain/langchain/__init__.py:432:5:</a> F822 Undefined name `ElasticVectorSearch` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L433'>libs/langchain/langchain/__init__.py:433:5:</a> F822 Undefined name `InMemoryDocstore` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L434'>libs/langchain/langchain/__init__.py:434:5:</a> F822 Undefined name `ConversationChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L435'>libs/langchain/langchain/__init__.py:435:5:</a> F822 Undefined name `VectorDBQAWithSourcesChain` in `__all__`
++ <a href='https://github.com/langchain-ai/langchain/blob/0375848f6c9b71606777087e717e12aec9469400/libs/langchain/langchain/__init__.py#L436'>libs/langchain/langchain/__init__.py:436:5:</a> F822 Undefined name `QAWithSourcesChain` in `__all__`
+... 229 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/297bec4fc785d2ac74e909b2ee83f5c10c45bc80/pandas/core/internals/__init__.py#L11'>pandas/core/internals/__init__.py:11:5:</a> F822 Undefined name `ExtensionBlock` in `__all__`
++ <a href='https://github.com/pandas-dev/pandas/blob/297bec4fc785d2ac74e909b2ee83f5c10c45bc80/pandas/core/internals/__init__.py#L9'>pandas/core/internals/__init__.py:9:5:</a> F822 Undefined name `Block` in `__all__`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+27 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L18'>astropy/__init__.py:18:5:</a> F822 Undefined name `config` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L19'>astropy/__init__.py:19:5:</a> F822 Undefined name `constants` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L20'>astropy/__init__.py:20:5:</a> F822 Undefined name `convolution` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L21'>astropy/__init__.py:21:5:</a> F822 Undefined name `coordinates` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L22'>astropy/__init__.py:22:5:</a> F822 Undefined name `cosmology` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L23'>astropy/__init__.py:23:5:</a> F822 Undefined name `io` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L24'>astropy/__init__.py:24:5:</a> F822 Undefined name `modeling` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L25'>astropy/__init__.py:25:5:</a> F822 Undefined name `nddata` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L26'>astropy/__init__.py:26:5:</a> F822 Undefined name `samp` in `__all__`
++ <a href='https://github.com/astropy/astropy/blob/09795abdae6ebf71bc58b04be52faf79e198a1a2/astropy/__init__.py#L27'>astropy/__init__.py:27:5:</a> F822 Undefined name `stats` in `__all__`
+... 17 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F822 | 310 | 310 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @dylwil3 on 2025-06-06 14:48_
+
+I believe these ecosystem results are as expected for the repos that rely heavily on dynamically loading imports. The documentation explains how to recover the old behavior using `per-file-ignores`. 
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/pyflakes/rules/undefined_export.rs`:17 on 2025-06-06 16:10_
+
+```suggestion
+/// This rule will flag undefined names in an `__init__.py` file
+```
+
+or 
+
+```suggestion
+/// This rule will flag undefined names in `__init__.py` files
+```
+
+---
+
+_@ntBre approved on 2025-06-06 16:20_
+
+Thanks! Just one nit in the docs
+
+The langchain case feels a bit unfortunate since all of the imports are actually there conditionally, unlike the astropy case, for example, but I guess that's not really a limitation of the rule itself. 
+
+Would it make any sense to avoid the diagnostic on `__init__.py` files with module-level `__getattr__`? (blocking stabilization for now, I guess)
+
+---
+
+_Comment by @dylwil3 on 2025-06-06 17:06_
+
+> Would it make any sense to avoid the diagnostic on __init__.py files with module-level __getattr__?
+
+I like that idea. Let's block stabilizing and I'll turn that suggestion into an issue for comment
+
+---
+
+_Closed by @dylwil3 on 2025-06-06 17:06_
+
+---

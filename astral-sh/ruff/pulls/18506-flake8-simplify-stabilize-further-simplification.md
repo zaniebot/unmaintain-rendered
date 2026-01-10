@@ -1,0 +1,158 @@
+```yaml
+number: 18506
+title: "[`flake8-simplify`] Stabilize further simplification to binary expressions in autofix for `if-else-block-instead-of-if-exp` (`SIM108`)"
+type: pull_request
+state: merged
+author: dylwil3
+labels:
+  - rule
+  - fixes
+assignees: []
+merged: true
+base: brent/release-0.12.0
+head: dylan/stabilize-binary-simplify
+created_at: 2025-06-06T17:38:31Z
+updated_at: 2025-06-06T21:46:45Z
+url: https://github.com/astral-sh/ruff/pull/18506
+synced_at: 2026-01-10T18:45:04Z
+```
+
+# [`flake8-simplify`] Stabilize further simplification to binary expressions in autofix for `if-else-block-instead-of-if-exp` (`SIM108`)
+
+---
+
+_Pull request opened by @dylwil3 on 2025-06-06 17:38_
+
+_No description provided._
+
+---
+
+_Label `rule` added by @dylwil3 on 2025-06-06 17:38_
+
+---
+
+_Label `fixes` added by @dylwil3 on 2025-06-06 17:38_
+
+---
+
+_Added to milestone `v0.12` by @dylwil3 on 2025-06-06 17:38_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-06 17:45_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+8 -5 violations, +0 -0 fixes in 3 projects; 52 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+6 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/apache/druid/src/airflow/providers/apache/druid/hooks/druid.py#L90'>providers/apache/druid/src/airflow/providers/apache/druid/hooks/druid.py:90:9:</a> SIM108 Use binary operator `conn_type = self.conn.schema or (self.conn.conn_type or "http")` instead of `if`-`else`-block
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/apache/druid/src/airflow/providers/apache/druid/hooks/druid.py#L90'>providers/apache/druid/src/airflow/providers/apache/druid/hooks/druid.py:90:9:</a> SIM108 Use ternary operator `conn_type = self.conn.schema if self.conn.schema else self.conn.conn_type or "http"` instead of `if`-`else`-block
++ <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/apache/druid/tests/unit/apache/druid/hooks/test_druid.py#L42'>providers/apache/druid/tests/unit/apache/druid/hooks/test_druid.py:42:17:</a> SIM108 Use binary operator `conn_type = self.conn.schema or "http"` instead of `if`-`else`-block
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/apache/druid/tests/unit/apache/druid/hooks/test_druid.py#L42'>providers/apache/druid/tests/unit/apache/druid/hooks/test_druid.py:42:17:</a> SIM108 Use ternary operator `conn_type = self.conn.schema if self.conn.schema else "http"` instead of `if`-`else`-block
++ <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/celery/src/airflow/providers/celery/cli/celery_command.py#L276'>providers/celery/src/airflow/providers/celery/cli/celery_command.py:276:5:</a> SIM108 Use binary operator `umask = args.umask or conf.get("celery", "worker_umask", fallback=settings.DAEMON_UMASK)` instead of `if`-`else`-block
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/celery/src/airflow/providers/celery/cli/celery_command.py#L276'>providers/celery/src/airflow/providers/celery/cli/celery_command.py:276:5:</a> SIM108 Use ternary operator `umask = args.umask if args.umask else conf.get("celery", "worker_umask", fallback=settings.DAEMON_UMASK)` instead of `if`-`else`-block
++ <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py#L179'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py:179:13:</a> SIM108 Use binary operator `namespaces = self.kube_config.multi_namespace_mode_namespace_list or [None]` instead of `if`-`else`-block
++ <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/databricks/src/airflow/providers/databricks/operators/databricks_sql.py#L144'>providers/databricks/src/airflow/providers/databricks/operators/databricks_sql.py:144:17:</a> SIM108 Use binary operator `csv_params = self._csv_params or {}` instead of `if`-`else`-block
+- <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/databricks/src/airflow/providers/databricks/operators/databricks_sql.py#L144'>providers/databricks/src/airflow/providers/databricks/operators/databricks_sql.py:144:17:</a> SIM108 Use ternary operator `csv_params = self._csv_params if self._csv_params else {}` instead of `if`-`else`-block
++ <a href='https://github.com/apache/airflow/blob/43cd627100da2a8dbad0bf55af308a299976d1c8/providers/imap/src/airflow/providers/imap/hooks/imap.py#L92'>providers/imap/src/airflow/providers/imap/hooks/imap.py:92:13:</a> SIM108 Use binary operator `ssl_context_string = extra_ssl_context or conf.get("imap", "SSL_CONTEXT", fallback=None)` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/a2afff25f98e0d1fe573f520b659e1ee1f427c38/skbuild/setuptools_wrap.py#L533'>skbuild/setuptools_wrap.py:533:5:</a> SIM108 Use binary operator `cmake_install_target = cmake_install_target_from_command or cmake_install_target_from_setup` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/webhooks/bitbucket3/view.py#L79'>zerver/webhooks/bitbucket3/view.py:79:5:</a> SIM108 Use binary operator `topic_name = include_title or "Bitbucket Server Ping"` instead of `if`-`else`-block
+- <a href='https://github.com/zulip/zulip/blob/5a090c47adb7bc5578af453bb7d99c99d51cbea9/zerver/webhooks/bitbucket3/view.py#L79'>zerver/webhooks/bitbucket3/view.py:79:5:</a> SIM108 Use ternary operator `topic_name = include_title if include_title else "Bitbucket Server Ping"` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM108 | 13 | 8 | 5 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @dylwil3 on 2025-06-06 18:20_
+
+The ecosystem checks are correct! The reason for the _new_ lints is that the rule is skipped if the suggested replacement would exceed the configured maximum line length. Since we now suggest further simplifying to a binary expression, which is shorter, there are more possible places where the lint may trigger.
+
+Since I found this a bit surprising, I also updated the documentation to alert users to this point.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_if_exp.rs`:62 on 2025-06-06 20:55_
+
+Interesting, there's also a top-level `linter.line-length` setting that I'd expect us to use for non-pycodestyle rules, but the pycodestyle version is much more widely used. It looks like it inherits from the top-level setting if unset though.
+
+---
+
+_@ntBre approved on 2025-06-06 20:58_
+
+---
+
+_@dylwil3 reviewed on 2025-06-06 21:36_
+
+---
+
+_Review comment by @dylwil3 on `crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_if_exp.rs`:62 on 2025-06-06 21:36_
+
+I'll keep this as is since that's explained in the documentation and would require more wording to describe here. (Like I can't just say "if it is longer than `line-length` or `pycodestyle.max-line-length`" because the latter overrides the former for this rule.)
+
+---
+
+_@ntBre reviewed on 2025-06-06 21:38_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_if_exp.rs`:62 on 2025-06-06 21:38_
+
+Yep, just a curious observation not a suggestion to do anything, I should have clarified!
+
+---
+
+_Merged by @dylwil3 on 2025-06-06 21:46_
+
+---
+
+_Closed by @dylwil3 on 2025-06-06 21:46_
+
+---
+
+_Branch deleted on 2025-06-06 21:46_
+
+---

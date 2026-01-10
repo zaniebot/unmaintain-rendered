@@ -1,0 +1,565 @@
+```yaml
+number: 18426
+title: "[ty] Fix false positives for legacy `ParamSpec`s inside `Callable` type expressions"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - bug
+  - ty
+assignees: []
+merged: true
+base: main
+head: alex/paramspec-false-positive
+created_at: 2025-06-02T12:40:20Z
+updated_at: 2025-06-11T10:47:54Z
+url: https://github.com/astral-sh/ruff/pull/18426
+synced_at: 2026-01-10T18:45:04Z
+```
+
+# [ty] Fix false positives for legacy `ParamSpec`s inside `Callable` type expressions
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-06-02 12:40_
+
+## Summary
+
+Full `ParamSpec` support will be some way off, but it's pretty easy to remove false positives for legacy `ParamSpec`s in the meantime. We already got rid of false positives for PEP-695 `ParamSpec`s in an earlier PR.
+
+## Test Plan
+
+Existing mdtests updated
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-06-02 12:40_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-06-02 12:40_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-06-02 12:40_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-06-02 12:40_
+
+---
+
+_Comment by @github-actions[bot] on 2025-06-02 12:43_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- error[unresolved-attribute] pytest_robotframework/__init__.py:731:53: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pytest_robotframework/__init__.py:731:53: Type `(...) -> _GeneratorContextManager[Unknown, None, None]` has no attribute `__name__`
+
+Expression (https://github.com/cognitedata/Expression)
+- error[invalid-type-form] expression/core/async_builder.py:95:13: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/async_builder.py:98:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/builder.py:93:13: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/builder.py:96:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:28:55: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:28:74: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:34:76: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:46:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:63:26: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:81:41: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:114:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:114:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:120:61: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:129:9: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:144:9: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/curry.py:162:9: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/fn.py:29:26: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/fn.py:29:73: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/fn.py:53:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/core/fn.py:53:90: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/async_option.py:125:13: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/async_option.py:128:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/async_result.py:126:13: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/async_result.py:129:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/option.py:101:13: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/option.py:104:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/result.py:92:13: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] expression/effect/result.py:95:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 286 diagnostics
++ Found 258 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[invalid-type-form] kornia/augmentation/container/ops.py:182:87: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 941 diagnostics
++ Found 940 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[invalid-argument-type] kopf/_kits/webhacks.py:81:26: Argument to function `wraps` is incorrect: Argument type `(...) -> _RWrapped` does not satisfy upper bound of type variable `_ServerFn`
+- Found 156 diagnostics
++ Found 157 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[invalid-type-form] starlette/authentication.py:35:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] starlette/authentication.py:35:45: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] starlette/concurrency.py:36:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 178 diagnostics
++ Found 175 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[invalid-type-form] src/trio/_channel.py:495:18: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_channel.py:496:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_core/_asyncgens.py:37:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_deprecate.py:86:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_deprecate.py:86:49: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_deprecate.py:126:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_deprecate.py:130:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_path.py:35:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/_path.py:35:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- warning[unused-ignore-comment] src/trio/_tests/test_timeouts.py:279:33: Unused blanket `type: ignore` directive
+- warning[unused-ignore-comment] src/trio/_tests/test_timeouts.py:281:45: Unused blanket `type: ignore` directive
+- error[invalid-argument-type] src/trio/_threads.py:379:70: Argument is incorrect: Expected `bool`, found `Error`
++ error[invalid-argument-type] src/trio/_threads.py:379:70: Argument is incorrect: Expected `bool`, found `Value[Unknown] | Error`
+- error[invalid-type-form] src/trio/testing/_trio_test.py:20:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/trio/testing/_trio_test.py:20:65: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 1087 diagnostics
++ Found 1074 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[invalid-type-form] pydantic/plugin/_schema_validator.py:96:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pydantic/plugin/_schema_validator.py:96:104: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 762 diagnostics
++ Found 760 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[invalid-argument-type] examples/table_movie.py:62:1: Argument to function `contextmanager` is incorrect: Expected `(...) -> Iterator[Unknown]`, found `def beat(length: int = Literal[1]) -> None`
+- Found 391 diagnostics
++ Found 392 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ error[invalid-argument-type] sockeye/test_utils.py:147:1: Argument to function `contextmanager` is incorrect: Expected `(...) -> Iterator[Unknown]`, found `def tmp_digits_dataset(prefix: str, train_line_count: int, train_line_count_empty: int, train_max_length: int, dev_line_count: int, dev_max_length: int, test_line_count: int, test_line_count_empty: int, test_max_length: int, sort_target: bool = Literal[False], seed_train: int = Literal[13], seed_dev: int = Literal[13], source_text_prefix_token: str = Literal[""], with_n_source_factors: int = Literal[0], with_n_target_factors: int = Literal[0]) -> dict[Unknown, Unknown]`
+- Found 349 diagnostics
++ Found 350 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- error[invalid-type-form] comtypes/hints.pyi:97:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] comtypes/hints.pyi:97:53: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] comtypes/hints.pyi:98:23: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] comtypes/hints.pyi:98:49: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 595 diagnostics
++ Found 591 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ error[invalid-argument-type] pwndbg/aglib/heap/ptmalloc.py:787:17: Argument to function `get` is incorrect: Expected `bool`, found `Unknown | None`
++ error[unsupported-operator] pwndbg/aglib/heap/ptmalloc.py:1117:49: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[invalid-argument-type] pwndbg/aglib/heap/ptmalloc.py:1271:17: Argument to function `get` is incorrect: Expected `bool`, found `Unknown | None`
++ error[unsupported-operator] pwndbg/aglib/heap/ptmalloc.py:1858:42: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:34:41: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:445:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[27]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[27]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:447:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[23]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[23]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:574:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[30]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[30]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:618:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[29]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[29]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:931:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[35]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[35]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:933:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:935:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[24]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[24]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:937:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[15]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[15]]`
+- error[invalid-type-form] pwndbg/aglib/kernel/__init__.py:49:63: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/aglib/kernel/__init__.py:49:80: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/aglib/kernel/__init__.py:68:66: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/aglib/kernel/__init__.py:68:83: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ error[invalid-argument-type] pwndbg/aglib/onegadget.py:279:44: Argument to function `get_file` is incorrect: Expected `str`, found `Unknown | None`
+- error[invalid-type-form] pwndbg/aglib/proc.py:42:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-return-type] pwndbg/aglib/proc.py:42:46: Function always implicitly returns `None`, which is not assignable to return type `(...) -> Unknown`
++ error[invalid-return-type] pwndbg/aglib/proc.py:42:46: Function always implicitly returns `None`, which is not assignable to return type `(...) -> T | None`
+- error[invalid-type-form] pwndbg/aglib/proc.py:42:55: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/aglib/proc.py:43:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-return-type] pwndbg/aglib/proc.py:43:49: Function always implicitly returns `None`, which is not assignable to return type `(...) -> Unknown`
++ error[invalid-return-type] pwndbg/aglib/proc.py:43:49: Function always implicitly returns `None`, which is not assignable to return type `(...) -> T`
+- error[invalid-type-form] pwndbg/aglib/proc.py:43:58: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:557:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:558:12: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pwndbg/commands/__init__.py:558:12: Type `(...) -> T` has no attribute `__name__`
+- error[invalid-type-form] pwndbg/commands/__init__.py:561:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:561:57: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[unresolved-attribute] pwndbg/commands/__init__.py:567:56: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pwndbg/commands/__init__.py:567:56: Type `(...) -> T` has no attribute `__name__`
+- error[invalid-type-form] pwndbg/commands/__init__.py:578:37: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:578:56: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:593:43: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:593:62: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:607:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:607:61: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:621:48: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:621:67: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:635:46: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:635:65: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:649:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:649:59: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:662:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:662:58: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:677:50: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:677:69: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:689:46: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:725:49: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/__init__.py:725:68: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/context.py:367:46: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/commands/context.py:367:73: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[unresolved-attribute] pwndbg/commands/context.py:371:30: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pwndbg/commands/context.py:371:30: Type `(...) -> list[Unknown]` has no attribute `__name__`
+- error[unresolved-attribute] pwndbg/commands/context.py:372:24: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pwndbg/commands/context.py:372:24: Type `(...) -> list[Unknown]` has no attribute `__name__`
++ warning[possibly-unbound-attribute] pwndbg/commands/ida.py:108:8: Attribute `startswith` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-implicit-call] pwndbg/commands/ida.py:109:16: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ error[no-matching-overload] pwndbg/commands/ida.py:112:16: No overload of function `basename` matches arguments
++ error[no-matching-overload] pwndbg/commands/ida.py:113:15: No overload of function `dirname` matches arguments
++ error[no-matching-overload] pwndbg/commands/ida.py:161:14: No overload of function `__new__` matches arguments
++ error[invalid-argument-type] pwndbg/commands/ptmalloc2.py:99:58: Argument to function `format` is incorrect: Expected `bool`, found `Literal[False] | Unknown | None`
++ error[invalid-argument-type] pwndbg/commands/ptmalloc2.py:103:69: Argument to function `format` is incorrect: Expected `bool`, found `Literal[False] | Unknown | None`
++ warning[possibly-unbound-attribute] pwndbg/commands/radare2.py:52:25: Attribute `address` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/commands/radare2.py:54:41: Attribute `address` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/commands/rizin.py:50:25: Attribute `address` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/commands/rizin.py:52:41: Attribute `address` on type `Unknown | None` is possibly unbound
+- error[invalid-type-form] pwndbg/dbg/lldb/repl/readline.py:87:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/dbg/lldb/repl/readline.py:87:61: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/decorators.py:26:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/decorators.py:26:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/decorators.py:48:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/decorators.py:48:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/gdblib/events.py:177:53: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/gdblib/events.py:177:89: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ warning[possibly-unbound-attribute] pwndbg/gdblib/functions.py:94:12: Attribute `address` on type `Unknown | None` is possibly unbound
+- error[invalid-type-form] pwndbg/glibc.py:186:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/glibc.py:186:63: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[unresolved-attribute] pwndbg/glibc.py:192:18: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] pwndbg/glibc.py:192:18: Type `(...) -> T` has no attribute `__name__`
++ error[unsupported-operator] pwndbg/glibc.py:205:13: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[32]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[32]]`
+- error[invalid-type-form] pwndbg/integration/binja.py:158:55: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/integration/binja.py:158:72: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ error[invalid-return-type] pwndbg/integration/ida.py:174:12: Return type does not match returned value: expected `bool`, found `Unknown | None`
+- error[invalid-type-form] pwndbg/integration/ida.py:131:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/integration/ida.py:131:47: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/integration/ida.py:143:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/integration/ida.py:143:51: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/integration/ida.py:162:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/integration/ida.py:162:61: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ error[no-matching-overload] pwndbg/integration/ida.py:280:14: No overload of function `__new__` matches arguments
++ error[no-matching-overload] pwndbg/integration/ida.py:304:12: No overload of bound method `__init__` matches arguments
++ error[unsupported-operator] pwndbg/integration/ida.py:537:15: Operator `<` is not supported for types `int` and `None`, in comparing `Literal[0]` with `Unknown | None`
++ error[invalid-assignment] pwndbg/integration/ida.py:615:9: Object of type `Unknown | None` is not assignable to `str`
+- error[invalid-type-form] pwndbg/lib/cache.py:130:58: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] pwndbg/lib/cache.py:130:75: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ warning[possibly-unbound-attribute] pwndbg/radare2.py:34:33: Attribute `address` on type `Unknown | None` is possibly unbound
++ warning[possibly-unbound-attribute] pwndbg/rizin.py:32:33: Attribute `address` on type `Unknown | None` is possibly unbound
+- Found 2249 diagnostics
++ Found 2231 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[invalid-type-form] asynq/decorators.pyi:26:23: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:26:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:45:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:48:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:53:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:56:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:83:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:86:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:91:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:94:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:132:37: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:135:37: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:142:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:144:35: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:151:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:153:35: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:159:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] asynq/decorators.pyi:165:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 210 diagnostics
++ Found 192 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ error[missing-argument] paasta_tools/utils.py:1846:9: No arguments provided for required parameters `typ`, `value`, `traceback` of bound method `__exit__`
+- Found 942 diagnostics
++ Found 943 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[unresolved-attribute] tests/test_messagequeue.py:243:25: Type `(...) -> Unknown` has no attribute `called`
++ error[unresolved-attribute] tests/test_messagequeue.py:243:25: Type `(...) -> _GeneratorContextManager[Unknown, None, None]` has no attribute `called`
+- error[unresolved-attribute] tests/test_messagequeue.py:247:25: Type `(...) -> Unknown` has no attribute `called`
++ error[unresolved-attribute] tests/test_messagequeue.py:247:25: Type `(...) -> _GeneratorContextManager[Unknown, None, None]` has no attribute `called`
+
+mypy (https://github.com/python/mypy)
+- error[invalid-type-form] mypy/typeshed/stdlib/_contextvars.pyi:58:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/_operator.pyi:109:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/abc.pyi:39:43: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/asyncio/coroutines.pyi:22:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/asyncio/coroutines.pyi:22:82: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/asyncio/coroutines.pyi:24:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/asyncio/coroutines.pyi:24:75: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/asyncio/threads.pyi:10:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/atexit.pyi:11:29: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/atexit.pyi:11:90: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/bdb.pyi:93:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:142:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:145:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:147:67: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:149:83: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:154:43: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:167:83: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/builtins.pyi:169:71: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/cProfile.pyi:27:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/concurrent/futures/_base.pyi:56:35: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/concurrent/futures/interpreter.pyi:12:37: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:88:35: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:88:69: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:114:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:114:79: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:153:43: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:153:102: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:176:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/contextlib.pyi:177:19: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:100:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:107:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:111:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:112:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:117:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:124:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:125:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:130:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:137:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:138:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/functools.pyi:143:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/importlib/util.pyi:20:41: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/importlib/util.pyi:20:76: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/importlib/util.pyi:21:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/importlib/util.pyi:21:69: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/importlib/util.pyi:22:35: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/importlib/util.pyi:22:70: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:223:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:223:71: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:229:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:229:81: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:231:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:231:74: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:240:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:240:70: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/inspect.pyi:541:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/pdb.pyi:27:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/profile.pyi:30:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/trace.pyi:78:38: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/types.pyi:659:30: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/types.pyi:659:72: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/async_case.pyi:21:46: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/case.pyi:47:41: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/case.pyi:156:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/case.pyi:169:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/case.pyi:252:45: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/case.pyi:259:49: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/mock.pyi:244:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/mock.pyi:244:60: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/signals.pyi:15:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/unittest/signals.pyi:15:57: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/weakref.pyi:184:48: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/weakref.pyi:186:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mypy/typeshed/stdlib/weakref.pyi:187:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 3341 diagnostics
++ Found 3268 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:1428:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:1581:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:1607:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:3340:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:3382:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:3392:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:3402:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/structured_configs/_implementations.py:3415:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:59:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:208:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:232:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:305:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:447:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:471:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:566:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:633:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/typing/_builds_overloads.py:657:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:98:37: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:98:59: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:137:26: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:528:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:551:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:555:31: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/hydra_zen/wrapper/_implementations.py:564:31: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 637 diagnostics
++ Found 613 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[invalid-type-form] mitmproxy/utils/signals.py:99:40: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] mitmproxy/utils/signals.py:125:41: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 2114 diagnostics
++ Found 2112 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[invalid-type-form] optuna/_convert_positional_args.py:34:47: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] optuna/_convert_positional_args.py:55:26: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] optuna/_convert_positional_args.py:55:45: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] optuna/_deprecated.py:60:26: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] optuna/_deprecated.py:60:45: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] optuna/_experimental.py:55:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] optuna/_experimental.py:55:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 1061 diagnostics
++ Found 1054 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[invalid-type-form] psycopg_pool/psycopg_pool/_acompat.py:169:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] psycopg_pool/psycopg_pool/_acompat.py:174:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] psycopg_pool/psycopg_pool/_acompat.py:178:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] psycopg_pool/psycopg_pool/_acompat.py:178:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 1022 diagnostics
++ Found 1018 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[invalid-type-form] scrapy/cmdline.py:153:20: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/decorators.py:26:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/decorators.py:26:44: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/decorators.py:48:27: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/decorators.py:48:48: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/decorators.py:58:29: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/decorators.py:58:50: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:92:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:98:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:106:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:111:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:392:22: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:393:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] scrapy/utils/defer.py:408:17: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 1341 diagnostics
++ Found 1327 diagnostics
+
+altair (https://github.com/vega/altair)
+- error[invalid-type-form] altair/utils/core.py:49:53: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] altair/utils/core.py:727:32: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[unresolved-attribute] altair/utils/core.py:759:59: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] altair/utils/core.py:759:59: Type `(...) -> Any` has no attribute `__name__`
+- Found 1299 diagnostics
++ Found 1297 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[invalid-type-form] unittests/helpers.py:36:69: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:36:88: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:55:37: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:55:58: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:72:66: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:72:85: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:88:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:88:57: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:103:63: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:103:82: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:116:57: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:116:76: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:132:64: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:132:83: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:226:59: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] unittests/helpers.py:226:78: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-return-type] unittests/helpers.py:228:16: Return type does not match returned value: expected `((...) -> Unknown, /) -> (...) -> Unknown`, found `def expectedFailure(test_item: _FT) -> _FT`
++ error[invalid-return-type] unittests/helpers.py:228:16: Return type does not match returned value: expected `((...) -> R, /) -> (...) -> R`, found `def expectedFailure(test_item: _FT) -> _FT`
++ error[invalid-argument-type] unittests/internaltests.py:1596:9: Argument to function `contextmanager` is incorrect: Expected `(...) -> Iterator[Unknown]`, found `def mock_trial(value: str) -> Iterable[None]`
++ error[invalid-argument-type] unittests/internaltests.py:1660:9: Argument to function `contextmanager` is incorrect: Expected `(...) -> Iterator[Unknown]`, found `def mock_trial(value: str) -> Iterable[None]`
+- Found 1387 diagnostics
++ Found 1373 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- error[invalid-type-form] discord/ext/commands/core.py:213:34: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] discord/ext/commands/core.py:213:62: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] discord/ext/commands/core.py:230:73: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] discord/ext/commands/core.py:231:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] discord/utils.py:305:69: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] discord/utils.py:305:86: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 627 diagnostics
++ Found 621 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
++ error[invalid-argument-type] src/bokeh/application/handlers/code.py:193:1: Argument to function `contextmanager` is incorrect: Expected `(...) -> Iterator[Unknown]`, found `def _monkeypatch_io(loggers: dict[str, (...) -> None]) -> dict[str, Any]`
+- Found 950 diagnostics
++ Found 951 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- error[invalid-type-form] django-stubs/utils/autoreload.pyi:22:31: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] django-stubs/utils/autoreload.pyi:22:53: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- Found 472 diagnostics
++ Found 470 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ error[invalid-argument-type] lib/streamlit/elements/dialog_decorator.py:76:12: Argument to function `wraps` is incorrect: Argument type `(...) -> _RWrapped` does not satisfy upper bound of type variable `F`
+- Found 3269 diagnostics
++ Found 3270 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- error[unresolved-attribute] src/integrations/prefect-dbt/prefect_dbt/cloud/jobs.py:1123:22: Type `(...) -> Unknown` has no attribute `aio`
++ error[unresolved-attribute] src/integrations/prefect-dbt/prefect_dbt/cloud/jobs.py:1123:22: Type `(...) -> Unknown | Coroutine[Any, Any, Unknown]` has no attribute `aio`
+- error[invalid-type-form] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:103:30: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:103:49: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:107:65: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:107:65: Type `(...) -> T` has no attribute `__name__`
+- error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:109:13: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:109:13: Type `(...) -> T` has no attribute `__name__`
+- error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:114:44: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:114:44: Type `(...) -> T` has no attribute `__name__`
+- error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:117:43: Type `(...) -> Unknown` has no attribute `__name__`
++ error[unresolved-attribute] src/integrations/prefect-docker/prefect_docker/deployments/steps.py:117:43: Type `(...) -> T` has no attribute `__name__`
+- error[invalid-type-form] src/prefect/_internal/compatibility/async_dispatch.py:47:18: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/async_dispatch.py:66:18: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/async_dispatch.py:69:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/async_dispatch.py:69:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/deprecated.py:107:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/deprecated.py:107:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/deprecated.py:163:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/compatibility/deprecated.py:163:42: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/concurrency/event_loop.py:31:20: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/retries.py:32:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/_internal/retries.py:32:53: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/client/utilities.py:65:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/client/utilities.py:75:18: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/client/utilities.py:76:15: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ error[invalid-argument-type] src/prefect/concurrency/v1/sync.py:63:58: Argument to function `emit_concurrency_acquisition_events` is incorrect: Expected `list[MinimalConcurrencyLimitResponse]`, found `Unknown | Coroutine[Any, Any, Unknown]`
++ error[invalid-argument-type] src/prefect/concurrency/v1/sync.py:72:41: Argument to function `emit_concurrency_release_events` is incorrect: Expected `list[MinimalConcurrencyLimitResponse]`, found `Unknown | Coroutine[Any, Any, Unknown]`
++ error[missing-argument] src/prefect/docker/docker_image.py:74:17: No argument provided for required parameter `context` of function `build_image`
++ error[missing-argument] src/prefect/docker/docker_image.py:77:13: No argument provided for required parameter `context` of function `build_image`
++ error[invalid-return-type] src/prefect/results.py:127:12: Return type does not match returned value: expected `WritableFileSystem`, found `Unknown | Coroutine[Any, Any, Unknown] | LocalFileSystem`
++ error[invalid-assignment] src/prefect/results.py:186:9: Object of type `Unknown | Coroutine[Any, Any, Unknown]` is not assignable to `WritableFileSystem`
++ error[invalid-argument-type] src/prefect/runner/submit.py:129:1: Argument to function `sync_compatible` is incorrect: Expected `(...) -> Coroutine[Any, Any, Unknown]`, found `Overload[(prefect_callable: @Todo(specialized non-generic class), parameters: dict[str, Any], retry_failed_submissions: bool = Literal[True]) -> FlowRun, (prefect_callable: @Todo(specialized non-generic class), parameters: list[dict[str, Any]], retry_failed_submissions: bool = Literal[True]) -> list[FlowRun]]`
+- error[invalid-type-form] src/prefect/server/database/alembic_commands.py:22:36: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/server/database/alembic_commands.py:22:55: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/server/database/dependencies.py:143:28: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/server/database/dependencies.py:143:47: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/server/database/dependencies.py:215:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/server/database/dependencies.py:219:39: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
++ error[invalid-argument-type] src/prefect/task_engine.py:634:21: Argument is incorrect: Expected `ResultStore`, found `Unknown | Coroutine[Any, Any, Unknown]`
+- error[invalid-type-form] src/prefect/tasks.py:1634:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/tasks.py:1669:25: The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+- error[invalid-type-form] src/prefect/tasks.py:1704:25: The first argument to `Callable` must be either...*[Comment body truncated]*
+
+---
+
+_@dcreager approved on 2025-06-02 13:09_
+
+---
+
+_Merged by @AlexWaygood on 2025-06-02 13:10_
+
+---
+
+_Closed by @AlexWaygood on 2025-06-02 13:10_
+
+---
+
+_Branch deleted on 2025-06-02 13:10_
+
+---
+
+_Label `bug` added by @dhruvmanila on 2025-06-11 10:47_
+
+---
