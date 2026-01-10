@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add initial support for universal lock files - astral-sh/uv #3831</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add initial support for universal lock files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3831">#3831</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-24 19:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-24 19:03</div>
+            <div class="timeline-body"><p>This PR implements &quot;resolver forking&quot; in a way that permits us to
+generate &quot;universal&quot; lock files. The concrete manifestation of this
+requires omitting a <code>MarkerEnvironment</code> when calling the resolver, and
+as a result, the resolution returned may include multiple versions for
+the same package.</p>
+<p>As a very basic example, consider this <code>requirements.in</code> file:</p>
+<pre><code>anyio&gt;=4.3.0 ; sys_platform == &quot;linux&quot;
+anyio&lt;4 ; sys_platform == &quot;darwin&quot;
+</code></pre>
+<p>And while not the final intended command, one can generate a <code>uv.lock</code>
+with the following:</p>
+<pre><code>$ cargo run -p uv -- pip compile -p3.10 ~/astral/tmp/reqs/forks/basic.in --unstable-uv-lock-file
+</code></pre>
+<p>And the resulting <code>uv.lock</code>:</p>
+<pre><code>version = 1
+
+[[distribution]]
+name = &quot;anyio&quot;
+version = &quot;3.7.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;sys_platform == 'darwin'&quot;
+
+[distribution.sdist]
+url = &quot;https://files.pythonhosted.org/packages/28/99/2dfd53fd55ce9838e6ff2d4dac20ce58263798bd1a0dbe18b3a9af3fcfce/anyio-3.7.1.tar.gz&quot;
+hash = &quot;sha256:44a3c9aba0f5defa43261a8b3efb97891f2bd7d804e0e1f56419befa1adfc780&quot;
+size = 142927
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/19/24/44299477fe7dcc9cb58d0a57d5a7588d6af2ff403fdd2d47a246c91a3246/anyio-3.7.1-py3-none-any.whl&quot;
+hash = &quot;sha256:91dee416e570e92c64041bd18b900d1d6fa78dff7048769ce5ac5ddad004fbb5&quot;
+size = 80896
+
+[[distribution.dependencies]]
+name = &quot;exceptiongroup&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;idna&quot;
+version = &quot;3.7&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;sniffio&quot;
+version = &quot;1.3.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.12.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution]]
+name = &quot;anyio&quot;
+version = &quot;4.3.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;sys_platform == 'linux'&quot;
+
+[distribution.sdist]
+url = &quot;https://files.pythonhosted.org/packages/db/4d/3970183622f0330d3c23d9b8a5f52e365e50381fd484d08e3285104333d3/anyio-4.3.0.tar.gz&quot;
+hash = &quot;sha256:f75253795a87df48568485fd18cdd2a3fa5c4f7c5be8e5e36637733fce06fed6&quot;
+size = 159642
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/14/fd/2f20c40b45e4fb4324834aea24bd4afdf1143390242c0b33774da0e2e34f/anyio-4.3.0-py3-none-any.whl&quot;
+hash = &quot;sha256:048e05d0f6caeed70d731f3db756d35dcc1f35747c8c403364a8332c630441b8&quot;
+size = 85584
+
+[[distribution.dependencies]]
+name = &quot;exceptiongroup&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;idna&quot;
+version = &quot;3.7&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;sniffio&quot;
+version = &quot;1.3.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.12.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution]]
+name = &quot;exceptiongroup&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;python_version &lt; '3.11'&quot;
+
+[distribution.sdist]
+url = &quot;https://files.pythonhosted.org/packages/a0/65/d66b7fbaef021b3c954b3bbb196d21d8a4b97918ea524f82cfae474215af/exceptiongroup-1.2.1.tar.gz&quot;
+hash = &quot;sha256:a4785e48b045528f5bfe627b6ad554ff32def154f42372786903b7abcfe1aa16&quot;
+size = 28717
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/01/90/79fe92dd413a9cab314ef5c591b5aa9b9ba787ae4cadab75055b0ae00b33/exceptiongroup-1.2.1-py3-none-any.whl&quot;
+hash = &quot;sha256:5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad&quot;
+size = 16458
+
+[[distribution]]
+name = &quot;idna&quot;
+version = &quot;3.7&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[distribution.sdist]
+url = &quot;https://files.pythonhosted.org/packages/21/ed/f86a79a07470cb07819390452f178b3bef1d375f2ec021ecfc709fc7cf07/idna-3.7.tar.gz&quot;
+hash = &quot;sha256:028ff3aadf0609c1fd278d8ea3089299412a7a8b9bd005dd08b9f8285bcb5cfc&quot;
+size = 189575
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl&quot;
+hash = &quot;sha256:82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0&quot;
+size = 66836
+
+[[distribution]]
+name = &quot;sniffio&quot;
+version = &quot;1.3.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[distribution.sdist]
+url = &quot;https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz&quot;
+hash = &quot;sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc&quot;
+size = 20372
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl&quot;
+hash = &quot;sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2&quot;
+size = 10235
+
+[[distribution]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.12.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;python_version &lt; '3.8' or python_version &lt; '3.11'&quot;
+
+[distribution.sdist]
+url = &quot;https://files.pythonhosted.org/packages/ce/6a/aa0a40b0889ec2eb81a02ee0daa6a34c6697a605cf62e6e857eead9e4f85/typing_extensions-4.12.0.tar.gz&quot;
+hash = &quot;sha256:8cbcdc8606ebcb0d95453ad7dc5065e6237b6aa230a31e81d0f440c30fed5fd8&quot;
+size = 84291
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/e1/4d/d612de852a0bc64a64418e1cef25fe1914c5b1611e34cc271ed7e36174c8/typing_extensions-4.12.0-py3-none-any.whl&quot;
+hash = &quot;sha256:b349c66bea9016ac22978d800cfff206d5f9816951f12a7d0ec5578b0a819594&quot;
+size = 37104
+</code></pre>
+<p>In particular, notice that there are two <code>anyio</code> distribution entries:</p>
+<pre><code>[[distribution]]
+name = &quot;anyio&quot;
+version = &quot;3.7.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;sys_platform == 'darwin'&quot;
+
+[[distribution]]
+name = &quot;anyio&quot;
+version = &quot;4.3.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;sys_platform == 'linux'&quot;
+</code></pre>
+<p>The intent here is that, on install, a <code>MarkerEnvironment</code> would be
+used to do a graph traversal while filtering out distributions whose
+marker expressions don't match the marker environment. In order to
+work, this does require that we only permit multiple versions of the
+same package when their marker expressions have an empty intersection.</p>
+<p>This is a draft because there is still some work to be done:</p>
+<ul>
+<li>There are some test failures that need to be investigated.</li>
+<li>This doesn't yet limit forking to cases where the marker expressions
+have an empty intersection.</li>
+<li>We should include tests, although I might do those in a follow-up PR
+since this one is already pretty big.</li>
+</ul>
+<p>I'm also a little uneasy with how we're handling marker expressions in
+the <code>PubGrubPackage</code>. Careful scrutiny there would be appreciated!</p>
+<p>Closes #3358, Closes #3360</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-24 19:20</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/ag/forking">CodSpeed Performance Report</a></h2>
+<h3>Merging #3831 will <strong>degrade performances by 7.66%</strong></h3>
+<p><sub>Comparing <code>ag/forking</code> (94b9c3b) with <code>main</code> (1445669)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 12</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/ag/forking">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>ag/forking</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>resolve_warm_jupyter</code> | 82 ms | 88.8 ms | -7.66% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @BurntSushi on 2024-05-29 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-05-29 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-29 19:09</div>
+            <div class="timeline-body"><p>Will review this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution/graph.rs</code>:46 on 2024-05-29 19:15</div>
+            <div class="timeline-body"><p>This might need to be keyed on <code>(PackageName, Option&lt;ExtraName&gt;)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:17</div>
+            <div class="timeline-body"><p>Random question but one that's on my mind from my own work: in <code>crates/uv-resolver/src/pubgrub/dependencies.rs#add_requirements</code>, we call <code>requirement.evaluate_markers(env, std::slice::from_ref(source_extra))</code>. That now always evaluates to <code>true</code> when the marker environment is omitted, so how do we collect different dependencies based on the extra?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:852 on 2024-05-29 19:26</div>
+            <div class="timeline-body"><p>Can you include an example here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1071 on 2024-05-29 19:26</div>
+            <div class="timeline-body"><p>Why is this necessary? Can you refresh my memory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:32</div>
+            <div class="timeline-body"><p>I think there's another area that isn't covered yet -- something like:</p>
+<pre><code>anyio @ https://files.pythonhosted.org/packages/7b/a2/10639a79341f6c019dedc95bd48a4928eed9f1d1197f4c04f546fc7ae0ff/anyio-4.4.0-py3-none-any.whl ; python_version &gt; '3.10'
+
+anyio @ https://files.pythonhosted.org/packages/85/4f/d010eca6914703d8e6be222165d02c3e708ed909cdb2b7af3743667f302e/anyio-4.1.0-py3-none-any.whl ; python_version &lt;= '3.10'
+</code></pre>
+<p>These are two different URLs, but I assume <code>urls::Urls</code> will reject these as conflicting upfront? We might need to make all of those &quot;do work upfront&quot; abstractions <em>also</em> track markers in some way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:852 on 2024-05-29 19:36</div>
+            <div class="timeline-body"><p>Separately, what <em>do</em> we want to do? Take the intersection? What if we can't solve the intersection...? Is that possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1071 on 2024-05-29 19:37</div>
+            <div class="timeline-body"><p>To ensure they resolve to the same version, or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-30 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/graph.rs</code>:46 on 2024-05-30 17:41</div>
+            <div class="timeline-body"><p>Yup, nice catch. Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-30 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Random question but one that's on my mind from my own work: in <code>crates/uv-resolver/src/pubgrub/dependencies.rs#add_requirements</code>, we call <code>requirement.evaluate_markers(env, std::slice::from_ref(source_extra))</code>. That now always evaluates to <code>true</code> when the marker environment is omitted, so how do we collect different dependencies based on the extra?</p>
+</blockquote>
+<p>Good question! When a <code>MarkerEnvironment</code> is not provided, the only the marker expressions referencing the environment always evaluate to <code>true</code>. But any <code>extra</code> marker expressions are still left in tact:</p>
+<pre><code class="language-rust">    /// Evaluates this marker tree against an optional environment and a
+    /// possibly empty sequence of extras.
+    ///
+    /// When an environment is not provided, all marker expressions based on
+    /// the environment evaluate to `true`. That is, this provides environment
+    /// independent marker evaluation. In practice, this means only the extras
+    /// are evaluated when an environment is not provided.
+    pub fn evaluate_optional_environment(
+        &amp;self,
+        env: Option&lt;&amp;MarkerEnvironment&gt;,
+        extras: &amp;[ExtraName],
+    ) -&gt; bool {
+</code></pre>
+<p>So that means <code>requirement.evaluate_markers(env, std::slice::from_ref(source_extra))</code> doesn't always evaluate to true when <code>env</code> is <code>None</code>, because the marker expression might reference a different extra than <code>source_extra</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:852 on 2024-05-30 17:48</div>
+            <div class="timeline-body"><p>I was thinking that if we took the intersection and couldn't solve it, then the resolution overall would fail.</p>
+<p>But now that I think about this more, I'm no longer convinced we should do this. And that checking that the markers are disjoint should be enough. I think what I had thought previously was that if the versions overlapped, then it would be possible to emit a lock file whose graph traversal would result in selecting two different versions of the same package. But I don't think that's true <em>given</em> that we require an empty intersection for the corresponding marker expressions (which I have not added yet).</p>
+<p>I'll remove this comment. Thanks for flagging it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-30 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-30 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1071 on 2024-05-30 18:10</div>
+            <div class="timeline-body"><p>I can't quite explain this yet. If I don't do this (and adjust some of the code in <code>resolution/graph.rs</code> to not require <code>marker: None</code>), then I get a few test failures. One of them is this:</p>
+<pre><code>Snapshot: compile_constraints_markers
+Source: crates/uv/tests/pip_compile.rs:322
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    5     5 │ anyio==4.3.0
+    6     6 │     # via -r requirements.in
+    7     7 │ idna==3.6
+    8     8 │     # via anyio
+    9       │-sniffio==1.3.0
+          9 │+sniffio==1.3.1
+   10    10 │     # via
+   11    11 │     #   -c constraints.txt
+   12    12 │     #   anyio
+   13    13 │
+   14    14 │ ----- stderr -----
+   15       │-Resolved 3 packages in [TIME]
+         15 │+Resolved 4 packages in [TIME]
+</code></pre>
+<p>And there are 3 more failures that look like this:</p>
+<pre><code>Snapshot: install_executable
+Source: crates/uv/tests/pip_install.rs:1802
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    1     1 │ exit_code: 0
+    2     2 │ ----- stdout -----
+    3     3 │
+    4     4 │ ----- stderr -----
+    5       │-Resolved 7 packages in [TIME]
+          5 │+Resolved 8 packages in [TIME]
+    6     6 │ Downloaded 7 packages in [TIME]
+    7     7 │ Installed 7 packages in [TIME]
+    8     8 │  + astroid==3.0.3
+    9     9 │  + dill==0.3.8
+</code></pre>
+<p>I think I originally added this because I was trying to follow in the footsteps of how extras were handled. But markers aren't exactly like extras, and I'm not sure this sort of dependency makes sense.</p>
+<p>Looking at the <code>compile_constraints_markers</code> test more closely, I see that it looks like there is probably something relevant here:</p>
+<pre><code>    // If constraints are ignored, these will conflict
+    constraints_txt.write_str(&quot;sniffio==1.2.0;python_version&lt;='3.7'&quot;)?;
+    constraints_txt.write_str(&quot;sniffio==1.3.0;python_version&gt;'3.7'&quot;)?;
+</code></pre>
+<p>So if there is no <code>marker: None</code> &quot;dependency on itself&quot; being added (as is done here in this PR), then I believe the above two constraints will end up being two <em>distinct</em> <code>PubGrubPackage</code> values due to the markers being distinct. Which in turn means the pubgrub constraints won't unify and I think leads to a different resolution? Although I can't fully explain why <code>1.3.1</code> is selected. With the dependency on itself, I think that lets pubgrub unify the constraints, which I think <em>is</em> similar to the same kind of effect we achieve with extras?</p>
+<p>I'm like 80% confident here. I've updated the comment here to hopefully expose some of that uncertainty:</p>
+<pre><code class="language-rust">                // If a package has a marker, add a dependency from it to the
+                // same package without markers.
+                //
+                // At time of writing, AG doesn't fully understand why we need
+                // this, but one explanation is that without it, there is no
+                // way to connect two different `PubGrubPackage` values with
+                // the same package name but different markers. With different
+                // markers, they would be considered wholly distinct packages.
+                // But this dependency-on-itself-without-markers forces PubGrub
+                // to unify the constraints across what would otherwise be two
+                // distinct packages.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-30 18:15</div>
+            <div class="timeline-body"><p>Assuming this passes tests, and you feel it's ready, good by me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 18:17</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-rust">evaluate_optional_environment
+</code></pre>
+</blockquote>
+<p>Ohh, I was misreading <code>evaluate_markers</code>. The <code>if</code>-<code>let</code> is on <code>self.marker</code>, not <code>env</code>. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-05-30 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-30 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-30 18:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:59:50 UTC
+    </footer>
+</body>
+</html>

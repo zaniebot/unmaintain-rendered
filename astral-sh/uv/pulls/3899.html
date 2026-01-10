@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add missing i686 alias for x86 - astral-sh/uv #3899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add missing i686 alias for x86</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3899">#3899</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-05-29 08:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-05-29 08:55</div>
+            <div class="timeline-body"><p>This alias is required for the 32-bit x86 manylinux builder.</p>
+<p>I've also changed the reporting level for unusable python interpreter errors to debug so it shows up with <code>-v</code>, otherwise we can't see what's broken:</p>
+<pre><code class="language-console"># uv venv py312 --python python3.12 -vv
+    0.000461s DEBUG uv_interpreter::discovery Searching for Python 3.12 in search path
+  × No interpreter found for Python 3.12 in search path
+</code></pre>
+<p>Reproduction:</p>
+<pre><code class="language-console">$ docker run --rm -it quay.io/pypa/manylinux2014_i686
+# curl -LsSf https://astral.sh/uv/install.sh | s
+# source $HOME/.cargo/env
+# RUST_LOG=trace uv venv py312 --python python3.12
+DEBUG Searching for Python 3.12 in search path
+TRACE Searching PATH for executables: python3.12, python3, python
+TRACE Checking `PATH` directory for interpreters: /root/.cargo/bin
+TRACE Checking `PATH` directory for interpreters: /opt/rh/devtoolset-10/root/usr/bin
+TRACE Checking `PATH` directory for interpreters: /usr/local/sbin
+TRACE Checking `PATH` directory for interpreters: /usr/local/bin
+TRACE Found possible Python executable: /usr/local/bin/python3.12
+TRACE Querying interpreter executable at /usr/local/bin/python3.12
+TRACE Querying Python at `/usr/local/bin/python3.12` did not return the expected data
+unknown variant `i686`, expected one of `aarch64`, `armv6l`, `armv7l`, `powerpc64le`, `powerpc64`, `x86`, `x86_64`, `s390x`
+--- stdout:
+{&quot;result&quot;: &quot;success&quot;, &quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.12.3&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;i686&quot;, &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;6.1.0-10-amd64&quot;, &quot;platform_system&quot;: &quot;Linux&quot;, &quot;platform_version&quot;: &quot;#1 SMP PREEMPT_DYNAMIC Debian 6.1.37-1 (2023-07-03)&quot;, &quot;python_full_version&quot;: &quot;3.12.3&quot;, &quot;python_version&quot;: &quot;3.12&quot;, &quot;sys_platform&quot;: &quot;linux&quot;}, &quot;base_prefix&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;, &quot;base_exec_prefix&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;, &quot;prefix&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;, &quot;base_executable&quot;: &quot;/usr/local/bin/python3.12&quot;, &quot;sys_executable&quot;: &quot;/usr/local/bin/python3.12&quot;, &quot;sys_path&quot;: [&quot;/root/.cache/uv/.tmp7k64ZY&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python312.zip&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python3.12&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/lib-dynload&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/site-packages&quot;], &quot;stdlib&quot;: &quot;/opt/_internal/cpython-3.12.3/lib/python3.12&quot;, &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/site-packages&quot;, &quot;purelib&quot;: &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;/opt/_internal/cpython-3.12.3/include/python3.12&quot;, &quot;scripts&quot;: &quot;/opt/_internal/cpython-3.12.3/bin&quot;, &quot;data&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.12&quot;, &quot;scripts&quot;: &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}, &quot;platform&quot;: {&quot;os&quot;: {&quot;name&quot;: &quot;manylinux&quot;, &quot;major&quot;: 2, &quot;minor&quot;: 17}, &quot;arch&quot;: &quot;i686&quot;}, &quot;gil_disabled&quot;: false, &quot;pointer_size&quot;: &quot;32&quot;}
+--- stderr:
+
+---
+TRACE Skipping bad interpreter at /usr/local/bin/python3.12
+TRACE Checking `PATH` directory for interpreters: /usr/sbin
+TRACE Checking `PATH` directory for interpreters: /usr/bin
+TRACE Found possible Python executable: /usr/bin/python
+TRACE Querying interpreter executable at /usr/bin/python
+TRACE Can't use Python at `/usr/bin/python`
+TRACE Skipping bad interpreter at /usr/bin/python
+TRACE Checking `PATH` directory for interpreters: /sbin
+TRACE Checking `PATH` directory for interpreters: /bin
+TRACE Found possible Python executable: /bin/python
+TRACE Querying interpreter executable at /bin/python
+TRACE Can't use Python at `/bin/python`
+TRACE Skipping bad interpreter at /bin/python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-05-29 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:378 on 2024-05-29 13:22</div>
+            <div class="timeline-body"><p>Why does this get dropped? Why is tracing it necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-29 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:378 on 2024-05-29 13:24</div>
+            <div class="timeline-body"><p>Like what is the output before and after this change alone?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/henryiii">@henryiii</a> reviewed on 2024-05-29 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/henryiii">@henryiii</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:378 on 2024-05-29 14:35</div>
+            <div class="timeline-body"><p>Before was:</p>
+<pre><code class="language-console">$ uv venv py312 --python python3.12 -vv
+    0.000461s DEBUG uv_interpreter::discovery Searching for Python 3.12 in search path
+  × No interpreter found for Python 3.12 in search path
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-29 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/discovery.rs</code>:378 on 2024-05-29 15:30</div>
+            <div class="timeline-body"><p>After it becomes:</p>
+<pre><code class="language-console">$ uv venv --python python3.12 -v
+DEBUG Searching for Python 3.12 in search path
+DEBUG Querying Python at `/usr/local/bin/python3.12` did not return the expected data
+unknown variant `i686`, expected one of `aarch64`, `armv6l`, `armv7l`, `powerpc64le`, `powerpc64`, `x86`, `x86_64`, `s390x`
+--- stdout:
+{&quot;result&quot;: &quot;success&quot;, &quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.12.3&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;i686&quot;, &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;6.8.0-31-generic&quot;, &quot;platform_system&quot;: &quot;Linux&quot;, &quot;platform_version&quot;: &quot;#31-Ubuntu SMP PREEMPT_DYNAMIC Sat Apr 20 00:40:06 UTC 2024&quot;, &quot;python_full_version&quot;: &quot;3.12.3&quot;, &quot;python_version&quot;: &quot;3.12&quot;, &quot;sys_platform&quot;: &quot;linux&quot;}, &quot;base_prefix&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;, &quot;base_exec_prefix&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;, &quot;prefix&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;, &quot;base_executable&quot;: &quot;/usr/local/bin/python3.12&quot;, &quot;sys_executable&quot;: &quot;/usr/local/bin/python3.12&quot;, &quot;sys_path&quot;: [&quot;/root/.cache/uv/.tmpvgwwbk&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python312.zip&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python3.12&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/lib-dynload&quot;, &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/site-packages&quot;], &quot;stdlib&quot;: &quot;/opt/_internal/cpython-3.12.3/lib/python3.12&quot;, &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/site-packages&quot;, &quot;purelib&quot;: &quot;/opt/_internal/cpython-3.12.3/lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;/opt/_internal/cpython-3.12.3/include/python3.12&quot;, &quot;scripts&quot;: &quot;/opt/_internal/cpython-3.12.3/bin&quot;, &quot;data&quot;: &quot;/opt/_internal/cpython-3.12.3&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.12/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.12&quot;, &quot;scripts&quot;: &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}, &quot;platform&quot;: {&quot;os&quot;: {&quot;name&quot;: &quot;manylinux&quot;, &quot;major&quot;: 2, &quot;minor&quot;: 17}, &quot;arch&quot;: &quot;i686&quot;}, &quot;gil_disabled&quot;: false, &quot;pointer_size&quot;: &quot;32&quot;}
+--- stderr:
+
+---
+DEBUG Can't use Python at `/usr/bin/python`
+DEBUG Can't use Python at `/bin/python`
+  × No interpreter found for Python 3.12 in search path
+</code></pre>
+<p>We now show (with <code>-v</code>) when we rejected a python interpreter, so that users can retrace what happened.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-29 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-29 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-29 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-29 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:59:50 UTC
+    </footer>
+</body>
+</html>
