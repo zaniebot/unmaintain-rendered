@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for delocating macOS wheels - astral-sh/uv #17336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for delocating macOS wheels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17336">#17336</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2026-01-06 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-06 15:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for delocating macOS wheels. The behavior is not yet exposed on the CLI; it's only intended for internal-to-uv use. The implementation is based on https://github.com/matthew-brett/delocate, specifically <code>delocate-listdeps {wheel}</code> to list library dependencies (exposed as <code>list_wheel_dependencies()</code>) and <code>delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}</code> to copy external libraries into binaries (exposed as <code>delocate_wheel()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2026-01-06 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2026-01-06 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2026-01-06 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2026-01-06 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/wheel.rs</code>:215 on 2026-01-07 09:37</div>
+            <div class="timeline-body"><p>How does this logic compare to the one in install-wheel-rs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/wheel.rs</code>:99 on 2026-01-07 09:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn hash_file(path: &amp;Path) -&gt; Result&lt;(String, u64), DelocateError&gt; {
+    let mut file = File::open(path)?;
+    let mut hasher = Sha256::new();
+    let size = io::copy(&amp;mut file, &amp;mut hasher)?;
+
+    let hash = hasher.finalize();
+    let hash_str = format!(&quot;sha256={}&quot;, URL_SAFE_NO_PAD.encode(hash));
+
+    Ok((hash_str, size))
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/wheel.rs</code>:106 on 2026-01-07 09:42</div>
+            <div class="timeline-body"><p>Do we actually want to conserve all permissions, or only the executable bit? https://github.com/astral-sh/uv/blob/cc1ca8b4a1730be2997222b6ab317e7a69c49099/crates/uv-build-backend/src/wheel.rs#L675</p>
+<p>Alternatively, should we remember the permission from the origin wheel instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/wheel.rs</code>:96 on 2026-01-07 09:44</div>
+            <div class="timeline-body"><p>We should show both paths in the error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/wheel.rs</code>:25 on 2026-01-07 09:48</div>
+            <div class="timeline-body"><p>Does this guarantee that the compressed tag sets are sorted? https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/#compressed-tag-sets</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/delocate.rs</code>:59 on 2026-01-07 10:08</div>
+            <div class="timeline-body"><p>We have existing slightly different logic in <code>macos_deployment_target</code> in uv-configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/delocate.rs</code>:70 on 2026-01-07 10:08</div>
+            <div class="timeline-body"><p>Do these have a specific source that documents what are system prefixes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:98 on 2026-01-07 10:12</div>
+            <div class="timeline-body"><p>Do we need the patch version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:150 on 2026-01-07 10:14</div>
+            <div class="timeline-body"><p>We should use the constants from goblin: https://docs.rs/goblin/latest/goblin/mach/header/index.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:102 on 2026-01-07 10:20</div>
+            <div class="timeline-body"><p>This looks a lot like https://docs.rs/goblin/latest/goblin/mach/fn.peek_bytes.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:266 on 2026-01-07 10:26</div>
+            <div class="timeline-body"><p>goblin uses <code>bytes.pread::&lt;&amp;str&gt;(cmd.offset + command.dylib.name as usize)</code> for this, can we use that too? https://github.com/m4b/goblin/blob/fddcc4747ccf306469ff6092a953bd667ec8ed7d/src/mach/mod.rs#L216</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:295 on 2026-01-07 11:05</div>
+            <div class="timeline-body"><p>This is already parsed in <code>macho.rpaths</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:90 on 2026-01-07 11:11</div>
+            <div class="timeline-body"><p>Where are we reading this field?</p>
+<p>In case we aren't reading it, the names are already parsed as <code>macho.libs</code> by goblin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/error.rs</code>:37 on 2026-01-07 11:17</div>
+            <div class="timeline-body"><p>Those should be separate variants instead of a string payload</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/tests/integration_test.rs</code>:16 on 2026-01-07 11:27</div>
+            <div class="timeline-body"><p>Inline mods don't match the patterns we usually use</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-07 11:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-07 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-delocate/tests/integration_test.rs</code>:16 on 2026-01-07 14:02</div>
+            <div class="timeline-body"><p>It makes it easier to <code>#cfg</code> out chunks of tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-07 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-delocate/src/wheel.rs</code>:25 on 2026-01-07 14:03</div>
+            <div class="timeline-body"><p>Wait, does our <code>WheelFilename</code> display logic even do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-07 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-delocate/tests/integration_test.rs</code>:16 on 2026-01-07 14:06</div>
+            <div class="timeline-body"><p>I can move them into separate files though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-07 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-delocate/src/macho.rs</code>:266 on 2026-01-07 14:08</div>
+            <div class="timeline-body"><p>We can but we have to pull in <code>scroll</code> (which we already transitively depend on).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-07 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/wheel.rs</code>:25 on 2026-01-07 14:19</div>
+            <div class="timeline-body"><p>We retain the input order, so given that all input wheels are correctly sorted, and all wheel the uv build backend creates are correctly sorted (<code>py3-none-any</code> matches that), we won't create invalid compressed tag sets. Or simpler: If there wasn't already an unsorted compressed tag set, we won't create one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2026-01-07 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-07 15:39</div>
+            <div class="timeline-body"><p>Thanks for the great review @konstin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-08 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/target_triple.rs</code>:959 on 2026-01-08 13:29</div>
+            <div class="timeline-body"><p>I think this might belong in <code>uv-platform</code>, but I think we can explore that separately from this pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-08 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-delocate/src/macho.rs</code>:102 on 2026-01-08 13:31</div>
+            <div class="timeline-body"><p>Hm this is duplicated with <code>uv-configuration</code> now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-delocate/src/macho.rs</code>:31 on 2026-01-08 13:35</div>
+            <div class="timeline-body"><p>I think I'd expect this to have <code>Known(Arch)</code> wrapping one of our other types instead. e.g., <code>uv-platform-tags::Arch</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-08 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-08 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-delocate/src/macho.rs</code>:102 on 2026-01-08 13:39</div>
+            <div class="timeline-body"><p>maybe that means https://github.com/astral-sh/uv/pull/17336#discussion_r2672368365 is actually relevant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-08 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-delocate/src/macho.rs</code>:102 on 2026-01-08 13:54</div>
+            <div class="timeline-body"><p>Yeah I just didn’t think it was important to  de-duplicate it, but happy to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-08 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-delocate/src/macho.rs</code>:102 on 2026-01-08 14:14</div>
+            <div class="timeline-body"><p>I'm just a little wary of our platform code sprawling further, I don't feel super strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-delocate/src/macho.rs</code>:102 on 2026-01-08 14:47</div>
+            <div class="timeline-body"><p>It would be nice to centralize the default macOS version assumption so they don't get out of sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-08 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-08 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-delocate/src/macho.rs</code>:31 on 2026-01-08 15:22</div>
+            <div class="timeline-body"><p>Personally it seems okay to me to have this here since it's specifically about Mach-O binary types and the use is very limited.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:43:37 UTC
+    </footer>
+</body>
+</html>

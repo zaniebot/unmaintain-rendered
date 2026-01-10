@@ -14,7 +14,7 @@
     <h1>Allow setting proxy variables via global / user configuration</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-merged"></span>
         <a href="https://github.com/astral-sh/uv/pull/16918">#16918</a>
         opened by <a href="https://github.com/seemethere">@seemethere</a>
         on 2025-12-01 22:24
@@ -59,9 +59,6 @@ no-proxy = [
 
 </code></pre>
 </div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/9472.html">astral-sh/uv#9472</a> on 2025-12-01 22:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-02 02:22</div>
@@ -213,12 +210,12 @@ error: Failed to parse: `pyproject.toml`. The `http-proxy` field is not allowed 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:554 on 2025-12-10 13:21</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:557 on 2025-12-10 13:21</div>
             <div class="timeline-body"><p>Can you explain why we're not using the <code>Proxy</code> type directly for validation? Why do we add a wrapper type?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/seemethere">@seemethere</a> on <code>crates/uv-client/src/base_client.rs</code>:554 on 2025-12-10 15:52</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/seemethere">@seemethere</a> on <code>crates/uv-client/src/base_client.rs</code>:557 on 2025-12-10 15:52</div>
             <div class="timeline-body"><p>The wrapper type includes a <code>Deserialize</code> implementation which <code>reqwest::Proxy</code> does not, as well the error messaging is a bit more informative than the generic <code>error building client: builder error</code> you might get from <code>reqwest</code>.</p>
 <p>Happy to rework this though if we feel like it's overkill.</p>
 </div>
@@ -232,7 +229,7 @@ error: Failed to parse: `pyproject.toml`. The `http-proxy` field is not allowed 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:554 on 2025-12-10 15:54</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:557 on 2025-12-10 15:54</div>
             <div class="timeline-body"><p>Why does it wrap <code>Url</code> instead of <code>Proxy</code>?</p>
 <p>I'm just trying to understand the pattern here as something feels a bit off.</p>
 </div>
@@ -242,7 +239,7 @@ error: Failed to parse: `pyproject.toml`. The `http-proxy` field is not allowed 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/seemethere">@seemethere</a> on <code>crates/uv-client/src/base_client.rs</code>:554 on 2025-12-10 16:11</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/seemethere">@seemethere</a> on <code>crates/uv-client/src/base_client.rs</code>:557 on 2025-12-10 16:11</div>
             <div class="timeline-body"><p>I think it mostly comes down to Proxy being a suitable type for the runtime http client while being an unsuitable type for expressing user configuration.</p>
 <p>I think in general what we're expressing with <code>http_proxy</code> and <code>https_proxy</code> are URLs that have routing rules expressed through their variable names.</p>
 <p>We also get the benefits of inheriting some of the things from Url like <code>PartialEq</code>, <code>Serialize</code>, etc. which <code>Proxy</code> doesn't have.</p>
@@ -253,7 +250,7 @@ error: Failed to parse: `pyproject.toml`. The `http-proxy` field is not allowed 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/seemethere">@seemethere</a> on <code>crates/uv-client/src/base_client.rs</code>:554 on 2025-12-10 16:14</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/seemethere">@seemethere</a> on <code>crates/uv-client/src/base_client.rs</code>:557 on 2025-12-10 16:14</div>
             <div class="timeline-body"><p>I do think that perhaps this would be something that should be upstreamed to reqwest since it might also be generally useful for other people too.</p>
 </div>
         </div>
@@ -273,10 +270,57 @@ error: Failed to parse: `pyproject.toml`. The `http-proxy` field is not allowed 
 <p>Sounds good! I hope you feel better!</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-06 00:05</div>
+            <div class="timeline-body"><p>Alright sorry for the delay from the holiday time off :)</p>
+<p>I've pushed a commit that does a few things</p>
+<ol>
+<li>Moves conversion into the <code>reqwest::Proxy</code> type into our wrapper <code>ProxyUrl</code> type to consolidate the safety logic</li>
+<li>Adds curl / reqwest compatible <code>http://</code> scheme assumption</li>
+<li>Adds CLI-level integration tests</li>
+</ol>
+<p>and I've resolved the conflict with <code>main</code>.</p>
+<p>Please give it a look over and let me know if you have any questions or concerns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seemethere">@seemethere</a> on 2026-01-06 16:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Alright sorry for the delay from the holiday time off :)</p>
+<p>I've pushed a commit that does a few things</p>
+<ol>
+<li>Moves conversion into the <code>reqwest::Proxy</code> type into our wrapper <code>ProxyUrl</code> type to consolidate the safety logic</li>
+<li>Adds curl / reqwest compatible <code>http://</code> scheme assumption</li>
+<li>Adds CLI-level integration tests</li>
+</ol>
+<p>and I've resolved the conflict with <code>main</code>.</p>
+<p>Please give it a look over and let me know if you have any questions or concerns.</p>
+</blockquote>
+<p>LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2026-01-06 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2026-01-06 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2026-01-06 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2026-01-06 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-09 20:14</div>
+            <div class="timeline-body"><p>This is live in v0.9.23.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:33:16 UTC
+        Synced at 2026-01-10 05:43:35 UTC
     </footer>
 </body>
 </html>

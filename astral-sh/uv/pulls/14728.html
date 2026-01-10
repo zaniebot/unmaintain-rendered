@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers - astral-sh/uv #14728</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14728">#14728</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2025-07-18 15:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-07-18 15:20</div>
+            <div class="timeline-body"><p>This PR adds <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/">PEP 751</a> multi-use lock file support when exporting to <code>pylock.toml</code> format. 📦</p>
+<h3>🎯 What is a Multi-Use Lock File?</h3>
+<p>A multi-use lock file describes <strong>all possible packages</strong> that might be installed across different scenarios, rather than just the packages for one specific configuration. This enables:</p>
+<ul>
+<li><strong>Multiple environments from one file</strong>: Install for Python 3.8, 3.9, 3.10+ all from the same lock file</li>
+<li><strong>Optional features</strong>: Choose which extras (like <code>dev</code>, <code>test</code>, <code>docs</code>) to install at install-time</li>
+<li><strong>Dependency groups</strong>: Select which dependency groups to include (like PEP 735 groups)</li>
+<li><strong>Platform-specific packages</strong>: Different wheels for Linux, macOS, Windows from one source</li>
+</ul>
+<p>The lock file uses <strong>markers</strong> to indicate when each package should be installed, allowing installers to select the appropriate subset.</p>
+<h3>🎯 What This Implements</h3>
+<h4>1. Root-Level PEP 751 Metadata Fields</h4>
+<p>The <code>pylock.toml</code> output now includes the required PEP 751 metadata fields:</p>
+<ul>
+<li><code>extras</code>: All optional dependencies available in the project (e.g., <code>[&quot;dev&quot;, &quot;test&quot;, &quot;docs&quot;]</code>)</li>
+<li><code>dependency-groups</code>: All dependency groups defined in the project (e.g., <code>[&quot;coverage&quot;, &quot;type&quot;]</code>)</li>
+<li><code>default-groups</code>: Synthetic groups for default installation (currently empty per spec)</li>
+</ul>
+<h4>2. Dependency Markers for Extras and Groups</h4>
+<p>Package dependencies include PEP 751 markers using the container membership syntax:</p>
+<ul>
+<li><code>'test' in extras</code> - indicates this dependency is only needed with the <code>test</code> extra</li>
+<li><code>'dev' in dependency_groups</code> - indicates this dependency is only needed with the <code>dev</code> group</li>
+<li>Standard environment markers like <code>python_full_version &gt;= '3.10'</code> work alongside these</li>
+</ul>
+<h3>🔄 Why Marker Conversion?</h3>
+<p>uv's internal lock format uses &quot;universal markers&quot; that encode extras and groups in a special format. PEP 751 specifies a different syntax using container membership:</p>
+<p>| Internal Format                | PEP 751 Format               |
+| ------------------------------ | ---------------------------- |
+| <code>extra == 'extra-3-pkg-cpu'</code>   | <code>'cpu' in extras</code>            |
+| <code>extra == 'group-5-myapp-dev'</code> | <code>'dev' in dependency_groups</code> |</p>
+<p>The conversion module parses the encoded markers and transforms them to PEP 751 syntax, making the <code>pylock.toml</code> output compliant with the specification.</p>
+<h3>📋 Real-World Examples</h3>
+<h4>Extras Example: virtualenv</h4>
+<p>Here's an excerpt from <code>uv export --format pylock.toml</code> showing both root-level fields and dependency markers:</p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;&gt;=3.8&quot;
+extras = [
+    &quot;docs&quot;,
+    &quot;test&quot;,
+]
+
+[[packages]]
+name = &quot;virtualenv&quot;
+dependencies = [
+    { name = &quot;covdefaults&quot;, version = &quot;2.3.0&quot;, marker = &quot;python_full_version &gt;= '3.8' and 'test' in extras&quot; },
+    { name = &quot;coverage&quot;, version = &quot;7.6.1&quot;, marker = &quot;python_full_version == '3.8.*' and 'test' in extras&quot; },
+    { name = &quot;coverage&quot;, version = &quot;7.10.7&quot;, marker = &quot;python_full_version == '3.9.*' and 'test' in extras&quot; },
+    { name = &quot;coverage&quot;, version = &quot;7.13.1&quot;, marker = &quot;python_full_version &gt;= '3.10' and 'test' in extras&quot; },
+    { name = &quot;distlib&quot;, version = &quot;0.4.0&quot;, marker = &quot;python_full_version &gt;= '3.8'&quot; },
+    { name = &quot;filelock&quot;, version = &quot;3.16.1&quot;, marker = &quot;python_full_version == '3.8.*'&quot; },
+    { name = &quot;filelock&quot;, version = &quot;3.19.1&quot;, marker = &quot;python_full_version == '3.9.*'&quot; },
+    { name = &quot;filelock&quot;, version = &quot;3.20.2&quot;, marker = &quot;python_full_version &gt;= '3.10'&quot; },
+    { name = &quot;furo&quot;, version = &quot;2024.8.6&quot;, marker = &quot;python_full_version == '3.8.*' and 'docs' in extras&quot; },
+    { name = &quot;furo&quot;, version = &quot;2025.12.19&quot;, marker = &quot;python_full_version &gt;= '3.9' and 'docs' in extras&quot; },
+    { name = &quot;pytest&quot;, version = &quot;8.3.5&quot;, marker = &quot;python_full_version == '3.8.*' and 'test' in extras&quot; },
+    { name = &quot;pytest&quot;, version = &quot;8.4.2&quot;, marker = &quot;python_full_version == '3.9.*' and 'test' in extras&quot; },
+    { name = &quot;pytest&quot;, version = &quot;9.0.2&quot;, marker = &quot;python_full_version &gt;= '3.10' and 'test' in extras&quot; },
+    { name = &quot;sphinx&quot;, version = &quot;7.1.2&quot;, marker = &quot;python_full_version == '3.8.*' and 'docs' in extras&quot; },
+    { name = &quot;sphinx&quot;, version = &quot;7.4.7&quot;, marker = &quot;python_full_version == '3.9.*' and 'docs' in extras&quot; },
+    { name = &quot;sphinx&quot;, version = &quot;8.1.3&quot;, marker = &quot;python_full_version == '3.10.*' and 'docs' in extras&quot; },
+]
+directory = { path = &quot;.&quot;, editable = true }
+</code></pre>
+<p>Note how:</p>
+<ul>
+<li>The root-level <code>extras</code> field lists all available extras: <code>[&quot;docs&quot;, &quot;test&quot;]</code></li>
+<li>Direct dependencies (distlib, filelock) have only version markers</li>
+<li>Test extra dependencies (covdefaults, coverage, pytest) include <code>'test' in extras</code> markers</li>
+<li>Docs extra dependencies (furo, sphinx) include <code>'docs' in extras</code> markers</li>
+<li>Multiple versions are included to support different Python versions from the same file</li>
+</ul>
+<h4>Dependency Groups Example: filelock</h4>
+<p>Here's an excerpt showing dependency groups:</p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependency-groups = [
+    &quot;coverage&quot;,
+    &quot;dev&quot;,
+    &quot;docs&quot;,
+    &quot;fix&quot;,
+    &quot;pkg-meta&quot;,
+    &quot;test&quot;,
+    &quot;type&quot;,
+]
+
+[[packages]]
+name = &quot;filelock&quot;
+dependencies = [
+    { name = &quot;covdefaults&quot;, version = &quot;2.3.0&quot;, marker = &quot;python_full_version &gt;= '3.11' and 'coverage' in dependency_groups&quot; },
+    { name = &quot;coverage&quot;, version = &quot;7.13.1&quot;, marker = &quot;python_full_version &gt;= '3.11' and 'coverage' in dependency_groups&quot; },
+    { name = &quot;diff-cover&quot;, version = &quot;10.1.0&quot;, marker = &quot;python_full_version &gt;= '3.11' and 'coverage' in dependency_groups&quot; },
+    { name = &quot;mypy&quot;, version = &quot;1.19.1&quot;, marker = &quot;python_full_version &gt;= '3.11' and 'dev' in dependency_groups&quot; },
+    { name = &quot;pytest&quot;, version = &quot;9.0.2&quot;, marker = &quot;python_full_version &gt;= '3.11' and 'dev' in dependency_groups&quot; },
+    { name = &quot;sphinx&quot;, version = &quot;9.0.4&quot;, marker = &quot;python_full_version == '3.11.*' and 'dev' in dependency_groups&quot; },
+    { name = &quot;sphinx&quot;, version = &quot;9.1.0&quot;, marker = &quot;python_full_version &gt;= '3.12' and 'dev' in dependency_groups&quot; },
+]
+directory = { path = &quot;.&quot;, editable = true }
+</code></pre>
+<p>The root-level <code>dependency-groups</code> field lists all available groups, and dependencies include appropriate markers like <code>'coverage' in dependency_groups</code> or <code>'dev' in dependency_groups</code>.</p>
+<h3>🔧 Usage</h3>
+<pre><code class="language-bash"># Export a project to pylock.toml format
+uv export --format pylock.toml &gt; pylock.toml
+
+# Install from the multi-use lock file (base dependencies only)
+uv pip install -r pylock.toml
+
+# Install with specific extras
+uv pip install -r pylock.toml --extra test --extra docs
+
+# Install with specific dependency groups
+uv pip install -r pylock.toml --group dev
+
+# Combine extras and groups
+uv pip install -r pylock.toml --extra test --group coverage
+</code></pre>
+<p>The pylock.toml filename must follow the pattern <code>pylock.*.toml</code> (e.g., <code>pylock.toml</code>, <code>pylock.dev.toml</code>, <code>pylock.prod.toml</code>) as specified in <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/">PEP 751</a>.</p>
+<h3>📝 Epilog: <code>pip compile</code> and Project Metadata</h3>
+<p>While <code>uv pip compile</code> can output to <code>pylock.toml</code> format, it currently does not populate the root-level <code>extras</code> and <code>dependency-groups</code> fields. Here's why and when it could:</p>
+<p><strong>Current behavior:</strong> <code>pip compile</code> is designed to be <strong>source-agnostic</strong>. You can compile from:</p>
+<ul>
+<li>Plain requirements files: <code>uv pip compile requirements.in</code></li>
+<li>Multiple heterogeneous sources: <code>uv pip compile req1.in pyproject.toml requirements.txt</code></li>
+<li>Arbitrary packages on the CLI: <code>uv pip compile</code> with packages as arguments</li>
+</ul>
+<p>When compiling from arbitrary sources without a clear project context, there's no single coherent answer to &quot;what extras and groups are available?&quot;</p>
+<p><strong>Future potential:</strong> When <code>pip compile</code> is explicitly given a project context—either by compiling a pyproject.toml directly (<code>uv pip compile pyproject.toml</code>) or from the current directory when it contains a pyproject.toml—it could extract and populate these fields. This would be a reasonable enhancement but requires additional logic to handle edge cases.</p>
+<p><strong>Recommended approach:</strong> For full project-aware multi-use lock files, use <code>uv export --format pylock.toml</code> instead. It operates on a single project with complete access to pyproject.toml metadata, ensuring accurate population of all PEP 751 fields.</p>
+<p><strong>Note:</strong> A pylock.toml with empty or missing <code>extras</code> and <code>dependency-groups</code> fields is perfectly valid per PEP 751. These fields are optional. The <code>pip compile</code> output will work fine with <code>uv pip install -r</code>.</p>
+<p>Resolves #13060</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 15:54</div>
+            <div class="timeline-body"><p>I think this is more involved because we also need to preserve extra markers throughout the graph? Right now I believe they (intentionally) get resolved away <code>ExportableRequirements::from_lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-07-18 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is more involved because we also need to preserve extra markers throughout the graph? Right now I believe they (intentionally) get resolved away <code>ExportableRequirements::from_lock</code>.</p>
+</blockquote>
+<p>Yeah, 🤔 this just computes for now the passed in extras/groups, but populating that into packages likely is more complicated. Looking at it, but feedback welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Populate complete pylock.toml" to "Populate more information into pylock.toml" by @gaborbernat on 2025-07-18 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-07-18 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-resolver/src/lock/export/pylock_toml.rs</code>:1 on 2025-07-18 18:31</div>
+            <div class="timeline-body"><p>question: is the aim here to cover <code>uv export</code> only? Or <code>uv pip compile</code> to be covered as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2025-07-19 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>crates/uv-resolver/src/lock/export/pylock_toml.rs</code>:1 on 2025-07-19 15:10</div>
+            <div class="timeline-body"><p>For now let's start with <code>uv export</code>, <code>pip compile</code> can come afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Populate more information into pylock.toml" to "feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers" by @gaborbernat on 2026-01-08 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @gaborbernat on 2026-01-08 22:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:43:34 UTC
+    </footer>
+</body>
+</html>

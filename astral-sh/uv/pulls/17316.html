@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve absolute paths in `uv add` for local dependencies - astral-sh/uv #17316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve absolute paths in `uv add` for local dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17316">#17316</a>
+        opened by <a href="https://github.com/nooscraft">@nooscraft</a>
+        on 2026-01-04 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-04 18:46</div>
+            <div class="timeline-body"><p>When adding a local package with an absolute path like <code>uv add /path/to/package</code>, keep it absolute instead of converting to relative. Relative paths stay relative.</p>
+<p>Fixes #17307</p>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:3652 on 2026-01-06 23:19</div>
+            <div class="timeline-body"><p>Given that we now have 4 places where we are doing this, I think it's may be a candidate for just having a function. Something which also incorporates this logic:</p>
+<pre><code class="language-rust">if was_absolute_path(&amp;url) {
+    std::path::absolute(&amp;install_path)
+} else {
+    relative_to(&amp;install_path, root)
+        .or_else(|_| std::path::absolute(&amp;install_path))
+}
+</code></pre>
+<p>So the call sites can just become <code>absolute_or_relative_to(instal_path, root, url).map_err(...)?</code>.</p>
+<p>Not sure about the name or location, will get back to you on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2026-01-06 23:28</div>
+            <div class="timeline-body"><p>I've had a look around / and manually tested some corner cases and it seems like this approach should work for the forward path. But...</p>
+<p>There's places where we make up a <code>PathBuiltDist</code> on the spot e.g.:</p>
+<p>https://github.com/astral-sh/uv/blob/cd55d1ce120f3c4dfe37a9df563e97e25914e1ba/crates/uv-resolver/src/lock/mod.rs#L2805-L2809</p>
+<p>And it seems like this change might end up with us getting absolute paths in places where previously we would want relative ones.</p>
+<p>I haven't found a case like that yet, but it may be worth changing the tests where the snapshots have changed to using relative paths instead, just to see if it shakes out a case like this.</p>
+<p>Overall, I'm not experienced enough in this area of the code to be sure if this is the best approach for this. I'll let others comment though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nooscraft">@nooscraft</a> reviewed on 2026-01-07 03:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nooscraft">@nooscraft</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:3652 on 2026-01-07 03:56</div>
+            <div class="timeline-body"><p>Thanks for the review comments and I have addressed the suggestion.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:43:37 UTC
+    </footer>
+</body>
+</html>

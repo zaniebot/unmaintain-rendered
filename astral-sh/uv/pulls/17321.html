@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manually parse and reconcile Boolean environment variables - astral-sh/uv #17321</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Manually parse and reconcile Boolean environment variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17321">#17321</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2026-01-05 00:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 00:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This gives us more flexibility since we can avoid erroring on &quot;conflicts&quot; when one option is disabled (e.g., <code>UV_FROZEN=0 uv lock --check</code>).</p>
+<p>Closes https://github.com/astral-sh/uv/issues/13385.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/13316.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2026-01-05 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2026-01-05 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2026-01-05 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 12:47</div>
+            <div class="timeline-body"><p>This is a lot of churn in uv and moves us to a custom pattern of using clap that requires to manually call a check function. Would it be possible to fix this on the clap side (https://github.com/clap-rs/clap/issues/5591), so we can stay with the regular clap pattern and get the validation at parse time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 15:01</div>
+            <div class="timeline-body"><p>I will try here: https://github.com/clap-rs/clap/pull/6211. If it ends up taking a long time, though, I'm gonna advocate for merging this since it's a big improvement.</p>
+<p>Honestly... it's an improvement even if https://github.com/clap-rs/clap/pull/6211 merges because we now track the <em>source</em> of these variables so we can report them in error messages. I might <em>still</em> advocate for this, it's <em>so</em> much better to be able to say <code>UV_FROZEN</code> is set than <code>--frozen</code> conflicts with whatever else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-05 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/options.rs</code>:143 on 2026-01-05 15:12</div>
+            <div class="timeline-body"><p>I kind of wanted to move all the environment variable parsing into <code>EnvironmentOptions</code></p>
+<p>https://github.com/astral-sh/uv/blob/13e7ad62cb0d3ca8bf5eeee407d658d6d887d5f9/crates/uv-settings/src/lib.rs#L590</p>
+<p>then do combination with our three sources</p>
+<p>https://github.com/astral-sh/uv/blob/9949f0801f57a386279b067bae94606e20f60f6f/crates/uv/src/settings.rs#L3453-L3455</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-05 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/options.rs</code>:143 on 2026-01-05 15:14</div>
+            <div class="timeline-body"><p>I <em>think</em> this would fit into your pull request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-05 15:16</div>
+            <div class="timeline-body"><p>It's a long-term goal (from my perspective) to disambiguate between environment variables and command-line arguments throughout, so I'm in favor of this kind of change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 15:21</div>
+            <div class="timeline-body"><p>Per https://github.com/clap-rs/clap/issues/5591#issuecomment-3710828617, if this gets solved in Clap, it won't be until Clap v5.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-05 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/options.rs</code>:143 on 2026-01-05 15:25</div>
+            <div class="timeline-body"><p>Let me see what I can do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2026-01-05 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2026-01-05 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2026-01-06 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/help.rs</code>:1129 on 2026-01-06 17:41</div>
+            <div class="timeline-body"><p>I restored all of these (holistically) in a subsequent PR, but I could back it into here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2026-01-06 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2026-01-06 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-06 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-06 20:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:43:37 UTC
+    </footer>
+</body>
+</html>

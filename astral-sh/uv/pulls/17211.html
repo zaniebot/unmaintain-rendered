@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add background autoprune to remove stale cache entries - astral-sh/uv #17211</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add background autoprune to remove stale cache entries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17211">#17211</a>
+        opened by <a href="https://github.com/TrevorBurnham">@TrevorBurnham</a>
+        on 2025-12-21 22:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/TrevorBurnham">@TrevorBurnham</a> on 2025-12-21 22:31</div>
+            <div class="timeline-body"><p>Fixes #5731</p>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR implements automatic cache cleanup that runs in the background during normal
+uv operations. This addresses issue #5731 by preventing unbounded cache growth
+without requiring user intervention.</p>
+<p>The autoprune task:</p>
+<ul>
+<li>Spawns as a fire-and-forget background task when the cache is initialized</li>
+<li>Removes unreferenced archives older than 1 hour (grace period for in-flight ops)</li>
+<li>Requires no exclusive lock since archives are immutable and uniquely identified;
+if there's no symlink referencing an archive, no process can be using it</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I've added unit tests for this feature. Having said that, I'm new to this project, so I'd appreciate any suggestions for testing more thoroughly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TrevorBurnham on 2025-12-21 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @TrevorBurnham on 2025-12-21 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 19:02</div>
+            <div class="timeline-body"><p>Do I understand it correctly that this doesn't remove old unpacked wheels generally, just archives having no symlinks pointing to them?</p>
+<p>I do think that needs to lock, there can be multiple uv versions running on a system and it's generally safer to lock than to use time based approaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2026-01-06 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TrevorBurnham">@TrevorBurnham</a> on 2026-01-06 22:57</div>
+            <div class="timeline-body"><p>@konstin That's a very good catch! I've updated this PR to take the safer approach of only removing archives that are unreferenced.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:43:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial PEP 792 types and index parsing - astral-sh/uv #17311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initial PEP 792 types and index parsing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17311">#17311</a>
+        opened by <a href="https://github.com/woodruffw">@woodruffw</a>
+        on 2026-01-02 22:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-02 22:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds initial types and detail response handling for PEP 792 project status markers.</p>
+<p>This is towards #15254.</p>
+<p>Ref: https://packaging.python.org/en/latest/specifications/project-status-markers/#</p>
+<h2>Test Plan</h2>
+<p>Added new unit tests for both HTML and JSON index extraction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-05 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/html.rs</code>:18 on 2026-01-05 15:36</div>
+            <div class="timeline-body"><p>Flagging: this is currently marked as dead code, since nothing (outside tests) reads this field. My follow-on PRs will actually read this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @woodruffw on 2026-01-05 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @woodruffw on 2026-01-05 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pypi-types/src/simple_json.rs</code>:23 on 2026-01-06 10:33</div>
+            <div class="timeline-body"><p>In the docs, the schema looks different (https://packaging.python.org/en/latest/specifications/simple-repository-api/#simple-repository-json-project-detail):</p>
+<pre><code class="language-json">  &quot;meta&quot;: {
+    &quot;api-version&quot;: &quot;1.4&quot;,
+    &quot;project-status&quot;: &quot;active&quot;,
+    &quot;project-status-reason&quot;: &quot;this project is not yet haunted&quot;
+  },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/html.rs</code>:98 on 2026-01-06 10:37</div>
+            <div class="timeline-body"><p>Do we know that we need to manually tag this as inline, or can the compiler do that for us?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/html.rs</code>:135 on 2026-01-06 10:45</div>
+            <div class="timeline-body"><p>Future versions may add additional status codes, so we should ignore an unknown status (while logging)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-06 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-06 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/html.rs</code>:98 on 2026-01-06 14:41</div>
+            <div class="timeline-body"><p>I'd expect the compiler to do it at O1 and above given how small the function is, but I don't think Rust (or LLVM) will guarantee it. I can remove the attribute if you prefer without 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-06 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pypi-types/src/simple_json.rs</code>:23 on 2026-01-06 14:50</div>
+            <div class="timeline-body"><p>Hm, which part? The missing api-version? Technically that predates the spec so I didn't want to complicate things, but the most correct thing would be to check for 1.4+ and only deserialize project statuses when that's satisfied.</p>
+<p>(I think that would also address your review above, since we could reject unknown statuses on a per version basis.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/html.rs</code>:98 on 2026-01-06 15:32</div>
+            <div class="timeline-body"><p>I wouldn't add optimizations we don't know are needed, the rust compiler is really good at optimizing, sometimes in unexpected ways, otherwise it only becomes hard to figure out if we need to do something special performance-wise when changing the code later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-06 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2026-01-06 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pypi-types/src/simple_json.rs</code>:23 on 2026-01-06 15:49</div>
+            <div class="timeline-body"><p>What I meant is that according to the living spec, the json should look different, with the project status nested in the meta. PEP 792 agrees with the implementation here (https://peps.python.org/pep-0792/#json-index) and the warehouse implementation (judging from https://pypi.org/simple/pepy/?format=application/vnd.pypi.simple.v1+json), but the living spec update in https://github.com/pypa/packaging.python.org/pull/1879 seems to say otherwise?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-06 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pypi-types/src/simple_json.rs</code>:23 on 2026-01-06 16:11</div>
+            <div class="timeline-body"><p>Oh, that's my own fault -- it looks like I transcribed the PEP into the living specs by memory, and an older draft of the PEP had those keys under <code>meta</code> 🤦</p>
+<p>I'll send a PR fixing the living spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2026-01-06 16:39</div>
+            <div class="timeline-body"><p>We should also add a test with a full simple JSON response, but I assume we'll do that anyway for the integration tests in the follow-ups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-06 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pypi-types/src/simple_json.rs</code>:23 on 2026-01-06 17:43</div>
+            <div class="timeline-body"><p>https://github.com/pypa/packaging.python.org/pull/1986</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-06 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/html.rs</code>:135 on 2026-01-06 17:45</div>
+            <div class="timeline-body"><p>Sounds good -- I'll lower this to an INFO log.</p>
+<p>Technically the most correct thing would be to link known statuses to API versions and reject statuses that are unknown on a per-version basis. But that's kind of overkill/hard to do at the moment without doing a lot of serde mucking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/html.rs</code>:135 on 2026-01-06 17:57</div>
+            <div class="timeline-body"><p>Okay, I pushed this up to <code>Status::new</code> and made that the single source of truth with a custom <code>Deserialize</code> impl. That should ensure we always log on unknown statuses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2026-01-06 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @woodruffw on 2026-01-07 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @woodruffw on 2026-01-07 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-07 16:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:43:36 UTC
+    </footer>
+</body>
+</html>
