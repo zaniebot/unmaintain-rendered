@@ -1,0 +1,116 @@
+---
+number: 4600
+title: Fails to install detectron2 package from git
+type: issue
+state: closed
+author: alfa07
+labels: []
+assignees: []
+created_at: 2024-06-27T19:51:27Z
+updated_at: 2024-06-28T03:49:07Z
+url: https://github.com/astral-sh/uv/issues/4600
+synced_at: 2026-01-10T01:23:39Z
+---
+
+# Fails to install detectron2 package from git
+
+---
+
+_Issue opened by @alfa07 on 2024-06-27 19:51_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+```
+ ❯ uv pip install -r requirements-2.txt
+ Updated https://github.com/facebookresearch/detectron2.git (e2ce8dc)
+error: Failed to download and build: `detectron2 @ git+https://github.com/facebookresearch/detectron2.git@e2ce8dc#egg=detectron2`
+  Caused by: Failed to build: `detectron2 @ git+https://github.com/facebookresearch/detectron2.git@e2ce8dc#egg=detectron2`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/Users/maxim/Library/Caches/uv/environments-v0/.tmpOkCWJn/lib/python3.10/site-packages/setuptools/build_meta.py", line 327, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+  File "/Users/maxim/Library/Caches/uv/environments-v0/.tmpOkCWJn/lib/python3.10/site-packages/setuptools/build_meta.py", line 297, in _get_build_requires
+    self.run_setup()
+  File "/Users/maxim/Library/Caches/uv/environments-v0/.tmpOkCWJn/lib/python3.10/site-packages/setuptools/build_meta.py", line 497, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/Users/maxim/Library/Caches/uv/environments-v0/.tmpOkCWJn/lib/python3.10/site-packages/setuptools/build_meta.py", line 313, in run_setup
+    exec(code, locals())
+  File "<string>", line 10, in <module>
+ModuleNotFoundError: No module named 'torch'
+```
+
+torch is already installed:
+```
+ ❯ uv pip list | rg torch
+torch                      2.3.1
+torchvision                0.18.1
+```
+
+uv version:
+```
+ ❯ uv --version
+uv 0.2.17
+```
+python version:
+```
+❯ python --version
+Python 3.10.11
+```
+
+requirements-2.txt:
+```
+detectron2@git+https://github.com/facebookresearch/detectron2.git@e2ce8dc#egg=detectron2
+```
+
+---
+
+_Comment by @charliermarsh on 2024-06-27 19:55_
+
+It looks like you need to run with `--no-build-isolation`.
+
+---
+
+_Comment by @charliermarsh on 2024-06-27 19:56_
+
+(`detectron2` doesn't declare `torch` as a build-time dependency, so you're responsible for installing it ahead-of-time and then disabling build dependencies entirely.)
+
+---
+
+_Comment by @zanieb on 2024-06-27 19:59_
+
+See also #2252 
+
+---
+
+_Comment by @alfa07 on 2024-06-28 03:48_
+
+Thank you! The project is amazing - I do hope we will get rust like experience in python - that would be awesome. The `--no-build-isolation` flag works!
+
+---
+
+_Comment by @alfa07 on 2024-06-28 03:49_
+
+It looks like it is an issue with detectron2 as mentioned in #2252 - closing.
+
+---
+
+_Closed by @alfa07 on 2024-06-28 03:49_
+
+---
+
+_Referenced in [astral-sh/uv#4685](../../astral-sh/uv/issues/4685.md) on 2024-07-01 09:59_
+
+---

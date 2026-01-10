@@ -1,0 +1,46 @@
+---
+number: 5764
+title: "Figure out long term role of `ValueHint`"
+type: issue
+state: open
+author: epage
+labels:
+  - M-breaking-change
+  - A-completion
+  - S-waiting-on-design
+assignees: []
+created_at: 2024-10-02T14:33:18Z
+updated_at: 2024-10-02T14:33:19Z
+url: https://github.com/clap-rs/clap/issues/5764
+synced_at: 2026-01-10T01:28:16Z
+---
+
+# Figure out long term role of `ValueHint`
+
+---
+
+_Issue opened by @epage on 2024-10-02 14:33_
+
+`ValueHint` works well for ahead-of-time generated completions as it tells the generator what shell behavior to opt-in to.
+
+However, its not really needed with Rust-native completions and actually puts more of a support burden on it.
+
+On top of that, the documentation default is less relevant now that we have typed values.  We changed it for Rust-native completions in #5763 as that is still unstable.
+
+---
+
+_Label `M-breaking-change` added by @epage on 2024-10-02 14:33_
+
+---
+
+_Label `A-completion` added by @epage on 2024-10-02 14:33_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2024-10-02 14:33_
+
+---
+
+_Added to milestone `5.0` by @epage on 2024-10-02 14:33_
+
+---

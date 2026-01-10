@@ -1,0 +1,112 @@
+---
+number: 5335
+title: "Argument conflict ignored on `global`s specified at different levels"
+type: issue
+state: closed
+author: abesto
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-02-01T10:01:36Z
+updated_at: 2024-02-01T15:43:07Z
+url: https://github.com/clap-rs/clap/issues/5335
+synced_at: 2026-01-10T01:28:10Z
+---
+
+# Argument conflict ignored on `global`s specified at different levels
+
+---
+
+_Issue opened by @abesto on 2024-02-01 10:01_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.75.0
+
+### Clap Version
+
+4.4.12
+
+### Minimal reproducible code
+
+https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=8fa6a4126712c787b6170a7663e929e7
+
+```rust
+use clap::{Parser, Subcommand, Args};
+
+#[derive(Args, Debug)]
+#[group(multiple = false)]
+struct Group {
+    #[clap(short, global = true)]
+    a: bool,
+    #[clap(short, global = true)]
+    b: bool,
+}
+
+#[derive(Subcommand, Debug)]
+enum Sub {
+    Foo
+}
+
+#[derive(Parser, Debug)]
+struct Cli {
+    #[clap(flatten)]
+    g: Group,
+    #[command(subcommand)]
+    sub: Sub,
+}
+
+pub fn main() -> anyhow::Result<()> {
+    dbg!(Cli::try_parse_from(["cli", "-a", "foo", "-b"])?);
+    dbg!(Cli::try_parse_from(["cli", "-a", "-b", "foo"])?);
+    Ok(())
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+`cargo run` / run the Playground snippet
+
+### Actual Behaviour
+
+The first line of `main` (`cli -a foo -b`) doesn't explode, but the second line does.
+
+### Expected Behaviour
+
+The first line should explode as well.
+
+### Additional Context
+
+I *think* this is another manifestation of https://github.com/clap-rs/clap/issues/1546#issuecomment-1198809765
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @abesto on 2024-02-01 10:01_
+
+---
+
+_Comment by @epage on 2024-02-01 15:39_
+
+Since this is a larger issue than the original title, I've renamed #1546 so we can track all of this in one place and closing in favor of that.
+
+---
+
+_Closed by @epage on 2024-02-01 15:39_
+
+---
+
+_Comment by @abesto on 2024-02-01 15:43_
+
+Yep, that makes sense. Thanks!
+
+---

@@ -1,0 +1,206 @@
+---
+number: 918
+title: Add JSON Export for App
+type: issue
+state: open
+author: mitsuhiko
+labels:
+  - C-enhancement
+  - A-help
+  - S-waiting-on-design
+assignees: []
+created_at: 2017-03-26T14:14:31Z
+updated_at: 2021-12-13T22:45:25Z
+url: https://github.com/clap-rs/clap/issues/918
+synced_at: 2026-01-10T01:26:38Z
+---
+
+# Add JSON Export for App
+
+---
+
+_Issue opened by @mitsuhiko on 2017-03-26 14:14_
+
+It would be great to be able to export the app with all subcommands, options and args to JSON (or something similar) so documentation tools can then pick up on it and make documentation pages.
+
+---
+
+_Comment by @kbknapp on 2017-03-26 15:07_
+
+Great suggestion, I'd love this. I have it on the back burner to add `serde` impls, specifically so we could get YAML and JSON. This will probably come out in the 3.x release which I keep hoping is right on the horizon...but then my day job goes and monopolizes my time. Hopefully soonish!
+
+---
+
+_Label `C: app` added by @kbknapp on 2017-03-26 15:07_
+
+---
+
+_Label `C: args` added by @kbknapp on 2017-03-26 15:07_
+
+---
+
+_Label `D: hard` added by @kbknapp on 2017-03-26 15:07_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-03-26 15:07_
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2017-03-26 15:07_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2017-03-26 15:07_
+
+---
+
+_Comment by @mitsuhiko on 2017-03-26 21:09_
+
+I was toying around with making a soft version of this that just spits out some json but it's not clear on what basis this could be implemented. I was taking the completion code as a reference (the zsh one spits out most of the info I need) but it uses lots of internal APIs.
+
+I wonder if it would make sense to base the completion code on an abstraction that could become public and then also be used for other exporting.
+
+---
+
+_Comment by @kbknapp on 2017-03-26 21:22_
+
+I bet providing `Debug` impls would get us 90% of the way there. Not full on JSON, but close. `src/args/arg_builder/valued.rs` would need a manual impl because of the `validator[_os]`, but everything else could probably be derived
+
+---
+
+_Comment by @kbknapp on 2017-03-26 21:26_
+
+Also I should also add, providing `serde::Serialize` for either YAML or JSON (or really any target) isn't a breaking change, and doesn't need to wait for 3.x. The only part that would be "breaking" is using `serde` for the `Deserialize` for YAML. Although, even then not technically breaking because the API used would be different than the current `App::from_yaml`.
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-26 21:29_
+
+---
+
+_Label `E: optional dep` added by @kbknapp on 2017-03-26 21:34_
+
+---
+
+_Comment by @kbknapp on 2017-03-26 21:44_
+
+So actually providing a JSON/YAML serialization doesn't seem to be that hard, and is pretty straight forward. Maybe I can knock it out this week.
+
+I will want the `serde{_json._yaml}` crates to be optional and behind a feature flag. And I want to keep the minimum version of Rust 1.11 if possibe (so no `#[derive(..)]` or `?`) for the time being.
+
+---
+
+_Comment by @mitsuhiko on 2017-03-26 21:46_
+
+You could keep serde internal for now and just provide an export to JSON / YAML function that directly writes to a writer.
+
+---
+
+_Added to milestone `serde` by @kbknapp on 2017-03-27 02:59_
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2017-08-22 04:17_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2018-07-22 01:31_
+
+---
+
+_Referenced in [clap-rs/clap#1630](../../clap-rs/clap/issues/1630.md) on 2020-01-10 15:02_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-05-26 10:51_
+
+---
+
+_Removed from milestone `serde` by @pksunkara on 2021-05-26 10:51_
+
+---
+
+_Comment by @pksunkara on 2021-05-26 10:52_
+
+Blocked by https://github.com/dtolnay/serde-yaml/issues/94
+
+---
+
+_Comment by @epage on 2021-07-20 17:31_
+
+Like with #853, #1041 could help with the lifetime blocker
+
+---
+
+_Comment by @MikailBag on 2021-07-20 17:36_
+
+AFAIU, serde-yaml lifetime limitations are not really blockers: one can serialize to JSON at first, and then serialize `serde_json::Value` to YAML.
+
+Also, JSON seems to be subset of YAML, so json-serialized string can be interpreted as yaml.
+
+---
+
+_Comment by @epage on 2021-07-20 17:42_
+
+Forgot which issue I was on, in general, exporting isn't blocked on the lifetime issue, only importing and only for yaml.
+
+I'm assuming we'd want to solve these several issues (#853, #1630, this one) together, providing a single serialization/deserialization experience and not have serde for most types and then a special case for deserializing from yaml, which would make the lifetime issue a blocker.
+
+---
+
+_Referenced in [epage/clapng#71](../../epage/clapng/issues/71.md) on 2021-12-06 16:32_
+
+---
+
+_Label `A-builder` removed by @epage on 2021-12-08 20:29_
+
+---
+
+_Label `A-help` added by @epage on 2021-12-08 20:29_
+
+---
+
+_Comment by @epage on 2021-12-08 20:30_
+
+How much would https://github.com/clap-rs/clap/issues/2914 help in this case?
+
+The idea would be that help generation is split into the generator and formatter.  This would allow user-defined formatters, like man pages.  Would that work for this case?
+
+---
+
+_Label `C: args` removed by @epage on 2021-12-08 20:30_
+
+---
+
+_Label `E: optional dep` removed by @epage on 2021-12-08 20:35_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:18_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:18_
+
+---
+
+_Label `E-hard` removed by @epage on 2021-12-09 17:00_
+
+---
+
+_Label `P3: want to have` removed by @epage on 2021-12-09 17:00_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-13 22:45_
+
+---
+
+_Referenced in [aobatact/clap-serde#11](../../aobatact/clap-serde/issues/11.md) on 2022-01-21 15:45_
+
+---
+
+_Referenced in [clap-rs/clap#552](../../clap-rs/clap/issues/552.md) on 2022-04-12 13:49_
+
+---

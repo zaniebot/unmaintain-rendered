@@ -1,0 +1,53 @@
+---
+number: 10661
+title: "Error During `uv sync` Command Execution in Docker Build"
+type: issue
+state: closed
+author: nimaxin
+labels: []
+assignees: []
+created_at: 2025-01-15T23:35:58Z
+updated_at: 2025-01-15T23:38:52Z
+url: https://github.com/astral-sh/uv/issues/10661
+synced_at: 2026-01-10T01:24:56Z
+---
+
+# Error During `uv sync` Command Execution in Docker Build
+
+---
+
+_Issue opened by @nimaxin on 2025-01-15 23:35_
+
+Encountered an error while running the uv sync command during a Docker build step. The error suggests an issue with parsing uv.lock due to an invalid ABI tag in a wheel filename.
+```bash
+ => ERROR [fastapi stage-0 3/5] RUN --mount=type=cache,target=/root/.cache/uv     --mount=type=bind,source=uv.lock,target=uv.lock     --m  0.5s 
+------
+ > [fastapi stage-0 3/5] RUN --mount=type=cache,target=/root/.cache/uv     --mount=type=bind,source=uv.lock,target=uv.lock     --mount=type=bind,source=pyproject.toml,target=pyproject.toml     uv sync --frozen --no-install-project --no-dev:
+0.368 Using CPython 3.12.8 interpreter at: /usr/local/bin/python3
+0.368 Creating virtual environment at: .venv
+0.393 error: Failed to parse `uv.lock`
+0.393   Caused by: TOML parse error at line 1479, column 10
+0.393      |
+0.393 1479 | wheels = [
+0.393      |          ^^
+0.393 failed to parse `pycryptodome-3.21.0-pp27-pypy_73-manylinux2010_x86_64.whl` as wheel filename: The wheel filename "pycryptodome-3.21.0-pp27-pypy_73-manylinux2010_x86_64.whl" has an invalid ABI tag: Missing major version in PyPy ABI tag: pypy_73
+------
+failed to solve: process "/bin/sh -c uv sync --frozen --no-install-project --no-dev" did not complete successfully: exit code: 2```
+
+---
+
+_Comment by @zanieb on 2025-01-15 23:37_
+
+This is a duplicate of https://github.com/astral-sh/uv/issues/10654 and a fix will be released shortly.
+
+---
+
+_Comment by @zanieb on 2025-01-15 23:37_
+
+See also #10660 
+
+---
+
+_Closed by @nimaxin on 2025-01-15 23:38_
+
+---

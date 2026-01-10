@@ -1,0 +1,156 @@
+---
+number: 484
+title: Collect all arguments after --
+type: issue
+state: closed
+author: jimmycuadra
+labels:
+  - A-parsing
+assignees: []
+created_at: 2016-04-12T21:16:45Z
+updated_at: 2020-08-05T08:49:41Z
+url: https://github.com/clap-rs/clap/issues/484
+synced_at: 2026-01-10T01:26:30Z
+---
+
+# Collect all arguments after --
+
+---
+
+_Issue opened by @jimmycuadra on 2016-04-12 21:16_
+
+I have a program that wraps another one, and I'd like the ability to use the common `--` syntax as a separator that means "anything that appears after this should be passed through as raw input" so that I can treat all the extra trailing arguments as raw input for the underlying program. If I have a program invoked like this:
+
+``` bash
+example --my-opt some-value --some-flag -- baz --blah
+```
+
+I'd like to be able to do this in Rust code:
+
+``` rust
+let matches = clap_app.get_matches();
+
+assert_eq!(matches.extra_args(), &["baz", "--blah"]);
+```
+
+I can work around this right now by using `AppSettings::TrailingVarArg`, but that requires that the "extra" captured arguments are given a name which will show up in the help output by default. Even if I hide the argument from help, it won't adhere to the `--` pattern. It'd be nice to be able to use the `--` pattern without configuring it manually with various Clap settings.
+
+Edit: It looks like Clap does respect `--` at least in terms of using it to disambiguate trailing arguments from things it should try to parse itself. If I use `AppSettings::TrailingVarArg` with the example command above, but remove the `--`, it tries to parse `--blah` as an option to the Clap app.
+
+
+---
+
+_Comment by @kbknapp on 2016-04-17 23:04_
+
+@jimmycuadra First, sorry for the long wait, I've been out of the loop for the past week!
+
+The `TrailingVarArg` requires a positional argument be defined so that it can be the one to store all the "non parsed" args, and shows up in the help text unless hidden (like you mention). 
+
+Assuming you don't have any other optional positional arguments with a lower index, `TrailingVarArg` should also work _without_ `--`, in which case all trailing arguments `baz --blah` are stored as values of whatever your last positional argument. This is the purpose of `TrailingVarArg` to get the same effect as `--` but without having to actually use `--`.
+
+The only thing `--` does, is it says, stop parsing all remaining arguments, and store them in the next positional argument. The `TrailingVarArg` simply says, if you come to the last postional argument, keep parsing all remaining values _as if_ `--` was passed.
+
+If your example only works with `--`, make sure you don't have a lower index optional positional argument than the "var arg". If you have the original source, I can take a look at it and see if there's anything causing that.
+
+---
+
+Another option is to use subcommands and the [`AllowExternalSubcommands`](http://kbknapp.github.io/clap-rs/clap/enum.AppSettings.html#examples-11) variant if you don't know the name of the wrapped binary at compile time. This has the "downside" of using a subcommand instead of `--` to separate the arguments. Also, subcommand could be anything, so you could just use the wrapped binary name for simplicity. But point being, it doesn't need to be known at compile time.
+
+```
+$ myprog --foo bar rm -rf baz
+```
+
+Where `--foo bar` is parsed by clap and `rm -rf baz` isn't. The upside to this, is because it's a subcommand, you still have full control of when that external binary gets called (i.e. after you do whatever you need with the arguments passed _before_ the subcommand). Also, this "external" subcommand is hidden from the help text because it doesn't have a name.
+
+---
+
+As for creating something like `ArgMatches::extra_args()` I'm not against that, but would also caveat that `TrailingVarArg` and/or `--` already have the same effect provided the positional arguments are defined.
+
+I have, however, been toying with ideas on how to best do something like `ArgMatches::raw_args()` which would be the whole she-bang `--foo bar rm -rf baz` in the example above. Although it would require you manually skip all up until `--` (i.e. if `rm` were replaced by `--` in the above example), this may be an easy addition. The main reason I haven't done this yet, is it's already possible for someone to use `std::env::args()` so I'm not sure how much benefit it would actually be here.
+
+Edit: Added link to `AllowExternalSubcommand`
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-04-17 23:04_
+
+---
+
+_Label `C: args` added by @kbknapp on 2016-04-17 23:04_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2016-04-17 23:04_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-04-17 23:04_
+
+---
+
+_Comment by @kbknapp on 2016-08-26 15:50_
+
+@jimmycuadra Is this still open, or are there other questions?
+
+
+---
+
+_Comment by @jimmycuadra on 2016-08-26 21:47_
+
+We can close it. I achieved what I wanted with `AppSettings::TrailingVarArg` + an indexed argument that takes multiple values and has its docs hidden from the help output. Thanks!
+
+
+---
+
+_Closed by @jimmycuadra on 2016-08-26 21:47_
+
+---
+
+_Comment by @chrisxue815 on 2016-12-23 00:31_
+
+Example:
+
+```rust
+let options = App::new("Trailing args example")
+    .setting(AppSettings::TrailingVarArg)
+    .arg(Arg::with_name("output")
+        .long("output")
+        .takes_value(true)
+    )
+    .arg(Arg::with_name("inputs")
+        .multiple(true)
+    )
+    .get_matches();
+
+let filenames: Vec<&str> = options.values_of("inputs").unwrap().collect();
+println!("{}", filenames.join(" "));
+```
+
+Running `example --output output input1 input2` gives us `input1 input2`
+
+---
+
+_Referenced in [clap-rs/clap#987](../../clap-rs/clap/issues/987.md) on 2017-06-11 18:47_
+
+---
+
+_Comment by @tadman on 2020-08-05 00:25_
+
+This also works with the generator: `#[clap(multiple=true)]`.
+
+---
+
+_Comment by @CreepySkeleton on 2020-08-05 08:49_
+
+`multiple` will fail on `--help` or unknown options. You'd be better with `raw = true`.
+
+---
+
+_Referenced in [ereborstudios/smaug#14](../../ereborstudios/smaug/issues/14.md) on 2021-01-23 15:13_
+
+---
+
+_Referenced in [tikv/tikv#10837](../../tikv/tikv/pulls/10837.md) on 2021-09-22 07:47_
+
+---

@@ -1,0 +1,136 @@
+---
+number: 147
+title: Re-order optional arguments in usage strings to appear before required arguments
+type: issue
+state: closed
+author: manfredlotz
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2015-07-06T17:39:34Z
+updated_at: 2018-08-02T03:29:40Z
+url: https://github.com/clap-rs/clap/issues/147
+synced_at: 2026-01-10T01:26:24Z
+---
+
+# Re-order optional arguments in usage strings to appear before required arguments
+
+---
+
+_Issue opened by @manfredlotz on 2015-07-06 17:39_
+
+Hi Kevin, 
+First of all, your videos are really great. Thanks for this.
+Question: I played with fake and when invokind fake like this:
+   ./target/debug/fake --help
+one of the lines is this:
+   fake <input> <output> [FLAGS] [OPTIONS]
+
+Shouldn't it be the other way round?
+   fake [FLAGS] [OPTIONS] <input> <output>
+
+-- Manfred
+
+
+---
+
+_Comment by @manfredlotz on 2015-07-06 17:46_
+
+Sorry I wanted to say that I got this line
+  fake <input> <output> [FLAGS] [OPTIONS]
+instead of that line:
+  fake [FLAGS] [OPTIONS] <input> <output> 
+
+(Didn't know I have to escape < and >)
+-- Manfred
+
+
+---
+
+_Closed by @manfredlotz on 2015-07-06 17:46_
+
+---
+
+_Comment by @kbknapp on 2015-07-06 23:15_
+
+I'm in the process of updating the videos now actually :) There have been some significant changes/improvements since those were made. 
+
+As for your question though, yes and no. "No" because it works either way; as the optional flags and optional options could go before or after the required arguments and work just fine. 
+"Yes" because traditionally optional arguments come before required ones in usage strings. The reason they appear that way is due to how `clap` parses required arguments for very complex usage strings (even though `fake`'s arguments aren't complex, it's still a bi-product). The way you can in effect read that usage string is: "fake takes two required positional arguments, first 'input' and second 'output' there are also several other optional flags and options which are position independent." If you were to add additional optional positional arguments you'd see a `[POSITIONAL]` pre-pended as well meaning, "There are also one or more optional positional arguments."
+
+If you need to change the usage string (to match documentation or anything), you can use `App::usage("fake [FLAGS] [OPTIONS] <input> <output>")` to override the auto-generated one. There is a drawback to this approach though; you no longer can take advantage of "smart" or "context aware" usage strings for that command, as `clap` will just spit out the one you provided no matter what. So it's a trade-off, but there are some very valid times you may want to do that.
+
+Hope this answers your question :) If not, feel free to contact me!
+
+Edit: And thanks for watching the videos and taking the time to comment!! :+1: 
+
+
+---
+
+_Comment by @manfredlotz on 2015-07-09 13:24_
+
+Yes, I know that it works either way. I only think it is more 'natural' to have flags and options coming first. IIRC, then in the samples you presented in the videos it came out more naturally like this:
+  fake [FLAGS] <input>
+
+
+---
+
+_Comment by @kbknapp on 2015-07-09 13:28_
+
+I think you're correct as well. If I get some time this weekend I'll take a look at some possible ways to re-order them back to the expected way. I've got some ideas on how to do so, I just need to test them :)
+
+
+---
+
+_Reopened by @kbknapp on 2015-07-09 13:28_
+
+---
+
+_Label `enhancement` added by @kbknapp on 2015-07-09 13:28_
+
+---
+
+_Renamed from "Issue or not?" to "Re-order optional arguments in usage strings to appear before required arguments" by @kbknapp on 2015-07-09 13:29_
+
+---
+
+_Comment by @manfredlotz on 2015-07-09 13:44_
+
+Sounds great. Thx a lot.
+
+
+---
+
+_Comment by @kbknapp on 2015-07-09 13:54_
+
+Turned out to be way easier than I imagined, so I've just put in a PR to correct this to the more standard natural order. I've also change `[POSITIONALS]` to `[ARGS]` in usage strings because thats the more standard vernacular.
+
+Once Travis passes I'll merge this into master and upload `1.0.2` to crates.io
+
+Thanks again for taking the time to file this!
+
+
+---
+
+_Referenced in [clap-rs/clap#153](../../clap-rs/clap/pulls/153.md) on 2015-07-09 13:56_
+
+---
+
+_Closed by @kbknapp on 2015-07-09 14:27_
+
+---
+
+_Comment by @kbknapp on 2015-07-09 14:29_
+
+1.0.2 on crates.io or master here is good to go now! Once I finish these updated videos everything should be back in sync ;)
+
+
+---
+
+_Comment by @manfredlotz on 2015-07-09 19:43_
+
+Just tested. Works fine. 
+Thanks a lot for reacting such quickly. 
+
+
+---

@@ -1,0 +1,64 @@
+---
+number: 21870
+title: "Request: Rule + Autofix to upgrade `while 1` Python 2 code to `while True`"
+type: issue
+state: open
+author: Avasam
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-12-09T18:12:16Z
+updated_at: 2025-12-10T04:24:35Z
+url: https://github.com/astral-sh/ruff/issues/21870
+synced_at: 2026-01-10T01:23:02Z
+---
+
+# Request: Rule + Autofix to upgrade `while 1` Python 2 code to `while True`
+
+---
+
+_Issue opened by @Avasam on 2025-12-09 18:12_
+
+### Summary
+
+(note: I do not want to discuss the merits of banning `while True` here, there's other issues for that: https://github.com/astral-sh/ruff/issues/3845 / https://github.com/astral-sh/ruff/issues/20390)
+
+I would like a pyupgrade-spirited autofixer to migrate `while 1:`, which may be common in projects that used to support Python 2, into a more idiomatic `while True:`.
+
+It's not hard to search & replace myself, but since it can be automated, I feel like it would fit right in with code modernization and consistency autofixers.
+
+<img width="220" height="240" alt="Image" src="https://github.com/user-attachments/assets/3713fdfd-5bf5-4d9a-8241-a59245e4fcaf" />
+
+---
+
+Whilst my use case is specifically about `while 1:`. Such a rule could be generalized to "Usage of an always-truthy literal as a `while` loop condition" and catch stuff like `while "always":`
+
+
+---
+
+_Label `rule` added by @amyreese on 2025-12-09 18:14_
+
+---
+
+_Label `needs-decision` added by @amyreese on 2025-12-09 18:14_
+
+---
+
+_Comment by @MichaReiser on 2025-12-09 18:53_
+
+> Whilst my use case is specifically about while 1:. Such a rule could be generalized to "Usage of an always-truthy literal as a while loop condition" and catch stuff like while "always":
+
+This might be tricky or conflicting with a rule that helps you to catch accidental "always true" conditions. So I don't think we want to do this for all expressions that are always truthy but some well known cases
+
+---
+
+_Comment by @Avasam on 2025-12-09 19:29_
+
+> This might be tricky or conflicting with a rule that helps you to catch accidental "always true" conditions. So I don't think we want to do this for all expressions that are always truthy but some well known cases
+
+Agreed, that's why I scoped that additional suggestion to only literals (and not check any expressions), and only for "while loop conditions".
+
+I'd be perfectly happy with just `while 1:`. Just trying to think of the bigger picture.
+
+---

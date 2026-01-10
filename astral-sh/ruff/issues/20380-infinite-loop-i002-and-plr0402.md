@@ -1,0 +1,113 @@
+---
+number: 20380
+title: "[Infinite loop] I002 and PLR0402"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2025-09-14T19:40:03Z
+updated_at: 2025-09-25T21:08:16Z
+url: https://github.com/astral-sh/ruff/issues/20380
+synced_at: 2026-01-10T01:23:01Z
+---
+
+# [Infinite loop] I002 and PLR0402
+
+---
+
+_Issue opened by @dscorbett on 2025-09-14 19:40_
+
+### Summary
+
+Ruff fails to converge when [`missing-required-import` (I002)](https://docs.astral.sh/ruff/rules/missing-required-import/) and [`manual-from-import` (PLR0402)](https://docs.astral.sh/ruff/rules/manual-from-import/) are selected and a redundant alias is required. [Example](https://play.ruff.rs/788c22f4-b157-4e9d-aef4-29528b22dd71):
+```console
+$ echo 1 | ruff --isolated check - --select I002,PLR0402 --config 'lint.isort.required-imports=["import concurrent.futures as futures"]' --diff
+
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `-`, the rule codes I002, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+@@ -1 +1,51 @@
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
++from concurrent import futures
+ 1
+
+Would fix 100 errors.
+```
+
+### Version
+
+ruff 0.13.0 (a1fdd66f1 2025-09-10)
+
+---
+
+_Referenced in [astral-sh/ruff#20381](../../astral-sh/ruff/pulls/20381.md) on 2025-09-15 00:10_
+
+---
+
+_Label `bug` added by @ntBre on 2025-09-15 12:46_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-09-15 12:46_
+
+---
+
+_Closed by @dylwil3 on 2025-09-25 21:08_
+
+---

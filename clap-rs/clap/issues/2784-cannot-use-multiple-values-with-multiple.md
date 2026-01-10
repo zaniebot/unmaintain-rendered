@@ -1,0 +1,177 @@
+---
+number: 2784
+title: Cannot use multiple values with multiple occurrences with positional arguments
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - A-parsing
+assignees: []
+created_at: 2021-09-24T14:34:17Z
+updated_at: 2021-10-04T18:57:33Z
+url: https://github.com/clap-rs/clap/issues/2784
+synced_at: 2026-01-10T01:27:25Z
+---
+
+# Cannot use multiple values with multiple occurrences with positional arguments
+
+---
+
+_Issue opened by @epage on 2021-09-24 14:34_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.55.0 (c8dfcfe04 2021-09-06)
+
+### Clap Version
+
+v3.0.0-beta.4
+
+### Minimal reproducible code
+
+```rust
+#[test]
+fn values_per_occurrence_named() {
+    let mut a = App::new("test").arg(
+        Arg::new("pos")
+            .long("pos")
+            .number_of_values(2)
+            .multiple_occurrences(true),
+    );
+
+    let m = a.try_get_matches_from_mut(vec!["myprog", "--pos", "val1", "val2"]);
+    let m = match m {
+        Ok(m) => m,
+        Err(err) => panic!("{}", err),
+    };
+    assert_eq!(
+        m.values_of("pos").unwrap().collect::<Vec<_>>(),
+        ["val1", "val2"]
+    );
+
+    let m = a.try_get_matches_from_mut(vec![
+        "myprog", "--pos", "val1", "val2", "--pos", "val3", "val4",
+    ]);
+    let m = match m {
+        Ok(m) => m,
+        Err(err) => panic!("{}", err),
+    };
+    assert_eq!(
+        m.values_of("pos").unwrap().collect::<Vec<_>>(),
+        ["val1", "val2", "val3", "val4"]
+    );
+}
+
+#[test]
+fn values_per_occurrence_positional() {
+    let mut a = App::new("test").arg(
+        Arg::new("pos")
+            .number_of_values(2)
+            .multiple_occurrences(true),
+    );
+
+    let m = a.try_get_matches_from_mut(vec!["myprog", "val1", "val2"]);
+    let m = match m {
+        Ok(m) => m,
+        Err(err) => panic!("{}", err),
+    };
+    assert_eq!(
+        m.values_of("pos").unwrap().collect::<Vec<_>>(),
+        ["val1", "val2"]
+    );
+
+    let m = a.try_get_matches_from_mut(vec!["myprog", "val1", "val2", "val3", "val4"]);
+    let m = match m {
+        Ok(m) => m,
+        Err(err) => panic!("{}", err),
+    };
+    assert_eq!(
+        m.values_of("pos").unwrap().collect::<Vec<_>>(),
+        ["val1", "val2", "val3", "val4"]
+    );
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+1. Add to `tests/multiple_values.rs`
+2. Run `cargo test --test multiple_values -- values_per_occurrence`
+
+### Actual Behaviour
+
+```
+running 2 tests
+test values_per_occurrence_named ... ok
+test values_per_occurrence_positional ... FAILED
+
+failures:
+
+---- values_per_occurrence_positional stdout ----
+thread 'values_per_occurrence_positional' panicked at 'Argument 'pos' is a positional argument and can't be set as multiple occurrences', src/build/arg/debug_asserts.rs:40:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    values_per_occurrence_positional
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 59 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass '-p clap --test multiple_values'
+```
+
+### Expected Behaviour
+
+```
+running 2 tests
+test values_per_occurrence_named ... ok
+test values_per_occurrence_positional ... ok
+```
+
+### Additional Context
+
+We treat values as values-per-occurence (see first, successful test) but then not support this with positional arguments (see second, failing test) and instead require a single occurrence with multiple values, preventing the use of them as tuples.
+
+This is somewhat related to #2692 and #1772
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `T: bug` added by @epage on 2021-09-24 14:34_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-09-24 15:28_
+
+---
+
+_Label `C: parsing` added by @pksunkara on 2021-09-24 15:29_
+
+---
+
+_Label `C: positional args` added by @pksunkara on 2021-09-24 15:29_
+
+---
+
+_Comment by @kbknapp on 2021-10-02 00:16_
+
+I'd be curious to simply remove that check in the positional validation section and see if this just magically works, as it looks like something we're just actively preventing than a real bug. At least previously, once it gets to actually parsing values, clap doesn't really know or care if something came from a positional argument or option, it just sucks up values and then later validates that a multiple of the correct number was found.
+
+---
+
+_Referenced in [clap-rs/clap#2804](../../clap-rs/clap/pulls/2804.md) on 2021-10-04 17:12_
+
+---
+
+_Closed by @epage on 2021-10-04 18:57_
+
+---

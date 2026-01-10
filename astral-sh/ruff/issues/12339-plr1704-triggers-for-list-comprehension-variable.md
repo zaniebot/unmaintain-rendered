@@ -1,0 +1,75 @@
+---
+number: 12339
+title: PLR1704 triggers for list comprehension variable
+type: issue
+state: closed
+author: richardebeling
+labels:
+  - bug
+assignees: []
+created_at: 2024-07-15T16:54:23Z
+updated_at: 2024-07-16T14:49:27Z
+url: https://github.com/astral-sh/ruff/issues/12339
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# PLR1704 triggers for list comprehension variable
+
+---
+
+_Issue opened by @richardebeling on 2024-07-15 16:54_
+
+This code snippet
+```python3
+def func(foo):
+    for _ in bar(foo for foo in [1]):
+        pass
+```
+
+triggers [PLR1704](https://docs.astral.sh/ruff/rules/redefined-argument-from-local/) with ruff 0.5.2
+```
+$ ruff --version
+ruff 0.5.2
+
+$ ruff check --select PLR1704 test.py
+test.py:2:26: PLR1704 Redefining argument with the local name `foo`
+  |
+1 | def func(foo):
+2 |     for _ in bar(foo for foo in [1]):
+  |                          ^^^ PLR1704
+3 |         pass
+  |
+
+Found 1 error.
+```
+
+which is wrong. [From the python3 docs](https://docs.python.org/3/reference/expressions.html#grammar-token-python-grammar-comprehension):
+> However, aside from the iterable expression in the leftmost for clause, the comprehension is executed in a separate implicitly nested scope. This ensures that names assigned to in the target list don’t “leak” into the enclosing scope.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-07-16 13:22_
+
+---
+
+_Comment by @charliermarsh on 2024-07-16 13:22_
+
+Agreed -- that looks like a bug.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-16 14:03_
+
+---
+
+_Referenced in [astral-sh/ruff#12346](../../astral-sh/ruff/pulls/12346.md) on 2024-07-16 14:43_
+
+---
+
+_Closed by @charliermarsh on 2024-07-16 14:49_
+
+---
+
+_Closed by @charliermarsh on 2024-07-16 14:49_
+
+---

@@ -1,0 +1,476 @@
+---
+number: 4649
+title: allow_missing_positional with allow_hyphen_values not working
+type: issue
+state: open
+author: ismell
+labels:
+  - C-enhancement
+  - A-parsing
+  - S-waiting-on-design
+assignees: []
+created_at: 2023-01-18T18:04:13Z
+updated_at: 2023-01-31T22:09:43Z
+url: https://github.com/clap-rs/clap/issues/4649
+synced_at: 2026-01-10T01:27:59Z
+---
+
+# allow_missing_positional with allow_hyphen_values not working
+
+---
+
+_Issue opened by @ismell on 2023-01-18 18:04_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.66.0 (69f9c33d7 2022-12-12)
+
+### Clap Version
+
+4.0.29
+
+### Minimal reproducible code
+
+```rust
+#[derive(Parser, Debug, PartialEq, Eq)]
+#[command(allow_missing_positional = true)]
+pub struct Args {
+    /// Version number.
+    /// If not specified the PVR variable is used.
+    #[arg(allow_hyphen_values = true)]
+    v1: Option<String>,
+
+    /// -gt, -ge, -lt, -le, -eq, -ne
+    #[arg(allow_hyphen_values = true)]
+    op: String,
+
+    /// Version number.
+    v2: String,
+}
+
+#[test]
+fn test_three_args() -> Result<()> {  // <-- This works
+    let args = Args::try_parse_from(vec!["prog", "0.3", "-gt", "0.2"])?;
+    assert_eq!(
+        args,
+        Args {
+            v1: Some("0.3".to_owned()),
+            op: "-gt".to_owned(),
+            v2: "0.2".to_owned(),
+        }
+    );
+
+    Ok(())
+}
+
+#[test]
+fn test_two_args() -> Result<()> { // <-- This fails
+    let args = Args::try_parse_from(vec!["prog", "-gt", "0.2"])?;
+    assert_eq!(
+        args,
+        Args {
+            v1: None,
+            op: "-gt".to_owned(),
+            v2: "0.2".to_owned(),
+        }
+    );
+
+    Ok(())
+}
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=1b582ab81b2884b8696d70789b6e9ed4
+
+### Actual Behaviour
+
+```
+---- test_two_args stdout ----
+Error: error: The following required arguments were not provided:
+  <OP>
+
+Usage: prog <V1> <OP> <V2>
+```
+
+### Expected Behaviour
+
+There should be no parsing error and the `v1` `Option` should be `None`.
+
+### Additional Context
+
+The command I'm replicating is documented here: https://mgorny.pl/articles/the-ultimate-guide-to-eapi-7.html#version-comparison-ver-test
+
+### Debug Output
+
+```
+
+running 2 tests
+test ver_test::tests::test_three_args ... [      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="ver_test"
+[      clap::builder::command] 	Command::_propagate:ver_test
+[      clap::builder::command] 	Command::_check_help_and_version:ver_test expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:ver_test
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:v1
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:op
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:v2
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("0.3")' ([48, 46, 51])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("0.3")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("-gt")' ([45, 103, 116])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("-gt")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr("gt"), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['g', 't']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_args: positional at 2 allows hyphens
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_short_arg MaybeHyphenValue
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...2
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::is_new_arg: RawOsStr("0.2"):op
+[        clap::parser::parser] 	Parser::is_new_arg: Allow hyphen
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("0.2")
+[        clap::parser::parser] 	Parser::resolve_pending: id="v1"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id="v1"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="v1", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="v1"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="Args", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["0.3"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=v1, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("0.2")' ([48, 46, 50])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("0.2")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...3
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::resolve_pending: id="op"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id="op"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="op", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="op"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="Args", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["-gt"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=op, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::resolve_pending: id="v2"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id="v2"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="v2", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="v2"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="Args", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["0.2"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=3
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=v2, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:v1:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:v1: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:op:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:op: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:v2:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:v2: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[      clap::builder::command] 	Command::groups_for_arg: id="v1"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="v1", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="Args", conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id="op"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="op", conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id="v2"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="v2", conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"v1"
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"Args"
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"op"
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"v2"
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="v1"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="v1"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="op"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="op"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="v2"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="v2"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: "op", children: [] }, Child { id: "v2", children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:"v1"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"Args"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"Args":group
+[     clap::parser::validator] 	Validator::gather_requires:iter:"op"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"v2"
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+ok
+test ver_test::tests::test_two_args ... [      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="ver_test"
+[      clap::builder::command] 	Command::_propagate:ver_test
+[      clap::builder::command] 	Command::_check_help_and_version:ver_test expand_help_tree=false
+[      clap::builder::command] 	Command::long_help_exists
+[      clap::builder::command] 	Command::_check_help_and_version: Building default --help
+[      clap::builder::command] 	Command::_propagate_global_args:ver_test
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:v1
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:op
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:v2
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("-gt")' ([45, 103, 116])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("-gt")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr("gt"), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['g', 't']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_args: positional at 1 allows hyphens
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_short_arg MaybeHyphenValue
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("0.2")' ([48, 46, 50])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("0.2")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...2
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::get_matches_with: Bumping the positional counter...
+[        clap::parser::parser] 	Parser::resolve_pending: id="v1"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id="v1"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="v1", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="v1"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="Args", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["-gt"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=v1, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::resolve_pending: id="v2"
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id="v2"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="v2", source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id="v2"
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id="Args", source=CommandLine
+[        clap::parser::parser] 	Parser::push_arg_values: ["0.2"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=v2, pending=0
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:v1:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:v1: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:op:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:op: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:v2:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:v2: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[      clap::builder::command] 	Command::groups_for_arg: id="v1"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="v1", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="Args", conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id="v2"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="v2", conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"v1"
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"Args"
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:"v2"
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="v1"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="v1"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id="v2"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="v2"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: "op", children: [] }, Child { id: "v2", children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:"v1"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"Args"
+[     clap::parser::validator] 	Validator::gather_requires:iter:"Args":group
+[     clap::parser::validator] 	Validator::gather_requires:iter:"v2"
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required:iter:aog="op"
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[     clap::parser::validator] 	Validator::is_missing_required_ok: op
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="op"
+[      clap::builder::command] 	Command::groups_for_arg: id="op"
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id="op", conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id="op"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg="Args"
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required:iter: Missing "op"
+[     clap::parser::validator] 	Validator::missing_required_error; incl=["op"]
+[     clap::parser::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: "op", children: [] }, Child { id: "v2", children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=["op"], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=["op", "v2"]
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"op" arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"v2" arg is_present=true
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:"op" arg is_present=false
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[StyledStr { pieces: [(Some(Placeholder), "<OP>")] }]
+[     clap::parser::validator] 	Validator::missing_required_error: req_args=[
+    "<OP>",
+]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_args: incls=["v1", "v2", "op"]
+[         clap::output::usage] 	Usage::get_args: unrolled_reqs=["op", "v2"]
+[         clap::output::usage] 	Usage::get_args: ret_val=[StyledStr { pieces: [(Some(Placeholder), "<V1>")] }, StyledStr { pieces: [(Some(Placeholder), "<OP>")] }, StyledStr { pieces: [(Some(Placeholder), "<V2>")] }]
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+FAILED
+
+failures:
+
+---- ver_test::tests::test_two_args stdout ----
+Error: error: The following required arguments were not provided:
+  <OP>
+
+Usage: prog <V1> <OP> <V2>
+
+For more information try '--help'
+
+Backtrace:
+   0: clap::error::Backtrace::new
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/error/mod.rs:839:19
+   1: clap::error::Error<F>::new
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/error/mod.rs:135:28
+   2: clap::error::Error<F>::missing_required_argument
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/error/mod.rs:488:23
+   3: clap::parser::validator::Validator::missing_required_error
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/parser/validator.rs:454:13
+   4: clap::parser::validator::Validator::validate_required
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/parser/validator.rs:366:17
+   5: clap::parser::validator::Validator::validate
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/parser/validator.rs:85:17
+   6: clap::parser::parser::Parser::get_matches_with
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/parser/parser.rs:481:9
+   7: clap::builder::command::Command::_do_parse
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/builder/command.rs:3796:29
+   8: clap::builder::command::Command::try_get_matches_from_mut
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/builder/command.rs:708:9
+   9: clap::builder::command::Command::try_get_matches_from
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/builder/command.rs:624:9
+  10: clap::derive::Parser::try_parse_from
+             at /home/rrangel/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.32/src/derive.rs:126:31
+  11: alchemist::ver_test::tests::test_two_args
+             at src/bin/alchemist/ver_test.rs:79:20
+```
+
+---
+
+_Label `C-bug` added by @ismell on 2023-01-18 18:04_
+
+---
+
+_Comment by @epage on 2023-01-18 19:10_
+
+As a heads up, the reproduction case for ths is a lot simpler; `allow_hyphen_values` is not needed:
+```rust
+#!/usr/bin/env -S rust-script
+
+//! ```cargo
+//! [dependencies]
+//! clap = { path = "../clap", features = ["derive"] }
+//! ```
+
+use clap::Parser;
+
+#[derive(Parser, Debug, PartialEq, Eq)]
+#[command(allow_missing_positional = true)]
+pub struct Args {
+    /// Version number.
+    /// If not specified the PVR variable is used.
+    v1: Option<String>,
+
+    /// -gt, -ge, -lt, -le, -eq, -ne
+    op: String,
+
+    /// Version number.
+    v2: String,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!("{:?}", args);
+}
+```
+
+---
+
+_Comment by @epage on 2023-01-18 19:13_
+
+`allow_missing_positional` is fairly limited without using `--`: it only allows the second-to-last positional to be skipped, causing `op` to be skipped.  Since `op` is required, we then error when we get to the required checks.
+
+I would likely implement this as
+```rust
+pub struct Args {
+    #[arg(allow_hyphen_values = true, required = true, num_args=2..=3)]
+    args: Vec<String>,
+}
+```
+and then extract the arguments as needed
+
+---
+
+_Comment by @ismell on 2023-01-19 00:13_
+
+That's what I ended up using after trying to get clap to parse the args correctly. It's not a blocker for me, but a nice to have :)
+
+---
+
+_Comment by @epage on 2023-01-19 02:50_
+
+The challenge is getting all of the semantics right as you can't interpret an argument context-free but instead need to process all previous arguments to know what the next one will look like.
+
+This can be faked with the second to last argument because we can peek at the next and make a guess as to whether it is a positional or not.  If its not, we assume we need to skip the second to last.  To get an idea of how complex this is, [see our code for skipping](https://github.com/clap-rs/clap/blob/master/src/parser/parser.rs#L311,L368).  This does include one other case (`low_index_mults`) but that isn't a major part of the code.
+
+Even still, I can think of cases that break this, like if you had a positional followed by  flag and then a positional.
+
+Similarly, we could make this also consider `required = true` but that would exclude support for global requireds that require holistic knowledge to support or that a conflict can disable a `required = true`.666
+
+---
+
+_Label `C-bug` removed by @epage on 2023-01-31 22:09_
+
+---
+
+_Label `C-enhancement` added by @epage on 2023-01-31 22:09_
+
+---
+
+_Label `A-parsing` added by @epage on 2023-01-31 22:09_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2023-01-31 22:09_
+
+---

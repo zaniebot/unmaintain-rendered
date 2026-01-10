@@ -1,0 +1,262 @@
+---
+number: 2155
+title: "Print installation path when running `uv pip install`"
+type: issue
+state: closed
+author: danielhollas
+labels:
+  - enhancement
+  - good first issue
+  - tracing
+assignees: []
+created_at: 2024-03-04T14:05:44Z
+updated_at: 2024-10-02T14:38:32Z
+url: https://github.com/astral-sh/uv/issues/2155
+synced_at: 2026-01-10T01:23:13Z
+---
+
+# Print installation path when running `uv pip install`
+
+---
+
+_Issue opened by @danielhollas on 2024-03-04 14:05_
+
+Hey :wave: 
+
+Small feature request: It would be great if `uv` printed the path where it is installing the packages when running `uv pip install`. I am currently debugging a weird issue in GHA while using `uv pip install --system` and it is not clear how to check where uv ends up installing stuff. 
+
+---
+
+_Comment by @charliermarsh on 2024-03-04 14:31_
+
+Have you tried running with `--verbose`?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-03-04 14:31_
+
+---
+
+_Comment by @danielhollas on 2024-03-04 23:01_
+
+Yeah, indeed running with verbose prints this:
+
+```
+ uv_interpreter::python_query::find_default_python 
+      0.004003s   0ms DEBUG uv_interpreter::python_query Starting interpreter discovery for default Python
+      0.004109s   0ms DEBUG uv_interpreter::interpreter Probing interpreter info for: /opt/hostedtoolcache/Python/3.10.13/x64/bin/python3
+      0.039094s  35ms DEBUG uv_interpreter::interpreter Found Python 3.10.13 for: /opt/hostedtoolcache/Python/3.10.13/x64/bin/python3
+    0.039395s DEBUG uv::commands::pip_install Using Python 3.10.13 environment at /opt/hostedtoolcache/Python/3.10.13/x64/bin/python3
+```
+
+To me, this is not very easy to parse, and even find among the rest of the huge debug output. At least for the `--system` flag seems like a good info to print by default, especially given the number of issues / corner cases that have been reported (and fixed!) for this particular option. But of course opinions might vary. :-) 
+
+---
+
+_Comment by @woutervh on 2024-03-05 12:42_
+
+```
+it is not clear how to check where uv ends up installing stuff.
+```
+
+I've already been bitten multiple times by this, installing stuff in the wrong venv.
+Because I have 100 venvs on my system,  
+and I really dislike activating a venv  (because it's an anti-patteren creating state in that specific shell.)
+
+with actual pip, it's not really an issue, because you are always using the pip from inside the virtualenv
+
+
+```
+> uv pip install pytest
+Resolved 4 packages in 286ms
+Downloaded 1 package in 64ms
+Installed 4 packages in 21ms
+ + iniconfig==2.0.0
+ + pytest==8.0.2
+  ...
+```
+
+
+A much more userfriendly output would be to include the path somewhere
+```
+> uv pip install pytest
+Resolved 4 packages.                                <- I don't care about how many millisecs it takes,  it's visual pollution
+Downloaded 1 package.                           <- which one?  what if I don't expect to download anything new?
+Installed 4 packages in /tmp/foo/.venv/   <- include path
+  ...
+  + iniconfig==2.0.0
+ + pytest==8.0.2  (dowloaded)
+```
+
+
+---
+
+_Comment by @danielhollas on 2024-03-18 22:29_
+
+So, I love the new more concise verbose output (-v), however, I will still lobby for `uv` to print the install location by default. :blush: 
+
+As previous commenter pointed out, it's too easy to make a mistake and not notice it (e.g. forgetting to deactivate the environment, switch to different directory with its own .venv, and then running `uv pip install`)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-20 04:17_
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 03:07_
+
+Considering starting by showing the path if it's not `.venv` (i.e., a virtualenv in the current working directory).
+
+---
+
+_Comment by @AlexWaygood on 2024-03-26 14:00_
+
+> Considering starting by showing the path if it's not `.venv` (i.e., a virtualenv in the current working directory).
+
+I think this would be really useful. I was just caught out by `uv` unexpectedly installing things into my `~dev/.venv` environment, rather than my `~dev/project/env` environment, because I didn't have the latter activated, and `uv` searched up through the directory structure until it found a virtual environment called `.venv`.
+
+---
+
+_Referenced in [astral-sh/uv#2500](../../astral-sh/uv/issues/2500.md) on 2024-04-22 21:23_
+
+---
+
+_Comment by @ChannyClaus on 2024-04-22 21:44_
+
+another separate, but related nicety would be printing out the `Location` column that `pip list --verbose` prints:
+```
+$ pip list --verbose
+Package            Version     Location                                                            Installer
+------------------ ----------- ------------------------------------------------------------------- ---------
+asttokens          2.4.1       /Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/site-packages uv
+build              1.2.1       /Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/site-packages uv
+```
+ 
+
+---
+
+_Label `question` removed by @zanieb on 2024-06-19 00:43_
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-06-19 00:43_
+
+---
+
+_Label `tracing` added by @zanieb on 2024-06-19 00:43_
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-07-01 21:56_
+
+---
+
+_Unassigned @charliermarsh by @zanieb on 2024-07-01 21:56_
+
+---
+
+_Comment by @zanieb on 2024-07-01 21:57_
+
+I think it'd be reasonable to start with this: https://github.com/astral-sh/uv/issues/2155#issuecomment-2019302112
+
+---
+
+_Comment by @danielenricocahall on 2024-07-04 16:31_
+
+Hi! I wanted to look into this - would it be a matter of updating the line in `uv/src/commands/pip/operations.rs` to something like:
+
+```rust
+        writeln!(
+            printer.stderr(),
+            "{}",
+            format!(
+                "Installed {} in {} to {}",
+                format!("{} package{}", wheels.len(), s).bold(),
+                elapsed(start.elapsed()),
+                venv.python_executable().display()
+            )
+            .dimmed()
+        )?;
+```
+
+Based on the test results it looks correct (although it looks like we would need to update the snapshots)
+
+```
+Installed 3 packages in [TIME] to /private/var/folders/7s/q0mx5qbs78bfgpclqx_8tknm0000gn/T/.tmpRu7Vx5/.venv/bin/python3
+```
+
+---
+
+_Comment by @zanieb on 2024-07-04 16:34_
+
+We'd want to only display the path if it's not in the working directory which would require some sort of `if/else`. As a minor note, we use `.user_display()` for paths. Otherwise that seems like a reasonable place to start. Maybe we should print
+
+> Installing to environment at {path}
+
+before this message instead of adding to the end of it?
+
+---
+
+_Comment by @danielenricocahall on 2024-07-04 20:15_
+
+Sure! I have something like this:
+
+```rust
+        let python_executable = venv.python_executable();
+        let venv_dir_canonical = fs::canonicalize(".venv").unwrap_or(PathBuf::from(".venv"));
+        let is_outside_working_directory = !(python_executable.starts_with(&venv_dir_canonical));
+        if is_outside_working_directory {
+            writeln!(
+                printer.stderr(),
+                "{}",
+                format!(
+                    "Installing to environment at {}",
+                    python_executable.user_display()
+                )
+            )?;
+        }
+```
+
+I wasn't sure the best way to check for being in `.venv` so definitely open to suggestions there
+
+---
+
+_Referenced in [astral-sh/uv#4835](../../astral-sh/uv/pulls/4835.md) on 2024-07-05 20:16_
+
+---
+
+_Comment by @Aditya-PS-05 on 2024-09-15 07:21_
+
+There are 
+1.) deleting packages
+2.) updating packages
+3.) resolving packages
+4.) auditing packages 
+5.) installing packages
+
+Should I print the path in every place or just at installing packages?
+Which will be good practice?
+
+---
+
+_Comment by @Aditya-PS-05 on 2024-09-15 07:23_
+
+I am trying to print the path at every place where some changes in packaging is occuring.
+
+---
+
+_Referenced in [astral-sh/uv#7407](../../astral-sh/uv/pulls/7407.md) on 2024-09-15 13:29_
+
+---
+
+_Referenced in [astral-sh/uv#7422](../../astral-sh/uv/pulls/7422.md) on 2024-09-16 11:14_
+
+---
+
+_Referenced in [astral-sh/uv#7850](../../astral-sh/uv/pulls/7850.md) on 2024-10-01 16:47_
+
+---
+
+_Closed by @zanieb on 2024-10-02 14:38_
+
+---

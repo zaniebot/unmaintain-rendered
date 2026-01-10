@@ -1,0 +1,78 @@
+---
+number: 10602
+title: recognizing uv.sources when building .whl files
+type: issue
+state: closed
+author: VaasuDevanS
+labels: []
+assignees: []
+created_at: 2025-01-14T16:45:51Z
+updated_at: 2025-01-29T16:23:33Z
+url: https://github.com/astral-sh/uv/issues/10602
+synced_at: 2026-01-10T01:24:55Z
+---
+
+# recognizing uv.sources when building .whl files
+
+---
+
+_Issue opened by @VaasuDevanS on 2025-01-14 16:45_
+
+I think `uv run --with` or `uv pip install` doesn't recognize `tool.uv.sources` in pyproject.toml file. I used the following commands to create and build a package.
+
+```
+uv init my-package --package --python 3.11
+cd my-package
+uv add gdal@https://github.com/cgohlke/geospatial-wheels/releases/download/v2024.9.22/GDAL-3.9.2-cp311-cp311-win_amd64.whl
+uv build
+```
+
+uv automatically creates a section `tool.uv.sources` in pyproject.toml and includes the url to the .whl file like below (which I absolutely like btw)
+```
+gdal = [
+  { url = "https://github.com/cgohlke/geospatial-wheels/releases/download/v2024.9.22/GDAL-3.9.2-cp311-cp311-win_amd64.whl" },
+]
+```
+
+The dependencies looks like 
+```
+dependencies = [
+  "gdal",
+]
+```
+
+However, when I use the built .whl like `uv run --with my-package-0.1.0-py3-none-any.whl` or `uv pip install my-package-0.1.0-py3-none-any.whl`, it tries to download the latest version of gdal (v3.10.1) and tries to build it since there are no pre-built wheels that are available directly in PyPI.
+
+Is this the intended behavior?
+
+---
+
+_Comment by @charliermarsh on 2025-01-14 16:52_
+
+This is correct -- we don't include sources in the built wheel metadata. You might be interested in #8729.
+
+---
+
+_Comment by @VaasuDevanS on 2025-01-14 17:06_
+
+Thanks @charliermarsh for pointing me to the issue. 
+
+> The built wheel needs to use the declared project metadata, not the resolved application versions. It might also violate the spec in some sense.
+
+I do understand this when using `uv pip install .whl` or uploading to PyPI and installing from there but say, I use something like `uv run --with my-package-0.1.0.tar.gz` which as per my understanding has the pyproject.toml with all uv related config. How about adding a flag (or similar) to support this when installing via .tar.gz when it's a uv managed project?
+
+---
+
+_Comment by @charliermarsh on 2025-01-29 16:23_
+
+I think we can track it in the linked issue.
+
+---
+
+_Closed by @charliermarsh on 2025-01-29 16:23_
+
+---
+
+_Referenced in [astral-sh/uv#11587](../../astral-sh/uv/issues/11587.md) on 2025-02-18 14:28_
+
+---

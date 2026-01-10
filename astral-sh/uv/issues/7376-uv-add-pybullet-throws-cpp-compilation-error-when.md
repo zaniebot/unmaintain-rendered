@@ -1,0 +1,301 @@
+---
+number: 7376
+title: "\"uv add pybullet\" throws cpp compilation error when compiling the wheel"
+type: issue
+state: closed
+author: cube1324
+labels:
+  - question
+  - windows
+assignees: []
+created_at: 2024-09-13T19:38:40Z
+updated_at: 2024-11-08T00:50:08Z
+url: https://github.com/astral-sh/uv/issues/7376
+synced_at: 2026-01-10T01:24:14Z
+---
+
+# "uv add pybullet" throws cpp compilation error when compiling the wheel
+
+---
+
+_Issue opened by @cube1324 on 2024-09-13 19:38_
+
+Hello,
+
+when i try to add pybullet via `uv add pybullet` i get some c++ compilation error:
+
+```
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: pybullet==3.2.6
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit code: 1
+--- stdout:
+win-amd64
+numpy is enabled.
+numpy_include_dirs = C:\Users\jonas\Documents\cremini-rl\.venv\lib\site-packages\numpy\_core\include
+win32!
+.
+. (here are a lot of warnings)
+.
+C:\Users\jonas\AppData\Local\uv\cache\built-wheels-v3\index\b2a7eb67d4c26b82\pybullet\3.2.6\WoWqLNnKv9F-ugJ1yInbm\pybullet-3.2.6.tar.gz\examples\SharedMemory\plugins\tinyRendererPlugin\TinyRendererVisualShapeConverter.cpp : fatal error C1083: Cannot open compiler generated file: '': Invalid argument
+--- stderr:
+error: command 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX86\\x64\\cl.exe' failed with exit code 1
+```
+
+However installing pybullet via `uv pip install pybullet` works flawlesly. I am using Windows 11 with uv version 0.4.9. 
+I already tried to disable build isolation but that does not solve the issue. Is there anything else i have overlooked or is the package just too old / not compatible?
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 00:20_
+
+That's interesting... Are they using different underlying Python interpreters? (If you run with `--verbose`, we should tell you the Python interpreter that's being used in each case.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-14 00:20_
+
+---
+
+_Comment by @cube1324 on 2024-09-14 16:55_
+
+Below are the debug messages for both cases. As far as i understand `uv pip install` uses the venv interpreter and `uv add` uses the miniconda interpreter. Installing pybullet without uv with just plain pip works for the minicoda intepreter. I tried a default python interpreter instead of the miniconda one in case there are some weird permission issue. However it still has the same issue. 
+```
+C:\Users\jonas\Documents\test>uv pip install pybullet --no-cache --verbose
+DEBUG uv 0.4.9
+DEBUG Searching for Python interpreter in system path or `py` launcher
+DEBUG Found `cpython-3.9.12-windows-x86_64-none` at `C:\Users\jonas\Documents\test\.venv\Scripts\python.exe` (virtual environment)
+DEBUG Using Python 3.9.12 environment at .venv\Scripts\python.exe
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: pybullet
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.9.12
+DEBUG Solving with target Python version: >=3.9.12
+DEBUG Adding direct dependency: pybullet*
+DEBUG No cache entry for: https://pypi.org/simple/pybullet/
+DEBUG Searching for a compatible version of pybullet (*)
+DEBUG Selecting: pybullet==3.2.6 [compatible] (pybullet-3.2.6.tar.gz)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/e9/56/2a0a0b46cf65d2dd533a3f3a5647d63a1e4558646eab3a57a8e502b78c82/pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Tried 1 versions: pybullet 1
+DEBUG Split specific environment resolution took 0.076s
+Resolved 1 package in 76ms
+DEBUG Identified uncached requirement: pybullet==3.2.6
+DEBUG Acquired lock for `C:\Users\jonas\AppData\Local\Temp\.tmpjT6tRY\built-wheels-v3\pypi\pybullet\3.2.6`
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/39/a6/6d6a8c535b82460527edc04b5fbf0374541d041668515e35822e53d7f66f/pybullet-3.2.6.tar.gz
+DEBUG Downloading source distribution: pybullet==3.2.6
+DEBUG Building: pybullet==3.2.6
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.9.12
+DEBUG Solving with target Python version: >=3.9.12
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG No cache entry for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==74.1.2 [compatible] (setuptools-74.1.2-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/cb/9c/9ad11ac06b97e55ada655f8a6bea9d1d3f06e120b178cd578d80e558191d/setuptools-74.1.2-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG Split specific environment resolution took 0.042s
+DEBUG Installing in setuptools==74.1.2 in C:\Users\jonas\AppData\Local\Temp\.tmpjT6tRY\builds-v0\.tmpZrdjuY
+DEBUG Identified uncached requirement: setuptools==74.1.2
+DEBUG Downloading and building requirement for build: setuptools==74.1.2
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/cb/9c/9ad11ac06b97e55ada655f8a6bea9d1d3f06e120b178cd578d80e558191d/setuptools-74.1.2-py3-none-any.whl
+DEBUG Installing build requirement: setuptools==74.1.2
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+.
+.  (lost of c++ compiler warnings)
+.
+DEBUG Generating code
+DEBUG Finished generating code
+DEBUG C:\Users\jonas\AppData\Local\Temp\.tmpjT6tRY\builds-v0\.tmpZrdjuY\lib\site-packages\setuptools\command\bdist_wheel.py:114: RuntimeWarning: Config variable 'Py_DEBUG' is unset, Python ABI tag may be incorrect
+DEBUG   if get_flag("Py_DEBUG", hasattr(sys, "gettotalrefcount"), warn=(impl == "cp")):
+DEBUG Finished building: pybullet==3.2.6
+DEBUG Released lock at `C:\Users\jonas\AppData\Local\Temp\.tmpjT6tRY\built-wheels-v3\pypi\pybullet\3.2.6\.lock`
+Prepared 1 package in 2m 55s
+Installed 1 package in 1.07s
+ + pybullet==3.2.6
+DEBUG Released lock at `C:\Users\jonas\Documents\test\.venv\.lock`
+```
+
+
+```
+DEBUG uv 0.4.9
+DEBUG Found project root: `C:\Users\jonas\Documents\test`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `C:\Users\jonas\Documents\test\.python-version`
+DEBUG Searching for Python 3.9 in managed installations, system path, or `py` launcher
+DEBUG Searching for managed installations at `C:\Users\jonas\AppData\Roaming\uv\python`
+DEBUG Found `cpython-3.9.12-windows-x86_64-none` at `C:\Users\jonas\miniconda3\python.exe` (search path)
+Using Python 3.9.12 interpreter at: C:\Users\jonas\miniconda3\python.exe
+Creating virtualenv at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Starting clean resolution
+DEBUG Found static `pyproject.toml` for: test @ file:///C:/Users/jonas/Documents/test
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.9.12
+DEBUG Solving with target Python version: >=3.9
+DEBUG Adding direct dependency: test*
+DEBUG Searching for a compatible version of test @ file:///C:/Users/jonas/Documents/test (*)
+DEBUG Adding transitive dependency for test==0.1.0: pybullet*
+DEBUG No cache entry for: https://pypi.org/simple/pybullet/
+DEBUG Searching for a compatible version of pybullet (*)
+DEBUG Selecting: pybullet==3.2.6 [compatible] (pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/e9/56/2a0a0b46cf65d2dd533a3f3a5647d63a1e4558646eab3a57a8e502b78c82/pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Tried 2 versions: pybullet 1, test 1
+DEBUG Split universal resolution took 0.086s
+Resolved 2 packages in 92ms
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test @ file:///C:/Users/jonas/Documents/test
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched `requires-dist` for: `test==0.1.0`
+  Expected: {Requirement { name: PackageName("pybullet"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.2.6" }]), index: None }, origin: None }}
+  Actual: {Requirement { name: PackageName("pybullet"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None }, origin: None }}
+DEBUG Starting clean resolution
+DEBUG Found static `pyproject.toml` for: test @ file:///C:/Users/jonas/Documents/test
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.9.12
+DEBUG Solving with target Python version: >=3.9
+DEBUG Adding direct dependency: test*
+DEBUG Searching for a compatible version of test @ file:///C:/Users/jonas/Documents/test (*)
+DEBUG Adding transitive dependency for test==0.1.0: pybullet>=3.2.6
+DEBUG Found fresh response for: https://pypi.org/simple/pybullet/
+DEBUG Searching for a compatible version of pybullet (>=3.2.6)
+DEBUG Selecting: pybullet==3.2.6 [preference] (pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e9/56/2a0a0b46cf65d2dd533a3f3a5647d63a1e4558646eab3a57a8e502b78c82/pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Tried 2 versions: pybullet 1, test 1
+DEBUG Split universal resolution took 0.001s
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached requirement: pybullet==3.2.6
+DEBUG Acquired lock for `C:\Users\jonas\AppData\Local\Temp\.tmp8eZK2D\built-wheels-v3\index\b2a7eb67d4c26b82\pybullet\3.2.6`
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/39/a6/6d6a8c535b82460527edc04b5fbf0374541d041668515e35822e53d7f66f/pybullet-3.2.6.tar.gz
+DEBUG Downloading source distribution: pybullet==3.2.6
+DEBUG Building: pybullet==3.2.6
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.9.12
+DEBUG Solving with target Python version: >=3.9.12
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG No cache entry for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==74.1.2 [compatible] (setuptools-74.1.2-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/cb/9c/9ad11ac06b97e55ada655f8a6bea9d1d3f06e120b178cd578d80e558191d/setuptools-74.1.2-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG Split specific environment resolution took 0.066s
+DEBUG Installing in setuptools==74.1.2 in C:\Users\jonas\AppData\Local\Temp\.tmp8eZK2D\builds-v0\.tmp3cJ0iX
+DEBUG Identified uncached requirement: setuptools==74.1.2
+DEBUG Downloading and building requirement for build: setuptools==74.1.2
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/cb/9c/9ad11ac06b97e55ada655f8a6bea9d1d3f06e120b178cd578d80e558191d/setuptools-74.1.2-py3-none-any.whl
+DEBUG Installing build requirement: setuptools==74.1.2
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+.
+.  (lost of c++ compiler warnings)
+.
+DEBUG C:\Users\jonas\AppData\Local\Temp\.tmp8eZK2D\built-wheels-v3\index\b2a7eb67d4c26b82\pybullet\3.2.6\NurYCsYSkVk6xBXgflFQA\pybullet-3.2.6.tar.gz\examples\SharedMemory\plugins\collisionFilterPlugin\collisionFilterPlugin.cpp : fatal error C1083: Cannot open compiler generated file: '': Invalid argument
+DEBUG error: command 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX86\\x64\\cl.exe' failed with exit code 1
+DEBUG Released lock at `C:\Users\jonas\AppData\Local\Temp\.tmp8eZK2D\built-wheels-v3\index\b2a7eb67d4c26b82\pybullet\3.2.6\.lock`
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: pybullet==3.2.6
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit code: 1
+```
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 17:12_
+
+Does `pip install --use-pep517 --no-cache pybullet` work? Or does that fail too?
+
+---
+
+_Comment by @cube1324 on 2024-09-14 17:47_
+
+`pip install --use-pep517 --no-cache pybullet` works with no issues. Only `uv add` fails
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 18:55_
+
+My best guess is that you're hitting the file-length limit on Windows?
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 20:21_
+
+Can you try setting a short cache directory? https://github.com/astral-sh/uv/issues/7078#issuecomment-2333152223
+
+---
+
+_Comment by @cube1324 on 2024-09-14 21:20_
+
+Setting a short cache directory fixes the issue 👍, thanks for the help.  The only weird thing is that long path support is already enabled on my machine, so i am not sure why it doesent work with the longer path 🤔. I guess its just windows things....
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 21:40_
+
+That's interesting...
+
+I do have a PR open to try and shorten the paths: #7240. It's hard for me to say off-hand whether it would've made a difference here, would need to do some character counting (or you're welcome to try it if you're eager to build from source)...
+
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-09-14 21:40_
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 22:15_
+
+Annoyed because this actually worked for me on my Windows machine, even without long paths enabled.
+
+---
+
+_Comment by @cube1324 on 2024-09-16 19:54_
+
+I tried on 2 different Pc both running  `Windows 11 10.0.22631`. On both it does not work with the default cache location. The long path settings has not impact. However if i move the cache location to `C:\uv` it works. I dont have time to investigate it further, for the time being i will just stick with our previous slow build pipeline 😢. Thanks for the help anyways!
+
+---
+
+_Comment by @charliermarsh on 2024-09-16 19:57_
+
+Is moving the cache location a problem?
+
+---
+
+_Comment by @cube1324 on 2024-09-16 22:18_
+
+After some more consideration i agree with you, moving the cache location is not a big issue. Thanks again 👍 
+
+---
+
+_Comment by @bmarroquin on 2024-09-17 04:53_
+
+Sadly, not everything in windows respects the long path setting. In this case, the executable that is raising the error does not. See [this stack overflow question.](https://stackoverflow.com/questions/69082543/how-to-make-long-windows-paths-work-with-cl-exe). The safer bet is always trying to shorten the paths.
+
+Since there is a user specific part in the path (username), the error may or may not be present depending on the length of the user's username. This may explain why it works for @charliermarsh without any changes. 
+
+---
+
+_Closed by @zanieb on 2024-10-21 21:53_
+
+---
+
+_Referenced in [astral-sh/uv#8907](../../astral-sh/uv/pulls/8907.md) on 2024-11-08 00:25_
+
+---
+
+_Closed by @charliermarsh on 2024-11-08 00:50_
+
+---

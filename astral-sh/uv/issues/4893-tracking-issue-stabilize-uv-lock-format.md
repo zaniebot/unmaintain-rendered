@@ -1,0 +1,151 @@
+---
+number: 4893
+title: "Tracking issue: Stabilize `uv.lock` format"
+type: issue
+state: closed
+author: konstin
+labels:
+  - preview
+assignees: []
+created_at: 2024-07-08T13:47:43Z
+updated_at: 2024-08-09T14:03:05Z
+url: https://github.com/astral-sh/uv/issues/4893
+synced_at: 2026-01-10T01:23:42Z
+---
+
+# Tracking issue: Stabilize `uv.lock` format
+
+---
+
+_Issue opened by @konstin on 2024-07-08 13:47_
+
+This is a tracking issue for making breaking changes the schema and contents of `uv.lock` before the release.
+
+- [x] https://github.com/astral-sh/uv/issues/4888
+- [x] https://github.com/astral-sh/uv/issues/4889
+- [x] Move the resolution options (resolution lowest, exclude newer, prerelease mode) under a newer header resolver-options to group them and make them distinct from the rest of the top level entries.
+- [x] Rename distribution to package or packages. This is not a distribution entry, the distributions are the source dists and wheels. package is also a more familiar name and closer to PEP 751, packages would be the same as PEP 751.
+- [x] If only one index is used, move the source = { registry = "https://pypi.org/simple" } to the top of the file and out of the [[distribution]]. This shrinks the file a bit and removed the duplication.
+- [x] Try to make the lockfile more concise. Could we e.g. remove redundant `source` line? The lockfile is long and should try to get it as small as possible without sacrificing readability and diffability.
+
+---
+
+_Label `preview` added by @konstin on 2024-07-08 13:47_
+
+---
+
+_Renamed from "Stabilize lockfile format" to "Stabilize `uv.lock` format" by @konstin on 2024-07-08 13:48_
+
+---
+
+_Comment by @T-256 on 2024-07-08 14:17_
+
+> * Try to make the lockfile more concise. Could we e.g. remove redundant `source` line?
+
+it could use `source` at top-level which implies that distributions without `source` are using it:
+```toml
+version = 1
+source = { registry = "https://pypi.org/simple" }
+# or:
+# source.registry = "https://pypi.org/simple"
+
+[[distribution]]
+name = "a"
+version = "0.1.0"
+sdist = { url = "https://example.com", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 0 }
+
+[[distribution]]
+name = "a"
+version = "0.1.1"
+sdist = { url = "https://example.com", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 0 }
+
+[[distribution]]
+name = "b"
+version = "0.1.0"
+source = { editable = "path/to/dir" }
+```
+
+> ```toml
+> sdist = { url = "https://example.com", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 0 }
+> ```
+
+Idk, but I expected `checksum` instead of `hash`. also it used by cargo.lock
+
+> * Rename `sdist` to `source-dist`.
+
+I vote to don't change it, or `source-distribution` for consistency, or `source-code`/`code`/`code-distribution`.
+
+---
+
+_Comment by @chrisrodrigue on 2024-07-08 20:12_
+
+@T-256 
+
+This is nitpicking semantics but I think `hash` and `checksum` are often used interchangeably. I couldn't find a terrible amount of info on it but I did find this [glossary definition](https://www.digitizationguidelines.gov/term.php?term=md5checksum) suggesting `hash` is the more correct term. I think `checksum` reflects the intended use case of the hash, but the hash can theoretically be used as more than just a checksum.
+
+---
+
+_Renamed from "Stabilize `uv.lock` format" to "Tracking issue: Stabilize `uv.lock` format" by @konstin on 2024-07-09 11:22_
+
+---
+
+_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-07-09 11:28_
+
+---
+
+_Referenced in [astral-sh/uv#4963](../../astral-sh/uv/issues/4963.md) on 2024-07-10 15:35_
+
+---
+
+_Assigned to @konstin by @charliermarsh on 2024-07-30 15:28_
+
+---
+
+_Comment by @tinovyatkin on 2024-08-05 07:51_
+
+Can we have an option to exclude `source` completely? It may include per user specific credentials in case of private registries. Something similar to NPM [omit-lockfile-registry-resolved](https://docs.npmjs.com/cli/v9/using-npm/config#omit-lockfile-registry-resolved) option?
+
+---
+
+_Comment by @zanieb on 2024-08-05 14:28_
+
+@tinovyatkin we're planning on redacting credentials from the lockfile (see https://github.com/astral-sh/uv/issues/5119), is that going to be sufficient or is there more to your use-case?
+
+---
+
+_Comment by @tinovyatkin on 2024-08-05 16:06_
+
+> @tinovyatkin we're planning on redacting credentials from the lockfile (see https://github.com/astral-sh/uv/issues/5119), is that going to be sufficient or is there more to your use-case?
+
+Unfortunately in our case we are using "authentication proxies" on developers machines (so address starts like `http://127.0.0.1....`) and some specific address on CI builds.
+
+Can `source` at top level contain _the original source_ where the address was obtained? Like `"source": "config"` or `"source": "environment"`?
+
+
+---
+
+_Referenced in [astral-sh/uv#5853](../../astral-sh/uv/pulls/5853.md) on 2024-08-07 12:29_
+
+---
+
+_Referenced in [astral-sh/uv#5861](../../astral-sh/uv/pulls/5861.md) on 2024-08-07 13:57_
+
+---
+
+_Referenced in [astral-sh/uv#5884](../../astral-sh/uv/pulls/5884.md) on 2024-08-07 18:18_
+
+---
+
+_Comment by @konstin on 2024-08-09 14:03_
+
+We have the format ready for the release.
+
+---
+
+_Closed by @konstin on 2024-08-09 14:03_
+
+---
+
+_Referenced in [jvolkman/rules_pycross#121](../../jvolkman/rules_pycross/pulls/121.md) on 2024-09-23 04:17_
+
+---

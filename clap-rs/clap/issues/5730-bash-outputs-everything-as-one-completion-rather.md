@@ -1,0 +1,86 @@
+---
+number: 5730
+title: Bash outputs everything as one completion, rather than a list of completions
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - E-medium
+  - A-completion
+assignees: []
+created_at: 2024-09-17T18:57:56Z
+updated_at: 2024-09-17T20:16:02Z
+url: https://github.com/clap-rs/clap/issues/5730
+synced_at: 2026-01-10T01:28:15Z
+---
+
+# Bash outputs everything as one completion, rather than a list of completions
+
+---
+
+_Issue opened by @epage on 2024-09-17 18:57_
+
+This is with `clap_complete` 4.5.26, reproduced with `cargo` and the `exhaustive` example
+
+I put the following in my `PATH`:
+```bash
+#!/usr/bin/env bash
+
+cargo run --manifest-path ~/src/personal/clap/clap_complete/Cargo.toml --example exhaustive -F unstable-dynamic -- "$@" 2> /dev/null
+```
+I then ran
+```console
+$ source <(COMPLETE=bash exhaustive)
+$ exhaustive [TAB]
+--generate
+--help
+--version
+-h
+-V
+action
+alias
+help
+hint
+last
+pacman
+quote
+value [CURSOR]
+```
+If I hit `[ENTER]`, it runs each of those values *as a command*
+
+---
+
+_Label `A-completion` added by @epage on 2024-09-17 18:57_
+
+---
+
+_Label `C-bug` added by @epage on 2024-09-17 18:58_
+
+---
+
+_Label `E-medium` added by @epage on 2024-09-17 18:58_
+
+---
+
+_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2024-09-17 18:58_
+
+---
+
+_Comment by @epage on 2024-09-17 18:58_
+
+CC @shannmu 
+
+---
+
+_Referenced in [clap-rs/clap#5731](../../clap-rs/clap/pulls/5731.md) on 2024-09-17 19:55_
+
+---
+
+_Closed by @epage on 2024-09-17 20:16_
+
+---
+
+_Closed by @epage on 2024-09-17 20:16_
+
+---

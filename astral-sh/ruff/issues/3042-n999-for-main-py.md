@@ -1,0 +1,75 @@
+---
+number: 3042
+title: "N999 for `__main__.py`"
+type: issue
+state: closed
+author: scop
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-19T21:11:22Z
+updated_at: 2023-02-20T17:56:17Z
+url: https://github.com/astral-sh/ruff/issues/3042
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# N999 for `__main__.py`
+
+---
+
+_Issue opened by @scop on 2023-02-19 21:11_
+
+ruff 0.0.248 seems to issue `N999` for all `__main__.py`.
+
+Maybe it should get the same treatment as `__init__.py`, or be ignored altogether?
+
+---
+
+_Comment by @charliermarsh on 2023-02-19 21:24_
+
+Ah yeah that's definitely a false positive.
+
+---
+
+_Comment by @charliermarsh on 2023-02-19 21:27_
+
+I will take a look at this now and perhaps cut a new release real quick.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-19 21:27_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-19 21:27_
+
+---
+
+_Referenced in [astral-sh/ruff#3043](../../astral-sh/ruff/pulls/3043.md) on 2023-02-19 21:36_
+
+---
+
+_Closed by @charliermarsh on 2023-02-19 22:34_
+
+---
+
+_Comment by @scop on 2023-02-20 07:19_
+
+Thanks! :rocket: 
+
+---
+
+_Comment by @emirkmo on 2023-02-20 17:55_
+
+Out of curiosity shall I make sure we don't use release 0.0.248 in CI or will this be backported to 0.0.248?
+
+Trying to understand how to use ruff versions in our CI, thank you!
+
+---
+
+_Comment by @charliermarsh on 2023-02-20 17:56_
+
+I'm going to release 0.0.249 in a moment, but it will indeed be a new release -- we don't really have a way to backport or update existing releases.
+
+
+---

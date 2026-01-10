@@ -1,0 +1,112 @@
+---
+number: 12810
+title: How do I install package through docker so the container can run in an offline environment?
+type: issue
+state: closed
+author: MSameerAbbas
+labels:
+  - question
+assignees: []
+created_at: 2025-04-10T15:22:33Z
+updated_at: 2025-04-10T15:27:30Z
+url: https://github.com/astral-sh/uv/issues/12810
+synced_at: 2026-01-10T01:25:25Z
+---
+
+# How do I install package through docker so the container can run in an offline environment?
+
+---
+
+_Issue opened by @MSameerAbbas on 2025-04-10 15:22_
+
+### Question
+
+Here's my dockerfile:
+
+```
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    make \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+
+# Then, add the rest of the project source code and install it
+# Installing separately from its dependencies allows optimal layer caching
+WORKDIR /app
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+USER appuser
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+```
+I thought that calling uv sync would install everything in the lock file, but for some reason when I exec into the container to run `uv run main.py`, one of the packages still needs to install.
+
+Here are the logs:
+```
+ ⚡sam ❯❯ docker exec -it python-model bash
+appuser@85e7dcbe0822:/app$ uv run main.py
+  × Failed to build `unsupervised-model @ file:///app`
+  ├─▶ Failed to resolve requirements from `build-system.requires`
+  ├─▶ No solution found when resolving: `flit-core>=3.2, <4`
+  ├─▶ Failed to fetch: `https://pypi.org/simple/flit-core/`
+  ├─▶ Could not connect, are you offline?
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url (https://pypi.org/simple/flit-core/)
+  ├─▶ client error (Connect)
+  ├─▶ dns error: failed to lookup address information: Name does not resolve
+  ╰─▶ failed to lookup address information: Name does not resolve
+appuser@85e7dcbe0822:/app$ 
+```
+I tried `uv add flit-core` followed by a rebuilding of the docker image but got the same output. 
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+uv 0.6.14
+
+---
+
+_Label `question` added by @MSameerAbbas on 2025-04-10 15:22_
+
+---
+
+_Comment by @zanieb on 2025-04-10 15:24_
+
+I think you want to set `UV_NO_SYNC` so we use the existing environment without trying to ensure it is up-to-date.
+
+---
+
+_Comment by @MSameerAbbas on 2025-04-10 15:27_
+
+Yup. That was it. Thank you.
+
+---
+
+_Closed by @MSameerAbbas on 2025-04-10 15:27_
+
+---

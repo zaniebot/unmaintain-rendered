@@ -1,0 +1,89 @@
+---
+number: 5850
+title: Add unit tests for file discovery
+type: issue
+state: closed
+author: zanieb
+labels:
+  - internal
+  - help wanted
+assignees: []
+created_at: 2023-07-18T01:25:21Z
+updated_at: 2024-01-10T16:35:23Z
+url: https://github.com/astral-sh/ruff/issues/5850
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Add unit tests for file discovery
+
+---
+
+_Issue opened by @zanieb on 2023-07-18 01:25_
+
+> Unfortunately we don’t have any unit tests for the file discovery behavior right now, so we’d need to establish some new patterns.
+
+_Originally posted in https://github.com/astral-sh/ruff/pull/5775#issuecomment-1636793201_
+
+We should establish a pattern that can be used by contributors to add test coverage for changes in behavior as well as add coverage for existing behavior.
+
+Needs test coverage:
+- [x] https://github.com/astral-sh/ruff/pull/5775
+
+
+---
+
+_Label `internal` added by @zanieb on 2023-07-18 01:25_
+
+---
+
+_Referenced in [astral-sh/ruff#5775](../../astral-sh/ruff/pulls/5775.md) on 2023-07-18 01:26_
+
+---
+
+_Label `help wanted` added by @zanieb on 2023-07-18 01:26_
+
+---
+
+_Comment by @charliermarsh on 2023-07-18 13:59_
+
+Thank you for filing -- would love to have tests for this.
+
+---
+
+_Comment by @konstin on 2023-07-19 15:33_
+
+i added some error case tests in https://github.com/astral-sh/ruff/pull/5611
+
+---
+
+_Comment by @harupy on 2023-07-22 06:21_
+
+Can I work on writing a test for #5775?
+
+---
+
+_Comment by @charliermarsh on 2023-07-22 13:07_
+
+Of course!
+
+---
+
+_Comment by @harupy on 2023-07-22 15:36_
+
+Where should I add a test? `crates/ruff/src/resolver.rs`?
+
+---
+
+_Comment by @charliermarsh on 2023-07-22 15:48_
+
+Yes I think that’s appropriate.
+
+---
+
+_Referenced in [astral-sh/ruff#5997](../../astral-sh/ruff/pulls/5997.md) on 2023-07-23 01:01_
+
+---
+
+_Closed by @zanieb on 2024-01-10 16:35_
+
+---

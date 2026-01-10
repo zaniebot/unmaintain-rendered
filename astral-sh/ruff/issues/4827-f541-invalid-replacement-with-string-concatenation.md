@@ -1,0 +1,142 @@
+---
+number: 4827
+title: "F541: Invalid replacement with string concatenation"
+type: issue
+state: closed
+author: addisoncrump
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-03T05:34:28Z
+updated_at: 2023-06-22T21:21:11Z
+url: https://github.com/astral-sh/ruff/issues/4827
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# F541: Invalid replacement with string concatenation
+
+---
+
+_Issue opened by @addisoncrump on 2023-06-03 05:34_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Python allows for string concatenation by placing two strings one after another:
+
+```py
+>>> "5" "4"
+'54'
+```
+
+It also permits a string followed by a f-string:
+
+```py
+>>> "5" f"4"
+'54'
+```
+
+Even those immediately concatenated:
+
+```py
+>>> "5"f"4"
+'54'
+```
+
+However, there is a niche corner case which causes Ruff to generate invalid syntax: if the first string is empty, followed by an f-string, it will incorrectly generate a triple-quote:
+
+```py
+>>> ""f""
+''
+>>> ""f"4"
+'4'
+>>> """4"
+... 
+  File "<stdin>", line 1
+    """4"
+    ^
+SyntaxError: unterminated triple-quoted string literal (detected at line 1)
+```
+
+The reproducing example for this is:
+
+```py
+""f"4"
+```
+
+Which Ruff corrects to:
+
+```py
+"""4"
+```
+
+Which is invalid syntax. It's worth noting that I don't think *any* linter currently supports this!
+
+Discovered by #4822.
+
+---
+
+_Comment by @zanieb on 2023-06-03 06:18_
+
+Should we automatically fix this case as `""f"4"` → `"4"`?
+
+Since this wasn't apparent to me at first, note that F541 is for [f-strings with missing placeholders](https://beta.ruff.rs/docs/rules/f-string-missing-placeholders/) so if the second string has placeholders i.e. `""f"{x}"` this bug does not apply. Perhaps it's a general bug in string concatenation cases though?
+
+---
+
+_Comment by @addisoncrump on 2023-06-03 12:17_
+
+Yes, I suspect this is an issue with how strings are formatted -- not just for this case. However, this particular scenario is just very likely for a fuzzer to generate, where other string issues may not be so trivial to trigger.
+
+---
+
+_Comment by @charliermarsh on 2023-06-04 02:06_
+
+We ran into something like this before, in the rule that transforms from strings to f-strings (`rules/pyupgrade/rules/f_strings.rs`):
+
+```rust
+// If necessary, add a space between any leading keyword (`return`, `yield`, `assert`, etc.)
+// and the string. For example, `return"foo"` is valid, but `returnf"foo"` is not.
+let existing = checker.locator.slice(TextRange::up_to(expr.start()));
+if existing
+    .chars()
+    .last()
+    .map_or(false, |char| char.is_ascii_alphabetic())
+{
+    contents.insert(0, ' ');
+}
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-04 02:06_
+
+---
+
+_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-08 19:55_
+
+---
+
+_Referenced in [astral-sh/ruff#5281](../../astral-sh/ruff/issues/5281.md) on 2023-06-22 02:37_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-06-22 20:47_
+
+---
+
+_Referenced in [astral-sh/ruff#5319](../../astral-sh/ruff/pulls/5319.md) on 2023-06-22 20:57_
+
+---
+
+_Closed by @charliermarsh on 2023-06-22 21:21_
+
+---

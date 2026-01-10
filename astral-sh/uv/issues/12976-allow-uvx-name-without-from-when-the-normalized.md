@@ -1,0 +1,51 @@
+---
+number: 12976
+title: "Allow `uvx <name>` without `--from` when the normalized executable name matches"
+type: issue
+state: open
+author: zanieb
+labels:
+  - cli
+assignees: []
+created_at: 2025-04-18T21:40:09Z
+updated_at: 2025-06-16T23:00:29Z
+url: https://github.com/astral-sh/uv/issues/12976
+synced_at: 2026-01-10T01:25:27Z
+---
+
+# Allow `uvx <name>` without `--from` when the normalized executable name matches
+
+---
+
+_Issue opened by @zanieb on 2025-04-18 21:40_
+
+See https://github.com/astral-sh/uv/pull/11603#discussion_r1960520808
+            
+
+---
+
+_Label `cli` added by @zanieb on 2025-04-18 21:40_
+
+---
+
+_Referenced in [astral-sh/uv#11603](../../astral-sh/uv/pulls/11603.md) on 2025-04-18 21:50_
+
+---
+
+_Comment by @meejah on 2025-06-16 22:53_
+
+Not sure if this is _precisely_ related to this Issue, but I'm also not certain it should be its own.
+
+If one invokes `uvx <name>` and it _doesn't_ exactly match **but** there is only one entrypoint in the package, just use it? For example, my tool "Cuv'ner" ships in a Python package named [cuvner](https://pypi.org/project/cuvner/) but the only entry-point is ``cuv``.
+
+It would be nice if users could invoke this via ``uvx cuvner`` instead of having to do ``uvx --from cuvner cuv``
+
+Might come down to what uv's philosophy on "how to map packages to entry-points" is exactly.
+
+---
+
+_Comment by @zanieb on 2025-06-16 23:00_
+
+I worry that'd be too confusing, i.e., because the executable you'd use if you did `uv tool install cuvner` would be `cuv`.
+
+---

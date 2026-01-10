@@ -1,0 +1,55 @@
+---
+number: 1629
+title: "Way to mute `A new version of ruff is available:` warning"
+type: issue
+state: closed
+author: samuelcolvin
+labels: []
+assignees: []
+created_at: 2023-01-04T12:44:12Z
+updated_at: 2023-01-04T12:54:32Z
+url: https://github.com/astral-sh/ruff/issues/1629
+synced_at: 2026-01-10T01:22:39Z
+---
+
+# Way to mute `A new version of ruff is available:` warning
+
+---
+
+_Issue opened by @samuelcolvin on 2023-01-04 12:44_
+
+Ruff is moving very fast which is great, but it means it's virtually impossible to reliably use the latest version.
+
+It would therefore be useful to mute the "A new version of ruff is available:" message via a setting.
+
+I have a process for upgrading dependencies, I don't want every package I use to warn me that it's out of date.
+
+I know the message is only printed if I haven't run ruff recently, but still slightly distracting.
+
+---
+
+_Comment by @charliermarsh on 2023-01-04 12:47_
+
+Can you try using the [`update-check`](https://github.com/charliermarsh/ruff#update-check) setting, and let me know if that doesn't work for you?
+
+---
+
+_Comment by @samuelcolvin on 2023-01-04 12:50_
+
+Solved, sorry about the noise.
+
+Ironically, I was using an old version of ruff which didn't have that option.
+
+---
+
+_Closed by @samuelcolvin on 2023-01-04 12:50_
+
+---
+
+_Comment by @charliermarsh on 2023-01-04 12:54_
+
+Hahah :)
+
+No apology needed, the docs aren't very user-friendly right now, it's on my mind!
+
+---

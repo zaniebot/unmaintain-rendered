@@ -1,0 +1,61 @@
+---
+number: 2361
+title: Expose package metadata in a way that can be reused by other tools
+type: issue
+state: open
+author: obi1kenobi
+labels:
+  - enhancement
+  - wish
+assignees: []
+created_at: 2024-03-11T19:31:07Z
+updated_at: 2024-03-11T20:28:59Z
+url: https://github.com/astral-sh/uv/issues/2361
+synced_at: 2026-01-10T01:23:16Z
+---
+
+# Expose package metadata in a way that can be reused by other tools
+
+---
+
+_Issue opened by @obi1kenobi on 2024-03-11 19:31_
+
+`uv` has done a lot of work to ensure it can read package metadata quickly and correctly: https://twitter.com/charliermarsh/status/1767251713134653641
+
+This is a surprisingly tricky thing to get right, and it would be useful to a variety of tools in the Python ecosystem beyond just `uv`. It would be lovely to be able to reuse this fine work to power other tools as well. This could either be in the form of a Rust or Python API that other tools could hook into, or by introducing a `uv` CLI command or flag (e.g. `uv metadata my_pkg==1.2.3`) that other tools could run.
+
+The current recommended workaround (per [this tweet](https://twitter.com/charliermarsh/status/1767255769311830027)) is running `echo "foo==1.2.3" | uv pip compile -` and reading the output requirements file. This is reasonable as a workaround, but obviously not as elegant as either a dedicated CLI item or a direct Rust or Python API for this functionality.
+
+I don't expect this feature request would be any kind of immediate priority, of course. My goal is to register interest in such a feature and provide a place where interested folks can coordinate, share experiences with workarounds, and have a dependable way to find out if/when an API or CLI extension for this gets added.
+
+Thanks for all the awesome work you've been doing on `uv`!
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-03-11 19:36_
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-03-11 19:36_
+
+---
+
+_Comment by @konstin on 2024-03-11 20:00_
+
+Could you talk a bit more about what's your use case?
+
+---
+
+_Comment by @obi1kenobi on 2024-03-11 20:28_
+
+Sure! TL;DR: I'd love a `cargo metadata` but for Python.
+
+Since I know you maintain `maturin` (thank you!), you might be familiar with my tool `cargo-semver-checks`, a linter for breaking changes in Rust. It uses `cargo metadata` as one of its sources of data to check.
+
+I also build and maintain some linters for Python use cases: I recently built a linter called `pepperlint` that can catch breaking changes in Python packages, and I've built other linters that can catch cases like ["your project's Kubernetes deployment uses a Docker image whose Python version is incompatible with your project's `pyproject.toml` Python version range."](https://www.hytradboi.com/2022/how-to-query-almost-everything)
+
+A major challenge in linters like this is getting access to ground truth data about packages: info on dependencies and ranges, supported platforms, source code location, license, etc. In Rust, `cargo metadata` easily gives us the canonical copy of all this data. In Python, there's currently no equivalent command, and there's a wide variety of ways this metadata may be structured. `uv` faces the same problem, and appears to have solved it quite well.
+
+This is why a `uv metadata` command analogous to `cargo metadata` would be lovely for downstream tools. Happy to chat more or answer any follow-up questions!
+
+---

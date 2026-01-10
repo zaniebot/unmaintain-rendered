@@ -1,0 +1,515 @@
+---
+number: 4870
+title: "clap::parser::Values enters unreachable code if used inside zip and reversed"
+type: issue
+state: closed
+author: nappa85
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-04-29T18:42:59Z
+updated_at: 2023-05-02T19:08:21Z
+url: https://github.com/clap-rs/clap/issues/4870
+synced_at: 2026-01-10T01:28:03Z
+---
+
+# clap::parser::Values enters unreachable code if used inside zip and reversed
+
+---
+
+_Issue opened by @nappa85 on 2023-04-29 18:42_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.69.0
+
+### Clap Version
+
+4.2.5
+
+### Minimal reproducible code
+
+```rust
+use clap::{
+    error::ErrorKind, value_parser, Arg, ArgAction, ArgMatches, Args, Command, Error,
+    FromArgMatches, Parser,
+};
+
+#[derive(Debug, Parser)]
+struct Opt {
+    #[clap(flatten)]
+    groups: OptGroups,
+}
+
+#[derive(Debug)]
+struct OptGroups {
+    groups: Vec<OptGroup>,
+}
+
+#[derive(Debug)]
+struct OptGroup {
+    aopt: usize,
+    bopt: Option<usize>,
+    copt: usize,
+}
+
+impl Args for OptGroups {
+    fn augment_args(cmd: Command) -> Command {
+        cmd.arg(
+            Arg::new("aopt")
+                .short('a')
+                .long("aopt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("bopt")
+                .short('b')
+                .long("bopt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("copt")
+                .short('c')
+                .long("copt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+    }
+    fn augment_args_for_update(cmd: Command) -> Command {
+        cmd.arg(
+            Arg::new("aopt")
+                .short('a')
+                .long("aopt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("bopt")
+                .short('b')
+                .long("bopt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("copt")
+                .short('c')
+                .long("copt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+    }
+}
+
+impl FromArgMatches for OptGroups {
+    fn from_arg_matches(matches: &ArgMatches) -> Result<Self, Error> {
+        let mut matches = matches.clone();
+        Self::from_arg_matches_mut(&mut matches)
+    }
+    fn from_arg_matches_mut(matches: &mut ArgMatches) -> Result<Self, Error> {
+        let mut this = Self { groups: vec![] };
+        this.update_from_arg_matches_mut(matches)?;
+        Ok(this)
+    }
+    fn update_from_arg_matches(&mut self, matches: &ArgMatches) -> Result<(), Error> {
+        let mut matches = matches.clone();
+        self.update_from_arg_matches_mut(&mut matches)
+    }
+    fn update_from_arg_matches_mut(&mut self, matches: &mut ArgMatches) -> Result<(), Error> {
+        // collect tuples (index, value) for aopt
+        let mut aopt_indices = matches
+            .indices_of("aopt")
+            .map(|i| i.collect::<Vec<_>>())
+            .zip(matches.remove_many("aopt"))
+            //.zip(matches.remove_many("aopt").map(|m| m.collect::<Vec<_>>()))
+            .map(|(i, m)| i.into_iter().zip(m).rev().collect::<Vec<_>>());
+        // collect tuples (index, value) for bopt
+        let mut bopt_indices = matches
+            .indices_of("bopt")
+            .map(|i| i.collect::<Vec<_>>())
+            .zip(matches.remove_many("bopt"))
+            //.zip(matches.remove_many("bopt").map(|m| m.collect::<Vec<_>>()))
+            .map(|(i, m)| i.into_iter().zip(m).rev().collect::<Vec<_>>());
+        // collect tuples (index, value) for copt
+        let Some(copt_indices) = matches
+            .indices_of("copt")
+            .map(|i| i.collect::<Vec<_>>())
+            .zip(matches.remove_many("copt"))
+            .map(|(i, m)| i.into_iter().zip(m).collect::<Vec<_>>()) else {
+                if aopt_indices.is_some() || bopt_indices.is_some() {
+                    return Err(Error::new(ErrorKind::InvalidSubcommand));
+                }
+                else {
+                    return Ok(());
+                }
+            };
+
+        // for every copt, find previous aopt and bopt
+        let mut prev_copt_index = 0;
+        for (copt_index, copt) in copt_indices {
+            let aopt = if let Some(indices) = &mut aopt_indices {
+                if let Some((index, _)) = indices.last() {
+                    if *index > copt_index || *index < prev_copt_index {
+                        None
+                    } else {
+                        indices.pop().map(|(_, v)| v)
+                    }
+                } else {
+                    None
+                }
+            } else {
+                None
+            };
+            let bopt = if let Some(indices) = &mut bopt_indices {
+                if let Some((index, _)) = indices.last() {
+                    if *index > copt_index || *index < prev_copt_index {
+                        None
+                    } else {
+                        indices.pop().map(|(_, v)| v)
+                    }
+                } else {
+                    None
+                }
+            } else {
+                None
+            };
+            self.groups.push(OptGroup {
+                aopt: aopt.unwrap_or_default(),
+                bopt,
+                copt,
+            });
+            prev_copt_index = copt_index;
+        }
+
+        // if there are remaining aopt or bopt we have an invalid syntax
+        if aopt_indices.as_ref().map(Vec::is_empty) == Some(false)
+            || bopt_indices.as_ref().map(Vec::is_empty) == Some(false)
+        {
+            return Err(Error::new(ErrorKind::InvalidSubcommand));
+        }
+
+        Ok(())
+    }
+}
+
+fn main() {
+    println!("{:?}", Opt::parse());
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```bash
+cargo run -- -a1 -b1 -c1 -c2 -b3 -c3
+```
+
+### Actual Behaviour
+
+thread 'main' panicked at 'internal error: entered unreachable code', /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/iter/adapters/zip.rs:206:5
+
+### Expected Behaviour
+
+The application should not panic.
+
+If you decomment the `.zip(matches.remove_many("Xopt"))` lines and decomment the `.zip(matches.remove_many("Xopt").map(|m| m.collect::<Vec<_>>()))` lines, the application works correctly, but there should no be difference between the two
+
+### Additional Context
+
+I was trying to implement the solution suggested in https://github.com/clap-rs/clap/discussions/3399
+
+### Debug Output
+
+```
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="clap-test"
+[clap_builder::builder::command]Command::_propagate:clap-test
+[clap_builder::builder::command]Command::_check_help_and_version:clap-test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:aopt
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:bopt
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:copt
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-a1"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-a1")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "a1", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['a', '1']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:a
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:a: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:a: val="1", short_arg=ShortFlags { inner: "a1", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['1']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=aopt, val=Some("1"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=1
+[clap_builder::parser::parser]Parser::remove_overrides: id="aopt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="aopt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="aopt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["1"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=aopt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-a2"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-a2")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "a2", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['a', '2']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:a
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:a: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:a: val="2", short_arg=ShortFlags { inner: "a2", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['2']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=aopt, val=Some("2"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=3
+[clap_builder::parser::parser]Parser::remove_overrides: id="aopt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="aopt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="aopt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["2"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=aopt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-b1"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-b1")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "b1", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['b', '1']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b: val="1", short_arg=ShortFlags { inner: "b1", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['1']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=bopt, val=Some("1"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=5
+[clap_builder::parser::parser]Parser::remove_overrides: id="bopt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="bopt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="bopt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["1"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=6
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=bopt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-c1"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-c1")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "c1", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c', '1']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: val="1", short_arg=ShortFlags { inner: "c1", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['1']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=copt, val=Some("1"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=7
+[clap_builder::parser::parser]Parser::remove_overrides: id="copt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="copt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="copt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["1"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=8
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=copt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-c2"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-c2")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "c2", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c', '2']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: val="2", short_arg=ShortFlags { inner: "c2", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['2']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=copt, val=Some("2"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=9
+[clap_builder::parser::parser]Parser::remove_overrides: id="copt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="copt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="copt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["2"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=10
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=copt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-b3"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-b3")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "b3", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['b', '3']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b: val="3", short_arg=ShortFlags { inner: "b3", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['3']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=bopt, val=Some("3"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=11
+[clap_builder::parser::parser]Parser::remove_overrides: id="bopt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="bopt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="bopt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["3"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=12
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=bopt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"-c3"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("-c3")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: "c3", utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c', '3']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: val="3", short_arg=ShortFlags { inner: "c3", utf8_prefix: CharIndices { front_offset: 1, iter: Chars(['3']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=copt, val=Some("3"), has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=13
+[clap_builder::parser::parser]Parser::remove_overrides: id="copt"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="copt", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="copt"
+[clap_builder::parser::parser]Parser::push_arg_values: ["3"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=14
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=copt, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:aopt:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:aopt: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:bopt:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:bopt: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:copt:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:copt: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id="aopt"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="aopt", conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id="bopt"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="bopt", conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id="copt"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="copt", conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:"aopt"
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:"bopt"
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:"copt"
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="aopt"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="aopt"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="bopt"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="bopt"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="copt"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="copt"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:"aopt"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"bopt"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"copt"
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+thread 'main' panicked at 'internal error: entered unreachable code', /rustc/84c898d65adf2f39a5a98507f1fe0ce10a2b8dbc/library/core/src/iter/adapters/zip.rs:206:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+---
+
+_Label `C-bug` added by @nappa85 on 2023-04-29 18:42_
+
+---
+
+_Comment by @nappa85 on 2023-04-29 19:44_
+
+A more minimal reproducible code:
+```rust
+use clap::{value_parser, Arg, ArgAction, Command};
+
+fn main() {
+    let mut matches = Command::new("myprog")
+        .arg(
+            Arg::new("aopt")
+                .short('a')
+                .long("aopt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("bopt")
+                .short('b')
+                .long("bopt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("copt")
+                .short('c')
+                .long("copt")
+                .value_parser(value_parser!(usize))
+                .action(ArgAction::Append),
+        )
+        .get_matches_from(vec!["myprog", "-a1", "-b1", "-c1", "-c2", "-b3", "-c3"]);
+
+    let aopt = matches
+        .indices_of("aopt")
+        .expect("missing aopt indices")
+        .collect::<Vec<_>>()
+        .into_iter()
+        .zip(
+            matches
+                .remove_many::<usize>("aopt")
+                .expect("missing aopt values"),
+        )
+        .rev()
+        .collect::<Vec<_>>();
+    let bopt = matches
+        .indices_of("bopt")
+        .expect("missing bopt indices")
+        .collect::<Vec<_>>()
+        .into_iter()
+        .zip(
+            matches
+                .remove_many::<usize>("bopt")
+                .expect("missing bopt values"),
+        )
+        .rev()
+        .collect::<Vec<_>>();
+    println!("{aopt:?} {bopt:?}");
+}
+```
+
+---
+
+_Referenced in [clap-rs/clap#4875](../../clap-rs/clap/pulls/4875.md) on 2023-05-02 18:54_
+
+---
+
+_Closed by @epage on 2023-05-02 19:06_
+
+---
+
+_Comment by @epage on 2023-05-02 19:08_
+
+4.2.7is out with the fix
+
+---

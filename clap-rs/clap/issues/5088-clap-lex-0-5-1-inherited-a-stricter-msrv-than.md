@@ -1,0 +1,136 @@
+---
+number: 5088
+title: clap_lex 0.5.1 inherited a stricter msrv than probably intended
+type: issue
+state: closed
+author: udoprog
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-08-25T04:02:56Z
+updated_at: 2023-08-25T14:17:47Z
+url: https://github.com/clap-rs/clap/issues/5088
+synced_at: 2026-01-10T01:28:06Z
+---
+
+# clap_lex 0.5.1 inherited a stricter msrv than probably intended
+
+---
+
+_Issue opened by @udoprog on 2023-08-25 04:02_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.69.0 (84c898d65 2023-04-16)
+
+### Clap Version
+
+~4.3.0 which should be (>=4.3.0, <4.4.0)
+
+### Minimal reproducible code
+
+Not relevant.
+
+### Steps to reproduce the bug with the above code
+
+Add the following to your Cargo.toml:
+
+```toml
+clap = { version = "~4.3.0", features = ["derive"] }
+```
+
+Try to build the project with an older rust version.
+
+### Actual Behaviour
+
+It will probably fail with:
+
+```
+error: package `clap_lex v0.5.1` cannot be built because it requires rustc 1.70.0 or newer, while the currently active rustc version is 1.69.0
+Either upgrade to rustc 1.70.0 or newer, or use
+cargo update -p clap_lex@0.5.1 --precise ver
+where `ver` is the latest version of `clap_lex` supporting rustc 1.69.0
+```
+
+### Expected Behaviour
+
+The intent seems to have been to preserve the old msrv by bumping the minor version of `clap`. But `clap_lex` seems to have accidentally inherited a stricter msrv  (without a corresponding version bump to isolate it in the dependency tree) due to inheriting it from the workspace:
+
+```toml
+rust-version.workspace = true
+```
+
+### Additional Context
+
+Furthermore, `clap_builder` should probably specify a stricter version requirement if this is how it's intended to work in the future: <https://github.com/clap-rs/clap/blob/master/clap_builder/Cargo.toml#L61>. In this instance `~0.5.0` instead of just `0.5.0`, the latter which I think will pick up a new clap_lex release.
+
+For anyone that needs to work around this, you can add the following to your Cargo.toml
+
+```toml
+clap_lex = "<=0.5.0"
+```
+
+A solution to this would be to release a new `clap_lex` 0.5.x version with a more relaxed msrv.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @udoprog on 2023-08-25 04:02_
+
+---
+
+_Renamed from "clap_lex inherited a stricter msrv than probably intended" to "clap_lex 0.5.1 inherited a stricter msrv than probably intended" by @udoprog on 2023-08-25 04:07_
+
+---
+
+_Referenced in [mozilla/uniffi-rs#1719](../../mozilla/uniffi-rs/pulls/1719.md) on 2023-08-25 12:55_
+
+---
+
+_Comment by @epage on 2023-08-25 13:50_
+
+Clap is working as-expected.
+
+Libraries should not be making policy decisions for their dependents by constraining upper bounds on version requirements.  In fact doing so can be harmful to the entire ecosystem.  We only do it for `clap`/`clap_builder`/`clap_derive` due to a special case related to proc macros.  See https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#multiple-requirements for more details.
+
+Instead, if you care about MSRV, you likely should be committing your lockfile.  Note that Cargo has changed its guidance (blog post on this is upcoming).  See the new guidance on the nightly docs: https://doc.rust-lang.org/nightly/cargo/faq.html#why-have-cargolock-in-version-control
+
+---
+
+_Closed by @epage on 2023-08-25 13:51_
+
+---
+
+_Comment by @udoprog on 2023-08-25 14:06_
+
+Note that applications are affected by this decision as well, not just libraries. They will have to do a `cargo update -p clap_lex --precise 0.5.0` after each `cargo update` when that could've been part of their direct dependency specification to `clap = "~4.3.0"` instead. It's the same end result, but a worse UX for lockfile management.
+
+---
+
+_Comment by @epage on 2023-08-25 14:15_
+
+The path forward for that is for cargo to improve, particularly for it to gain support for an MSRV-aware resolver, see https://github.com/rust-lang/cargo/issues/9930
+
+---
+
+_Comment by @udoprog on 2023-08-25 14:17_
+
+I'm waiting for that too as much as anyone 😄
+
+---
+
+_Referenced in [thin-edge/thin-edge.io#2195](../../thin-edge/thin-edge.io/pulls/2195.md) on 2023-08-27 09:08_
+
+---
+
+_Referenced in [n0-computer/iroh#1441](../../n0-computer/iroh/issues/1441.md) on 2023-08-31 22:33_
+
+---

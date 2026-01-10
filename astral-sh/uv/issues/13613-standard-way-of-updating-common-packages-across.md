@@ -1,0 +1,78 @@
+---
+number: 13613
+title: Standard Way of Updating Common Packages across Specific Dependency Groups
+type: issue
+state: open
+author: andy971022
+labels:
+  - question
+assignees: []
+created_at: 2025-05-23T07:02:42Z
+updated_at: 2025-05-23T16:31:33Z
+url: https://github.com/astral-sh/uv/issues/13613
+synced_at: 2026-01-10T01:25:35Z
+---
+
+# Standard Way of Updating Common Packages across Specific Dependency Groups
+
+---
+
+_Issue opened by @andy971022 on 2025-05-23 07:02_
+
+### Question
+
+We manage dependency groups in `requirements.txt` by `uv add -r requirements.group_x.txt --group group_x`.
+
+Say we have 3 groups, where group_1 and group_2 share a common package, and group 3 doesn't, so there is no reason to make that package common across all groups. What would be the best way to update the common package and have the state/dependency versions maintained in the respective `requirements.txt` files? 
+
+Currently, I am doing `uv remove common_package` from all the group, then updating the requirements.txt,  and finally `uv add -r requirements.group_x.txt --group group_x` one by one. I wonder if there is a way to update the common package in one go?
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @andy971022 on 2025-05-23 07:02_
+
+---
+
+_Comment by @konstin on 2025-05-23 08:30_
+
+Are you looking for https://github.com/astral-sh/uv/issues/6794?
+
+---
+
+_Comment by @andy971022 on 2025-05-23 09:37_
+
+> Are you looking for https://github.com/astral-sh/uv/issues/6794?
+
+Thanks @konstin, I can see that people are doing a similar thing from the scripts -- removing packages one by one and adding them back probably because there isn't any official documentation or built-in solution for package updates. But I can't tell if we are being hacky or that this is the standard way recommended by the official maintainers.
+
+---
+
+_Comment by @konstin on 2025-05-23 13:26_
+
+The plan in https://github.com/astral-sh/uv/issues/6794 is to implement a subcommand that does this properly, so you don't need to manually remove and add packages anymore.
+
+---
+
+_Comment by @andy971022 on 2025-05-23 14:20_
+
+> The plan in https://github.com/astral-sh/uv/issues/6794 is to implement a subcommand that does this properly, so you don't need to manually remove and add packages anymore.
+
+I see, thank you so much!
+
+---
+
+_Closed by @konstin on 2025-05-23 16:31_
+
+---
+
+_Reopened by @konstin on 2025-05-23 16:31_
+
+---

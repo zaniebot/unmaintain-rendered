@@ -1,0 +1,190 @@
+---
+number: 5007
+title: derive(Subcommand) does not respect attributes on fields of enum variants
+type: issue
+state: closed
+author: SlayerOfTheBad
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-07-14T13:20:46Z
+updated_at: 2023-07-14T17:00:50Z
+url: https://github.com/clap-rs/clap/issues/5007
+synced_at: 2026-01-10T01:28:05Z
+---
+
+# derive(Subcommand) does not respect attributes on fields of enum variants
+
+---
+
+_Issue opened by @SlayerOfTheBad on 2023-07-14 13:20_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.70.0 (90c541806 2023-05-31)
+
+### Clap Version
+
+4.3.11
+
+### Minimal reproducible code
+
+```rust
+#[derive(Args)]
+pub struct ListCommand {
+    dir: PathBuf,
+    limit: u64
+}
+
+#[derive(ExternalDerive, Subcommand)]
+pub enum Commands {
+    #[id(b"LS")]
+    List(
+        #[id(b"")]
+        ListArgs
+    )
+}
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+
+fn main() {
+    Cli::parse();
+}
+```
+
+Where `ExternalDerive` is some derive macro that takes `id` as an attribute. In a private project currently, so I can not point to a crate with this derive macro.
+
+### Steps to reproduce the bug with the above code
+
+`cargo run list ~ 100`
+
+### Actual Behaviour
+
+Compilation fails due to the `Subcommand` derive macro.
+```
+error: expected type, found `#`
+  --> audio_lib/src/actions/mod.rs:46:9
+   |
+46 |         #[id(b"")]
+   |         ^ expected type
+
+error: proc-macro derive produced unparsable tokens
+  --> audio_lib/src/actions/mod.rs:42:33
+   |
+42 | #[derive(Debug, Compose, Parse, Subcommand)]
+   |                                 ^^^^^^^^^^
+
+error: could not compile `audio_lib` (lib) due to 2 previous errors
+````
+
+### Expected Behaviour
+
+I expect the code to compile, and to run, and then exit without doing anything.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @SlayerOfTheBad on 2023-07-14 13:20_
+
+---
+
+_Comment by @epage on 2023-07-14 14:29_
+
+Could you include a full reproduction case?  Without access to `ExternalDerive`, I can't reproduce this to determine root cause.
+
+---
+
+_Comment by @SlayerOfTheBad on 2023-07-14 15:28_
+
+Of course, I have made a minimal reproduction repository [here](https://github.com/SlayerOfTheBad/ClapDeriveBug).
+
+It's reproduced simply by running `cargo run --bin bin`
+
+---
+
+_Closed by @SlayerOfTheBad on 2023-07-14 15:28_
+
+---
+
+_Reopened by @SlayerOfTheBad on 2023-07-14 15:29_
+
+---
+
+_Comment by @epage on 2023-07-14 16:07_
+
+Examples of bad generated code:
+```rust
+                       {
+                           return :: std :: result :: Result ::
+                           Ok(Self ::
+                           List(< #[id(b"")] ListArgs as clap :: FromArgMatches > ::
+                           from_arg_matches_mut(__clap_arg_matches) ?))
+                       }
+// ...
+               fn augment_subcommands < 'b > (__clap_app : clap :: Command) -> clap ::
+               Command
+               {
+                   ; let __clap_app = __clap_app ; let __clap_app =
+                   __clap_app.subcommand({
+                       let __clap_subcommand = clap :: Command :: new("list") ; let
+                       __clap_subcommand = __clap_subcommand ; let __clap_subcommand =
+                       {
+                           < #[id(b"")] ListArgs as clap :: Args > ::
+                           augment_args(__clap_subcommand)
+                       } ; __clap_subcommand
+                   }) ; ; __clap_app
+               } fn augment_subcommands_for_update < 'b > (__clap_app : clap :: Command)
+               -> clap :: Command
+               {
+                   ; let __clap_app = __clap_app ; let __clap_app =
+                   __clap_app.subcommand({
+                       let __clap_subcommand = clap :: Command :: new("list") ; let
+                       __clap_subcommand = __clap_subcommand ; let __clap_subcommand =
+                       {
+                           < #[id(b"")] ListArgs as clap :: Args > ::
+                           augment_args_for_update(__clap_subcommand)
+                       } ; __clap_subcommand
+                   }) ; ; __clap_app
+// ...
+```
+
+---
+
+_Referenced in [clap-rs/clap#5009](../../clap-rs/clap/pulls/5009.md) on 2023-07-14 16:17_
+
+---
+
+_Comment by @epage on 2023-07-14 16:18_
+
+Thanks!  That was a big help to see the exact reproduction case you were dealing with
+
+---
+
+_Comment by @SlayerOfTheBad on 2023-07-14 16:20_
+
+Of course!
+Glad I could help in resolving this issue. I'm surprised it'd never come up before honestly.
+
+---
+
+_Closed by @epage on 2023-07-14 17:00_
+
+---

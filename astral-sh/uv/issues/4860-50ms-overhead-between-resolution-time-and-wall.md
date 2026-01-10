@@ -1,0 +1,162 @@
+---
+number: 4860
+title: "50ms overhead between resolution time and wall time in `uv lock`"
+type: issue
+state: closed
+author: konstin
+labels:
+  - performance
+  - preview
+assignees: []
+created_at: 2024-07-07T18:37:32Z
+updated_at: 2024-07-30T15:29:38Z
+url: https://github.com/astral-sh/uv/issues/4860
+synced_at: 2026-01-10T01:23:42Z
+---
+
+# 50ms overhead between resolution time and wall time in `uv lock`
+
+---
+
+_Issue opened by @konstin on 2024-07-07 18:37_
+
+When running `uv lock` on https://github.com/konstin/transformers/blob/9638c4defb18f5358c70f40dd00d65595657dd57/pyproject.toml, i get:
+
+```
+Resolved 291 packages in 65ms
+```
+with values in the 60ms-70ms range. But when measuring wall time, i get:
+
+```
+$ hyperfine "uv lock"
+Benchmark 1: uv lock
+  Time (mean ± σ):     111.1 ms ±   1.9 ms    [User: 112.7 ms, System: 110.1 ms]
+  Range (min … max):   108.4 ms … 115.5 ms    26 runs
+```
+
+That's an ~50ms overhead!
+
+With https://github.com/astral-sh/uv/pull/4495 applies, the resolution is down to 12ms, but wall time is 60ms, still roughly a 50ms overhead. We should investigate and fix what's slowing us down here.
+
+---
+
+_Label `performance` added by @konstin on 2024-07-07 18:37_
+
+---
+
+_Label `preview` added by @konstin on 2024-07-07 18:37_
+
+---
+
+_Comment by @charliermarsh on 2024-07-07 19:24_
+
+The gap I see here is also present in tracing. Like the last tracing message clocks in at `0.163996s` (and the last user-facing message is `Resolved 291 packages in 143ms`), but `time` reports `0.205`.
+
+---
+
+_Comment by @charliermarsh on 2024-07-07 19:27_
+
+Is it possible the branch you're testing on doesn't have: https://github.com/astral-sh/uv/pull/4793
+
+---
+
+_Comment by @konstin on 2024-07-07 19:31_
+
+I'm seeing this with a release build from d787e69f7c2297d92eb32acb9c3729169bad5fe5. With your numbers i get 0.163996s - 143ms = 21ms unaccounted between start and start of resolution and 0.205s - 143ms = 62ms in total, so this seems to be happening on mac too?
+
+---
+
+_Comment by @charliermarsh on 2024-07-07 19:33_
+
+@ibraheemdev - do you have any idea where that time could be going?
+
+---
+
+_Comment by @ChannyClaus on 2024-07-08 03:30_
+
+kinda got curious so dug around a bit - seems like https://github.com/astral-sh/uv/blob/ffcc05240eb8e226394625a9714f6d8c6dfc9c50/crates/uv-requirements/src/upgrade.rs#L76 is the culprit?
+
+---
+
+_Comment by @charliermarsh on 2024-07-08 19:03_
+
+That’s interesting… we should profile it.
+
+---
+
+_Comment by @konstin on 2024-07-09 11:22_
+
+I think it's the same problem, but `uv lock -p 3.9` is slower than `uv pip compile -p 3.9 --universal` for transformers:
+
+```
+$ hyperfine "uv pip compile pyproject.toml --all-extras -p 3.9 -o a.txt" "uv pip compile pyproject.toml --all-extras -p 3.9 --universal -o b.txt" "uv lock -p 3.9"
+Benchmark 1: uv pip compile pyproject.toml --all-extras -p 3.9 -o a.txt
+  Time (mean ± σ):      63.8 ms ±   3.0 ms    [User: 58.8 ms, System: 92.1 ms]
+  Range (min … max):    59.4 ms …  74.6 ms    44 runs
+ 
+Benchmark 2: uv pip compile pyproject.toml --all-extras -p 3.9 --universal -o b.txt
+  Time (mean ± σ):      72.7 ms ±   2.5 ms    [User: 64.5 ms, System: 96.8 ms]
+  Range (min … max):    67.9 ms …  79.7 ms    37 runs
+ 
+Benchmark 3: uv lock -p 3.9
+  Time (mean ± σ):      89.4 ms ±   2.5 ms    [User: 86.5 ms, System: 89.7 ms]
+  Range (min … max):    85.6 ms …  95.4 ms    32 runs
+ 
+Summary
+  uv pip compile pyproject.toml --all-extras -p 3.9 -o a.txt ran
+    1.14 ± 0.07 times faster than uv pip compile pyproject.toml --all-extras -p 3.9 --universal -o b.txt
+    1.40 ± 0.08 times faster than uv lock -p 3.9
+```
+
+---
+
+_Comment by @ibraheemdev on 2024-07-09 17:32_
+
+It looks like there's ~20-30ms of overhead before starting resolution in `read_lockfile`, and ~20-30ms after in `Lock::from_resolution_graph` and `Lock::to_toml` + dropping. I expect there's some low hanging fruit there.
+
+---
+
+_Referenced in [astral-sh/uv#4945](../../astral-sh/uv/pulls/4945.md) on 2024-07-09 20:51_
+
+---
+
+_Referenced in [astral-sh/uv#4947](../../astral-sh/uv/pulls/4947.md) on 2024-07-09 22:07_
+
+---
+
+_Referenced in [astral-sh/uv#5064](../../astral-sh/uv/issues/5064.md) on 2024-07-15 08:21_
+
+---
+
+_Comment by @charliermarsh on 2024-07-21 22:24_
+
+#5235 cut the time by another ~13%:
+
+```
+❯ hyperfine "../target/release/main lock" "../target/release/uv lock" --warmup 50 --runs 100
+Benchmark 1: ../target/release/main lock
+  Time (mean ± σ):      29.0 ms ±   0.3 ms    [User: 23.6 ms, System: 4.8 ms]
+  Range (min … max):    28.4 ms …  30.6 ms    100 runs
+
+Benchmark 2: ../target/release/uv lock
+  Time (mean ± σ):      25.7 ms ±   0.6 ms    [User: 20.3 ms, System: 4.7 ms]
+  Range (min … max):    24.7 ms …  30.3 ms    100 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Summary
+  '../target/release/uv lock' ran
+    1.13 ± 0.03 times faster than '../target/release/main lock'
+```
+
+---
+
+_Comment by @charliermarsh on 2024-07-29 01:15_
+
+Might be worth profiling this again at some point.
+
+---
+
+_Closed by @charliermarsh on 2024-07-30 15:29_
+
+---

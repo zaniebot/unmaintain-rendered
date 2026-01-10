@@ -1,0 +1,124 @@
+---
+number: 5728
+title: Short flag that takes a path behaves unexpectedly in PowerShell
+type: issue
+state: closed
+author: nathanwhit
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-09-13T23:14:23Z
+updated_at: 2024-09-14T00:12:29Z
+url: https://github.com/clap-rs/clap/issues/5728
+synced_at: 2026-01-10T01:28:15Z
+---
+
+# Short flag that takes a path behaves unexpectedly in PowerShell
+
+---
+
+_Issue opened by @nathanwhit on 2024-09-13 23:14_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.81.0 (eeb90cda1 2024-09-04)
+
+### Clap Version
+
+4.5.17
+
+### Minimal reproducible code
+
+```rust
+use clap::{Arg, Command};
+fn main() {
+    println!("raw args: {:?}", std::env::args().collect::<Vec<_>>()); // for debugging
+
+    let cmd = Command::new("repro").arg(
+        Arg::new("file")
+            .short('f')
+            .long("file")
+            .num_args(1)
+            .require_equals(true),
+    );
+    let matches = cmd.get_matches();
+
+    let file = matches.get_one::<String>("file");
+    println!("File option was: {file:?}");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+In PowerShell:
+```
+cargo run -- -f=./foo
+```
+
+### Actual Behaviour
+
+The `./foo` passed to the flag gets interpreted as the start of a separate argument, instead of a value passed to the flag. The reproducer above outputs:
+
+```
+raw args: ["target/debug/repro", "-f=", "./foo"]
+error: unexpected argument './foo' found
+
+Usage: repro[OPTIONS]
+```
+
+### Expected Behaviour
+
+The `./foo` should be interpreted as the value passed to the `file` flag.
+
+### Additional Context
+
+This only occurs when running the command from PowerShell, and only when the value passed to the flag starts with a dot. It reproduces on both the Windows and MacOS versions of PowerShell (and probably linux as well, but haven't tested).
+
+You can see from the output from the reproducer that PowerShell splits the args up strangely in that case:
+```
+raw args: ["target/debug/repro", "-f=", "./foo"]
+```
+Notice that `./foo` is split from `-f=`.
+
+If there isn't a dot (`-f=foo`) this works as expected, and the long flag works as well (`--file=./foo`). As far as I can tell the only case that behaves oddly is the short flag + equals sign + leading dot.
+
+I'm honestly not sure if this is a clap bug or even fixable, but it caused some confusing behavior for a user (in  https://github.com/denoland/deno/issues/25620) and wanted to see if you all might have some insights.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @nathanwhit on 2024-09-13 23:14_
+
+---
+
+_Comment by @epage on 2024-09-14 00:12_
+
+> `println!("raw args: {:?}", std::env::args().collect::<Vec<_>>()); // for debugging`
+
+> `raw args: ["target/debug/repro", "-f=", "./foo"]`
+
+That shows that the splitting is happening before the arguments are passed to cargo
+
+>  It reproduces on both the Windows and MacOS versions of PowerShell (
+cargo
+Now that is odd because both of those OSs behave differently.
+
+On Windows, command-lines are passed as a single string and the Rust parses the command-line to turn it into `std::env::args()`
+
+MacOS is more "normal" in that the shell splits the string and passes it to the command.
+
+As I have almost no PowerShell experience, this isn't clap related, and I've shared what I know, I'm going to go ahead and close this.
+
+---
+
+_Closed by @epage on 2024-09-14 00:12_
+
+---

@@ -1,0 +1,182 @@
+---
+number: 2732
+title: Segmentation fault in tokio worker runtime on iSH 
+type: issue
+state: open
+author: gpchn
+labels:
+  - needs-mre
+  - external
+assignees: []
+created_at: 2024-03-30T13:27:52Z
+updated_at: 2025-03-27T17:14:12Z
+url: https://github.com/astral-sh/uv/issues/2732
+synced_at: 2026-01-10T01:23:21Z
+---
+
+# Segmentation fault in tokio worker runtime on iSH 
+
+---
+
+_Issue opened by @gpchn on 2024-03-30 13:27_
+
+# Environment
+
+## platform (result of "uname -a")
+
+Linux iPhone-7-Plus 4.20.69-ish SUPER AWESOME May 20 2023 23:41:32 i686 Linux
+
+Note: Alpine Linux's default shell is ash. This may be crucial.
+
+## uv version
+
+0.1.26
+
+## Method of reproducing
+
+I'm afraid you have to try to find an Apple device and install iSH to reproduce.
+
+# issue
+
+I use iSH app to simulate linux on iPhone. Using pip in this case is unbearably slow. So I tried to install uv.
+I tried four times, but the installation was not successful. The following are the details of my four attempts.
+
+1. I first installed it using the package manager: "apk add uv" (apk is the package manager of Alpine Linux.)  Output shows that there is no such package. Then I ran "apk search uv", still no.
+
+2. I ran the installation command in readme. But it raised an error: **ERROR: there isn't a package for i686-unknown-linux-musl-dynamic**. I didn't delve into the reason.
+
+3. I downloaded [uv-i686-unknown-linux-musl.tar.gz](https://github.com/astral-sh/uv/releases/download/0.1.26/uv-i686-unknown-linux-musl.tar.gz), uncompressed it, and tried running the "uv" file in it. It raised an error again:
+```
+thread 'tokio-runtime-worker' panicked at /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.36.0/src/runtime/scheduler/multi_thread/worker.rs:656:12thread 'tokio-runtime-worker' panicked at /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.36.0/src/runtime/scheduler/multi_thread/worker.rs:656:12:
+:
+attempt to calculate the remainder with a divisor of zero
+attempt to calculate the remainder with a divisor of zero
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Segmentation fault
+```
+I thought it might not work this way, So I tried to find another.
+
+4. I browsed the installation script and modified the part of the architecture check. I let it to install **i686-unknown-linux-musl** directly. The installation went smoothly. The output looks like this:
+```
+downloading uv 0.1.26 i686-unknown-linux-musl
+installing to /root/.cargo/bin
+  uv
+everything's installed!
+
+To add $HOME/.cargo/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.cargo/env
+
+```
+I ran "source $HOME/.cargo/env" and then ran "uv", still not working. Error message was the same as the second time.
+
+## my request
+Please see what's wrong with this. Alpine Linux is popular after all.
+
+PS: uv is such a cool program!
+
+---
+
+_Comment by @zanieb on 2024-03-30 14:06_
+
+Thanks for the issue. We do support Alpine (ref #1392) but perhaps not on i686.
+
+Could you share the output with `RUST_BACKTRACE=1`?
+
+
+---
+
+_Comment by @gpchn on 2024-03-31 08:11_
+
+Ok, this is the screenshot.
+![0B56530C-2AD9-4EC3-9395-B9B800B4BC68](https://github.com/astral-sh/uv/assets/99541536/bdc1d8d0-5825-4b6b-a42d-155fc2ccf2a9)
+Looks like it's the same as before :(
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-04-01 14:40_
+
+---
+
+_Comment by @andypost on 2024-05-14 18:20_
+
+Today there's `uv` in [Alpinelinux](https://gitlab.alpinelinux.org/alpine/aports/-/merge_requests/65643) testing repo
+
+The only tricky workaround was to disable vendored openssl as Alpine using latest 3.3 via `export OPENSSL_NO_VENDOR=1`
+
+Guess it could be improved but there's so many openssl versions in the stable releases
+
+---
+
+_Referenced in [ish-app/ish#2447](../../ish-app/ish/issues/2447.md) on 2024-08-27 15:20_
+
+---
+
+_Comment by @lmBored on 2025-01-20 22:41_
+
+I'm actually still having this issue, currently using `Alpine 3.21` on ish.app, `uv 0.5.21`
+
+`uv` always returns `segmentation fault` if it's followed by a command, but it works normally with flags.
+```bash
+> uv venv
+segmentation fault
+> uv python list
+segmentation fault
+```
+
+---
+
+_Comment by @zanieb on 2025-01-21 01:54_
+
+@lmBored how are you installing uv? Can you reproduce in a Docker image? 
+
+---
+
+_Comment by @lmBored on 2025-01-21 16:36_
+
+> [@lmBored](https://github.com/lmBored) how are you installing uv? Can you reproduce in a Docker image?
+
+Hi, thanks for looking into this! I tried installing uv using both apk and pip:
+
++ `apk add uv`: Installed successfully but results in a segmentation fault when I use commands like uv venv or uv python list
++ `pip install uv`: Installed successfully, but the segmentation fault persists with the same commands.
+
+I haven't tested in a Docker container yet. My system is `Linux localhost 4.20.69-ish i686 Linux`, which for now I'm suspecting that rust doesn't work because of incompatility with `i686`.
+
+---
+
+_Renamed from "It doesn't work on Alpine Linux（Actually in iSH app）" to "Segmentation fault in tokio worker runtime on iSH " by @zanieb on 2025-03-26 19:50_
+
+---
+
+_Comment by @geofft on 2025-03-27 15:07_
+
+I think this issue is largely going to be about iSH itself.
+
+With the current uv release (0.6.10) and the current versions of iSH (1.3.2) and the Alpine it installs (v3.14), `uv` itself runs fine and prints the help message and simple things like `uv --version` work, but subcommands do not.
+
+If I run an unknown command like `uv moo` I get an illegal instruction error, currently (uv 0.6.10 release) with the error (from `dmesg`) pointing towards this instruction (from `objdump -S uv`):
+```
+ 86e660a: 66 0f 5e c2                   divpd   %xmm2, %xmm0
+```
+divpd is an SSE2 instruction, and I see a bunch of pull requests/issues in iSH adding various SSE2 operations, but nothing about divpd in particular. Might be worth opening one.
+
+If I run a valid command like `uv venv` I get a segmentation fault, pointing towards this instruction:
+```
+ 86f9927: 65 66 0f d6 0d f4 ff ff ff    movq    %xmm1, %gs:-0xc
+```
+which is also an SSE2 thing, but is a much more straightforward SSE2 instruction. There's a `movl    $0x1, %gs:-0x18` instruction a bit before it, so it seems a little implausible that %gs is an invalid pointer. It might be the case that the segfault is actually being reported about the _previous_ instruction (if the program counter has already been incremented)
+```
+ 86f9922: 66 0f 70 c8 ee                pshufd  $0xee, %xmm0, %xmm1     # xmm1 = xmm0[2,3,2,3]
+```
+which is a more unusual instruction, but pshufd appears to be implemented (five years ago, in a [commit specifically mentioning Rust as the motivation](https://github.com/ish-app/ish/commit/0b081ebdf0da49131d1ac71fffce42e1d865aef6)), and this operation doesn't touch memory at all. So I don't yet know what is actually going wrong here.
+
+I am not having a great time running gdb inside iSH. I do see there's some instructions in the README about running the emulator alone as a command-line tool for testing, which might be worth doing if someone wants to really dig into this. But ultimately I think this should be raised in iSH and not in uv.
+
+There's maybe an argument that the real problem is that i686 is too ambitious for iSH and an older baseline like i386 might work better. I'm not sure if it makes sense for uv (and python-build-standalone, too, probably) to lower the x86-32 baseline specifically for iSH, but in any case, someone could try doing a build of uv without SSE2 support and see if it gets farther.
+
+---
+
+_Label `external` added by @zanieb on 2025-03-27 17:14_
+
+---

@@ -1,0 +1,85 @@
+---
+number: 13372
+title: "`uv pip install` won't download a `.tgz` from the index"
+type: issue
+state: closed
+author: godlygeek
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-10T02:20:06Z
+updated_at: 2025-05-10T20:55:29Z
+url: https://github.com/astral-sh/uv/issues/13372
+synced_at: 2026-01-10T01:25:32Z
+---
+
+# `uv pip install` won't download a `.tgz` from the index
+
+---
+
+_Issue opened by @godlygeek on 2025-05-10 02:20_
+
+### Summary
+
+The package `pyratemp` can't be installed with `uv pip install`, but can be installed by `pip install`. This package provides only sdists, and those sdists have the nonstandard extension `.tgz` (rather than `.tar.gz`).
+
+```shell-session
+$ mkdir test
+$ cd test
+$ uv venv -p 3.13
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+(test) $ uv pip install pyratemp
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of pyratemp and you require pyratemp, we can conclude that your requirements are unsatisfiable.
+(test) $ uv pip install pip
+Resolved 1 package in 96ms
+Installed 1 package in 260ms
+ + pip==25.1.1
+(test) $ .venv/bin/pip install pyratemp
+Collecting pyratemp
+  Using cached pyratemp-0.3.2-py3-none-any.whl
+Installing collected packages: pyratemp
+Successfully installed pyratemp-0.3.2
+(test) $
+```
+
+I'm unsure if this difference is intentional or not. I see other issues on the issue tracker, like #7081, that suggest that uv intends to support the `.tgz` extension in at least some cases.
+
+### Platform
+
+Linux 6.6.67-06628-g571b599e617d x86_64 GNU/Linux
+
+### Version
+
+uv 0.7.3
+
+### Python version
+
+Python 3.13.1
+
+---
+
+_Label `bug` added by @godlygeek on 2025-05-10 02:20_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-05-10 20:28_
+
+---
+
+_Referenced in [astral-sh/uv#13382](../../astral-sh/uv/pulls/13382.md) on 2025-05-10 20:37_
+
+---
+
+_Comment by @charliermarsh on 2025-05-10 20:38_
+
+Fixed in https://github.com/astral-sh/uv/pull/13382.
+
+---
+
+_Closed by @charliermarsh on 2025-05-10 20:55_
+
+---

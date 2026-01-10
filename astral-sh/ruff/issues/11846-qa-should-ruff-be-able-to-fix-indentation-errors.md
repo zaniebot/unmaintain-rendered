@@ -1,0 +1,541 @@
+---
+number: 11846
+title: "[QA] Should Ruff be able to fix indentation errors (E999) ?"
+type: issue
+state: closed
+author: andrewcrook
+labels:
+  - question
+  - needs-info
+assignees: []
+created_at: 2024-06-12T11:41:56Z
+updated_at: 2024-09-09T12:06:28Z
+url: https://github.com/astral-sh/ruff/issues/11846
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# [QA] Should Ruff be able to fix indentation errors (E999) ?
+
+---
+
+_Issue opened by @andrewcrook on 2024-06-12 11:41_
+
+I have ruff setup in neovim as a LSP using `ruff server --preview` .
+However, if there is an indentation issue E999  in the code ruff cannot format or fix until all E999's have been manually fixed.
+Sometimes, it will also cause the LSP to disconnect and no longer be available for python file types when called unfortunately this doesn’t show under LspLog.
+
+Seems to work fine for code spacing issues such as `print (x) -> print(x)`
+
+Heres some trash code I have been using to test ruffs capabilities and to get some information regarding this issue.
+
+![Screenshot 2024-06-12 at 11 50 15](https://github.com/astral-sh/ruff/assets/803618/4449736a-2d1e-4b1f-b264-d1b65cd63b10)
+
+### **Version info**
+```
+>nvim -v
+NVIM v0.10.0
+Build type: Release
+LuaJIT 2.1.1713484068
+```
+```
+>ruff --version
+ruff 0.4.8
+```
+
+### **Under Neovim - Cmdline**
+**Fix all**
+```
+: lua vim.lsp.buf.code_action({ apply = true, context = { only = { "source.fixAll.ruff" }, },})
+: LspLog
+
+[ERROR][2024-06-12 12:07:08] .../vim/lsp/rpc.lua:770	"rpc"	"/Users/XXXX/.local/share/nvim/mason/bin/ruff"	"stderr"	"  33.853014s ERROR ruff_server::server::api An error occurred with result ID 5: A parsing error occurred during `fix_all`: Unexpected indentation at byte range 72..78\n”
+```
+
+**format**
+```
+:lua vim.lsp.buf.format()
+:LspLog
+
+[ERROR][2024-06-12 12:07:49] .../vim/lsp/rpc.lua:770	"rpc"	"/Users/XXXX/.local/share/nvim/mason/bin/ruff"	"stderr"	"  73.983982s WARN ruff_server::format Unable to format document: Unexpected indentation at byte range 72..78\n"
+```
+
+### **under Shell**
+
+**check**
+```
+> ruff check test.py
+error: Failed to parse test.py:8:1: Unexpected indentation
+test.py:8:1: E999 SyntaxError: Unexpected indentation
+Found 1 error.
+```
+
+**check fix**
+```
+> ruff check --fix  test.py
+error: Failed to parse test.py:8:1: Unexpected indentation
+test.py:8:1: E999 SyntaxError: Unexpected indentation
+Found 1 error.
+```
+
+**format**
+```
+> ruff format test.py
+error: Failed to parse test.py:8:1: Unexpected indentation
+```
+
+### **default settings when check is running under shell**
+```
+> ruff check --show-settings
+
+Resolved settings for: "/Users/XXXX/Developer/pytest/test/test3.py"
+
+# General Settings
+cache_dir = "/Users/XXXX/Developer/pytest/.ruff_cache"
+fix = false
+fix_only = false
+output_format = concise
+show_fixes = false
+unsafe_fixes = hint
+
+# File Resolver Settings
+file_resolver.exclude = [
+	".bzr",
+	".direnv",
+	".eggs",
+	".git",
+	".git-rewrite",
+	".hg",
+	".ipynb_checkpoints",
+	".mypy_cache",
+	".nox",
+	".pants.d",
+	".pyenv",
+	".pytest_cache",
+	".pytype",
+	".ruff_cache",
+	".svn",
+	".tox",
+	".venv",
+	".vscode",
+	"__pypackages__",
+	"_build",
+	"buck-out",
+	"dist",
+	"node_modules",
+	"site-packages",
+	"venv",
+]
+file_resolver.extend_exclude = []
+file_resolver.force_exclude = false
+file_resolver.include = [
+	"*.py",
+	"*.pyi",
+	"**/pyproject.toml",
+]
+file_resolver.extend_include = []
+file_resolver.respect_gitignore = true
+file_resolver.project_root = "/Users/XXXX/Developer/pytest"
+
+# Linter Settings
+linter.exclude = []
+linter.project_root = "/Users/XXXX/Developer/pytest"
+linter.rules.enabled = [
+	multiple-imports-on-one-line (E401),
+	module-import-not-at-top-of-file (E402),
+	multiple-statements-on-one-line-colon (E701),
+	multiple-statements-on-one-line-semicolon (E702),
+	useless-semicolon (E703),
+	none-comparison (E711),
+	true-false-comparison (E712),
+	not-in-test (E713),
+	not-is-test (E714),
+	type-comparison (E721),
+	bare-except (E722),
+	lambda-assignment (E731),
+	ambiguous-variable-name (E741),
+	ambiguous-class-name (E742),
+	ambiguous-function-name (E743),
+	io-error (E902),
+	syntax-error (E999),
+	unused-import (F401),
+	import-shadowed-by-loop-var (F402),
+	undefined-local-with-import-star (F403),
+	late-future-import (F404),
+	undefined-local-with-import-star-usage (F405),
+	undefined-local-with-nested-import-star-usage (F406),
+	future-feature-not-defined (F407),
+	percent-format-invalid-format (F501),
+	percent-format-expected-mapping (F502),
+	percent-format-expected-sequence (F503),
+	percent-format-extra-named-arguments (F504),
+	percent-format-missing-argument (F505),
+	percent-format-mixed-positional-and-named (F506),
+	percent-format-positional-count-mismatch (F507),
+	percent-format-star-requires-sequence (F508),
+	percent-format-unsupported-format-character (F509),
+	string-dot-format-invalid-format (F521),
+	string-dot-format-extra-named-arguments (F522),
+	string-dot-format-extra-positional-arguments (F523),
+	string-dot-format-missing-arguments (F524),
+	string-dot-format-mixing-automatic (F525),
+	f-string-missing-placeholders (F541),
+	multi-value-repeated-key-literal (F601),
+	multi-value-repeated-key-variable (F602),
+	expressions-in-star-assignment (F621),
+	multiple-starred-expressions (F622),
+	assert-tuple (F631),
+	is-literal (F632),
+	invalid-print-syntax (F633),
+	if-tuple (F634),
+	break-outside-loop (F701),
+	continue-outside-loop (F702),
+	yield-outside-function (F704),
+	return-outside-function (F706),
+	default-except-not-last (F707),
+	forward-annotation-syntax-error (F722),
+	redefined-while-unused (F811),
+	undefined-name (F821),
+	undefined-export (F822),
+	undefined-local (F823),
+	unused-variable (F841),
+	unused-annotation (F842),
+	raise-not-implemented (F901),
+]
+linter.rules.should_fix = [
+	multiple-imports-on-one-line (E401),
+	module-import-not-at-top-of-file (E402),
+	multiple-statements-on-one-line-colon (E701),
+	multiple-statements-on-one-line-semicolon (E702),
+	useless-semicolon (E703),
+	none-comparison (E711),
+	true-false-comparison (E712),
+	not-in-test (E713),
+	not-is-test (E714),
+	type-comparison (E721),
+	bare-except (E722),
+	lambda-assignment (E731),
+	ambiguous-variable-name (E741),
+	ambiguous-class-name (E742),
+	ambiguous-function-name (E743),
+	io-error (E902),
+	syntax-error (E999),
+	unused-import (F401),
+	import-shadowed-by-loop-var (F402),
+	undefined-local-with-import-star (F403),
+	late-future-import (F404),
+	undefined-local-with-import-star-usage (F405),
+	undefined-local-with-nested-import-star-usage (F406),
+	future-feature-not-defined (F407),
+	percent-format-invalid-format (F501),
+	percent-format-expected-mapping (F502),
+	percent-format-expected-sequence (F503),
+	percent-format-extra-named-arguments (F504),
+	percent-format-missing-argument (F505),
+	percent-format-mixed-positional-and-named (F506),
+	percent-format-positional-count-mismatch (F507),
+	percent-format-star-requires-sequence (F508),
+	percent-format-unsupported-format-character (F509),
+	string-dot-format-invalid-format (F521),
+	string-dot-format-extra-named-arguments (F522),
+	string-dot-format-extra-positional-arguments (F523),
+	string-dot-format-missing-arguments (F524),
+	string-dot-format-mixing-automatic (F525),
+	f-string-missing-placeholders (F541),
+	multi-value-repeated-key-literal (F601),
+	multi-value-repeated-key-variable (F602),
+	expressions-in-star-assignment (F621),
+	multiple-starred-expressions (F622),
+	assert-tuple (F631),
+	is-literal (F632),
+	invalid-print-syntax (F633),
+	if-tuple (F634),
+	break-outside-loop (F701),
+	continue-outside-loop (F702),
+	yield-outside-function (F704),
+	return-outside-function (F706),
+	default-except-not-last (F707),
+	forward-annotation-syntax-error (F722),
+	redefined-while-unused (F811),
+	undefined-name (F821),
+	undefined-export (F822),
+	undefined-local (F823),
+	unused-variable (F841),
+	unused-annotation (F842),
+	raise-not-implemented (F901),
+]
+linter.per_file_ignores = {}
+linter.safety_table.forced_safe = []
+linter.safety_table.forced_unsafe = []
+linter.target_version = Py38
+linter.preview = disabled
+linter.explicit_preview_rules = false
+linter.extension.mapping = {}
+linter.allowed_confusables = []
+linter.builtins = []
+linter.dummy_variable_rgx = ^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$
+linter.external = []
+linter.ignore_init_module_imports = true
+linter.logger_objects = []
+linter.namespace_packages = []
+linter.src = [
+	"/Users/XXXX/Developer/pytest",
+]
+linter.tab_size = 4
+linter.line_length = 88
+linter.task_tags = [
+	TODO,
+	FIXME,
+	XXX,
+]
+linter.typing_modules = []
+
+# Linter Plugins
+linter.flake8_annotations.mypy_init_return = false
+linter.flake8_annotations.suppress_dummy_args = false
+linter.flake8_annotations.suppress_none_returning = false
+linter.flake8_annotations.allow_star_arg_any = false
+linter.flake8_annotations.ignore_fully_untyped = false
+linter.flake8_bandit.hardcoded_tmp_directory = [
+	/tmp,
+	/var/tmp,
+	/dev/shm,
+]
+linter.flake8_bandit.check_typed_exception = false
+linter.flake8_bugbear.extend_immutable_calls = []
+linter.flake8_builtins.builtins_ignorelist = []
+linter.flake8_comprehensions.allow_dict_calls_with_keyword_arguments = false
+linter.flake8_copyright.notice_rgx = (?i)Copyright\s+((?:\(C\)|©)\s+)?\d{4}((-|,\s)\d{4})*
+linter.flake8_copyright.author = none
+linter.flake8_copyright.min_file_size = 0
+linter.flake8_errmsg.max_string_length = 0
+linter.flake8_gettext.functions_names = [
+	_,
+	gettext,
+	ngettext,
+]
+linter.flake8_implicit_str_concat.allow_multiline = true
+linter.flake8_import_conventions.aliases = {
+	altair = alt,
+	holoviews = hv,
+	matplotlib = mpl,
+	matplotlib.pyplot = plt,
+	networkx = nx,
+	numpy = np,
+	pandas = pd,
+	panel = pn,
+	plotly.express = px,
+	polars = pl,
+	pyarrow = pa,
+	seaborn = sns,
+	tensorflow = tf,
+	tkinter = tk,
+}
+linter.flake8_import_conventions.banned_aliases = {}
+linter.flake8_import_conventions.banned_from = []
+linter.flake8_pytest_style.fixture_parentheses = true
+linter.flake8_pytest_style.parametrize_names_type = tuple
+linter.flake8_pytest_style.parametrize_values_type = list
+linter.flake8_pytest_style.parametrize_values_row_type = tuple
+linter.flake8_pytest_style.raises_require_match_for = [
+	BaseException,
+	Exception,
+	ValueError,
+	OSError,
+	IOError,
+	EnvironmentError,
+	socket.error,
+]
+linter.flake8_pytest_style.raises_extend_require_match_for = []
+linter.flake8_pytest_style.mark_parentheses = true
+linter.flake8_quotes.inline_quotes = double
+linter.flake8_quotes.multiline_quotes = double
+linter.flake8_quotes.docstring_quotes = double
+linter.flake8_quotes.avoid_escape = true
+linter.flake8_self.ignore_names = [
+	_make,
+	_asdict,
+	_replace,
+	_fields,
+	_field_defaults,
+	_name_,
+	_value_,
+]
+linter.flake8_tidy_imports.ban_relative_imports = "parents"
+linter.flake8_tidy_imports.banned_api = {}
+linter.flake8_tidy_imports.banned_module_level_imports = []
+linter.flake8_type_checking.strict = false
+linter.flake8_type_checking.exempt_modules = [
+	typing,
+	typing_extensions,
+]
+linter.flake8_type_checking.runtime_required_base_classes = []
+linter.flake8_type_checking.runtime_required_decorators = []
+linter.flake8_type_checking.quote_annotations = false
+linter.flake8_unused_arguments.ignore_variadic_names = false
+linter.isort.required_imports = []
+linter.isort.combine_as_imports = false
+linter.isort.force_single_line = false
+linter.isort.force_sort_within_sections = false
+linter.isort.detect_same_package = true
+linter.isort.case_sensitive = false
+linter.isort.force_wrap_aliases = false
+linter.isort.force_to_top = []
+linter.isort.known_modules = {}
+linter.isort.order_by_type = true
+linter.isort.relative_imports_order = furthest_to_closest
+linter.isort.single_line_exclusions = []
+linter.isort.split_on_trailing_comma = true
+linter.isort.classes = []
+linter.isort.constants = []
+linter.isort.variables = []
+linter.isort.no_lines_before = []
+linter.isort.lines_after_imports = -1
+linter.isort.lines_between_types = 0
+linter.isort.forced_separate = []
+linter.isort.section_order = [
+	known { type = future },
+	known { type = standard_library },
+	known { type = third_party },
+	known { type = first_party },
+	known { type = local_folder },
+]
+linter.isort.default_section = known { type = third_party }
+linter.isort.no_sections = false
+linter.isort.from_first = false
+linter.isort.length_sort = false
+linter.isort.length_sort_straight = false
+linter.mccabe.max_complexity = 10
+linter.pep8_naming.ignore_names = [
+	setUp,
+	tearDown,
+	setUpClass,
+	tearDownClass,
+	setUpModule,
+	tearDownModule,
+	asyncSetUp,
+	asyncTearDown,
+	setUpTestData,
+	failureException,
+	longMessage,
+	maxDiff,
+]
+linter.pep8_naming.classmethod_decorators = []
+linter.pep8_naming.staticmethod_decorators = []
+linter.pycodestyle.max_line_length = 88
+linter.pycodestyle.max_doc_length = none
+linter.pycodestyle.ignore_overlong_task_comments = false
+linter.pyflakes.extend_generics = []
+linter.pylint.allow_magic_value_types = [
+	str,
+	bytes,
+]
+linter.pylint.allow_dunder_method_names = []
+linter.pylint.max_args = 5
+linter.pylint.max_positional_args = 5
+linter.pylint.max_returns = 6
+linter.pylint.max_bool_expr = 5
+linter.pylint.max_branches = 12
+linter.pylint.max_statements = 50
+linter.pylint.max_public_methods = 20
+linter.pylint.max_locals = 15
+linter.pyupgrade.keep_runtime_typing = false
+
+# Formatter Settings
+formatter.exclude = []
+formatter.target_version = Py38
+formatter.preview = disabled
+formatter.line_width = 88
+formatter.line_ending = auto
+formatter.indent_style = space
+formatter.indent_width = 4
+formatter.quote_style = double
+formatter.magic_trailing_comma = respect
+formatter.docstring_code_format = disabled
+formatter.docstring_code_line_width = dynamic
+```
+
+I did come across some mentions of this issue but couldn’t find a solution or a definitive answer.
+
+---
+
+_Comment by @dhruvmanila on 2024-06-12 16:25_
+
+Hey, thanks for such a detailed issue, really appreciate you taking the time to write that up.
+
+> However, if there is an indentation issue E999 in the code ruff cannot format or fix until all E999's have been manually fixed.
+
+Currently, Ruff doesn't support linting or formatting a source code with syntax errors. Or, more precisely it _only_ supports certain subset of rules (very few). But, this is something which we want to add support for (linting source code with syntax errors).
+
+> Sometimes, it will also cause the LSP to disconnect and no longer be available for python file types when called unfortunately this doesn’t show under LspLog.
+
+Can you say a bit more about this? What do you mean when you say that the server gets disconnected? Is it that the `ruff` process itself quits while Neovim is still open? 
+
+> Seems to work fine for code spacing issues such as `print (x) -> print(x)`
+
+This works because whitespaces are generally ignored except for when it's used for indentation. So, this is valid Python code. While, a mismatch in indentation isn't valid because Python uses indentation to group statements which act as a single block. For example, in JavaScript curly braces are used to define a block of code.
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-06-12 16:25_
+
+---
+
+_Comment by @andrewcrook on 2024-06-12 18:24_
+
+@dhruvmanila  many thanks for the explanation I thought this might be the case.
+
+> Can you say a bit more about this? What do you mean when you say that the server gets disconnected? Is it that the ruff process itself quits while Neovim is still open?
+
+I just start to get `[LSP] Format request failed, no matching language servers.` until I restart neovim.
+
+So the failure seems to be detaching it from neovims LSP configuration for that buffer I would guess
+
+I haven't been able to get enough information regarding this because it isn't being logged.
+If I can get information or a better idea about the issue I will raise a new issue.
+
+I do get another error logged via :LspLog
+
+`[ERROR][2024-06-12 12:06:35] .../vim/lsp/rpc.lua:770	"rpc"	"/Users/XXXX/.local/share/nvim/mason/bin/ruff"	"stderr"	"   0.095206s WARN ruff_server::server LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"`
+
+Not sure if it's related. I haven't been able to look into this yet.
+
+
+---
+
+_Comment by @dhruvmanila on 2024-06-13 06:21_
+
+> I just start to get `[LSP] Format request failed, no matching language servers.` until I restart neovim.
+> 
+> So the failure seems to be detaching it from neovims LSP configuration for that buffer I would guess
+
+Hmm, this shouldn't be happening. I'm trying to reproduce this but unable to do so with the following steps:
+1. Open a Python file with a syntax error
+2. Run `vim.lsp.buf.format`, check the logs and verify the error is logged
+3. Comment out the part containing syntax error
+4. Run (2) again, here it formats the content correctly
+
+I'm using ruff version `v0.4.8` and Neovim version `v0.10.0`. Can you try these steps or provide a similar steps for me to reproduce i?
+
+> I do get another error logged via :LspLog
+> 
+> `[ERROR][2024-06-12 12:06:35] .../vim/lsp/rpc.lua:770 "rpc" "/Users/XXXX/.local/share/nvim/mason/bin/ruff" "stderr" " 0.095206s WARN ruff_server::server LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"`
+> 
+> Not sure if it's related. I haven't been able to look into this yet.
+
+You don't need to worry about this.
+
+---
+
+_Label `needs-info` added by @MichaReiser on 2024-09-09 12:06_
+
+---
+
+_Comment by @MichaReiser on 2024-09-09 12:06_
+
+I'm closing this. Feel free to comment / re-open if you're still facing this issue.
+
+---
+
+_Closed by @MichaReiser on 2024-09-09 12:06_
+
+---

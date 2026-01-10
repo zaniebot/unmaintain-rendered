@@ -1,0 +1,283 @@
+---
+number: 3119
+title: "Parse different arguments to the same field from &ArgMatches"
+type: issue
+state: closed
+author: epage
+labels:
+  - C-enhancement
+  - A-derive
+  - S-duplicate
+assignees: []
+created_at: 2021-12-09T16:13:33Z
+updated_at: 2022-01-11T18:25:41Z
+url: https://github.com/clap-rs/clap/issues/3119
+synced_at: 2026-01-10T01:27:33Z
+---
+
+# Parse different arguments to the same field from &ArgMatches
+
+---
+
+_Issue opened by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [I60R](https://github.com/I60R)**
+_Sunday Jul 22, 2018 at 06:15 GMT_
+_Originally opened as https://github.com/TeXitoi/structopt/issues/126_
+
+----
+
+Example: there is `-v` which increases log verbosity, and `-q` which decreases it, and that should be backed by single `log_level` field in `Options` struct.
+
+Alacritty [implements that pattern](https://github.com/jwilm/alacritty/blob/ea512cb0f3cb159707eb29fdbf2e31bbb1c1b902/src/cli.rs#L45) with use of `clap` and manually filled struct; but with use of structopt there will be no other way as split `log_level` into two fields: `q` and `v`.
+
+I propose something like `parse(from_matches = "parser")` to avoid that.
+
+
+```rust
+
+#[derive(StructOpt))]
+struct Options {
+    #[structopt(parse(from_matches = "parse_log_level"))]
+    log_level: log::LevelFilter,
+
+    ...
+}
+
+fn parse_log_level(matches: &ArgMatches) -> log::LevelFilter {
+    match matches.occurrences_of("v") {
+        0 => match matches.occurrences_of("q") {
+            0 => log::LevelFilter::Warn,
+            1 => log::LevelFilter::Error,
+            2 | _ => log::LevelFilter::Off
+        },
+        1 => log::LevelFilter::Info,
+        2 => log::LevelFilter::Debug,
+        3 | _ => log::LevelFilter::Trace
+    }
+}
+
+```
+
+--------------
+
+Also, [I have a use case](https://github.com/I60R/page/blob/2d8ff2eb99cf6ce2b256d2c24471c5d372fcfa71/src/cli.rs#L65-L95) where parser like that may greatly simplify my code
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Monday Jul 23, 2018 at 14:15 GMT_
+
+----
+
+That's a quite complicated feature to design. Maybe using the parse feature, giving a custom parsing command that takes the 2 parameters and returns the value, with a way to list on a struct field that this field is linked to 2 options.
+
+Fuzzy try:
+
+```rust
+fn parse_log_level(quiet: u32, verbose: u32) -> log::LevelFilter {
+    match (quiet, verbose) {
+        (0, 0) => log::LevelFilter::Warn,
+        (0, 1) => log::LevelFilter::Error,
+        (0, _) => log::LevelFilter::Off,
+        (1, _) => log::LevelFilter::Info,
+        (2, _) => log::LevelFilter::Debug,
+        (_, _) => log::LevelFilter::Trace,
+    }
+}
+
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(
+        multiarg(short = "v", long = "verbose", parse(from_occurence)),
+        multiarg(short = "q", long = "quiet", parse(from_occurence)),
+        parse(from_multiargs = "parse_log_level"),
+    )]
+    verbose: log::LevelFilter,
+}
+```
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [I60R](https://github.com/I60R)**
+_Monday Jul 23, 2018 at 19:17 GMT_
+
+----
+
+What are your thoughts about delegating `q` and `v` fields into separate struct? 
+That will be very similar to `flatten` feature that additionally invokes `.from()` on flattened struct:
+
+```rust
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(collapse(LogLevelOpt)]
+    verbose: log::LevelFilter,
+
+    ...
+}
+
+#[derive(StructOpt)]
+struct LogLevelOpt {
+    #[structopt(short = "v", long = "verbose", parse(from_occurences)]
+    verbose: u8,
+
+    #[structopt(short = "q", long = "quiet", parse(from_occurences)]
+    quiet: u8,
+}
+
+impl Into<log::LevelFilter> for LogLevelOpt {
+    fn into(self) -> log::LevelFilter {
+        match (self.quiet, self.verbose) {
+            (0, 0) => log::LevelFilter::Warn,
+            (0, 1) => log::LevelFilter::Error,
+            (0, _) => log::LevelFilter::Off,
+            (1, _) => log::LevelFilter::Info,
+            (2, _) => log::LevelFilter::Debug,
+            (_, _) => log::LevelFilter::Trace,
+        }
+    }
+}
+```
+
+Also, there might be other version that uses custom function instead of `from`:
+
+```rust
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(collapse(LogLevelOpt), parse(from_collapsed = "custom_function")]
+    verbose: log::LevelFilter,
+
+    ...
+}
+
+#[derive(StructOpt)]
+struct LogLevelOpt {
+    ...
+}
+
+fn custom_function(opt: LogLevelOpt) -> log::LevelFilter {
+   ...
+}
+
+```
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Tuesday Jul 24, 2018 at 15:02 GMT_
+
+----
+
+@I60R That's another path that looks promising. I prefer it to my proposition.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/eugmes"><img src="https://avatars.githubusercontent.com/u/447040?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [eugmes](https://github.com/eugmes)**
+_Monday Jul 26, 2021 at 20:36 GMT_
+
+----
+
+I have another use case that I think may benefit from having multiple arguments apply to the same field, and it is hard or impossible to implement this using multiple separate arguments.
+
+I have a program that's processes some Unicode characters, user should be able to enable or disable processing of some ranges, multiple enable/disable arguments are possible, they should be processes in order they are supplied. For example:
+
+```console
+--include-range 100-200 --exclude-range 120-130
+```
+
+The result should be the same as:
+
+```console
+--include-range 100-119 --include-range 131-200
+```
+
+I would like to model this as follows:
+
+```rust
+enum UnicodeRange {...}
+
+enum RangeSpec {
+    Included {
+        include_range: UnicodeRange,
+    },
+    Excluded {
+        exclude_range: UnicodeRange,
+    },
+}
+
+struct Opt {
+    ...
+    #[structopt(???)]
+    ranges: Vec[RangeSpec],
+    ...
+}
+```
+
+I could not find any good way to do this. Note that separate arguments would not work because the order is important.
+
+I've tried to use ``flatten``, but ``structopt`` insists on adding subcommands :/.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Monday Jul 26, 2021 at 21:19 GMT_
+
+----
+
+@eugmes this is similar to your use case: https://github.com/TeXitoi/structopt/issues/476
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:13_
+
+<a href="https://github.com/eugmes"><img src="https://avatars.githubusercontent.com/u/447040?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [eugmes](https://github.com/eugmes)**
+_Monday Jul 26, 2021 at 21:53 GMT_
+
+----
+
+@TeXitoi indeed it is. Thanks a lot!
+
+
+---
+
+_Label `A-derive` added by @epage on 2021-12-09 16:20_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-09 16:20_
+
+---
+
+_Comment by @epage on 2021-12-13 22:28_
+
+This is a duplicate of #3146.
+
+---
+
+_Closed by @epage on 2021-12-13 22:28_
+
+---
+
+_Referenced in [clap-rs/clap#3146](../../clap-rs/clap/issues/3146.md) on 2021-12-13 22:28_
+
+---
+
+_Label `S-duplicate` added by @epage on 2022-01-11 18:25_
+
+---

@@ -1,0 +1,3260 @@
+---
+number: 17334
+title: "`uv publish` fails on first upload to Gitlab package repository"
+type: issue
+state: open
+author: j-hiller
+labels:
+  - bug
+assignees: []
+created_at: 2026-01-06T10:12:13Z
+updated_at: 2026-01-07T14:27:51Z
+url: https://github.com/astral-sh/uv/issues/17334
+synced_at: 2026-01-10T01:26:16Z
+---
+
+# `uv publish` fails on first upload to Gitlab package repository
+
+---
+
+_Issue opened by @j-hiller on 2026-01-06 10:12_
+
+### Summary
+
+I have `uv` running as part of my development process for a Python package on our self-hosted Gitlab.
+
+When starting from scratch for a new package, I ran into the issue that the check of `uv publish` fails, if no package exists in that repository so far.
+In this case, uv shows the following error in the CI job logs (redacted):
+```
+error: Failed to query check URL
+  Caused by: Unsupported `Content-Type` "text/plain" for https://***/packages/pypi/simple/***/. Expected JSON or HTML.
+```
+
+This is my (shortened) Gitlab CI:
+```yaml
+variables:
+  # PyPI publishing
+  UV_PUBLISH_URL: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi
+  UV_PUBLISH_CHECK_URL: ${CI_SERVER_PROTOCOL}://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple
+  UV_PUBLISH_USERNAME: "gitlab-ci-token"
+  UV_PUBLISH_PASSWORD: $CI_JOB_TOKEN
+
+pkg_release:
+  script:
+    - uv build --clear --wheel --out-dir dist
+    - uv publish -v --allow-insecure-host $CI_SERVER_HOST dist/*.whl
+```
+
+If I remove the `UV_PUBLISH_CHECK_URL`, the release job succeeds.
+Once the package was initially uploaded, I can also add the check url back in and it works.
+Is this the intended behavior?
+Or am I missing something?
+
+### Platform
+
+bookworm-slim, Gitlab CI
+
+### Version
+
+uv 0.9.18
+
+### Python version
+
+Python 3.14
+
+---
+
+_Label `bug` added by @j-hiller on 2026-01-06 10:12_
+
+---
+
+_Comment by @woodruffw on 2026-01-06 15:24_
+
+Hi @j-hiller, thanks for opening an issue.
+
+That error happens because `uv publish` expects the check URL to respond with a valid PEP 503 (HTML) or PEP 691 (JSON) index response, but GitLab seemingly responds with a `text/plain` response instead, which is non-conformant with the Python packaging standards for index responses.
+
+Could you share an excerpt of the response from your index? That'll help us better understand what's happening here.
+
+(Both before and after initial upload would be helpful, to help us differentiate.)
+
+---
+
+_Comment by @j-hiller on 2026-01-07 08:19_
+
+How do I best capture the response from the index?
+I tried the CI with `uv publish -vvv`.
+
+<details>
+<summary>Here is the redacted output:</summary>
+
+```
+DEBUG uv 0.9.18
+Publishing 1 file to https://XXX/api/v4/projects/497/packages/pypi
+DEBUG Using request timeout of 900s
+DEBUG Checking for release_testing-0.1.9-py3-none-any.whl in the registry
+TRACE Fetching metadata for yyy from https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+TRACE No cache entry exists for .uv_cache/simple-v18/index/37e873eb2d50ce46/yyy.rkyv
+DEBUG No cache entry for: https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+TRACE Sending fresh GET request for https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+TRACE Handling request for https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi/simple/yyy/ with authentication policy auto
+TRACE Request for https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi/simple/yyy/ already contains username and password
+TRACE checkout waiting for idle connection: ("https", XXX)
+DEBUG starting new connection: https://XXX/
+TRACE Http::connect; scheme=Some("https"), host=Some("XXX"), port=None
+DEBUG connecting to xx.xx.xx.xx:443
+DEBUG connected to xx.xx.xx.xx:443
+TRACE ALPN negotiated h2, updating pool
+DEBUG binding client connection
+DEBUG client connection bound
+DEBUG send frame=Settings { flags: (0x0), enable_push: 0, initial_window_size: 2097152, max_frame_size: 16384, max_header_list_size: 16384 }
+TRACE encoding SETTINGS; len=24
+TRACE encoding setting; val=EnablePush(0)
+TRACE encoding setting; val=InitialWindowSize(2097152)
+TRACE encoding setting; val=MaxFrameSize(16384)
+TRACE encoding setting; val=MaxHeaderListSize(16384)
+TRACE encoded settings rem=33
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE Prioritize::new; flow=FlowControl { window_size: Window(65535), available: Window(65535) }
+TRACE set_target_connection_window; target=5242880; available=65535, reserved=0
+TRACE http2 handshake complete, spawning background dispatcher task
+TRACE put; add idle connection for ("https", XXX)
+DEBUG pooling idle connection for ("https", XXX)
+TRACE checkout dropped for ("https", XXX)
+TRACE connection.state=Open
+TRACE poll
+DEBUG send frame=WindowUpdate { stream_id: StreamId(0), size_increment: 5177345 }
+TRACE encoding WINDOW_UPDATE; id=StreamId(0)
+TRACE encoded window_update rem=46
+TRACE inc_window; sz=5177345; old=65535; new=5242880
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE send_headers; frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }; init_window=65535
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE drop_stream_ref; stream=Stream { id: StreamId(1), state: HalfClosedLocal(AwaitingHeaders), is_counted: false, ref_count: 2, send_flow: FlowControl { window_size: Window(65535), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, pending_send: Deque { indices: Some(Indices { head: 0, tail: 0 }) }, is_pending_open: true, recv_flow: FlowControl { window_size: Window(65535), available: Window(65535) }, in_flight_recv_data: 0, is_recv: true, content_length: Omitted }
+TRACE transition_after; stream=StreamId(1); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=false; buffered_send_data=0; num_recv=0; num_send=0
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE schedule_pending_open; stream=StreamId(1)
+TRACE Queue::push_front
+TRACE  -> first entry
+TRACE requested=0 additional=0 buffered=0 window=65535 conn=65535
+TRACE is_pending_reset=false
+TRACE pop_frame; frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }
+TRACE transition_after; stream=StreamId(1); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }
+DEBUG send frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=27
+TRACE decoding frame from 27B
+TRACE frame.kind=Settings
+DEBUG received frame=Settings { flags: (0x0), max_concurrent_streams: 128, initial_window_size: 65536, max_frame_size: 16777215 }
+TRACE recv SETTINGS frame=Settings { flags: (0x0), max_concurrent_streams: 128, initial_window_size: 65536, max_frame_size: 16777215 }
+DEBUG send frame=Settings { flags: (0x1: ACK) }
+TRACE encoding SETTINGS; len=0
+TRACE encoded settings rem=9
+TRACE ACK sent; applying settings
+TRACE poll
+TRACE read.bytes=13
+TRACE decoding frame from 13B
+TRACE frame.kind=WindowUpdate
+DEBUG received frame=WindowUpdate { stream_id: StreamId(0), size_increment: 2147418112 }
+TRACE recv WINDOW_UPDATE frame=WindowUpdate { stream_id: StreamId(0), size_increment: 2147418112 }
+TRACE inc_window; sz=2147418112; old=65535; new=2147483647
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=9
+TRACE decoding frame from 9B
+TRACE frame.kind=Settings
+DEBUG received frame=Settings { flags: (0x1: ACK) }
+TRACE recv SETTINGS frame=Settings { flags: (0x1: ACK) }
+DEBUG received settings ACK; applying Settings { flags: (0x0), enable_push: 0, initial_window_size: 2097152, max_frame_size: 16384, max_header_list_size: 16384 }
+TRACE update_initial_window_size; new=2097152; old=65535
+TRACE incrementing all windows; inc=2031617
+TRACE inc_window; sz=2031617; old=65535; new=2097152
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=367
+TRACE decoding frame from 367B
+TRACE frame.kind=Headers
+TRACE loading headers; flags=(0x4: END_HEADERS)
+TRACE decode
+TRACE rem=358 kind=LiteralWithIndexing
+TRACE rem=353 kind=LiteralWithIndexing
+TRACE rem=347 kind=LiteralWithIndexing
+TRACE rem=323 kind=LiteralWithIndexing
+TRACE rem=314 kind=LiteralWithIndexing
+TRACE rem=310 kind=LiteralWithIndexing
+TRACE rem=280 kind=LiteralWithoutIndexing
+TRACE rem=262 kind=LiteralWithoutIndexing
+TRACE rem=242 kind=LiteralWithoutIndexing
+TRACE rem=230 kind=LiteralWithoutIndexing
+TRACE rem=206 kind=LiteralWithoutIndexing
+TRACE rem=183 kind=LiteralWithoutIndexing
+TRACE rem=117 kind=LiteralWithoutIndexing
+TRACE rem=84 kind=LiteralWithoutIndexing
+TRACE rem=68 kind=LiteralWithoutIndexing
+TRACE rem=36 kind=LiteralWithoutIndexing
+DEBUG received frame=Headers { stream_id: StreamId(1), flags: (0x4: END_HEADERS) }
+TRACE recv HEADERS frame=Headers { stream_id: StreamId(1), flags: (0x4: END_HEADERS) }
+TRACE recv_headers; stream=StreamId(1); state=HalfClosedLocal(AwaitingHeaders)
+TRACE opening stream; init_window=2097152
+TRACE transition_after; stream=StreamId(1); state=HalfClosedLocal(Streaming); is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE poll
+TRACE read.bytes=96
+TRACE decoding frame from 96B
+TRACE frame.kind=Data
+DEBUG received frame=Data { stream_id: StreamId(1), flags: (0x1: END_STREAM) }
+TRACE recv DATA frame=Data { stream_id: StreamId(1), flags: (0x1: END_STREAM) }
+TRACE recv_data; size=87; connection=5242880; stream=2097152
+TRACE send_data; sz=87; window=5242880; available=5242880
+TRACE recv_close: HalfClosedLocal => Closed
+TRACE send_data; sz=87; window=2097152; available=2097152
+TRACE transition_after; stream=StreamId(1); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE dec_num_streams; stream=StreamId(1)
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE drop_stream_ref; stream=Stream { id: StreamId(1), state: Closed(EndStream), is_counted: false, ref_count: 2, send_flow: FlowControl { window_size: Window(65535), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, recv_flow: FlowControl { window_size: Window(2097065), available: Window(2097065) }, in_flight_recv_data: 87, pending_recv: Deque { indices: Some(Indices { head: 1, tail: 1 }) }, is_recv: true, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(1); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Updating cached credentials for https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/ to Credentials(Basic { username: Username(Some("gitlab-ci-token")), password: Some(****) })
+TRACE Response from https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/ is not storable because it does not meet any of the necessary criteria (e.g., it doesn't have an 'Expires' header set or a 'max-age' cache-control directive)
+TRACE drop_stream_ref; stream=Stream { id: StreamId(1), state: Closed(EndStream), is_counted: false, ref_count: 1, send_flow: FlowControl { window_size: Window(65535), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, recv_flow: FlowControl { window_size: Window(2097065), available: Window(2097065) }, in_flight_recv_data: 87, content_length: Remaining(0) }
+TRACE auto-release closed stream (StreamId(1)) capacity: 87
+TRACE release_connection_capacity; size=87, connection in_flight_data=87
+TRACE transition_after; stream=StreamId(1); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Considering retry of error: Error { kind: UnsupportedMediaType(DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("XXX")), port: None, path: "/api/v4/projects/497/packages/pypi/simple/yyy/", query: None, fragment: None }, "text/plain"), retries: 0 }
+TRACE Cannot retry error: Neither an IO error nor a reqwest error
+TRACE Streams::recv_eof
+TRACE Error trace: Failed to query check URL
+Caused by:
+    Unsupported `Content-Type` "text/plain" for https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/. Expected JSON or HTML.
+error: Failed to query check URL
+  Caused by: Unsupported `Content-Type` "text/plain" for https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/. Expected JSON or HTML.
+```
+
+</details>
+
+<details>
+<summary>And here is the output, if a package version already exists:</summary>
+
+```
+DEBUG uv 0.9.18
+Publishing 1 file to https://XXX/api/v4/projects/497/packages/pypi
+DEBUG Using request timeout of 900s
+DEBUG Checking for release_testing-0.1.10-py3-none-any.whl in the registry
+TRACE Fetching metadata for yyy from https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+TRACE No cache entry exists for .uv_cache/simple-v18/index/37e873eb2d50ce46/yyy.rkyv
+DEBUG No cache entry for: https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+TRACE Sending fresh GET request for https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+TRACE Handling request for https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi/simple/yyy/ with authentication policy auto
+TRACE Request for https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi/simple/yyy/ already contains username and password
+TRACE checkout waiting for idle connection: ("https", XXX)
+DEBUG starting new connection: https://XXX/
+TRACE Http::connect; scheme=Some("https"), host=Some("XXX"), port=None
+DEBUG connecting to xx.xx.xx.xx:443
+DEBUG connected to xx.xx.xx.xx:443
+TRACE ALPN negotiated h2, updating pool
+DEBUG binding client connection
+DEBUG client connection bound
+DEBUG send frame=Settings { flags: (0x0), enable_push: 0, initial_window_size: 2097152, max_frame_size: 16384, max_header_list_size: 16384 }
+TRACE encoding SETTINGS; len=24
+TRACE encoding setting; val=EnablePush(0)
+TRACE encoding setting; val=InitialWindowSize(2097152)
+TRACE encoding setting; val=MaxFrameSize(16384)
+TRACE encoding setting; val=MaxHeaderListSize(16384)
+TRACE encoded settings rem=33
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE Prioritize::new; flow=FlowControl { window_size: Window(65535), available: Window(65535) }
+TRACE set_target_connection_window; target=5242880; available=65535, reserved=0
+TRACE http2 handshake complete, spawning background dispatcher task
+TRACE put; add idle connection for ("https", XXX)
+DEBUG pooling idle connection for ("https", XXX)
+TRACE checkout dropped for ("https", XXX)
+TRACE connection.state=Open
+TRACE poll
+DEBUG send frame=WindowUpdate { stream_id: StreamId(0), size_increment: 5177345 }
+TRACE encoding WINDOW_UPDATE; id=StreamId(0)
+TRACE encoded window_update rem=46
+TRACE inc_window; sz=5177345; old=65535; new=5242880
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE inc_window; sz=65535; old=0; new=65535
+TRACE send_headers; frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }; init_window=65535
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE drop_stream_ref; stream=Stream { id: StreamId(1), state: HalfClosedLocal(AwaitingHeaders), is_counted: false, ref_count: 2, send_flow: FlowControl { window_size: Window(65535), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, pending_send: Deque { indices: Some(Indices { head: 0, tail: 0 }) }, is_pending_open: true, recv_flow: FlowControl { window_size: Window(65535), available: Window(65535) }, in_flight_recv_data: 0, is_recv: true, content_length: Omitted }
+TRACE transition_after; stream=StreamId(1); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=false; buffered_send_data=0; num_recv=0; num_send=0
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE schedule_pending_open; stream=StreamId(1)
+TRACE Queue::push_front
+TRACE  -> first entry
+TRACE requested=0 additional=0 buffered=0 window=65535 conn=65535
+TRACE is_pending_reset=false
+TRACE pop_frame; frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }
+TRACE transition_after; stream=StreamId(1); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }
+DEBUG send frame=Headers { stream_id: StreamId(1), flags: (0x5: END_HEADERS | END_STREAM) }
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=27
+TRACE decoding frame from 27B
+TRACE frame.kind=Settings
+DEBUG received frame=Settings { flags: (0x0), max_concurrent_streams: 128, initial_window_size: 65536, max_frame_size: 16777215 }
+TRACE recv SETTINGS frame=Settings { flags: (0x0), max_concurrent_streams: 128, initial_window_size: 65536, max_frame_size: 16777215 }
+DEBUG send frame=Settings { flags: (0x1: ACK) }
+TRACE encoding SETTINGS; len=0
+TRACE encoded settings rem=9
+TRACE ACK sent; applying settings
+TRACE poll
+TRACE read.bytes=13
+TRACE decoding frame from 13B
+TRACE frame.kind=WindowUpdate
+DEBUG received frame=WindowUpdate { stream_id: StreamId(0), size_increment: 2147418112 }
+TRACE recv WINDOW_UPDATE frame=WindowUpdate { stream_id: StreamId(0), size_increment: 2147418112 }
+TRACE inc_window; sz=2147418112; old=65535; new=2147483647
+TRACE poll
+TRACE read.bytes=9
+TRACE decoding frame from 9B
+TRACE frame.kind=Settings
+DEBUG received frame=Settings { flags: (0x1: ACK) }
+TRACE recv SETTINGS frame=Settings { flags: (0x1: ACK) }
+DEBUG received settings ACK; applying Settings { flags: (0x0), enable_push: 0, initial_window_size: 2097152, max_frame_size: 16384, max_header_list_size: 16384 }
+TRACE update_initial_window_size; new=2097152; old=65535
+TRACE incrementing all windows; inc=2031617
+TRACE inc_window; sz=2031617; old=65535; new=2097152
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=424
+TRACE decoding frame from 424B
+TRACE frame.kind=Headers
+TRACE loading headers; flags=(0x4: END_HEADERS)
+TRACE decode
+TRACE rem=415 kind=Indexed
+TRACE rem=414 kind=LiteralWithIndexing
+TRACE rem=408 kind=LiteralWithIndexing
+TRACE rem=384 kind=LiteralWithIndexing
+TRACE rem=364 kind=LiteralWithIndexing
+TRACE rem=351 kind=LiteralWithoutIndexing
+TRACE rem=313 kind=LiteralWithoutIndexing
+TRACE rem=280 kind=LiteralWithoutIndexing
+TRACE rem=260 kind=LiteralWithoutIndexing
+TRACE rem=248 kind=LiteralWithoutIndexing
+TRACE rem=224 kind=LiteralWithoutIndexing
+TRACE rem=201 kind=LiteralWithoutIndexing
+TRACE rem=135 kind=LiteralWithoutIndexing
+TRACE rem=101 kind=LiteralWithoutIndexing
+TRACE rem=85 kind=LiteralWithoutIndexing
+TRACE rem=53 kind=LiteralWithoutIndexing
+TRACE rem=17 kind=LiteralWithoutIndexing
+DEBUG received frame=Headers { stream_id: StreamId(1), flags: (0x4: END_HEADERS) }
+TRACE recv HEADERS frame=Headers { stream_id: StreamId(1), flags: (0x4: END_HEADERS) }
+TRACE recv_headers; stream=StreamId(1); state=HalfClosedLocal(AwaitingHeaders)
+TRACE opening stream; init_window=2097152
+TRACE transition_after; stream=StreamId(1); state=HalfClosedLocal(Streaming); is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE poll
+TRACE read.bytes=306
+TRACE decoding frame from 306B
+TRACE frame.kind=Data
+DEBUG received frame=Data { stream_id: StreamId(1), flags: (0x1: END_STREAM) }
+TRACE recv DATA frame=Data { stream_id: StreamId(1), flags: (0x1: END_STREAM) }
+TRACE recv_data; size=297; connection=5242880; stream=2097152
+TRACE send_data; sz=297; window=5242880; available=5242880
+TRACE recv_close: HalfClosedLocal => Closed
+TRACE send_data; sz=297; window=2097152; available=2097152
+TRACE transition_after; stream=StreamId(1); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE dec_num_streams; stream=StreamId(1)
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE drop_stream_ref; stream=Stream { id: StreamId(1), state: Closed(EndStream), is_counted: false, ref_count: 2, send_flow: FlowControl { window_size: Window(65535), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, recv_flow: FlowControl { window_size: Window(2096855), available: Window(2096855) }, in_flight_recv_data: 297, pending_recv: Deque { indices: Some(Indices { head: 1, tail: 1 }) }, is_recv: true, content_length: Omitted }
+TRACE transition_after; stream=StreamId(1); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Updating cached credentials for https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/ to Credentials(Basic { username: Username(Some("gitlab-ci-token")), password: Some(****) })
+TRACE Response from https://XXX/api/v4/projects/497/packages/pypi/simple/yyy/ is storable because this is a shared cache and has a 'private' cache-control directive
+TRACE release_capacity; size=297
+TRACE release_connection_capacity; size=297, connection in_flight_data=297
+TRACE drop_stream_ref; stream=Stream { id: StreamId(1), state: Closed(EndStream), is_counted: false, ref_count: 1, send_flow: FlowControl { window_size: Window(65535), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, recv_flow: FlowControl { window_size: Window(2096855), available: Window(2097152) }, in_flight_recv_data: 0, content_length: Omitted }
+TRACE transition_after; stream=StreamId(1); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+Uploading release_testing-0.1.10-py3-none-any.whl (6.1KiB)
+DEBUG Hashing yyy/release_testing-0.1.10-py3-none-any.whl
+DEBUG Skipping validation request for unsupported publish URL: https://XXX/api/v4/projects/497/packages/pypi
+DEBUG Using HTTP Basic authentication
+TRACE Handling request for https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi with authentication policy auto
+TRACE Request for https://gitlab-ci-token:****@XXX/api/v4/projects/497/packages/pypi already contains username and password
+TRACE take? ("https", XXX): expiration = Some(90s)
+DEBUG reuse idle connection for ("https", XXX)
+TRACE inc_window; sz=2097152; old=0; new=2097152
+TRACE inc_window; sz=65536; old=0; new=65536
+TRACE send_headers; frame=Headers { stream_id: StreamId(3), flags: (0x4: END_HEADERS) }; init_window=65536
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE requested=1 additional=1 buffered=0 window=65536 conn=2147483647
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=1; buffered=0; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1 requested=1 buffered=0 has_unavailable=true
+TRACE buffered=71
+TRACE available=1 buffered=71
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=71; num_recv=0; num_send=0
+TRACE requested=72 additional=71 buffered=71 window=65536 conn=2147483646
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=72; buffered=71; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=72 requested=72 buffered=71 has_unavailable=true
+TRACE buffered=121
+TRACE available=72 buffered=121
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=121; num_recv=0; num_send=0
+TRACE requested=122 additional=50 buffered=121 window=65536 conn=2147483575
+TRACE assigning capacity=50
+TRACE   assigned capacity to stream; available=122; buffered=121; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=122 requested=122 buffered=121 has_unavailable=true
+TRACE buffered=132
+TRACE available=122 buffered=132
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=132; num_recv=0; num_send=0
+TRACE requested=133 additional=11 buffered=132 window=65536 conn=2147483525
+TRACE assigning capacity=11
+TRACE   assigned capacity to stream; available=133; buffered=132; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=133 requested=133 buffered=132 has_unavailable=true
+TRACE buffered=134
+TRACE available=133 buffered=134
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=134; num_recv=0; num_send=0
+TRACE requested=135 additional=2 buffered=134 window=65536 conn=2147483514
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=135; buffered=134; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=135 requested=135 buffered=134 has_unavailable=true
+TRACE buffered=205
+TRACE available=135 buffered=205
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=205; num_recv=0; num_send=0
+TRACE requested=206 additional=71 buffered=205 window=65536 conn=2147483512
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=206; buffered=205; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=206 requested=206 buffered=205 has_unavailable=true
+TRACE buffered=261
+TRACE available=206 buffered=261
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=261; num_recv=0; num_send=0
+TRACE requested=262 additional=56 buffered=261 window=65536 conn=2147483441
+TRACE assigning capacity=56
+TRACE   assigned capacity to stream; available=262; buffered=261; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=262 requested=262 buffered=261 has_unavailable=true
+TRACE buffered=325
+TRACE available=262 buffered=325
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=325; num_recv=0; num_send=0
+TRACE requested=326 additional=64 buffered=325 window=65536 conn=2147483385
+TRACE assigning capacity=64
+TRACE   assigned capacity to stream; available=326; buffered=325; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=326 requested=326 buffered=325 has_unavailable=true
+TRACE buffered=327
+TRACE available=326 buffered=327
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=327; num_recv=0; num_send=0
+TRACE requested=328 additional=2 buffered=327 window=65536 conn=2147483321
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=328; buffered=327; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=328 requested=328 buffered=327 has_unavailable=true
+TRACE buffered=398
+TRACE available=328 buffered=398
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=398; num_recv=0; num_send=0
+TRACE requested=399 additional=71 buffered=398 window=65536 conn=2147483319
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=399; buffered=398; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=399 requested=399 buffered=398 has_unavailable=true
+TRACE buffered=458
+TRACE available=399 buffered=458
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=458; num_recv=0; num_send=0
+TRACE requested=459 additional=60 buffered=458 window=65536 conn=2147483248
+TRACE assigning capacity=60
+TRACE   assigned capacity to stream; available=459; buffered=458; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=459 requested=459 buffered=458 has_unavailable=true
+TRACE buffered=522
+TRACE available=459 buffered=522
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=522; num_recv=0; num_send=0
+TRACE requested=523 additional=64 buffered=522 window=65536 conn=2147483188
+TRACE assigning capacity=64
+TRACE   assigned capacity to stream; available=523; buffered=522; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=523 requested=523 buffered=522 has_unavailable=true
+TRACE buffered=524
+TRACE available=523 buffered=524
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=524; num_recv=0; num_send=0
+TRACE requested=525 additional=2 buffered=524 window=65536 conn=2147483124
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=525; buffered=524; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=525 requested=525 buffered=524 has_unavailable=true
+TRACE buffered=595
+TRACE available=525 buffered=595
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=595; num_recv=0; num_send=0
+TRACE requested=596 additional=71 buffered=595 window=65536 conn=2147483122
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=596; buffered=595; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=596 requested=596 buffered=595 has_unavailable=true
+TRACE buffered=654
+TRACE available=596 buffered=654
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=654; num_recv=0; num_send=0
+TRACE requested=655 additional=59 buffered=654 window=65536 conn=2147483051
+TRACE assigning capacity=59
+TRACE   assigned capacity to stream; available=655; buffered=654; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=655 requested=655 buffered=654 has_unavailable=true
+TRACE buffered=655
+TRACE available=655 buffered=655
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=655; num_recv=0; num_send=0
+TRACE requested=656 additional=1 buffered=655 window=65536 conn=2147482992
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=656; buffered=655; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=656 requested=656 buffered=655 has_unavailable=true
+TRACE buffered=657
+TRACE available=656 buffered=657
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=657; num_recv=0; num_send=0
+TRACE requested=658 additional=2 buffered=657 window=65536 conn=2147482991
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=658; buffered=657; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=658 requested=658 buffered=657 has_unavailable=true
+TRACE buffered=728
+TRACE available=658 buffered=728
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=728; num_recv=0; num_send=0
+TRACE requested=729 additional=71 buffered=728 window=65536 conn=2147482989
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=729; buffered=728; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=729 requested=729 buffered=728 has_unavailable=true
+TRACE buffered=787
+TRACE available=729 buffered=787
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=787; num_recv=0; num_send=0
+TRACE requested=788 additional=59 buffered=787 window=65536 conn=2147482918
+TRACE assigning capacity=59
+TRACE   assigned capacity to stream; available=788; buffered=787; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=788 requested=788 buffered=787 has_unavailable=true
+TRACE buffered=790
+TRACE available=788 buffered=790
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=790; num_recv=0; num_send=0
+TRACE requested=791 additional=3 buffered=790 window=65536 conn=2147482859
+TRACE assigning capacity=3
+TRACE   assigned capacity to stream; available=791; buffered=790; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=791 requested=791 buffered=790 has_unavailable=true
+TRACE buffered=792
+TRACE available=791 buffered=792
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=792; num_recv=0; num_send=0
+TRACE requested=793 additional=2 buffered=792 window=65536 conn=2147482856
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=793; buffered=792; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=793 requested=793 buffered=792 has_unavailable=true
+TRACE buffered=863
+TRACE available=793 buffered=863
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=863; num_recv=0; num_send=0
+TRACE requested=864 additional=71 buffered=863 window=65536 conn=2147482854
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=864; buffered=863; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=864 requested=864 buffered=863 has_unavailable=true
+TRACE buffered=910
+TRACE available=864 buffered=910
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=910; num_recv=0; num_send=0
+TRACE requested=911 additional=47 buffered=910 window=65536 conn=2147482783
+TRACE assigning capacity=47
+TRACE   assigned capacity to stream; available=911; buffered=910; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=911 requested=911 buffered=910 has_unavailable=true
+TRACE buffered=925
+TRACE available=911 buffered=925
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=925; num_recv=0; num_send=0
+TRACE requested=926 additional=15 buffered=925 window=65536 conn=2147482736
+TRACE assigning capacity=15
+TRACE   assigned capacity to stream; available=926; buffered=925; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=926 requested=926 buffered=925 has_unavailable=true
+TRACE buffered=927
+TRACE available=926 buffered=927
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=927; num_recv=0; num_send=0
+TRACE requested=928 additional=2 buffered=927 window=65536 conn=2147482721
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=928; buffered=927; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=928 requested=928 buffered=927 has_unavailable=true
+TRACE buffered=998
+TRACE available=928 buffered=998
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=998; num_recv=0; num_send=0
+TRACE requested=999 additional=71 buffered=998 window=65536 conn=2147482719
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=999; buffered=998; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=999 requested=999 buffered=998 has_unavailable=true
+TRACE buffered=1048
+TRACE available=999 buffered=1048
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1048; num_recv=0; num_send=0
+TRACE requested=1049 additional=50 buffered=1048 window=65536 conn=2147482648
+TRACE assigning capacity=50
+TRACE   assigned capacity to stream; available=1049; buffered=1048; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1049 requested=1049 buffered=1048 has_unavailable=true
+TRACE buffered=1054
+TRACE available=1049 buffered=1054
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1054; num_recv=0; num_send=0
+TRACE requested=1055 additional=6 buffered=1054 window=65536 conn=2147482598
+TRACE assigning capacity=6
+TRACE   assigned capacity to stream; available=1055; buffered=1054; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1055 requested=1055 buffered=1054 has_unavailable=true
+TRACE buffered=1056
+TRACE available=1055 buffered=1056
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1056; num_recv=0; num_send=0
+TRACE requested=1057 additional=2 buffered=1056 window=65536 conn=2147482592
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=1057; buffered=1056; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1057 requested=1057 buffered=1056 has_unavailable=true
+TRACE buffered=1127
+TRACE available=1057 buffered=1127
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1127; num_recv=0; num_send=0
+TRACE requested=1128 additional=71 buffered=1127 window=65536 conn=2147482590
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=1128; buffered=1127; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1128 requested=1128 buffered=1127 has_unavailable=true
+TRACE buffered=1178
+TRACE available=1128 buffered=1178
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1178; num_recv=0; num_send=0
+TRACE requested=1179 additional=51 buffered=1178 window=65536 conn=2147482519
+TRACE assigning capacity=51
+TRACE   assigned capacity to stream; available=1179; buffered=1178; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1179 requested=1179 buffered=1178 has_unavailable=true
+TRACE buffered=1189
+TRACE available=1179 buffered=1189
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1189; num_recv=0; num_send=0
+TRACE requested=1190 additional=11 buffered=1189 window=65536 conn=2147482468
+TRACE assigning capacity=11
+TRACE   assigned capacity to stream; available=1190; buffered=1189; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1190 requested=1190 buffered=1189 has_unavailable=true
+TRACE buffered=1191
+TRACE available=1190 buffered=1191
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1191; num_recv=0; num_send=0
+TRACE requested=1192 additional=2 buffered=1191 window=65536 conn=2147482457
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=1192; buffered=1191; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1192 requested=1192 buffered=1191 has_unavailable=true
+TRACE buffered=1262
+TRACE available=1192 buffered=1262
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1262; num_recv=0; num_send=0
+TRACE requested=1263 additional=71 buffered=1262 window=65536 conn=2147482455
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=1263; buffered=1262; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1263 requested=1263 buffered=1262 has_unavailable=true
+TRACE buffered=1314
+TRACE available=1263 buffered=1314
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1314; num_recv=0; num_send=0
+TRACE requested=1315 additional=52 buffered=1314 window=65536 conn=2147482384
+TRACE assigning capacity=52
+TRACE   assigned capacity to stream; available=1315; buffered=1314; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1315 requested=1315 buffered=1314 has_unavailable=true
+TRACE buffered=1317
+TRACE available=1315 buffered=1317
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1317; num_recv=0; num_send=0
+TRACE requested=1318 additional=3 buffered=1317 window=65536 conn=2147482332
+TRACE assigning capacity=3
+TRACE   assigned capacity to stream; available=1318; buffered=1317; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1318 requested=1318 buffered=1317 has_unavailable=true
+TRACE buffered=1319
+TRACE available=1318 buffered=1319
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1319; num_recv=0; num_send=0
+TRACE requested=1320 additional=2 buffered=1319 window=65536 conn=2147482329
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=1320; buffered=1319; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1320 requested=1320 buffered=1319 has_unavailable=true
+TRACE buffered=1390
+TRACE available=1320 buffered=1390
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1390; num_recv=0; num_send=0
+TRACE requested=1391 additional=71 buffered=1390 window=65536 conn=2147482327
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=1391; buffered=1390; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1391 requested=1391 buffered=1390 has_unavailable=true
+TRACE buffered=1445
+TRACE available=1391 buffered=1445
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1445; num_recv=0; num_send=0
+TRACE requested=1446 additional=55 buffered=1445 window=65536 conn=2147482256
+TRACE assigning capacity=55
+TRACE   assigned capacity to stream; available=1446; buffered=1445; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1446 requested=1446 buffered=1445 has_unavailable=true
+TRACE buffered=1477
+TRACE available=1446 buffered=1477
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1477; num_recv=0; num_send=0
+TRACE requested=1478 additional=32 buffered=1477 window=65536 conn=2147482201
+TRACE assigning capacity=32
+TRACE   assigned capacity to stream; available=1478; buffered=1477; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1478 requested=1478 buffered=1477 has_unavailable=true
+TRACE buffered=1479
+TRACE available=1478 buffered=1479
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1479; num_recv=0; num_send=0
+TRACE requested=1480 additional=2 buffered=1479 window=65536 conn=2147482169
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=1480; buffered=1479; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1480 requested=1480 buffered=1479 has_unavailable=true
+TRACE buffered=1550
+TRACE available=1480 buffered=1550
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1550; num_recv=0; num_send=0
+TRACE requested=1551 additional=71 buffered=1550 window=65536 conn=2147482167
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=1551; buffered=1550; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1551 requested=1551 buffered=1550 has_unavailable=true
+TRACE buffered=1604
+TRACE available=1551 buffered=1604
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1604; num_recv=0; num_send=0
+TRACE requested=1605 additional=54 buffered=1604 window=65536 conn=2147482096
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=1605; buffered=1604; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=1605 requested=1605 buffered=1604 has_unavailable=true
+TRACE buffered=6168
+TRACE available=1605 buffered=6168
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6168; num_recv=0; num_send=0
+TRACE requested=6169 additional=4564 buffered=6168 window=65536 conn=2147482042
+TRACE assigning capacity=4564
+TRACE   assigned capacity to stream; available=6169; buffered=6168; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6169 requested=6169 buffered=6168 has_unavailable=true
+TRACE buffered=6170
+TRACE available=6169 buffered=6170
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6170; num_recv=0; num_send=0
+TRACE requested=6171 additional=2 buffered=6170 window=65536 conn=2147477478
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=6171; buffered=6170; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6171 requested=6171 buffered=6170 has_unavailable=true
+TRACE buffered=6241
+TRACE available=6171 buffered=6241
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6241; num_recv=0; num_send=0
+TRACE requested=6242 additional=71 buffered=6241 window=65536 conn=2147477476
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=6242; buffered=6241; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6242 requested=6242 buffered=6241 has_unavailable=true
+TRACE buffered=6308
+TRACE available=6242 buffered=6308
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6308; num_recv=0; num_send=0
+TRACE requested=6309 additional=67 buffered=6308 window=65536 conn=2147477405
+TRACE assigning capacity=67
+TRACE   assigned capacity to stream; available=6309; buffered=6308; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6309 requested=6309 buffered=6308 has_unavailable=true
+TRACE buffered=6321
+TRACE available=6309 buffered=6321
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6321; num_recv=0; num_send=0
+TRACE requested=6322 additional=13 buffered=6321 window=65536 conn=2147477338
+TRACE assigning capacity=13
+TRACE   assigned capacity to stream; available=6322; buffered=6321; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6322 requested=6322 buffered=6321 has_unavailable=true
+TRACE buffered=6323
+TRACE available=6322 buffered=6323
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6323; num_recv=0; num_send=0
+TRACE requested=6324 additional=2 buffered=6323 window=65536 conn=2147477325
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=6324; buffered=6323; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6324 requested=6324 buffered=6323 has_unavailable=true
+TRACE buffered=6394
+TRACE available=6324 buffered=6394
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6394; num_recv=0; num_send=0
+TRACE requested=6395 additional=71 buffered=6394 window=65536 conn=2147477323
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=6395; buffered=6394; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6395 requested=6395 buffered=6394 has_unavailable=true
+TRACE buffered=6455
+TRACE available=6395 buffered=6455
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6455; num_recv=0; num_send=0
+TRACE requested=6456 additional=61 buffered=6455 window=65536 conn=2147477252
+TRACE assigning capacity=61
+TRACE   assigned capacity to stream; available=6456; buffered=6455; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6456 requested=6456 buffered=6455 has_unavailable=true
+TRACE buffered=6458
+TRACE available=6456 buffered=6458
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6458; num_recv=0; num_send=0
+TRACE requested=6459 additional=3 buffered=6458 window=65536 conn=2147477191
+TRACE assigning capacity=3
+TRACE   assigned capacity to stream; available=6459; buffered=6458; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6459 requested=6459 buffered=6458 has_unavailable=true
+TRACE buffered=6460
+TRACE available=6459 buffered=6460
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6460; num_recv=0; num_send=0
+TRACE requested=6461 additional=2 buffered=6460 window=65536 conn=2147477188
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=6461; buffered=6460; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6461 requested=6461 buffered=6460 has_unavailable=true
+TRACE buffered=6531
+TRACE available=6461 buffered=6531
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6531; num_recv=0; num_send=0
+TRACE requested=6532 additional=71 buffered=6531 window=65536 conn=2147477186
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=6532; buffered=6531; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6532 requested=6532 buffered=6531 has_unavailable=true
+TRACE buffered=6581
+TRACE available=6532 buffered=6581
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6581; num_recv=0; num_send=0
+TRACE requested=6582 additional=50 buffered=6581 window=65536 conn=2147477115
+TRACE assigning capacity=50
+TRACE   assigned capacity to stream; available=6582; buffered=6581; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6582 requested=6582 buffered=6581 has_unavailable=true
+TRACE buffered=6639
+TRACE available=6582 buffered=6639
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6639; num_recv=0; num_send=0
+TRACE requested=6640 additional=58 buffered=6639 window=65536 conn=2147477065
+TRACE assigning capacity=58
+TRACE   assigned capacity to stream; available=6640; buffered=6639; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6640 requested=6640 buffered=6639 has_unavailable=true
+TRACE buffered=6641
+TRACE available=6640 buffered=6641
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6641; num_recv=0; num_send=0
+TRACE requested=6642 additional=2 buffered=6641 window=65536 conn=2147477007
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=6642; buffered=6641; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6642 requested=6642 buffered=6641 has_unavailable=true
+TRACE buffered=6712
+TRACE available=6642 buffered=6712
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6712; num_recv=0; num_send=0
+TRACE requested=6713 additional=71 buffered=6712 window=65536 conn=2147477005
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=6713; buffered=6712; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6713 requested=6713 buffered=6712 has_unavailable=true
+TRACE buffered=6770
+TRACE available=6713 buffered=6770
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6770; num_recv=0; num_send=0
+TRACE requested=6771 additional=58 buffered=6770 window=65536 conn=2147476934
+TRACE assigning capacity=58
+TRACE   assigned capacity to stream; available=6771; buffered=6770; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6771 requested=6771 buffered=6770 has_unavailable=true
+TRACE buffered=6776
+TRACE available=6771 buffered=6776
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6776; num_recv=0; num_send=0
+TRACE requested=6777 additional=6 buffered=6776 window=65536 conn=2147476876
+TRACE assigning capacity=6
+TRACE   assigned capacity to stream; available=6777; buffered=6776; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6777 requested=6777 buffered=6776 has_unavailable=true
+TRACE buffered=6778
+TRACE available=6777 buffered=6778
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6778; num_recv=0; num_send=0
+TRACE requested=6779 additional=2 buffered=6778 window=65536 conn=2147476870
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=6779; buffered=6778; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6779 requested=6779 buffered=6778 has_unavailable=true
+TRACE buffered=6849
+TRACE available=6779 buffered=6849
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6849; num_recv=0; num_send=0
+TRACE requested=6850 additional=71 buffered=6849 window=65536 conn=2147476868
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=6850; buffered=6849; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6850 requested=6850 buffered=6849 has_unavailable=true
+TRACE buffered=6903
+TRACE available=6850 buffered=6903
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6903; num_recv=0; num_send=0
+TRACE requested=6904 additional=54 buffered=6903 window=65536 conn=2147476797
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=6904; buffered=6903; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6904 requested=6904 buffered=6903 has_unavailable=true
+TRACE buffered=6938
+TRACE available=6904 buffered=6938
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6938; num_recv=0; num_send=0
+TRACE requested=6939 additional=35 buffered=6938 window=65536 conn=2147476743
+TRACE assigning capacity=35
+TRACE   assigned capacity to stream; available=6939; buffered=6938; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6939 requested=6939 buffered=6938 has_unavailable=true
+TRACE buffered=6940
+TRACE available=6939 buffered=6940
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6940; num_recv=0; num_send=0
+TRACE requested=6941 additional=2 buffered=6940 window=65536 conn=2147476708
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=6941; buffered=6940; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=6941 requested=6941 buffered=6940 has_unavailable=true
+TRACE buffered=7011
+TRACE available=6941 buffered=7011
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7011; num_recv=0; num_send=0
+TRACE requested=7012 additional=71 buffered=7011 window=65536 conn=2147476706
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7012; buffered=7011; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7012 requested=7012 buffered=7011 has_unavailable=true
+TRACE buffered=7065
+TRACE available=7012 buffered=7065
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7065; num_recv=0; num_send=0
+TRACE requested=7066 additional=54 buffered=7065 window=65536 conn=2147476635
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=7066; buffered=7065; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7066 requested=7066 buffered=7065 has_unavailable=true
+TRACE buffered=7103
+TRACE available=7066 buffered=7103
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7103; num_recv=0; num_send=0
+TRACE requested=7104 additional=38 buffered=7103 window=65536 conn=2147476581
+TRACE assigning capacity=38
+TRACE   assigned capacity to stream; available=7104; buffered=7103; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7104 requested=7104 buffered=7103 has_unavailable=true
+TRACE buffered=7105
+TRACE available=7104 buffered=7105
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7105; num_recv=0; num_send=0
+TRACE requested=7106 additional=2 buffered=7105 window=65536 conn=2147476543
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=7106; buffered=7105; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7106 requested=7106 buffered=7105 has_unavailable=true
+TRACE buffered=7176
+TRACE available=7106 buffered=7176
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7176; num_recv=0; num_send=0
+TRACE requested=7177 additional=71 buffered=7176 window=65536 conn=2147476541
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7177; buffered=7176; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7177 requested=7177 buffered=7176 has_unavailable=true
+TRACE buffered=7230
+TRACE available=7177 buffered=7230
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7230; num_recv=0; num_send=0
+TRACE requested=7231 additional=54 buffered=7230 window=65536 conn=2147476470
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=7231; buffered=7230; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7231 requested=7231 buffered=7230 has_unavailable=true
+TRACE buffered=7268
+TRACE available=7231 buffered=7268
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7268; num_recv=0; num_send=0
+TRACE requested=7269 additional=38 buffered=7268 window=65536 conn=2147476416
+TRACE assigning capacity=38
+TRACE   assigned capacity to stream; available=7269; buffered=7268; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7269 requested=7269 buffered=7268 has_unavailable=true
+TRACE buffered=7270
+TRACE available=7269 buffered=7270
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7270; num_recv=0; num_send=0
+TRACE requested=7271 additional=2 buffered=7270 window=65536 conn=2147476378
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=7271; buffered=7270; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7271 requested=7271 buffered=7270 has_unavailable=true
+TRACE buffered=7341
+TRACE available=7271 buffered=7341
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7341; num_recv=0; num_send=0
+TRACE requested=7342 additional=71 buffered=7341 window=65536 conn=2147476376
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7342; buffered=7341; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7342 requested=7342 buffered=7341 has_unavailable=true
+TRACE buffered=7395
+TRACE available=7342 buffered=7395
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7395; num_recv=0; num_send=0
+TRACE requested=7396 additional=54 buffered=7395 window=65536 conn=2147476305
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=7396; buffered=7395; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7396 requested=7396 buffered=7395 has_unavailable=true
+TRACE buffered=7433
+TRACE available=7396 buffered=7433
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7433; num_recv=0; num_send=0
+TRACE requested=7434 additional=38 buffered=7433 window=65536 conn=2147476251
+TRACE assigning capacity=38
+TRACE   assigned capacity to stream; available=7434; buffered=7433; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7434 requested=7434 buffered=7433 has_unavailable=true
+TRACE buffered=7435
+TRACE available=7434 buffered=7435
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7435; num_recv=0; num_send=0
+TRACE requested=7436 additional=2 buffered=7435 window=65536 conn=2147476213
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=7436; buffered=7435; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7436 requested=7436 buffered=7435 has_unavailable=true
+TRACE buffered=7506
+TRACE available=7436 buffered=7506
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7506; num_recv=0; num_send=0
+TRACE requested=7507 additional=71 buffered=7506 window=65536 conn=2147476211
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7507; buffered=7506; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7507 requested=7507 buffered=7506 has_unavailable=true
+TRACE buffered=7560
+TRACE available=7507 buffered=7560
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7560; num_recv=0; num_send=0
+TRACE requested=7561 additional=54 buffered=7560 window=65536 conn=2147476140
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=7561; buffered=7560; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7561 requested=7561 buffered=7560 has_unavailable=true
+TRACE buffered=7598
+TRACE available=7561 buffered=7598
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7598; num_recv=0; num_send=0
+TRACE requested=7599 additional=38 buffered=7598 window=65536 conn=2147476086
+TRACE assigning capacity=38
+TRACE   assigned capacity to stream; available=7599; buffered=7598; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7599 requested=7599 buffered=7598 has_unavailable=true
+TRACE buffered=7600
+TRACE available=7599 buffered=7600
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7600; num_recv=0; num_send=0
+TRACE requested=7601 additional=2 buffered=7600 window=65536 conn=2147476048
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=7601; buffered=7600; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7601 requested=7601 buffered=7600 has_unavailable=true
+TRACE buffered=7671
+TRACE available=7601 buffered=7671
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7671; num_recv=0; num_send=0
+TRACE requested=7672 additional=71 buffered=7671 window=65536 conn=2147476046
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7672; buffered=7671; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7672 requested=7672 buffered=7671 has_unavailable=true
+TRACE buffered=7725
+TRACE available=7672 buffered=7725
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7725; num_recv=0; num_send=0
+TRACE requested=7726 additional=54 buffered=7725 window=65536 conn=2147475975
+TRACE assigning capacity=54
+TRACE   assigned capacity to stream; available=7726; buffered=7725; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7726 requested=7726 buffered=7725 has_unavailable=true
+TRACE buffered=7759
+TRACE available=7726 buffered=7759
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7759; num_recv=0; num_send=0
+TRACE requested=7760 additional=34 buffered=7759 window=65536 conn=2147475921
+TRACE assigning capacity=34
+TRACE   assigned capacity to stream; available=7760; buffered=7759; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7760 requested=7760 buffered=7759 has_unavailable=true
+TRACE buffered=7761
+TRACE available=7760 buffered=7761
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7761; num_recv=0; num_send=0
+TRACE requested=7762 additional=2 buffered=7761 window=65536 conn=2147475887
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=7762; buffered=7761; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7762 requested=7762 buffered=7761 has_unavailable=true
+TRACE buffered=7832
+TRACE available=7762 buffered=7832
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7832; num_recv=0; num_send=0
+TRACE requested=7833 additional=71 buffered=7832 window=65536 conn=2147475885
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7833; buffered=7832; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7833 requested=7833 buffered=7832 has_unavailable=true
+TRACE buffered=7882
+TRACE available=7833 buffered=7882
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7882; num_recv=0; num_send=0
+TRACE requested=7883 additional=50 buffered=7882 window=65536 conn=2147475814
+TRACE assigning capacity=50
+TRACE   assigned capacity to stream; available=7883; buffered=7882; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7883 requested=7883 buffered=7882 has_unavailable=true
+TRACE buffered=7894
+TRACE available=7883 buffered=7894
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7894; num_recv=0; num_send=0
+TRACE requested=7895 additional=12 buffered=7894 window=65536 conn=2147475764
+TRACE assigning capacity=12
+TRACE   assigned capacity to stream; available=7895; buffered=7894; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7895 requested=7895 buffered=7894 has_unavailable=true
+TRACE buffered=7896
+TRACE available=7895 buffered=7896
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7896; num_recv=0; num_send=0
+TRACE requested=7897 additional=2 buffered=7896 window=65536 conn=2147475752
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=7897; buffered=7896; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7897 requested=7897 buffered=7896 has_unavailable=true
+TRACE buffered=7967
+TRACE available=7897 buffered=7967
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7967; num_recv=0; num_send=0
+TRACE requested=7968 additional=71 buffered=7967 window=65536 conn=2147475750
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=7968; buffered=7967; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=7968 requested=7968 buffered=7967 has_unavailable=true
+TRACE buffered=8022
+TRACE available=7968 buffered=8022
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8022; num_recv=0; num_send=0
+TRACE requested=8023 additional=55 buffered=8022 window=65536 conn=2147475679
+TRACE assigning capacity=55
+TRACE   assigned capacity to stream; available=8023; buffered=8022; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8023 requested=8023 buffered=8022 has_unavailable=true
+TRACE buffered=8032
+TRACE available=8023 buffered=8032
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8032; num_recv=0; num_send=0
+TRACE requested=8033 additional=10 buffered=8032 window=65536 conn=2147475624
+TRACE assigning capacity=10
+TRACE   assigned capacity to stream; available=8033; buffered=8032; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8033 requested=8033 buffered=8032 has_unavailable=true
+TRACE buffered=8034
+TRACE available=8033 buffered=8034
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8034; num_recv=0; num_send=0
+TRACE requested=8035 additional=2 buffered=8034 window=65536 conn=2147475614
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=8035; buffered=8034; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8035 requested=8035 buffered=8034 has_unavailable=true
+TRACE buffered=8105
+TRACE available=8035 buffered=8105
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8105; num_recv=0; num_send=0
+TRACE requested=8106 additional=71 buffered=8105 window=65536 conn=2147475612
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=8106; buffered=8105; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8106 requested=8106 buffered=8105 has_unavailable=true
+TRACE buffered=8161
+TRACE available=8106 buffered=8161
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8161; num_recv=0; num_send=0
+TRACE requested=8162 additional=56 buffered=8161 window=65536 conn=2147475541
+TRACE assigning capacity=56
+TRACE   assigned capacity to stream; available=8162; buffered=8161; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8162 requested=8162 buffered=8161 has_unavailable=true
+TRACE buffered=8173
+TRACE available=8162 buffered=8173
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8173; num_recv=0; num_send=0
+TRACE requested=8174 additional=12 buffered=8173 window=65536 conn=2147475485
+TRACE assigning capacity=12
+TRACE   assigned capacity to stream; available=8174; buffered=8173; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8174 requested=8174 buffered=8173 has_unavailable=true
+TRACE buffered=8175
+TRACE available=8174 buffered=8175
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8175; num_recv=0; num_send=0
+TRACE requested=8176 additional=2 buffered=8175 window=65536 conn=2147475473
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=8176; buffered=8175; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8176 requested=8176 buffered=8175 has_unavailable=true
+TRACE buffered=8246
+TRACE available=8176 buffered=8246
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8246; num_recv=0; num_send=0
+TRACE requested=8247 additional=71 buffered=8246 window=65536 conn=2147475471
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=8247; buffered=8246; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8247 requested=8247 buffered=8246 has_unavailable=true
+TRACE buffered=8302
+TRACE available=8247 buffered=8302
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8302; num_recv=0; num_send=0
+TRACE requested=8303 additional=56 buffered=8302 window=65536 conn=2147475400
+TRACE assigning capacity=56
+TRACE   assigned capacity to stream; available=8303; buffered=8302; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8303 requested=8303 buffered=8302 has_unavailable=true
+TRACE buffered=8315
+TRACE available=8303 buffered=8315
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8315; num_recv=0; num_send=0
+TRACE requested=8316 additional=13 buffered=8315 window=65536 conn=2147475344
+TRACE assigning capacity=13
+TRACE   assigned capacity to stream; available=8316; buffered=8315; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8316 requested=8316 buffered=8315 has_unavailable=true
+TRACE buffered=8317
+TRACE available=8316 buffered=8317
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8317; num_recv=0; num_send=0
+TRACE requested=8318 additional=2 buffered=8317 window=65536 conn=2147475331
+TRACE assigning capacity=2
+TRACE   assigned capacity to stream; available=8318; buffered=8317; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8318 requested=8318 buffered=8317 has_unavailable=true
+TRACE buffered=8388
+TRACE available=8318 buffered=8388
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8388; num_recv=0; num_send=0
+TRACE requested=8389 additional=71 buffered=8388 window=65536 conn=2147475329
+TRACE assigning capacity=71
+TRACE   assigned capacity to stream; available=8389; buffered=8388; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8389 requested=8389 buffered=8388 has_unavailable=true
+TRACE buffered=8490
+TRACE available=8389 buffered=8490
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8490; num_recv=0; num_send=0
+TRACE requested=8491 additional=102 buffered=8490 window=65536 conn=2147475258
+TRACE assigning capacity=102
+TRACE   assigned capacity to stream; available=8491; buffered=8490; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=8491 requested=8491 buffered=8490 has_unavailable=true
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE schedule_pending_open; stream=StreamId(3)
+TRACE Queue::push_front
+TRACE  -> first entry
+TRACE requested=8491 additional=0 buffered=8490 window=65536 conn=2147475156
+TRACE is_pending_reset=false
+TRACE pop_frame; frame=Headers { stream_id: StreamId(3), flags: (0x4: END_HEADERS) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8490; num_recv=0; num_send=1
+TRACE writing frame=Headers { stream_id: StreamId(3), flags: (0x4: END_HEADERS) }
+DEBUG send frame=Headers { stream_id: StreamId(3), flags: (0x4: END_HEADERS) }
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=8491 available=8491 requested=8491 buffered=8490
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=65536; available=8491
+TRACE   sent stream data; available=8420; buffered=8419; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147483647; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8419; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=50 eos=false window=8420 available=8420 requested=8420 buffered=8419
+TRACE sending data frame len=50
+TRACE send_data; sz=50; window=65465; available=8420
+TRACE   sent stream data; available=8370; buffered=8369; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=50; window=2147483576; available=2147475206
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8369; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=11 eos=false window=8370 available=8370 requested=8370 buffered=8369
+TRACE sending data frame len=11
+TRACE send_data; sz=11; window=65415; available=8370
+TRACE   sent stream data; available=8359; buffered=8358; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=11; window=2147483526; available=2147475167
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8358; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=8359 available=8359 requested=8359 buffered=8358
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=65404; available=8359
+TRACE   sent stream data; available=8357; buffered=8356; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147483515; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8356; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=8357 available=8357 requested=8357 buffered=8356
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=65402; available=8357
+TRACE   sent stream data; available=8286; buffered=8285; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147483513; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8285; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=56 eos=false window=8286 available=8286 requested=8286 buffered=8285
+TRACE sending data frame len=56
+TRACE send_data; sz=56; window=65331; available=8286
+TRACE   sent stream data; available=8230; buffered=8229; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=56; window=2147483442; available=2147475212
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8229; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=64 eos=false window=8230 available=8230 requested=8230 buffered=8229
+TRACE sending data frame len=64
+TRACE send_data; sz=64; window=65275; available=8230
+TRACE   sent stream data; available=8166; buffered=8165; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=64; window=2147483386; available=2147475220
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8165; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=8166 available=8166 requested=8166 buffered=8165
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=65211; available=8166
+TRACE   sent stream data; available=8164; buffered=8163; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147483322; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8163; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=8164 available=8164 requested=8164 buffered=8163
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=65209; available=8164
+TRACE   sent stream data; available=8093; buffered=8092; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147483320; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8092; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=60 eos=false window=8093 available=8093 requested=8093 buffered=8092
+TRACE sending data frame len=60
+TRACE send_data; sz=60; window=65138; available=8093
+TRACE   sent stream data; available=8033; buffered=8032; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=60; window=2147483249; available=2147475216
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=8032; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=64 eos=false window=8033 available=8033 requested=8033 buffered=8032
+TRACE sending data frame len=64
+TRACE send_data; sz=64; window=65078; available=8033
+TRACE   sent stream data; available=7969; buffered=7968; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=64; window=2147483189; available=2147475220
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7968; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7969 available=7969 requested=7969 buffered=7968
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=65014; available=7969
+TRACE   sent stream data; available=7967; buffered=7966; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147483125; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7966; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7967 available=7967 requested=7967 buffered=7966
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=65012; available=7967
+TRACE   sent stream data; available=7896; buffered=7895; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147483123; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7895; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=59 eos=false window=7896 available=7896 requested=7896 buffered=7895
+TRACE sending data frame len=59
+TRACE send_data; sz=59; window=64941; available=7896
+TRACE   sent stream data; available=7837; buffered=7836; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=59; window=2147483052; available=2147475215
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7836; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=1 eos=false window=7837 available=7837 requested=7837 buffered=7836
+TRACE sending data frame len=1
+TRACE send_data; sz=1; window=64882; available=7837
+TRACE   sent stream data; available=7836; buffered=7835; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=1; window=2147482993; available=2147475157
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7835; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7836 available=7836 requested=7836 buffered=7835
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64881; available=7836
+TRACE   sent stream data; available=7834; buffered=7833; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482992; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7833; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7834 available=7834 requested=7834 buffered=7833
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64879; available=7834
+TRACE   sent stream data; available=7763; buffered=7762; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482990; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7762; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=59 eos=false window=7763 available=7763 requested=7763 buffered=7762
+TRACE sending data frame len=59
+TRACE send_data; sz=59; window=64808; available=7763
+TRACE   sent stream data; available=7704; buffered=7703; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=59; window=2147482919; available=2147475215
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7703; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=3 eos=false window=7704 available=7704 requested=7704 buffered=7703
+TRACE sending data frame len=3
+TRACE send_data; sz=3; window=64749; available=7704
+TRACE   sent stream data; available=7701; buffered=7700; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=3; window=2147482860; available=2147475159
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7700; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7701 available=7701 requested=7701 buffered=7700
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64746; available=7701
+TRACE   sent stream data; available=7699; buffered=7698; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482857; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7698; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7699 available=7699 requested=7699 buffered=7698
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64744; available=7699
+TRACE   sent stream data; available=7628; buffered=7627; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482855; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7627; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=47 eos=false window=7628 available=7628 requested=7628 buffered=7627
+TRACE sending data frame len=47
+TRACE send_data; sz=47; window=64673; available=7628
+TRACE   sent stream data; available=7581; buffered=7580; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=47; window=2147482784; available=2147475203
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7580; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=15 eos=false window=7581 available=7581 requested=7581 buffered=7580
+TRACE sending data frame len=15
+TRACE send_data; sz=15; window=64626; available=7581
+TRACE   sent stream data; available=7566; buffered=7565; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=15; window=2147482737; available=2147475171
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7565; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7566 available=7566 requested=7566 buffered=7565
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64611; available=7566
+TRACE   sent stream data; available=7564; buffered=7563; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482722; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7563; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7564 available=7564 requested=7564 buffered=7563
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64609; available=7564
+TRACE   sent stream data; available=7493; buffered=7492; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482720; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7492; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=50 eos=false window=7493 available=7493 requested=7493 buffered=7492
+TRACE sending data frame len=50
+TRACE send_data; sz=50; window=64538; available=7493
+TRACE   sent stream data; available=7443; buffered=7442; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=50; window=2147482649; available=2147475206
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7442; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=6 eos=false window=7443 available=7443 requested=7443 buffered=7442
+TRACE sending data frame len=6
+TRACE send_data; sz=6; window=64488; available=7443
+TRACE   sent stream data; available=7437; buffered=7436; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=6; window=2147482599; available=2147475162
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7436; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7437 available=7437 requested=7437 buffered=7436
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64482; available=7437
+TRACE   sent stream data; available=7435; buffered=7434; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482593; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7434; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7435 available=7435 requested=7435 buffered=7434
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64480; available=7435
+TRACE   sent stream data; available=7364; buffered=7363; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482591; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7363; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=51 eos=false window=7364 available=7364 requested=7364 buffered=7363
+TRACE sending data frame len=51
+TRACE send_data; sz=51; window=64409; available=7364
+TRACE   sent stream data; available=7313; buffered=7312; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=51; window=2147482520; available=2147475207
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7312; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=11 eos=false window=7313 available=7313 requested=7313 buffered=7312
+TRACE sending data frame len=11
+TRACE send_data; sz=11; window=64358; available=7313
+TRACE   sent stream data; available=7302; buffered=7301; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=11; window=2147482469; available=2147475167
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7301; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7302 available=7302 requested=7302 buffered=7301
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64347; available=7302
+TRACE   sent stream data; available=7300; buffered=7299; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482458; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7299; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7300 available=7300 requested=7300 buffered=7299
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64345; available=7300
+TRACE   sent stream data; available=7229; buffered=7228; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482456; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7228; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=52 eos=false window=7229 available=7229 requested=7229 buffered=7228
+TRACE sending data frame len=52
+TRACE send_data; sz=52; window=64274; available=7229
+TRACE   sent stream data; available=7177; buffered=7176; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=52; window=2147482385; available=2147475208
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7176; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=3 eos=false window=7177 available=7177 requested=7177 buffered=7176
+TRACE sending data frame len=3
+TRACE send_data; sz=3; window=64222; available=7177
+TRACE   sent stream data; available=7174; buffered=7173; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=3; window=2147482333; available=2147475159
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7173; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7174 available=7174 requested=7174 buffered=7173
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64219; available=7174
+TRACE   sent stream data; available=7172; buffered=7171; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482330; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7171; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7172 available=7172 requested=7172 buffered=7171
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64217; available=7172
+TRACE   sent stream data; available=7101; buffered=7100; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482328; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7100; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=55 eos=false window=7101 available=7101 requested=7101 buffered=7100
+TRACE sending data frame len=55
+TRACE send_data; sz=55; window=64146; available=7101
+TRACE   sent stream data; available=7046; buffered=7045; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=55; window=2147482257; available=2147475211
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7045; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=32 eos=false window=7046 available=7046 requested=7046 buffered=7045
+TRACE sending data frame len=32
+TRACE send_data; sz=32; window=64091; available=7046
+TRACE   sent stream data; available=7014; buffered=7013; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=32; window=2147482202; available=2147475188
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7013; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=7014 available=7014 requested=7014 buffered=7013
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=64059; available=7014
+TRACE   sent stream data; available=7012; buffered=7011; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147482170; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=7011; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=7012 available=7012 requested=7012 buffered=7011
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=64057; available=7012
+TRACE   sent stream data; available=6941; buffered=6940; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147482168; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6940; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=6941 available=6941 requested=6941 buffered=6940
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=63986; available=6941
+TRACE   sent stream data; available=6887; buffered=6886; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147482097; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=6886; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=4564 eos=false window=6887 available=6887 requested=6887 buffered=6886
+TRACE sending data frame len=4564
+TRACE send_data; sz=4564; window=63932; available=6887
+TRACE   sent stream data; available=2323; buffered=2322; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=4564; window=2147482043; available=2147479720
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2322; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE queued_data_frame=true
+TRACE flushing buffer
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=2323 available=2323 requested=2323 buffered=2322
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=59368; available=2323
+TRACE   sent stream data; available=2321; buffered=2320; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147477479; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2320; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=2321 available=2321 requested=2321 buffered=2320
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=59366; available=2321
+TRACE   sent stream data; available=2250; buffered=2249; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147477477; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2249; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=67 eos=false window=2250 available=2250 requested=2250 buffered=2249
+TRACE sending data frame len=67
+TRACE send_data; sz=67; window=59295; available=2250
+TRACE   sent stream data; available=2183; buffered=2182; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=67; window=2147477406; available=2147475223
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2182; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=13 eos=false window=2183 available=2183 requested=2183 buffered=2182
+TRACE sending data frame len=13
+TRACE send_data; sz=13; window=59228; available=2183
+TRACE   sent stream data; available=2170; buffered=2169; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=13; window=2147477339; available=2147475169
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2169; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=2170 available=2170 requested=2170 buffered=2169
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=59215; available=2170
+TRACE   sent stream data; available=2168; buffered=2167; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147477326; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2167; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=2168 available=2168 requested=2168 buffered=2167
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=59213; available=2168
+TRACE   sent stream data; available=2097; buffered=2096; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147477324; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2096; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=61 eos=false window=2097 available=2097 requested=2097 buffered=2096
+TRACE sending data frame len=61
+TRACE send_data; sz=61; window=59142; available=2097
+TRACE   sent stream data; available=2036; buffered=2035; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=61; window=2147477253; available=2147475217
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2035; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=3 eos=false window=2036 available=2036 requested=2036 buffered=2035
+TRACE sending data frame len=3
+TRACE send_data; sz=3; window=59081; available=2036
+TRACE   sent stream data; available=2033; buffered=2032; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=3; window=2147477192; available=2147475159
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2032; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=2033 available=2033 requested=2033 buffered=2032
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=59078; available=2033
+TRACE   sent stream data; available=2031; buffered=2030; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147477189; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2030; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=2031 available=2031 requested=2031 buffered=2030
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=59076; available=2031
+TRACE   sent stream data; available=1960; buffered=1959; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147477187; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1959; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=50 eos=false window=1960 available=1960 requested=1960 buffered=1959
+TRACE sending data frame len=50
+TRACE send_data; sz=50; window=59005; available=1960
+TRACE   sent stream data; available=1910; buffered=1909; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=50; window=2147477116; available=2147475206
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1909; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=58 eos=false window=1910 available=1910 requested=1910 buffered=1909
+TRACE sending data frame len=58
+TRACE send_data; sz=58; window=58955; available=1910
+TRACE   sent stream data; available=1852; buffered=1851; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=58; window=2147477066; available=2147475214
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1851; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=1852 available=1852 requested=1852 buffered=1851
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=58897; available=1852
+TRACE   sent stream data; available=1850; buffered=1849; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147477008; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1849; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=1850 available=1850 requested=1850 buffered=1849
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=58895; available=1850
+TRACE   sent stream data; available=1779; buffered=1778; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147477006; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1778; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=58 eos=false window=1779 available=1779 requested=1779 buffered=1778
+TRACE sending data frame len=58
+TRACE send_data; sz=58; window=58824; available=1779
+TRACE   sent stream data; available=1721; buffered=1720; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=58; window=2147476935; available=2147475214
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1720; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=6 eos=false window=1721 available=1721 requested=1721 buffered=1720
+TRACE sending data frame len=6
+TRACE send_data; sz=6; window=58766; available=1721
+TRACE   sent stream data; available=1715; buffered=1714; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=6; window=2147476877; available=2147475162
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1714; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=1715 available=1715 requested=1715 buffered=1714
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=58760; available=1715
+TRACE   sent stream data; available=1713; buffered=1712; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147476871; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1712; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=1713 available=1713 requested=1713 buffered=1712
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=58758; available=1713
+TRACE   sent stream data; available=1642; buffered=1641; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147476869; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1641; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=1642 available=1642 requested=1642 buffered=1641
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=58687; available=1642
+TRACE   sent stream data; available=1588; buffered=1587; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147476798; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1587; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=35 eos=false window=1588 available=1588 requested=1588 buffered=1587
+TRACE sending data frame len=35
+TRACE send_data; sz=35; window=58633; available=1588
+TRACE   sent stream data; available=1553; buffered=1552; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=35; window=2147476744; available=2147475191
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1552; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=1553 available=1553 requested=1553 buffered=1552
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=58598; available=1553
+TRACE   sent stream data; available=1551; buffered=1550; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147476709; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1550; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=1551 available=1551 requested=1551 buffered=1550
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=58596; available=1551
+TRACE   sent stream data; available=1480; buffered=1479; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147476707; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1479; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=1480 available=1480 requested=1480 buffered=1479
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=58525; available=1480
+TRACE   sent stream data; available=1426; buffered=1425; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147476636; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1425; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=38 eos=false window=1426 available=1426 requested=1426 buffered=1425
+TRACE sending data frame len=38
+TRACE send_data; sz=38; window=58471; available=1426
+TRACE   sent stream data; available=1388; buffered=1387; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=38; window=2147476582; available=2147475194
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1387; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=1388 available=1388 requested=1388 buffered=1387
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=58433; available=1388
+TRACE   sent stream data; available=1386; buffered=1385; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147476544; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1385; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=1386 available=1386 requested=1386 buffered=1385
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=58431; available=1386
+TRACE   sent stream data; available=1315; buffered=1314; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147476542; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1314; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=1315 available=1315 requested=1315 buffered=1314
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=58360; available=1315
+TRACE   sent stream data; available=1261; buffered=1260; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147476471; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1260; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=38 eos=false window=1261 available=1261 requested=1261 buffered=1260
+TRACE sending data frame len=38
+TRACE send_data; sz=38; window=58306; available=1261
+TRACE   sent stream data; available=1223; buffered=1222; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=38; window=2147476417; available=2147475194
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1222; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=1223 available=1223 requested=1223 buffered=1222
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=58268; available=1223
+TRACE   sent stream data; available=1221; buffered=1220; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147476379; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1220; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=1221 available=1221 requested=1221 buffered=1220
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=58266; available=1221
+TRACE   sent stream data; available=1150; buffered=1149; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147476377; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1149; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=1150 available=1150 requested=1150 buffered=1149
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=58195; available=1150
+TRACE   sent stream data; available=1096; buffered=1095; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147476306; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1095; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=38 eos=false window=1096 available=1096 requested=1096 buffered=1095
+TRACE sending data frame len=38
+TRACE send_data; sz=38; window=58141; available=1096
+TRACE   sent stream data; available=1058; buffered=1057; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=38; window=2147476252; available=2147475194
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1057; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=1058 available=1058 requested=1058 buffered=1057
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=58103; available=1058
+TRACE   sent stream data; available=1056; buffered=1055; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147476214; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=1055; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=1056 available=1056 requested=1056 buffered=1055
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=58101; available=1056
+TRACE   sent stream data; available=985; buffered=984; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147476212; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=984; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=985 available=985 requested=985 buffered=984
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=58030; available=985
+TRACE   sent stream data; available=931; buffered=930; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147476141; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=930; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=38 eos=false window=931 available=931 requested=931 buffered=930
+TRACE sending data frame len=38
+TRACE send_data; sz=38; window=57976; available=931
+TRACE   sent stream data; available=893; buffered=892; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=38; window=2147476087; available=2147475194
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=892; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=893 available=893 requested=893 buffered=892
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=57938; available=893
+TRACE   sent stream data; available=891; buffered=890; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147476049; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=890; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=891 available=891 requested=891 buffered=890
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=57936; available=891
+TRACE   sent stream data; available=820; buffered=819; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147476047; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=819; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=54 eos=false window=820 available=820 requested=820 buffered=819
+TRACE sending data frame len=54
+TRACE send_data; sz=54; window=57865; available=820
+TRACE   sent stream data; available=766; buffered=765; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=54; window=2147475976; available=2147475210
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=765; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=34 eos=false window=766 available=766 requested=766 buffered=765
+TRACE sending data frame len=34
+TRACE send_data; sz=34; window=57811; available=766
+TRACE   sent stream data; available=732; buffered=731; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=34; window=2147475922; available=2147475190
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=731; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=732 available=732 requested=732 buffered=731
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=57777; available=732
+TRACE   sent stream data; available=730; buffered=729; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147475888; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=729; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=730 available=730 requested=730 buffered=729
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=57775; available=730
+TRACE   sent stream data; available=659; buffered=658; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147475886; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=658; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=50 eos=false window=659 available=659 requested=659 buffered=658
+TRACE sending data frame len=50
+TRACE send_data; sz=50; window=57704; available=659
+TRACE   sent stream data; available=609; buffered=608; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=50; window=2147475815; available=2147475206
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=608; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=12 eos=false window=609 available=609 requested=609 buffered=608
+TRACE sending data frame len=12
+TRACE send_data; sz=12; window=57654; available=609
+TRACE   sent stream data; available=597; buffered=596; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=12; window=2147475765; available=2147475168
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=596; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=597 available=597 requested=597 buffered=596
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=57642; available=597
+TRACE   sent stream data; available=595; buffered=594; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147475753; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=594; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=595 available=595 requested=595 buffered=594
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=57640; available=595
+TRACE   sent stream data; available=524; buffered=523; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147475751; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=523; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=55 eos=false window=524 available=524 requested=524 buffered=523
+TRACE sending data frame len=55
+TRACE send_data; sz=55; window=57569; available=524
+TRACE   sent stream data; available=469; buffered=468; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=55; window=2147475680; available=2147475211
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=468; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=10 eos=false window=469 available=469 requested=469 buffered=468
+TRACE sending data frame len=10
+TRACE send_data; sz=10; window=57514; available=469
+TRACE   sent stream data; available=459; buffered=458; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=10; window=2147475625; available=2147475166
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=458; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=459 available=459 requested=459 buffered=458
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=57504; available=459
+TRACE   sent stream data; available=457; buffered=456; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147475615; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=456; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=457 available=457 requested=457 buffered=456
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=57502; available=457
+TRACE   sent stream data; available=386; buffered=385; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147475613; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=385; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=56 eos=false window=386 available=386 requested=386 buffered=385
+TRACE sending data frame len=56
+TRACE send_data; sz=56; window=57431; available=386
+TRACE   sent stream data; available=330; buffered=329; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=56; window=2147475542; available=2147475212
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=329; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=12 eos=false window=330 available=330 requested=330 buffered=329
+TRACE sending data frame len=12
+TRACE send_data; sz=12; window=57375; available=330
+TRACE   sent stream data; available=318; buffered=317; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=12; window=2147475486; available=2147475168
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=317; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=318 available=318 requested=318 buffered=317
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=57363; available=318
+TRACE   sent stream data; available=316; buffered=315; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147475474; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=315; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=316 available=316 requested=316 buffered=315
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=57361; available=316
+TRACE   sent stream data; available=245; buffered=244; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147475472; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=244; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=56 eos=false window=245 available=245 requested=245 buffered=244
+TRACE sending data frame len=56
+TRACE send_data; sz=56; window=57290; available=245
+TRACE   sent stream data; available=189; buffered=188; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=56; window=2147475401; available=2147475212
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=188; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=13 eos=false window=189 available=189 requested=189 buffered=188
+TRACE sending data frame len=13
+TRACE send_data; sz=13; window=57234; available=189
+TRACE   sent stream data; available=176; buffered=175; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=13; window=2147475345; available=2147475169
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=175; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=176 available=176 requested=176 buffered=175
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=57221; available=176
+TRACE   sent stream data; available=174; buffered=173; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2; window=2147475332; available=2147475158
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=173; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=71 eos=false window=174 available=174 requested=174 buffered=173
+TRACE sending data frame len=71
+TRACE send_data; sz=71; window=57219; available=174
+TRACE   sent stream data; available=103; buffered=102; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=71; window=2147475330; available=2147475227
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=102; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=102 eos=false window=103 available=103 requested=103 buffered=102
+TRACE sending data frame len=102
+TRACE send_data; sz=102; window=57148; available=103
+TRACE   sent stream data; available=1; buffered=0; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=102; window=2147475259; available=2147475258
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE buffered=4096
+TRACE requested=4096 additional=4095 buffered=4096 window=57046 conn=2147475156
+TRACE assigning capacity=4095
+TRACE   assigned capacity to stream; available=4096; buffered=4096; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE available=4096 requested=4096 buffered=4096 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE available=4096 buffered=4096
+TRACE schedule_send stream.id=StreamId(3)
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=4096; num_recv=0; num_send=1
+TRACE requested=4097 additional=1 buffered=4096 window=57046 conn=2147471061
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=4097; buffered=4096; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=4097 requested=4097 buffered=4096 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=4096 eos=false window=4097 available=4097 requested=4097 buffered=4096
+TRACE sending data frame len=4096
+TRACE send_data; sz=4096; window=57046; available=4097
+TRACE   sent stream data; available=1; buffered=0; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=4096; window=2147475157; available=2147475156
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE queued_data_frame=true
+TRACE flushing buffer
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE buffered=2161
+TRACE requested=2161 additional=2160 buffered=2161 window=52950 conn=2147471060
+TRACE assigning capacity=2160
+TRACE   assigned capacity to stream; available=2161; buffered=2161; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE available=2161 requested=2161 buffered=2161 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE available=2161 buffered=2161
+TRACE schedule_send stream.id=StreamId(3)
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2161; num_recv=0; num_send=1
+TRACE requested=2162 additional=1 buffered=2161 window=52950 conn=2147468900
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=2162; buffered=2161; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=2162 requested=2162 buffered=2161 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2161 eos=false window=2162 available=2162 requested=2162 buffered=2161
+TRACE sending data frame len=2161
+TRACE send_data; sz=2161; window=52950; available=2162
+TRACE   sent stream data; available=1; buffered=0; id=StreamId(3); max_buffer_size=1048576 prev=1
+TRACE send_data; sz=2161; window=2147471061; available=2147471060
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE queued_data_frame=true
+TRACE flushing buffer
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE buffered=2
+TRACE requested=2 additional=1 buffered=2 window=50789 conn=2147468899
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=2; buffered=2; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE available=2 requested=2 buffered=2 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE available=2 buffered=2
+TRACE schedule_send stream.id=StreamId(3)
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=2; num_recv=0; num_send=1
+TRACE requested=3 additional=1 buffered=2 window=50789 conn=2147468898
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=3; buffered=2; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=3 requested=3 buffered=2 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE buffered=75
+TRACE requested=75 additional=72 buffered=75 window=50789 conn=2147468897
+TRACE assigning capacity=72
+TRACE   assigned capacity to stream; available=75; buffered=75; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE available=75 requested=75 buffered=75 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE available=75 buffered=75
+TRACE schedule_send stream.id=StreamId(3)
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE transition_after; stream=StreamId(3); state=Open { local: Streaming, remote: AwaitingHeaders }; is_closed=false; pending_send_empty=false; buffered_send_data=75; num_recv=0; num_send=1
+TRACE requested=76 additional=1 buffered=75 window=50789 conn=2147468825
+TRACE assigning capacity=1
+TRACE   assigned capacity to stream; available=76; buffered=75; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE   notifying task
+TRACE available=76 requested=76 buffered=75 has_unavailable=true
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE buffered=75
+TRACE send_close: Open => HalfClosedLocal(AwaitingHeaders)
+TRACE available=75 buffered=75
+TRACE schedule_send stream.id=StreamId(3)
+TRACE Queue::push_back
+TRACE  -> already queued
+TRACE transition_after; stream=StreamId(3); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=false; buffered_send_data=75; num_recv=0; num_send=1
+TRACE drop_stream_ref; stream=Stream { id: StreamId(3), state: HalfClosedLocal(AwaitingHeaders), is_counted: true, ref_count: 2, is_pending_send: true, send_flow: FlowControl { window_size: Window(50789), available: Window(75) }, requested_send_capacity: 75, buffered_send_data: 75, send_task: Some(()), pending_send: Deque { indices: Some(Indices { head: 102, tail: 100 }) }, send_capacity_inc: true, recv_flow: FlowControl { window_size: Window(2097152), available: Window(2097152) }, in_flight_recv_data: 0, is_recv: true, recv_task: Some(()), content_length: Omitted }
+TRACE transition_after; stream=StreamId(3); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=false; buffered_send_data=75; num_recv=0; num_send=1
+TRACE connection.state=Open
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=2 eos=false window=75 available=75 requested=75 buffered=75
+TRACE sending data frame len=2
+TRACE send_data; sz=2; window=50789; available=75
+TRACE   sent stream data; available=73; buffered=73; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE send_data; sz=2; window=2147468900; available=2147468827
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=false; buffered_send_data=73; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=73 eos=false window=73 available=73 requested=73 buffered=73
+TRACE sending data frame len=73
+TRACE send_data; sz=73; window=50787; available=73
+TRACE   sent stream data; available=0; buffered=0; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE send_data; sz=73; window=2147468898; available=2147468898
+TRACE pop_frame; frame=Data { stream_id: StreamId(3) }
+TRACE Queue::push_back
+TRACE  -> first entry
+TRACE transition_after; stream=StreamId(3); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=false; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3) }
+DEBUG send frame=Data { stream_id: StreamId(3) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3) } sz=0
+TRACE schedule_pending_open
+TRACE is_pending_reset=false
+TRACE data frame sz=0 eos=true window=0 available=0 requested=0 buffered=0
+TRACE sending data frame len=0
+TRACE send_data; sz=0; window=50714; available=0
+TRACE   sent stream data; available=0; buffered=0; id=StreamId(3); max_buffer_size=1048576 prev=0
+TRACE send_data; sz=0; window=2147468825; available=2147468825
+TRACE pop_frame; frame=Data { stream_id: StreamId(3), flags: (0x1: END_STREAM) }
+TRACE transition_after; stream=StreamId(3); state=HalfClosedLocal(AwaitingHeaders); is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE writing frame=Data { stream_id: StreamId(3), flags: (0x1: END_STREAM) }
+DEBUG send frame=Data { stream_id: StreamId(3), flags: (0x1: END_STREAM) }
+TRACE reclaimed frame=Data { stream_id: StreamId(3), flags: (0x1: END_STREAM) } sz=0
+TRACE schedule_pending_open
+TRACE queued_data_frame=false
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=13
+TRACE decoding frame from 13B
+TRACE frame.kind=WindowUpdate
+DEBUG received frame=WindowUpdate { stream_id: StreamId(3), size_increment: 2147418111 }
+TRACE recv WINDOW_UPDATE frame=WindowUpdate { stream_id: StreamId(3), size_increment: 2147418111 }
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE connection.state=Open
+TRACE poll
+TRACE read.bytes=395
+TRACE decoding frame from 395B
+TRACE frame.kind=Headers
+TRACE loading headers; flags=(0x4: END_HEADERS)
+TRACE decode
+TRACE rem=386 kind=LiteralWithIndexing
+TRACE rem=381 kind=LiteralWithIndexing
+TRACE rem=375 kind=LiteralWithIndexing
+TRACE rem=351 kind=LiteralWithIndexing
+TRACE rem=338 kind=LiteralWithIndexing
+TRACE rem=334 kind=LiteralWithoutIndexing
+TRACE rem=296 kind=LiteralWithoutIndexing
+TRACE rem=263 kind=LiteralWithoutIndexing
+TRACE rem=243 kind=LiteralWithoutIndexing
+TRACE rem=231 kind=LiteralWithoutIndexing
+TRACE rem=207 kind=LiteralWithoutIndexing
+TRACE rem=184 kind=LiteralWithoutIndexing
+TRACE rem=118 kind=LiteralWithoutIndexing
+TRACE rem=84 kind=LiteralWithoutIndexing
+TRACE rem=68 kind=LiteralWithoutIndexing
+TRACE rem=36 kind=LiteralWithoutIndexing
+DEBUG received frame=Headers { stream_id: StreamId(3), flags: (0x4: END_HEADERS) }
+TRACE recv HEADERS frame=Headers { stream_id: StreamId(3), flags: (0x4: END_HEADERS) }
+TRACE recv_headers; stream=StreamId(3); state=HalfClosedLocal(AwaitingHeaders)
+TRACE opening stream; init_window=2097152
+TRACE transition_after; stream=StreamId(3); state=HalfClosedLocal(Streaming); is_closed=false; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE poll
+TRACE read.bytes=34
+TRACE decoding frame from 34B
+TRACE frame.kind=Data
+DEBUG received frame=Data { stream_id: StreamId(3), flags: (0x1: END_STREAM) }
+TRACE recv DATA frame=Data { stream_id: StreamId(3), flags: (0x1: END_STREAM) }
+TRACE recv_data; size=25; connection=5242583; stream=2097152
+TRACE send_data; sz=25; window=5242583; available=5242880
+TRACE recv_close: HalfClosedLocal => Closed
+TRACE send_data; sz=25; window=2097152; available=2097152
+TRACE transition_after; stream=StreamId(3); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=1
+TRACE dec_num_streams; stream=StreamId(3)
+TRACE poll
+TRACE poll_complete
+TRACE schedule_pending_open
+TRACE flushing buffer
+TRACE drop_stream_ref; stream=Stream { id: StreamId(3), state: Closed(EndStream), is_counted: false, ref_count: 2, send_flow: FlowControl { window_size: Window(50714), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: Some(()), send_capacity_inc: true, recv_flow: FlowControl { window_size: Window(2097127), available: Window(2097127) }, in_flight_recv_data: 25, pending_recv: Deque { indices: Some(Indices { head: 0, tail: 0 }) }, is_recv: true, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(3); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Updating cached credentials for https://XXX/api/v4/projects/497/packages/pypi to Credentials(Basic { username: Username(Some("gitlab-ci-token")), password: Some(****) })
+DEBUG Response code for https://XXX/api/v4/projects/497/packages/pypi: 201 Created
+TRACE Response headers for https://XXX/api/v4/projects/497/packages/pypi: Response { url: "https://XXX/api/v4/projects/497/packages/pypi", status: 201, headers: {"server": "nginx", "date": "Wed, 07 Jan 2026 07:17:18 GMT", "content-type": "application/json", "content-length": "25", "cache-control": "max-age=0, private, must-revalidate", "etag": "W/\"6025f9a740871d09d0230776e3dbc7bf\"", "nel": "{\"max_age\": 0}", "vary": "Origin", "x-content-type-options": "nosniff", "x-frame-options": "SAMEORIGIN", "x-gitlab-meta": "{\"correlation_id\":\"01KEBN2BDSADWTJFQDPG8VV7HY\",\"version\":\"1\"}", "x-request-id": "01KEBN2BDSADWTJFQDPG8VV7HY", "x-runtime": "0.117036", "strict-transport-security": "max-age=63072000", "referrer-policy": "strict-origin-when-cross-origin"} }
+TRACE release_capacity; size=25
+TRACE release_connection_capacity; size=25, connection in_flight_data=25
+TRACE drop_stream_ref; stream=Stream { id: StreamId(3), state: Closed(EndStream), is_counted: false, ref_count: 1, send_flow: FlowControl { window_size: Window(50714), available: Window(0) }, requested_send_capacity: 0, buffered_send_data: 0, send_task: Some(()), send_capacity_inc: true, recv_flow: FlowControl { window_size: Window(2097127), available: Window(2097152) }, in_flight_recv_data: 0, content_length: Remaining(0) }
+TRACE transition_after; stream=StreamId(3); state=Closed(EndStream); is_closed=true; pending_send_empty=true; buffered_send_data=0; num_recv=0; num_send=0
+TRACE Response content for https://XXX/api/v4/projects/497/packages/pypi: {"message":"201 Created"}
+INFO Upload succeeded
+TRACE Streams::recv_eof
+```
+
+</details>
+
+---
+
+_Comment by @woodruffw on 2026-01-07 13:10_
+
+> How do I best capture the response from the index?
+
+It depends on the index, but making an authenticated request with `curl` to that URL would probably suffice! In your case I suspect using your username/password as basic auth would probably work.
+
+---
+
+_Comment by @j-hiller on 2026-01-07 13:11_
+
+Ok, I was busy with adding a `curl` to the pipeline already.
+But stumbled upon some strange behavior.
+Anyway, here are my findings.
+
+<details>
+
+<summary>Here is the output with no existing package</summary>
+
+```
+$ curl -v $UV_PUBLISH_CHECK_URL
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying xx.xx.xx.xx:443...
+* Connected to XXX (xx.xx.xx.xx) port 443 (#0)
+* ALPN: offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [19 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2848 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [520 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [52 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [52 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=XXX
+*  start date: Dec  3 15:41:37 2025 GMT
+*  expire date: Mar  3 15:41:36 2026 GMT
+*  subjectAltName: host "XXX" matched cert's "XXX"
+*  issuer: C=US; O=Let's Encrypt; CN=R13
+*  SSL certificate verify ok.
+} [5 bytes data]
+* using HTTP/2
+* Server auth using Basic with user 'gitlab-ci-token'
+* h2h3 [:method: GET]
+* h2h3 [:path: /api/v4/projects/497/packages/pypi/simple]
+* h2h3 [:scheme: https]
+* h2h3 [:authority: XXX]
+* h2h3 [authorization: Basic ZZZ]
+* h2h3 [user-agent: curl/7.88.1]
+* h2h3 [accept: */*]
+* Using Stream ID: 1 (easy handle 0x55a2612927a0)
+} [5 bytes data]
+> GET /api/v4/projects/497/packages/pypi/simple HTTP/2
+> Host: XXX
+> authorization: Basic ZZZ
+> user-agent: curl/7.88.1
+> accept: */*
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [57 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [57 bytes data]
+* old SSL session ID is stale, removing
+{ [5 bytes data]
+< HTTP/2 200 
+< server: nginx
+< date: Wed, 07 Jan 2026 08:22:07 GMT
+< content-type: text/html; charset=utf-8
+< content-length: 230
+< cache-control: max-age=0, private, must-revalidate
+< etag: W/"33cc2533e37d4fb04153c2da9a9c9a81"
+< nel: {"max_age": 0}
+< vary: Origin
+< x-content-type-options: nosniff
+< x-frame-options: SAMEORIGIN
+< x-gitlab-meta: {"correlation_id":"01KEBRS1RZ504CK9584ZBCMR06","version":"1"}
+< x-request-id: 01KEBRS1RZ504CK9584ZBCMR06
+< x-runtime: 0.033012
+< strict-transport-security: max-age=63072000
+< referrer-policy: strict-origin-when-cross-origin
+< 
+{ [230 bytes data]
+100   230  100   230    0     0   3443      0 --:--:-- --:--:-- --:--:--  3484
+* Connection #0 to host XXX left intact
+<!DOCTYPE html>
+        <html>
+          <head>
+            <title>Links for yyy</title>
+          </head>
+          <body>
+            <h1>Links for yyy</h1>
+            
+          </body>
+        </html>
+```
+
+</details>
+
+<details>
+
+<summary>And here with an existing package</summary>
+
+```
+$ curl -v $UV_PUBLISH_CHECK_URL
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying xx.xx.xx.xx:443...
+* Connected to XXX (xx.xx.xx.xx) port 443 (#0)
+* ALPN: offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [19 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2848 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [520 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [52 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [52 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=XXX
+*  start date: Dec  3 15:41:37 2025 GMT
+*  expire date: Mar  3 15:41:36 2026 GMT
+*  subjectAltName: host "XXX" matched cert's "XXX"
+*  issuer: C=US; O=Let's Encrypt; CN=R13
+*  SSL certificate verify ok.
+} [5 bytes data]
+* using HTTP/2
+* Server auth using Basic with user 'gitlab-ci-token'
+* h2h3 [:method: GET]
+* h2h3 [:path: /api/v4/projects/497/packages/pypi/simple]
+* h2h3 [:scheme: https]
+* h2h3 [:authority: XXX]
+* h2h3 [authorization: Basic ZZZ]
+* h2h3 [user-agent: curl/7.88.1]
+* h2h3 [accept: */*]
+* Using Stream ID: 1 (easy handle 0x561ddaef97a0)
+} [5 bytes data]
+> GET /api/v4/projects/497/packages/pypi/simple HTTP/2
+> Host: XXX
+> authorization: Basic ZZZ
+> user-agent: curl/7.88.1
+> accept: */*
+> 
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [57 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [57 bytes data]
+* old SSL session ID is stale, removing
+{ [5 bytes data]
+<!DOCTYPE html>
+        <html>
+          <head>
+            <title>Links for yyy</title>
+          </head>
+          <body>
+            <h1>Links for yyy</h1>
+            <a href="https://XXX/api/v4/projects/497/packages/pypi/simple/yyy" data-requires-python="&gt;=3.11">yyy</a>
+          </body>
+        </html>
+< HTTP/2 200 
+< server: nginx
+< date: Wed, 07 Jan 2026 09:06:05 GMT
+< content-type: text/html; charset=utf-8
+< content-length: 372
+< vary: Accept-Encoding
+< cache-control: max-age=0, private, must-revalidate
+< etag: W/"ed714013fc006db9450d419d6e58fe3a"
+< nel: {"max_age": 0}
+< vary: Origin
+< x-content-type-options: nosniff
+< x-frame-options: SAMEORIGIN
+< x-gitlab-meta: {"correlation_id":"01KEBV9HAE8EV4KXBE1GFNFHMQ","version":"1"}
+< x-request-id: 01KEBV9HAE8EV4KXBE1GFNFHMQ
+< x-runtime: 0.033459
+< strict-transport-security: max-age=63072000
+< referrer-policy: strict-origin-when-cross-origin
+< 
+{ [372 bytes data]
+100   372  100   372    0     0   5586      0 --:--:-- --:--:-- --:--:--  5636
+* Connection #0 to host XXX left intact
+```
+
+</details>
+
+So it seems to be HTML in both cases.
+
+Interestingly enough, if I run it on my local machine and with a project access token, it seems to redirect, when querying for the empty package.
+
+<details>
+
+<summary>Here is the redirect to pypi.org</summary>
+
+```
+$ curl -v https://user:glpat-ToKeN@XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+* Host XXX:443 was resolved.
+* IPv6: (none)
+* IPv4: xx.xx.xx.xx
+*   Trying xx.xx.xx.xx:443...
+* Connected to XXX (xx.xx.xx.xx) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+*  CAfile: /usr/lib/ssl/cert.pem
+*  CApath: /usr/lib/ssl/certs
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=XXX
+*  start date: Dec  3 15:41:37 2025 GMT
+*  expire date: Mar  3 15:41:36 2026 GMT
+*  subjectAltName: host "XXX" matched cert's "XXX"
+*  issuer: C=US; O=Let's Encrypt; CN=R13
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+* using HTTP/2
+* Server auth using Basic with user 'user'
+* [HTTP/2] [1] OPENED stream for https://user:glpat-ToKeN@XXX/api/v4/projects/497/packages/pypi/simple/yyy/
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: XXX]
+* [HTTP/2] [1] [:path: /api/v4/projects/497/packages/pypi/simple/yyy/]
+* [HTTP/2] [1] [authorization: Basic ZZZ]
+* [HTTP/2] [1] [user-agent: curl/8.5.0]
+* [HTTP/2] [1] [accept: */*]
+> GET /api/v4/projects/497/packages/pypi/simple/yyy/ HTTP/2
+> Host: XXX
+> Authorization: Basic ZZZ
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+< HTTP/2 302 
+< server: nginx
+< date: Wed, 07 Jan 2026 13:05:55 GMT
+< content-type: text/plain
+< content-length: 87
+< location: https://pypi.org/simple/yyy/
+< cache-control: no-cache
+< nel: {"max_age": 0}
+< vary: Origin
+< x-content-type-options: nosniff
+< x-frame-options: SAMEORIGIN
+< x-gitlab-meta: {"correlation_id":"01KEC90PN6JWS6GQK25Y76FCFT","version":"1"}
+< x-request-id: 01KEC90PN6JWS6GQK25Y76FCFT
+< x-runtime: 0.040380
+< strict-transport-security: max-age=63072000
+< referrer-policy: strict-origin-when-cross-origin
+< 
+* Connection #0 to host XXX left intact
+"This resource has been moved temporarily to https://pypi.org/simple/yyy/.
+```
+
+</details>
+
+Maybe that is also happening, when `uv publish` is called in the CI?
+
+Edit: Ok, this seems to be the default behavior for the package registry and can only be deactivated on group level by maintainers...
+https://docs.gitlab.com/user/packages/pypi_repository/#package-request-forwarding-security-notice
+
+---
+
+_Comment by @woodruffw on 2026-01-07 13:25_
+
+Ah yeah, that's an interesting one. uv doesn't like that it's a plaintext response, but it's also a 302 which we would otherwise (I think) normally honor. However, since it's a cross-origin redirect and this is specifically a "check before uploading" case, we probably *shouldn't* honor the redirect, since the presence of the package on PyPI doesn't mean GitLab would actually reject its upload (most third party indices intentionally allow that kind of shadowing).
+
+CC @konstin for thoughts 🙂
+
+---
+
+_Comment by @konstin on 2026-01-07 14:27_
+
+That's a tough edge case, cause there could also be a real redirect that we want to follow. Ideally, we wouldn't use check-url on the first upload at all, but I'm not sure how to tell that.
+
+---

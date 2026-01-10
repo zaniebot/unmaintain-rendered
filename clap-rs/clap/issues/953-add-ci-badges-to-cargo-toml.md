@@ -1,0 +1,87 @@
+---
+number: 953
+title: Add CI badges to Cargo.toml
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - E-medium
+  - A-meta
+assignees: []
+created_at: 2017-05-09T22:08:35Z
+updated_at: 2018-08-02T03:30:06Z
+url: https://github.com/clap-rs/clap/issues/953
+synced_at: 2026-01-10T01:26:39Z
+---
+
+# Add CI badges to Cargo.toml
+
+---
+
+_Issue opened by @kbknapp on 2017-05-09 22:08_
+
+Cargo.toml publishes CI badges for tier 1 platforms (C-CI)
+
+The Rust compiler regards tier 1 platforms as "guaranteed to work."
+Specifically they will each satisfy the following requirements:
+
+    Official binary releases are provided for the platform.
+    Automated testing is set up to run tests for the platform.
+    Landing changes to the rust-lang/rust repository's master branch is gated on
+    tests passing.
+    Documentation for how to use and how to build the platform is available.
+
+Stable, high-profile crates should meet the same level of rigor when it comes to
+tier 1. To prove it, Cargo.toml should publish CI badges.
+
+```toml
+[badges]
+travis-ci = { repository = "..." }
+appveyor = { repository = "..." }
+```
+
+---
+
+_Label `C: meta` added by @kbknapp on 2017-05-09 22:08_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-05-09 22:08_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2017-05-09 22:08_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2017-05-09 22:08_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-05-09 22:08_
+
+---
+
+_Added to milestone `Lib Blitz Overhaul` by @kbknapp on 2017-05-09 22:08_
+
+---
+
+_Referenced in [clap-rs/clap#950](../../clap-rs/clap/issues/950.md) on 2017-05-09 22:09_
+
+---
+
+_Comment by @mgeisler on 2017-07-23 11:35_
+
+Fixed by https://github.com/kbknapp/clap-rs/commit/78498bd82c0a72af9c220e31affb11a0b79075e1.
+
+---
+
+_Comment by @kbknapp on 2017-07-29 19:31_
+
+Thanks, forgot to close this 😉 
+
+---
+
+_Closed by @kbknapp on 2017-07-29 19:31_
+
+---

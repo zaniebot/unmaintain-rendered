@@ -1,0 +1,98 @@
+---
+number: 12954
+title: PLW0642 flags inplace operators called on self
+type: issue
+state: closed
+author: Skylion007
+labels:
+  - bug
+  - rule
+  - help wanted
+  - accepted
+assignees: []
+created_at: 2024-08-17T15:33:23Z
+updated_at: 2024-08-18T15:31:10Z
+url: https://github.com/astral-sh/ruff/issues/12954
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# PLW0642 flags inplace operators called on self
+
+---
+
+_Issue opened by @Skylion007 on 2024-08-17 15:33_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+```
+ruff check --select="PLW0642"
+```
+
+```python
+    def symmetric_difference_update(self, other: Iterable[T]) -> None:
+         self ^= other  # type: ignore[operator, arg-type]
+```
+is errantly flagged by PLW0642, but I am in these case I'm calling an overloaded function `operator.ixor` on self, not trying to assign a new variable to it. The former would have an actual side affect here, while the later would not affect it at all (which this bug is trying to catch).
+
+In this case, `other` is a set, and I can update typing if that the typing is what is confusing ruff, but I wanted to
+version: `ruff 0.6.0`
+
+---
+
+_Comment by @AlexWaygood on 2024-08-17 17:11_
+
+It makes sense to me to exclude augmented assignments from this rule, and it would also mean we'd have more similar behaviour to pylint here. (Pylint seems to ignore augmented assignments for their version of this rule -- though they also ignore annotated assignments, which makes less sense to me.)
+
+@diceroll123 -- was there a specific reason you decided to differ from pylint's behaviour here when you added this rule in https://github.com/astral-sh/ruff/pull/9267? :-)
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-08-17 17:11_
+
+---
+
+_Comment by @diceroll123 on 2024-08-17 17:20_
+
+Oversight on my part.
+
+Is the desire to remove augmented assignments and keep annotated? 😄 
+
+---
+
+_Comment by @AlexWaygood on 2024-08-17 17:21_
+
+> Is the desire to remove augmented assignments and keep annotated? 😄
+
+Yeah, I think so!
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-08-17 17:21_
+
+---
+
+_Label `accepted` added by @AlexWaygood on 2024-08-17 17:21_
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-08-17 17:22_
+
+---
+
+_Referenced in [astral-sh/ruff#12957](../../astral-sh/ruff/pulls/12957.md) on 2024-08-17 20:08_
+
+---
+
+_Closed by @AlexWaygood on 2024-08-18 15:31_
+
+---

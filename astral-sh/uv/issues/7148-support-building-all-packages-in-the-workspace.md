@@ -1,0 +1,86 @@
+---
+number: 7148
+title: support building all packages in the workspace including all dependencies
+type: issue
+state: closed
+author: mmerickel
+labels: []
+assignees: []
+created_at: 2024-09-06T23:33:01Z
+updated_at: 2024-09-06T23:47:29Z
+url: https://github.com/astral-sh/uv/issues/7148
+synced_at: 2026-01-10T01:24:11Z
+---
+
+# support building all packages in the workspace including all dependencies
+
+---
+
+_Issue opened by @mmerickel on 2024-09-06 23:33_
+
+I have a workspace like `src/*`. Now I want to package a subset of those packages and install it into a new virtualenv somewhere.
+
+## Backstory example with pip
+
+With pip-tools and `uv pip compile` I'm starting from a file that looks like this as `requirements.in`:
+
+```
+-e src/foo
+-e src/bar
+# ...
+```
+
+And I have a lock file `requirements.txt` containing:
+
+```
+-e src/foo
+-e src/bar
+pyramid==1.10.2
+# ... all the other remote dependencies
+```
+
+My goal is to end up with a wheel folder containing wheels for foo and bar, as well as everything they depend on. I do it like this:
+
+```
+$ pip wheel -w wheels --find-links wheels -r requirements.txt
+```
+
+Later I can make my new virtualenv and install what I want (let's say just `foo`) from that wheelhouse via:
+
+```
+$ python -m venv some-env
+$ some-env/bin/pip install -w wheels --find-links wheels foo
+```
+
+## Adapted version with uv
+
+```
+$ uv export > requirements.txt
+$ pip wheel -w wheels --find-links wheels -r requirements.txt
+```
+
+Now I've lost uv's excellent building features and I'm using pip directly instead.
+
+Ideally I'd be able to just say "build wheels including all dependencies", and then I'd say:
+
+```
+$ uv build --wheel -o wheels --with-deps
+```
+
+And it would build foo and everything it depends on including bar, and any external dependencies. And it would use the `uv.lock` plus the current platform to determine what to build.
+
+---
+
+_Comment by @mmerickel on 2024-09-06 23:47_
+
+I see now this is a duplicate of https://github.com/astral-sh/uv/issues/1681 which hilariously I even commented on in April so closing this, but maybe the examples are helpful to someone.
+
+---
+
+_Closed by @mmerickel on 2024-09-06 23:47_
+
+---
+
+_Referenced in [astral-sh/uv#1681](../../astral-sh/uv/issues/1681.md) on 2024-09-06 23:48_
+
+---

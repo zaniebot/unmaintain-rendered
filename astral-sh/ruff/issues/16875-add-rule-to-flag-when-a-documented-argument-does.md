@@ -1,0 +1,60 @@
+---
+number: 16875
+title: Add rule to flag when a documented argument does not exist
+type: issue
+state: closed
+author: rhshadrach-8451
+labels:
+  - question
+assignees: []
+created_at: 2025-03-20T16:54:10Z
+updated_at: 2025-03-20T19:14:24Z
+url: https://github.com/astral-sh/ruff/issues/16875
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# Add rule to flag when a documented argument does not exist
+
+---
+
+_Issue opened by @rhshadrach-8451 on 2025-03-20 16:54_
+
+### Summary
+
+Apologies in advance if this is already somewhere on the issue tracker, I searched for quite a bit but could not find it.
+
+When there is a documented argument that does not exist, from what I can tell it doesn't violate and of the docstring rules.
+
+```python
+def foo() -> None:
+    """Do foo.
+
+    Args:
+        bar: Bar.
+    """
+    pass
+```
+
+It would be helpful if there was a rule to detect this, especially when refactoring.
+
+---
+
+_Comment by @dylwil3 on 2025-03-20 18:45_
+
+If I understand correctly, this would be covered by the (unimplemented) `DOC102` and/or `DOC103` discussed here https://github.com/astral-sh/ruff/issues/12434
+
+---
+
+_Label `question` added by @dylwil3 on 2025-03-20 19:02_
+
+---
+
+_Comment by @rhshadrach-8451 on 2025-03-20 19:14_
+
+Indeed, thanks!
+
+---
+
+_Closed by @rhshadrach-8451 on 2025-03-20 19:14_
+
+---

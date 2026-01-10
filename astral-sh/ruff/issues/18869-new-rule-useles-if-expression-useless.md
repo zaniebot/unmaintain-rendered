@@ -1,0 +1,48 @@
+---
+number: 18869
+title: new rule - useles if expression / useless comprehension
+type: issue
+state: open
+author: DetachHead
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-06-23T00:03:16Z
+updated_at: 2025-06-23T00:36:50Z
+url: https://github.com/astral-sh/ruff/issues/18869
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# new rule - useles if expression / useless comprehension
+
+---
+
+_Issue opened by @DetachHead on 2025-06-23 00:03_
+
+### Summary
+
+if expressions and comprehensions are notoriously more difficult to read than regular if statements and for loops  (related: #13703), so in cases where there's no benefit to writing it as an expression (ie. the result is not used), there should be a rule to suggest rewriting it as a statement instead:
+
+before:
+```py
+print(1) if bool() else print(2) # error: useless if expression, rewrite as an if statement
+```
+
+after:
+```py
+if bool():
+    print(1)
+else:
+    print(2)
+```
+
+---
+
+_Label `rule` added by @ntBre on 2025-06-23 00:36_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-06-23 00:36_
+
+---

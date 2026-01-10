@@ -1,0 +1,86 @@
+---
+number: 352
+title: allow delimited values to be turned OFF
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-enhancement
+  - E-medium
+assignees: []
+created_at: 2015-11-30T07:33:59Z
+updated_at: 2018-08-02T03:29:46Z
+url: https://github.com/clap-rs/clap/issues/352
+synced_at: 2026-01-10T01:26:28Z
+---
+
+# allow delimited values to be turned OFF
+
+---
+
+_Issue opened by @kbknapp on 2015-11-30 07:33_
+
+Relates to and requires #348 to be implemented first.
+
+This would add something like `Arg::allow_value_delims(bool)` which defaults to true (i.e. most users would never have to worry about this method), but if an application requires `val1,val2,val3` to be parsed a **single** value, they would set `Arg::allow_value_delims(false)`
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2015-11-30 07:33_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2015-11-30 07:33_
+
+---
+
+_Label `C: args` added by @kbknapp on 2015-11-30 07:33_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-11-30 07:33_
+
+---
+
+_Label `W: 1.x` added by @kbknapp on 2015-11-30 07:33_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2015-11-30 07:33_
+
+---
+
+_Referenced in [clap-rs/clap#353](../../clap-rs/clap/issues/353.md) on 2015-11-30 07:37_
+
+---
+
+_Added to milestone `1.6.0` by @kbknapp on 2015-12-18 08:57_
+
+---
+
+_Added to milestone `v2.0` by @kbknapp on 2016-01-23 15:52_
+
+---
+
+_Removed from milestone `1.6.0` by @kbknapp on 2016-01-23 15:52_
+
+---
+
+_Comment by @kbknapp on 2016-01-25 10:20_
+
+Requires #348
+
+
+---
+
+_Comment by @kbknapp on 2016-01-26 14:15_
+
+Closed with #388 
+
+
+---
+
+_Closed by @kbknapp on 2016-01-26 14:15_
+
+---

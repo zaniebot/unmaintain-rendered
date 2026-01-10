@@ -1,0 +1,244 @@
+---
+number: 16933
+title: "`uv pip install` ignores explicit package when it's in `override-dependencies`"
+type: issue
+state: open
+author: jreiml
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-02T17:09:51Z
+updated_at: 2025-12-04T00:12:50Z
+url: https://github.com/astral-sh/uv/issues/16933
+synced_at: 2026-01-10T01:26:11Z
+---
+
+# `uv pip install` ignores explicit package when it's in `override-dependencies`
+
+---
+
+_Issue opened by @jreiml on 2025-12-02 17:09_
+
+### Summary
+
+Possibly related to #9073.
+
+When a package is listed in `[tool.uv] override-dependencies`, `uv pip install` ignores the version/URL/file you specify and resolves from indexes instead.
+
+**Minimal reproduction:**
+
+```bash
+mkdir /tmp/uv-bug-repro && cd /tmp/uv-bug-repro
+
+cat > pyproject.toml << 'EOF'
+[project]
+name = "uv-bug-repro"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+override-dependencies = ["ray"]
+EOF
+
+uv venv .venv
+
+# Try to install ray 3.0.0.dev0 from direct URL
+uv pip install --python .venv --no-deps \
+  "https://s3-us-west-2.amazonaws.com/ray-wheels/master/def11199f9b2cef89e63f7d67c18ec221aed2c16/ray-3.0.0.dev0-cp312-cp312-manylinux2014_x86_64.whl"
+```
+
+**Expected:** `ray==3.0.0.dev0` installed from the URL
+
+**Actual:** `ray==2.52.1` installed from PyPI
+
+```
+Resolved 1 package in 23ms
+Downloading ray (68.9MiB)
+ Downloaded ray
+Prepared 1 package in 540ms
+Installed 1 package in 99ms
+ + ray==2.52.1
+```
+
+The same happens with version specifiers and local files:
+
+```bash
+uv pip install --python .venv --no-deps "ray==2.51.0"
+# Installs ray==2.52.1 instead of 2.51.0
+
+uv pip install --python .venv --no-deps /tmp/ray-3.0.0.dev0-cp312-cp312-manylinux2014_x86_64.whl
+# Installs ray==2.52.1 instead of the local file
+```
+
+<details>
+<summary>Verbose output (<code>-vvv</code>)</summary>
+
+```
+DEBUG uv 0.9.14
+DEBUG At least one requirement is not satisfied: https://s3-us-west-2.amazonaws.com/ray-wheels/master/.../ray-3.0.0.dev0-cp312-cp312-manylinux2014_x86_64.whl
+DEBUG Adding direct dependency: ray*
+TRACE Fetching metadata for ray from https://pypi.org/simple/ray/
+...
+TRACE Sending fresh GET request for https://pypi.org/packages/.../ray-2.52.1-cp312-cp312-manylinux2014_x86_64.whl
+...
+ + ray==2.52.1
+```
+
+The URL/file we provided is never fetched. uv resolves `ray` from PyPI instead.
+
+</details>
+
+**Workaround:**
+
+```bash
+UV_NO_CONFIG=1 uv pip install --python .venv --no-deps "https://..."
+# Correctly installs ray==3.0.0.dev0
+```
+
+**Additional notes:**
+- `--prerelease allow` does not help
+- Adding `[tool.uv.sources]` with the same URL does not help
+- Without `override-dependencies`, it works correctly
+
+### Platform
+
+Linux 5.15.0-1070-nvidia x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.14
+
+### Python version
+
+Python 3.12.3
+
+---
+
+_Label `bug` added by @jreiml on 2025-12-02 17:09_
+
+---
+
+_Comment by @charliermarsh on 2025-12-03 05:54_
+
+Can you say more about the use-case? On first glance this seems correct, since putting `ray` in overrides is equivalent to replacing any dependency on Ray with, well, `ray` (i.e., "Accept any version of `ray` from any listed registry).
+
+---
+
+_Comment by @jreiml on 2025-12-03 21:22_
+
+Thanks for having a look! Regarding the use-case: This impacts CI/docker workflows where I rely on `uv export` + `uv pip install`.
+
+While I understand that `override-dependencies` is intended to reset constraints, the current behavior is problematic because **`uv pip install` applies the project configuration partially.**
+
+It reads `pyproject.toml` to apply the `override-dependencies` (stripping the version/URL provided via CLI), but it ignores `[tool.uv.sources]`.
+
+This leaves `uv` in an inconsistent state: it enforces the override (removing CLI constraints), causing it to incorrectly default to PyPI.
+
+If `uv pip install` respects `override-dependencies`, it must also respect `tool.uv.sources`.
+
+From https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes:
+
+> "uv's behavior is such that if a package exists on an internal index, it should always be installed from the internal index, and never from PyPI."
+> 
+
+## Examples
+
+If I define a source in `[tool.uv.sources]`, `ray` should resolve to that source.
+
+---
+
+### Example 1: URL via `tool.uv.sources` (inconsistent)
+
+```toml
+[project]
+name = "project-a"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["project-b"]  # depends on ray==2.52.1
+
+[tool.uv]
+override-dependencies = ["ray"]
+
+[tool.uv.sources]
+ray = { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/master/def11199f9b2cef89e63f7d67c18ec221aed2c16/ray-3.0.0.dev0-cp312-cp312-manylinux2014_x86_64.whl" }
+```
+
+| Command | Result |
+|---------|--------|
+| `uv sync` | ✅ Installs `ray==3.0.0.dev0` from URL |
+| `uv pip install "ray @ https://..."` | ❌ Installs `ray==2.52.1` from PyPI |
+
+`uv pip install` applies the override (replacing my CLI URL with bare `ray`) but ignores `tool.uv.sources`, so it resolves from PyPI.
+
+---
+
+### Example 2: URL inlined in `override-dependencies` (works)
+
+```toml
+[tool.uv]
+override-dependencies = ["ray @ https://s3-us-west-2.amazonaws.com/ray-wheels/master/def11199f9b2cef89e63f7d67c18ec221aed2c16/ray-3.0.0.dev0-cp312-cp312-manylinux2014_x86_64.whl"]
+```
+
+| Command | Result |
+|---------|--------|
+| `uv sync` | ✅ Installs `ray==3.0.0.dev0` from URL |
+| `uv pip install "ray @ https://..."` | ✅ Installs `ray==3.0.0.dev0` from URL |
+
+This works because the URL is baked into the override itself.
+
+---
+
+### Example 3: Custom index via `tool.uv.index` (works)
+
+```toml
+[tool.uv]
+override-dependencies = ["ray==3.0.0.dev0+custom"]
+
+[[tool.uv.index]]
+url = "https://pypi.internal"
+name = "pypi-internal"
+```
+
+| Command                                   | Result                                                                      |
+|-------------------------------------------|-----------------------------------------------------------------------------|
+| `uv sync`                                 | ✅ Installs custom build from `pypi-internal`                                |
+| `uv pip install "ray==3.0.0.dev0+custom"` | ✅ Installs custom build from `pypi-internal`                                |
+
+This works because `uv pip install` searches all non-explicit indexes.
+
+---
+
+### Example 4: Explicit index via `tool.uv.sources` (broken)
+
+```toml
+[tool.uv]
+override-dependencies = ["ray==3.0.0.dev0+custom"]
+
+[[tool.uv.index]]
+url = "https://pypi.internal"
+name = "pypi-internal"
+explicit = true
+
+[tool.uv.sources]
+ray = { index = "pypi-internal" }
+```
+
+| Command                                   | Result                                                                      |
+|-------------------------------------------|-----------------------------------------------------------------------------|
+| `uv sync`                                 | ✅ Installs custom build from `pypi-internal`                                |
+| `uv pip install "ray==3.0.0.dev0+custom"` | ❌ Ignores `pypi-internal`, searches PyPI instead                            |
+| `uv pip install "ray==2.52.1"`            | ❌ Applies override `ray==3.0.0.dev0+custom`, while ignoring `pypi-internal` |
+
+Unlike Example 2, there's no (simple) workaround here. You can't inline an index into `override-dependencies`, and `UV_NO_CONFIG=1` doesn't help either.
+`uv export` doesn't include index information in its output, so `uv pip install` will search PyPI where the custom version doesn't exist.
+
+---
+
+**tl;dr**: `uv pip install` reads `override-dependencies` but ignores `tool.uv.sources`. If applying `override-dependencies` is intended, it should apply both.
+
+---
+
+_Referenced in [astral-sh/uv#16990](../../astral-sh/uv/issues/16990.md) on 2025-12-04 22:32_
+
+---

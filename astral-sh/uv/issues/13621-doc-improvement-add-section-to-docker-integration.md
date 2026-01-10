@@ -1,0 +1,61 @@
+---
+number: 13621
+title: "Doc improvement: add section to Docker integration that demonstrates system level install"
+type: issue
+state: open
+author: rsyring
+labels: []
+assignees: []
+created_at: 2025-05-23T17:43:32Z
+updated_at: 2025-05-23T17:43:32Z
+url: https://github.com/astral-sh/uv/issues/13621
+synced_at: 2026-01-10T01:25:35Z
+---
+
+# Doc improvement: add section to Docker integration that demonstrates system level install
+
+---
+
+_Issue opened by @rsyring on 2025-05-23 17:43_
+
+Figuring this out took me way longer than it should have even though the hint was right there in the docs.  I just didn't grok it and repeatedly struck out with both ChatGPT and Claude 4.0.
+
+My suggestion is to add a minimally complete Dockerfile example demonstrating system install to the docs.  Add it right below: https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment and label it "Project install to system" or similar.
+
+You might want to pick a more typical image and environment path than this example.  But what I have here is complete and verified as a starting place.
+
+```Dockerfile
+from public.ecr.aws/lambda/python:3.12 as app
+
+# env
+env FLASK_DEBUG=0
+# System install
+env UV_PROJECT_ENVIRONMENT=/var/lang/
+# Optimize startup time
+env UV_COMPILE_BYTECODE=1
+# Hardlinks don't work in docker images anyway, so don't warn me or take time trying
+env UV_LINK_MODE=copy
+
+# uv install
+# grab /uvx too if you need it
+copy --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/
+
+##  App
+workdir /app
+
+# Build / deps
+copy pyproject.toml hatch.toml readme.md uv.lock .
+copy src/poster/version.py src/poster/version.py
+run --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --inexact
+
+# Source files after the build for better caching/speed when deps haven't changed
+copy src/poster src/poster
+copy src/lambda_handler.py src
+
+# The lamba runtime environment will use this dotted path as the entry point to our app when
+# the lambda function is invoked.  It must be a function, it doesn't handle class methods.
+cmd ["lambda_handler.entry"]
+```
+
+---

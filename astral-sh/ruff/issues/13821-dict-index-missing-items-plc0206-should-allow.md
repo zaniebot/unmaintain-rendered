@@ -1,0 +1,155 @@
+---
+number: 13821
+title: dict-index-missing-items (PLC0206) should allow assignment by key
+type: issue
+state: closed
+author: oprypin
+labels:
+  - rule
+assignees: []
+created_at: 2024-10-19T14:36:50Z
+updated_at: 2024-10-22T06:50:08Z
+url: https://github.com/astral-sh/ruff/issues/13821
+synced_at: 2026-01-10T01:22:54Z
+---
+
+# dict-index-missing-items (PLC0206) should allow assignment by key
+
+---
+
+_Issue opened by @oprypin on 2024-10-19 14:36_
+
+Background:
+
+<blockquote>
+
+Ruff and pylint **agree** that the following is **bad**:
+
+```python
+m = {"foo": "bar"}
+for k in m:
+    print("test-" + m[k])
+```
+
+```console
+$ pylint --disable=C0114 --enable=C0206 test.py
+************* Module test
+test.py:2:0: C0206: Consider iterating with .items() (consider-using-dict-items)
+
+------------------------------------------------------------------
+Your code has been rated at 6.67/10 (previous run: 3.33/10, +3.33)
+```
+```console
+$ ruff --isolated check --preview --select=PLC0206 test.py
+test.py:2:1: PLC0206 Extracting value from dictionary without calling `.items()`
+  |
+1 |   m = {"foo": "bar"}
+2 | / for k in m:
+3 | |     print("test-" + m[k])
+  | |_________________________^ PLC0206
+  |
+
+Found 1 error.
+```
+
+</blockquote>
+
+---
+
+However, the following code is totally reasonable and doesn't benefit from involving `.items()` at all, and **pylint agrees with me** but **ruff disagrees**:
+
+```python
+m = {"foo": "bar"}
+for k in m:
+    m[k] = "test-" + m[k]
+```
+
+```console
+$ pylint --disable=C0114 --enable=C0206 test.py           
+
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 6.67/10, +3.33)
+```
+```console
+$ ruff --isolated check --preview --select=PLC0206 test.py
+test.py:2:1: PLC0206 Extracting value from dictionary without calling `.items()`
+  |
+1 |   m = {"foo": "bar"}
+2 | / for k in m:
+3 | |     m[k] = "test-" + m[k]
+  | |_________________________^ PLC0206
+  |
+
+Found 1 error.
+```
+
+What makes this example different is that I have to have the piece of code `m[k] =` spelled out anyway, so there's no readability benefit in preventing me from using the piece of code `m[k]` also for reading the value.
+
+---
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+   
+  "dict-index-missing-items" "consider-using-dict-items" "PLC0206"
+
+* <details><summary>A minimal code snippet that reproduces the bug:</summary>
+
+  ```python
+  m = {"foo": "bar"}
+  for k in m:
+      m[k] = "test-" + m[k]
+  ```
+
+  </details>
+
+* The command you invoked
+
+  ```bash
+  ruff --isolated check --preview --select=PLC0206 test.py
+  ```
+
+* The current Ruff settings:
+
+   empty
+
+* The current Ruff version (`ruff --version`)
+
+   0.7.0
+
+
+---
+
+_Comment by @Skylion007 on 2024-10-19 15:25_
+
+> so there's no readability benefit in preventing me from using the piece of code m[k] also for reading the value.
+
+You do avoid doing a hash lookup with the key once though, so there is that benefit. It's partially for readability, partially for minor perf.
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-10-22 06:50_
+
+---
+
+_Comment by @MichaReiser on 2024-10-22 06:50_
+
+Thanks for the excellent write up! 
+
+I skimmed through pylint's implementation and it isn't clear to me where it is intentionally ignoring the above example. 
+
+https://github.com/pylint-dev/pylint/blob/5feface0d48ba7a6a5eb2b7a2cac99f983afa6b8/pylint/checkers/refactoring/recommendation_checker.py#L268
+
+I do think that the current behavior captures the rules intent correctly. The rule isn't just about readability but also about efficiency which is why it triggers here:
+
+> more efficient than extracting the value with the key.
+
+
+
+---
+
+_Closed by @MichaReiser on 2024-10-22 06:50_
+
+---
+
+_Referenced in [astral-sh/ruff#14585](../../astral-sh/ruff/issues/14585.md) on 2024-11-25 15:58_
+
+---

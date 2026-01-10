@@ -1,0 +1,112 @@
+---
+number: 13492
+title: "Failed to extract archive, bzip2: bz2 header missing"
+type: issue
+state: closed
+author: Sergo1217
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-05-16T14:07:40Z
+updated_at: 2025-05-17T00:17:24Z
+url: https://github.com/astral-sh/uv/issues/13492
+synced_at: 2026-01-10T01:25:34Z
+---
+
+# Failed to extract archive, bzip2: bz2 header missing
+
+---
+
+_Issue opened by @Sergo1217 on 2025-05-16 14:07_
+
+### Summary
+
+![Image](https://github.com/user-attachments/assets/e99912be-17ed-4a8b-ae40-f98009368917)
+
+### Platform
+
+Windows x86_64
+
+### Version
+
+uv 0.7.4 (6fbcd09b5 2025-05-15)
+
+### Python version
+
+Python 3.13.3
+
+---
+
+_Label `bug` added by @Sergo1217 on 2025-05-16 14:07_
+
+---
+
+_Comment by @konstin on 2025-05-16 14:51_
+
+I cannot reproduce, this `uv pip install jaconv==0.4.0` works for me. Are you using any non-standard settings?
+
+---
+
+_Label `bug` removed by @konstin on 2025-05-16 14:51_
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-05-16 14:51_
+
+---
+
+_Comment by @GarbenTangheVintecc on 2025-05-16 16:23_
+
+I get the same issue when installing `fvcore==0.1.5.post20221221` or `click-completion==0.5.2`.
+
+It happens inside Ubuntu 22.04 Docker containers on both Ubuntu 25.04 (x86_64) and L4T 36.4.3 (arm_64) machines.
+
+I installed uv and python as follows:
+
+```Dockerfile
+COPY --from=ghcr.io/astral-sh/uv:0.7.4 /uv /uvx /bin/
+ENV UV_LINK_MODE="copy" UV_NO_BUILD_ISOLATION="1"
+RUN uv python install 3.10
+
+...
+
+# non-root user
+RUN uv venv --python 3.10
+```
+
+```bash
+Using Python 3.10.12 environment at: py310
+0.720   × Failed to download and build `fvcore==0.1.5.post20221221`
+0.720   ├─▶ Failed to extract archive: fvcore==0.1.5.post20221221
+0.720   ╰─▶ bzip2: bz2 header missing
+```
+
+---
+
+_Comment by @effigies on 2025-05-16 18:05_
+
+I'm hitting this very frequently, locally and on CI, in the last 24 hours or so. I can resolve it locally by `uv cache clear <failing package>` and rerunning. I can't, however, reproduce it once resolved.
+
+---
+
+_Referenced in [astral-sh/uv#13498](../../astral-sh/uv/pulls/13498.md) on 2025-05-16 20:41_
+
+---
+
+_Comment by @konstin on 2025-05-16 20:48_
+
+We accidentally changed the cache format in the 0.7.4 without noticing, causing these errors, sorry! Cleaning the cache will fix this, but we're also shipping a fix with the next release.
+
+---
+
+_Closed by @charliermarsh on 2025-05-17 00:17_
+
+---
+
+_Closed by @charliermarsh on 2025-05-17 00:17_
+
+---
+
+_Referenced in [kedro-org/kedro#4747](../../kedro-org/kedro/issues/4747.md) on 2025-05-19 16:19_
+
+---

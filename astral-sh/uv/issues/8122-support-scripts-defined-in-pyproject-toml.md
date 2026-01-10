@@ -1,0 +1,49 @@
+---
+number: 8122
+title: "support scripts defined in `pyproject.toml`"
+type: issue
+state: closed
+author: DetachHead
+labels: []
+assignees: []
+created_at: 2024-10-11T05:09:28Z
+updated_at: 2024-10-11T06:04:50Z
+url: https://github.com/astral-sh/uv/issues/8122
+synced_at: 2026-01-10T01:24:24Z
+---
+
+# support scripts defined in `pyproject.toml`
+
+---
+
+_Issue opened by @DetachHead on 2024-10-11 05:09_
+
+pdm supports a `scripts` section in `pyproject.toml` where you can define scripts specific top your project that can be called from the command line [or from vscode](https://marketplace.visualstudio.com/items?itemName=GabDug.pdm). npm has the same thing in `package.json`.
+
+it would be nice if uv supported this too, perhaps under `[tool.uv.scripts]`
+
+---
+
+_Referenced in [astral-sh/uv#8123](../../astral-sh/uv/issues/8123.md) on 2024-10-11 05:14_
+
+---
+
+_Comment by @b0o on 2024-10-11 05:46_
+
+Related: https://github.com/astral-sh/uv/issues/5903
+
+---
+
+_Comment by @DetachHead on 2024-10-11 06:04_
+
+looks like the same thing, closing this as a duplicate
+
+---
+
+_Closed by @DetachHead on 2024-10-11 06:04_
+
+---
+
+_Referenced in [leynos/netsuke#167](../../leynos/netsuke/pulls/167.md) on 2025-09-28 17:10_
+
+---

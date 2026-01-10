@@ -1,0 +1,181 @@
+---
+number: 4607
+title: Add method to parse environment variables from custom source
+type: issue
+state: open
+author: robertkiel
+labels:
+  - C-enhancement
+  - A-builder
+  - S-waiting-on-design
+assignees: []
+created_at: 2023-01-05T09:07:59Z
+updated_at: 2025-07-14T19:24:14Z
+url: https://github.com/clap-rs/clap/issues/4607
+synced_at: 2026-01-10T01:27:58Z
+---
+
+# Add method to parse environment variables from custom source
+
+---
+
+_Issue opened by @robertkiel on 2023-01-05 09:07_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.0.32
+
+### Describe your use case
+
+Rust code might run as a standalone application as well as a WebAssembly module in the browser or in any other WebAssembly runtime.
+
+This comes with the advantage that WebAssembly modules and standalone applications share the same code and benefit from the stability and safety of Rust.
+
+Within WebAssembly, in most cases the execution environment cannot access process variables such as `argv` and environment variables - which are very often used for configuration - , hence they somehow need to get passed into the WebAssembly module. Fortunately, this shim functionaliy is only necessary when compiling to WebAssembly.
+
+### Describe the solution you'd like
+
+Since `std::env::vars()` or `std::env::vars_os()` are not available, add a method that allows passing environment variables from a custom source into `clap`.
+
+Example
+```rust
+use std::env;
+use std::collections::HashMap;
+use clap::{Command, Arg};
+
+let mut cmd = Command::new("myprog")
+    .arg(Arg::new("data_dir")
+        .long("data_dir")
+        .env("MYPROG_DATA_DIR"));
+
+// not necessary, just for demonstration
+env::set_var("MYPROG_DATA_DIR", "/home/user/Work/clap");
+
+// might be populated with different data
+let env_vars = HashMap::from_iter(env::vars_os());
+cmd.update_env_from(env_vars);
+
+let m = cmd.get_matches_from(vec!["foo"]);
+assert_eq!("/home/user/Work/clap", m.get_one::<String>("data_dir").unwrap());
+```
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+See #4605 for sample implementation.
+
+This functionality could be hidden by a `wasm` feature flag.
+
+---
+
+_Label `C-enhancement` added by @robertkiel on 2023-01-05 09:07_
+
+---
+
+_Referenced in [clap-rs/clap#4605](../../clap-rs/clap/pulls/4605.md) on 2023-01-05 09:08_
+
+---
+
+_Label `A-builder` added by @epage on 2023-01-05 14:02_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2023-01-05 14:02_
+
+---
+
+_Comment by @epage on 2023-01-05 14:07_
+
+> Within WebAssembly, in most cases the execution environment cannot access process variables such as argv and environment variables - which are very often used for configuration - , hence they somehow need to get passed into the WebAssembly module. Fortunately, this shim functionaliy is only necessary when compiling to WebAssembly.
+
+Ok, so this is not wasm in the browser (where there is no environment) but embedded within a desktop application where the environment needs to be proxied.
+
+---
+
+_Comment by @epage on 2023-01-05 14:41_
+
+> See https://github.com/clap-rs/clap/pull/4605 for sample implementation.
+
+One aspect of that that is weird to me, as an API, is that its updating the envs already stored.  I think I'd rather we set the env to use and use that instead.  As this is a special use case on top of special use case, I would want to limit the impact of this on others (note that testing would be another use case).  You mentioned limiting it to wasm but this has use outside of wasm and I tend to avoid conditional compilation (we already have too much in clap).  I have been [exploring ideas to make new features cheaper](https://github.com/clap-rs/clap/discussions/3476) and this would be a good first use of the idea.  Buried in that page is a plugin system where a `Command` and an `Arg` support any data being put into them using something like an `AnyMap`.  I've been experimenting with it in one of my tools to get some experience before baking it into clap's API ([1](https://github.com/gitext-rs/git-stack/blob/main/src/any.rs), [2](https://github.com/gitext-rs/git-stack/blob/main/src/graph/mod.rs#L189)).
+
+The above does require setting the env source before adding any other args.  We could re-evaluate when we read the environment to make this more flexible on when either is called.
+
+---
+
+_Comment by @robertkiel on 2023-01-05 17:06_
+
+> The above does require setting the env source before adding any other args. We could re-evaluate when we read the environment to make this more flexible on when either is called.
+
+It works mostly like before:
+- while constructing instances of `Arg` are created, the environment variable names, and if present, their values get stored into `arg.env`
+- in a second step, we feed in the `--args`
+
+... with the only difference that first all `Arg` instances get created and then we insert the envs and then we add the `--args`
+
+---
+
+_Comment by @robertkiel on 2023-01-05 17:15_
+
+> > Within WebAssembly, in most cases the execution environment cannot access process variables such as argv and environment variables - which are very often used for configuration - , hence they somehow need to get passed into the WebAssembly module. Fortunately, this shim functionaliy is only necessary when compiling to WebAssembly.
+> 
+> Ok, so this is not wasm in the browser (where there is no environment) but embedded within a desktop application where the environment needs to be proxied.
+
+The idea was to have one Rust source code that is normally fed with `argv` + environment variables. But when running in the browser, the browser might read some `.env` file or have it stored in its local storage and thus mimics environment variables used for configuration. In contrast, a standalone WebAssembly execution environment would just forward all `argv` values and all environment values to the WebAssembly module.
+
+---
+
+_Referenced in [clap-rs/clap#4793](../../clap-rs/clap/issues/4793.md) on 2023-03-27 18:20_
+
+---
+
+_Comment by @epage on 2023-03-27 20:57_
+
+FYI I've created #4793 as an issue dedicated to that plugin system idea I mentioned.  Our plan is to move `Arg::env` support out of the core of clap.
+
+---
+
+_Referenced in [clap-rs/clap#5104](../../clap-rs/clap/issues/5104.md) on 2023-08-30 19:57_
+
+---
+
+_Comment by @Kinrany on 2023-11-07 13:49_
+
+As mentioned in #5104, another use case is implementing `Default` for a type that derives `Parser` and provides default values.
+
+I have to mention that I was surprised that `parse_from` does not already ignore the environment. In my model `env` adds a second source of data to be parsed in addition to CLI arguments, and I expected `parse_from` to accept an iterator that combines all the data.
+
+---
+
+_Referenced in [clap-rs/clap#5569](../../clap-rs/clap/pulls/5569.md) on 2024-07-07 15:39_
+
+---
+
+_Referenced in [clap-rs/clap#6033](../../clap-rs/clap/issues/6033.md) on 2025-06-10 20:24_
+
+---
+
+_Comment by @linabutler on 2025-07-14 19:24_
+
+Hi there, just chiming in to say that I have the same use case!
+
+(The specifics are slightly different—instead of Wasm, it's [Starlark](https://docs.rs/starlark/latest/starlark/)[^1]—but the crux of the problem is the same: I'm proxying a subset of the hosting process's environment variables to the Starlark runtime, so Starlark scripts only have access to those proxied environment variables).
+
+I tried a couple of workarounds: (1) ignoring `required` for arguments that also specified an `env` fallback, and using the value of the proxied environment variable as a `default_value`, and (2) prepending the values of the proxied variables as hidden string arguments to the input, and specifying `.override_with` on those hidden argument definitions. Both of those were super kludgy, though, especially when `.required_if_any` and `.required_unless_present` get involved, so I opted not to expose environment variable defaults for arguments to Starlark for now.
+
+An API as simple as the suggestions in #5569 or #6033—or a plugin system for attaching extra data to arguments that you mentioned in https://github.com/clap-rs/clap/issues/4607#issuecomment-1372305605, @epage—would be amazing, and would solve my use case perfectly.
+
+(I know this is waiting on design; so no expectations at all, but I still wanted to share another use outside of Wasm, in case it's helpful for design discussions. 😊)
+
+Thanks!
+
+[^1]: I'm wrapping Clap's builder API in a Rust-implemented Starlark module that exposes an [`argparse.ArgumentParser`](https://docs.python.org/3/library/argparse.html)-like API to Starlark scripts.
+
+---

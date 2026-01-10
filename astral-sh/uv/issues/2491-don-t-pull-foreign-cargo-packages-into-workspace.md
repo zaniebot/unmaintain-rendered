@@ -1,0 +1,153 @@
+---
+number: 2491
+title: "Don't pull foreign cargo packages into workspace"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - external
+assignees: []
+created_at: 2024-03-16T18:24:23Z
+updated_at: 2024-09-06T01:46:26Z
+url: https://github.com/astral-sh/uv/issues/2491
+synced_at: 2026-01-10T01:23:18Z
+---
+
+# Don't pull foreign cargo packages into workspace
+
+---
+
+_Issue opened by @charliermarsh on 2024-03-16 18:24_
+
+If you do `cargo run pip install deptry --no-binary deptry --cache-dir foo` from the `uv` directory:
+
+```
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: deptry==0.14.0
+  Caused by: Failed to build: deptry==0.14.0
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+Running `maturin pep517 build-wheel -i /Users/crmarsh/workspace/uv/foo/.tmp9kGP1j/.venv/bin/python --compatibility off`
+--- stderr:
+error: current package believes it's in a workspace when it's not:
+current:   /Users/crmarsh/workspace/uv/foo/built-wheels-v0/pypi/deptry/0.14.0/33SZPLpftp49A7cKw7dAq/deptry-0.14.0.tar.gz/Cargo.toml
+workspace: /Users/crmarsh/workspace/uv/Cargo.toml
+
+this may be fixable by adding `foo/built-wheels-v0/pypi/deptry/0.14.0/33SZPLpftp49A7cKw7dAq/deptry-0.14.0.tar.gz` to the `workspace.members` array of the manifest located at: /Users/crmarsh/workspace/uv/Cargo.toml
+Alternatively, to keep it out of the workspace, add the package to the `workspace.exclude` array, or add an empty `[workspace]` table to the package's manifest.
+💥 maturin failed
+  Caused by: Cargo metadata failed. Does your crate compile with `cargo build`?
+  Caused by: `cargo metadata` exited with an error:
+Error: command ['maturin', 'pep517', 'build-wheel', '-i', '/Users/crmarsh/workspace/uv/foo/.tmp9kGP1j/.venv/bin/python', '--compatibility', 'off'] returned non-zero exit status 1
+---
+```
+
+We need a way to "stop" Maturin from thinking it's in a workspace.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-16 18:24_
+
+---
+
+_Comment by @charliermarsh on 2024-03-16 18:24_
+
+@konstin -- any ideas?
+
+---
+
+_Comment by @charliermarsh on 2024-03-16 18:24_
+
+(This is _not_ the cause of #2490.)
+
+---
+
+_Assigned to @konstin by @charliermarsh on 2024-03-18 03:15_
+
+---
+
+_Renamed from "Enforce build isolation for Maturin-based packages" to "Don't pull foreign cargo packages into workspace" by @konstin on 2024-03-18 08:50_
+
+---
+
+_Comment by @konstin on 2024-03-18 08:56_
+
+This is a general cargo behavior,
+```
+mkdir bar && cd bar && git clone https://github.com/fpgmaas/deptry && cd deptry && cargo check
+```
+fails. There seems to be no way to exclude all packages, i've put a feature request upstream: https://github.com/rust-lang/cargo/issues/13600
+
+---
+
+_Unassigned @konstin by @konstin on 2024-03-18 08:56_
+
+---
+
+_Comment by @charliermarsh on 2024-03-18 13:06_
+
+Yeah we need some sort of isolated flag.
+
+---
+
+_Comment by @charliermarsh on 2024-03-18 13:09_
+
+@konstin - I guess we could add an empty `workspace = []` to the package we're building if it's not present... but that seems bad.
+
+---
+
+_Comment by @konstin on 2024-03-18 13:29_
+
+Does that affect anyone but us when we're developing and putting the cache inside for the uv checkout?
+
+---
+
+_Comment by @charliermarsh on 2024-03-18 13:38_
+
+To be clear, this only affects workflows in which the user puts the cache in the same directory as their project, and their project is a Cargo workspace.
+
+---
+
+_Comment by @fcakyon on 2024-08-21 22:39_
+
+what can i do to overcome this error? @charliermarsh 
+
+---
+
+_Label `upstream` added by @konstin on 2024-08-22 10:45_
+
+---
+
+_Label `bug` removed by @konstin on 2024-08-22 10:45_
+
+---
+
+_Comment by @Kludex on 2024-09-05 18:12_
+
+We are also interested in this... 😅 
+
+---
+
+_Comment by @fcakyon on 2024-09-05 19:42_
+
+This issue is the only reason we stopped using uv. Is there any fix available?
+
+---
+
+_Comment by @zanieb on 2024-09-05 20:07_
+
+Can you share why you're placing the uv cache inside your project?
+
+---
+
+_Comment by @fcakyon on 2024-09-06 01:38_
+
+I don't try to do anything specific. I just run 'pip install -r requirements' in uv env and this cargo error raises
+
+---
+
+_Comment by @charliermarsh on 2024-09-06 01:46_
+
+Can you share the error?
+
+---

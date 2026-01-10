@@ -1,0 +1,107 @@
+---
+number: 12130
+title: "Allow multiple `--package` arguments to `uv sync`"
+type: issue
+state: closed
+author: gedemagt
+labels:
+  - enhancement
+  - needs-decision
+assignees: []
+created_at: 2025-03-12T07:19:30Z
+updated_at: 2025-11-04T14:17:59Z
+url: https://github.com/astral-sh/uv/issues/12130
+synced_at: 2026-01-10T01:25:15Z
+---
+
+# Allow multiple `--package` arguments to `uv sync`
+
+---
+
+_Issue opened by @gedemagt on 2025-03-12 07:19_
+
+### Summary
+
+I currently use workspaces to manage a mono-repo structure, but I would like to keep all my linting/test tools in the root project. 
+
+In my CI/CD I would like to only install the dependencies of one workspace AND the root workspace. Currently, however, it seems to only be possible to either install ALL workspaces or only one. 
+
+Would it be possible to allow for multiple `--package` flags in the `uv sync` command? 
+
+### Example
+
+```
+monorepo
+|-- repo_1
+|   |-- pyproject.toml
+|-- repo_2
+|   |-- pyproject.toml
+|-- pyproject.toml
+|-- uv.lock
+```
+To only install root dependencies and dependencies for repo_2 one could call
+`uv sync --package monorepo --package repo_2`
+
+---
+
+_Label `enhancement` added by @gedemagt on 2025-03-12 07:19_
+
+---
+
+_Comment by @charliermarsh on 2025-03-12 21:00_
+
+I think we could consider this. It makes sense conceptually. \cc @zanieb 
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2025-03-12 21:00_
+
+---
+
+_Referenced in [astral-sh/uv#12353](../../astral-sh/uv/issues/12353.md) on 2025-03-20 22:44_
+
+---
+
+_Comment by @zanieb on 2025-03-20 22:45_
+
+I think we should add support for this, though I wonder if there's ambiguity for operations which target a specific child package? See also #12353 
+
+---
+
+_Comment by @zanieb on 2025-03-20 22:49_
+
+e.g.
+
+- https://github.com/astral-sh/uv/issues/11537#issuecomment-2661039140
+
+---
+
+_Referenced in [astral-sh/uv#13363](../../astral-sh/uv/issues/13363.md) on 2025-05-10 14:51_
+
+---
+
+_Referenced in [astral-sh/uv#13570](../../astral-sh/uv/issues/13570.md) on 2025-05-21 11:26_
+
+---
+
+_Renamed from "Sync a subset of packages, but not all" to "Allow multiple `--package` arguments to `uv sync`" by @charliermarsh on 2025-05-21 11:26_
+
+---
+
+_Comment by @vwxyzjn on 2025-06-05 18:28_
+
+Hi has there been an update to this?
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-11-01 00:19_
+
+---
+
+_Referenced in [astral-sh/uv#16543](../../astral-sh/uv/pulls/16543.md) on 2025-11-01 01:33_
+
+---
+
+_Closed by @charliermarsh on 2025-11-04 14:17_
+
+---

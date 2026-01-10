@@ -1,0 +1,37 @@
+---
+number: 308
+title: ArgRequiredElseHelp versus index(1).required(true)
+type: issue
+state: closed
+author: birkenfeld
+labels: []
+assignees: []
+created_at: 2015-10-05T19:19:05Z
+updated_at: 2018-08-02T03:29:46Z
+url: https://github.com/clap-rs/clap/issues/308
+synced_at: 2026-01-10T01:26:27Z
+---
+
+# ArgRequiredElseHelp versus index(1).required(true)
+
+---
+
+_Issue opened by @birkenfeld on 2015-10-05 19:19_
+
+If I have an argument with index(1).required(true) and give no arguments, I don't get the help, but only the short error and usage string.
+
+(May be intended, if so please close.)
+
+
+---
+
+_Comment by @sru on 2015-10-05 22:11_
+
+It is intended.
+
+
+---
+
+_Closed by @sru on 2015-10-05 22:11_
+
+---

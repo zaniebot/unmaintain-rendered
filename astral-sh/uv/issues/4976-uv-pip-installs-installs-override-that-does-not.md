@@ -1,0 +1,75 @@
+---
+number: 4976
+title: uv pip installs installs override that does not match requested environment markers
+type: issue
+state: closed
+author: sbidoul
+labels:
+  - needs-decision
+assignees: []
+created_at: 2024-07-10T21:07:35Z
+updated_at: 2024-07-11T08:12:00Z
+url: https://github.com/astral-sh/uv/issues/4976
+synced_at: 2026-01-10T01:23:43Z
+---
+
+# uv pip installs installs override that does not match requested environment markers
+
+---
+
+_Issue opened by @sbidoul on 2024-07-10 21:07_
+
+This is a variant of #4826, with uv 0.2.24
+
+pyproject.toml:
+
+```toml
+[project]
+name = "demo"
+version = "1.0"
+dependencies = [
+   "importlib_metadata; python_version<'3.8'"
+]
+```
+
+override.txt
+
+```
+importlib-metadata==4.6.4
+```
+
+In a python 3.10 venv, `uv pip install --override override.txt .` installs `importlib-metadata==4.6.4`, where I expect it not to, because my project does not depend on it for python >= 3.8.
+
+This maybe raises interesting questions about the precise semantics of --override.
+
+---
+
+_Renamed from "uv pip installs installs override that don't match requested environment markers" to "uv pip installs installs override that does not match requested environment markers" by @sbidoul on 2024-07-10 21:14_
+
+---
+
+_Comment by @charliermarsh on 2024-07-10 21:31_
+
+This is by design but we might want to change the design to be more like constraints (where we `AND` the markers). The current intent is that your override replaces _all_ instances of the requirement verbatim. So you'd want the override to be `importlib-metadata==4.6.4 ; python_version<'3.8'`.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-07-10 21:31_
+
+---
+
+_Comment by @zanieb on 2024-07-10 21:33_
+
+I think requiring the marker to be included by the user makes the feature more powerful, otherwise you're stuck if the markers are wrong on some transitive dependency — right?
+
+---
+
+_Comment by @sbidoul on 2024-07-11 08:12_
+
+After a good night sleep on it, I think the current behavior is correct and more versatile indeed. So closing.
+
+---
+
+_Closed by @sbidoul on 2024-07-11 08:12_
+
+---

@@ -1,0 +1,147 @@
+---
+number: 6101
+title: "fix(ValueEnum): Detailed help for ValueEnum variant #6096"
+type: pull_request
+state: merged
+author: smoqadam
+labels: []
+assignees: []
+merged: true
+base: master
+head: fix/value-enum-detailed-help
+created_at: 2025-08-11T16:22:19Z
+updated_at: 2025-08-12T17:56:36Z
+url: https://github.com/clap-rs/clap/pull/6101
+synced_at: 2026-01-10T01:28:27Z
+---
+
+# fix(ValueEnum): Detailed help for ValueEnum variant #6096
+
+---
+
+_Pull request opened by @smoqadam on 2025-08-11 16:22_
+
+#6096 
+
+---
+
+_@epage reviewed on 2025-08-11 16:58_
+
+---
+
+_Review comment by @epage on `tests/derive/value_enum.rs`:41 on 2025-08-11 16:58_
+
+We have `ValueEnum` tests in `help.rs` and `doc_comment_help.rs`
+
+Do those meet the needs?
+
+---
+
+_@smoqadam reviewed on 2025-08-11 17:23_
+
+---
+
+_Review comment by @smoqadam on `tests/derive/value_enum.rs`:41 on 2025-08-11 17:23_
+
+I haven't checked yet. I just wanted to write a test to understand the issue first, and adjust the code based on that. I will check those files and I will move it to the right place.
+
+---
+
+_Review comment by @epage on `clap_derive/src/item.rs`:908 on 2025-08-11 19:23_
+
+This would cause the long help to be used for Arguments and Subcommands, and not just Value Enum Variants.
+
+---
+
+_@epage reviewed on 2025-08-11 19:23_
+
+---
+
+_@epage reviewed on 2025-08-11 19:24_
+
+---
+
+_Review comment by @epage on `clap_derive/src/item.rs`:908 on 2025-08-11 19:24_
+
+We also need to gate the behavior with `unstable-v5`
+
+---
+
+_@epage reviewed on 2025-08-12 15:30_
+
+---
+
+_Review comment by @epage on `tests/derive/doc_comments_help.rs`:17 on 2025-08-12 15:30_
+
+We did this in `occurrences.rs` because those tests are additive.
+
+In this case, please have legacy copies of the tests so we ensure the current behavior doesn't get broken.  The last time we did this en masse, we sectioned them off in `tests/derive/legacy`.
+
+---
+
+_Review comment by @epage on `tests/derive/doc_comments_help.rs`:17 on 2025-08-12 15:31_
+
+Please duplicate the tests in its own commit before making any logic changes
+
+---
+
+_@epage reviewed on 2025-08-12 15:31_
+
+---
+
+_@epage reviewed on 2025-08-12 17:03_
+
+---
+
+_Review comment by @epage on `tests/derive/legacy.rs`:1 on 2025-08-12 17:03_
+
+> tests/derive/legacy.rs
+
+should be
+
+> tests/derive/legacy/doc_comments_help.rs
+
+
+---
+
+_@epage reviewed on 2025-08-12 17:04_
+
+---
+
+_Review comment by @epage on `tests/derive/legacy.rs`:1 on 2025-08-12 17:04_
+
+If `#[cfg(feature = "unstable-v5")]` is being applied to all of `tests/derive/doc_comments_help.rs` (which is why I suggested the `legacy/` approach), then we should duplicate all of the tests
+
+If its just a single test and it just changes the help output, then that is just a question have having two instances of the `str![]` like we do in `tests/builder/template_help.rs`
+
+---
+
+_Review comment by @epage on `tests/derive/doc_comments_help.rs`:1 on 2025-08-12 17:05_
+
+This commit adding test cases should pass on its own.  It shouldn't be updating any tests for changes in behavior
+
+---
+
+_@epage reviewed on 2025-08-12 17:05_
+
+---
+
+_@smoqadam reviewed on 2025-08-12 17:29_
+
+---
+
+_Review comment by @smoqadam on `tests/derive/legacy.rs`:1 on 2025-08-12 17:29_
+
+thanks @epage, I hope I got it right this time. I marked the old test not to be run when `feature = "unstable-v5`. 
+
+---
+
+_@epage reviewed on 2025-08-12 17:50_
+
+---
+
+_Review comment by @epage on `tests/derive/legacy.rs`:1 on 2025-08-12 17:50_
+
+Each commit should pass tests.  I've gone ahead and did a push to fix it.
+
+---

@@ -1,0 +1,86 @@
+---
+number: 7140
+title: Rule D400 cause autofix error
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-09-05T06:21:43Z
+updated_at: 2023-09-06T08:51:52Z
+url: https://github.com/astral-sh/ruff/issues/7140
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# Rule D400 cause autofix error
+
+---
+
+_Issue opened by @qarmin on 2023-09-05 06:21_
+
+
+Ruff 0.0.287 (latest changes from main branch)
+```
+ruff  *.py --select D400 --no-cache --fix
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+# encoding: utf"noqa"-8
+# m"#" odule samba.cerpc.netlogon
+# frm /us/lib/python3/dis-packag
+"\
+ "#"t" es/samba/dcerpc/netlogon.cpyth
+```
+
+error
+```
+/home/rafal/test/tmp_folder/703936860PY_FILE_TEST_121514025297412.py:4:1: D400 First line should end with a period
+Found 1 error.
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `/home/rafal/test/tmp_folder/703936860PY_FILE_TEST_121514025297412.py`, the rule codes D400, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12519532/python_compressed.zip)
+
+
+---
+
+_Comment by @qarmin on 2023-09-05 06:26_
+
+Same code cause problem for D415
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-09-05 07:03_
+
+---
+
+_Label `fuzzer` added by @MichaReiser on 2023-09-05 07:03_
+
+---
+
+_Referenced in [astral-sh/ruff#7139](../../astral-sh/ruff/issues/7139.md) on 2023-09-06 02:32_
+
+---
+
+_Referenced in [astral-sh/ruff#7173](../../astral-sh/ruff/pulls/7173.md) on 2023-09-06 08:51_
+
+---
+
+_Assigned to @konstin by @konstin on 2023-09-06 08:51_
+
+---
+
+_Closed by @konstin on 2023-09-06 08:51_
+
+---

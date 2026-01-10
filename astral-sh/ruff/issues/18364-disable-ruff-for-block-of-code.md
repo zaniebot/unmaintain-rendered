@@ -1,0 +1,86 @@
+---
+number: 18364
+title: Disable ruff for block of code
+type: issue
+state: closed
+author: mitasov-ra
+labels:
+  - question
+assignees: []
+created_at: 2025-05-29T09:51:11Z
+updated_at: 2025-05-29T12:37:28Z
+url: https://github.com/astral-sh/ruff/issues/18364
+synced_at: 2026-01-10T01:22:59Z
+---
+
+# Disable ruff for block of code
+
+---
+
+_Issue opened by @mitasov-ra on 2025-05-29 09:51_
+
+What I want:
+
+```python
+def my_function():
+    # ruff.format-disable
+
+    # some non-standard lines of code
+
+    # ruff.format-enable
+
+    # back to formatted code
+```
+
+Every linter should have this feature.
+
+---
+
+_Comment by @MichaReiser on 2025-05-29 09:54_
+
+The formatter supports this. You can use `fmt: off` and `fmt: on` (see https://docs.astral.sh/ruff/formatter/#format-suppression)
+
+For the linter, see https://github.com/astral-sh/ruff/issues/3711
+
+---
+
+_Label `question` added by @MichaReiser on 2025-05-29 09:54_
+
+---
+
+_Comment by @mitasov-ra on 2025-05-29 10:39_
+
+Thanks!
+
+But my request not only about formatter, but for all ruff modules.
+
+For example:
+
+```
+# ruff.flake8 off / disable flake8 checks
+# E501 off / disable this particular check
+
+# and so on
+```
+
+Sorry for unclear fist message
+
+---
+
+_Comment by @mitasov-ra on 2025-05-29 10:41_
+
+Here I see ruff supports disabling rules per file, but lacks disabling per block of code.
+
+https://docs.astral.sh/ruff/linter/#error-suppression
+
+---
+
+_Comment by @MichaReiser on 2025-05-29 12:37_
+
+Yes, i understnad. This is tracked in https://github.com/astral-sh/ruff/issues/3711
+
+---
+
+_Closed by @MichaReiser on 2025-05-29 12:37_
+
+---

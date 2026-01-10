@@ -1,0 +1,96 @@
+---
+number: 10676
+title: F401 false positive when import is used in stringified generic subscript
+type: issue
+state: closed
+author: sterliakov
+labels:
+  - bug
+  - linter
+assignees: []
+created_at: 2024-03-30T22:47:22Z
+updated_at: 2024-03-30T23:39:11Z
+url: https://github.com/astral-sh/ruff/issues/10676
+synced_at: 2026-01-10T01:22:50Z
+---
+
+# F401 false positive when import is used in stringified generic subscript
+
+---
+
+_Issue opened by @sterliakov on 2024-03-30 22:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Keywords: `F401`, "unused import", "generics"
+This closely resembles #9121 
+
+## Reproducer:
+
+```python
+from typing import TYPE_CHECKING, Generic, TypeVar
+    
+if TYPE_CHECKING:
+    from uuid import UUID
+
+_T = TypeVar('_T')
+
+class Base(Generic[_T]): ...
+class Derived(Base["UUID"]): ...
+```
+
+Output:
+```
+$ ruff check --isolated a.py
+a.py:4:22: F401 [*] `uuid.UUID` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+## Configiration
+
+Ruff settings: reproduces without `pyproject.toml` on default settings.
+Ruff version: `0.3.4` installed from PyPI
+
+
+## Notes
+
+Autofixer removes this import, obviously causing `mypy` error (`name "UUID" is not defined [name-defined]`) later. 
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-03-30 22:59_
+
+---
+
+_Label `linter` added by @AlexWaygood on 2024-03-30 22:59_
+
+---
+
+_Comment by @charliermarsh on 2024-03-30 23:12_
+
+We don't currently have any logic to infer whether an arbitrary subscript operations is a generics, but we expose an `extend-generics` setting that you can use to tell Ruff to treat `Base` as such.
+
+
+---
+
+_Comment by @sterliakov on 2024-03-30 23:38_
+
+Ough, sorry, this ticket is anyway a duplicate of #9298, I'll post my further suggestion there instead and close this.
+
+---
+
+_Closed by @sterliakov on 2024-03-30 23:39_
+
+---

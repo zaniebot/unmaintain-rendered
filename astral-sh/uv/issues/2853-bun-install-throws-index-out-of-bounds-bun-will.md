@@ -1,0 +1,78 @@
+---
+number: 2853
+title: "'bun install' throws index out of bounds bun will crash now"
+type: issue
+state: closed
+author: AmitWiki
+labels: []
+assignees: []
+created_at: 2024-04-06T17:31:47Z
+updated_at: 2024-04-06T18:30:42Z
+url: https://github.com/astral-sh/uv/issues/2853
+synced_at: 2026-01-10T01:23:23Z
+---
+
+# 'bun install' throws index out of bounds bun will crash now
+
+---
+
+_Issue opened by @AmitWiki on 2024-04-06 17:31_
+
+On running bun install inside the virtual environment, bun throws following error. Verbose output is pasted below:
+
+```
+(devika) d:\Source\devika\ui>bun install
+bun install v1.1.2 (c8d072c2)
+  🚚 postcss-load-config...
+uh-oh: index out of bounds
+bun will crash now 😭😭😭
+
+----- bun meta -----
+Bun v1.1.2 (c8d072c2) Windows x64
+InstallCommand: extracted_packages(5)
+HTTP: 121
+Elapsed: 22523ms | User: 7875ms | Sys: 453ms
+RSS: 0.15GB | Peak: 0.15GB | Commit: 0.25GB | Faults: 46808
+----- bun meta -----
+
+0   00007FF697D5E048
+1   ???
+2   ???
+3   ???
+4   ???
+5   ???
+6   ???
+7   ???
+8   ???
+9   ???
+10  ???
+11  ???
+
+Search GitHub issues https://bun.sh/issues or join in #windows channel in https://bun.sh/discord
+
+thread 15800 panic: index out of bounds
+???:?:?: 0x7ff696a7e0aa in ??? (bun.exe)
+???:?:?: 0x7ff696a7edcc in ??? (bun.exe)
+???:?:?: 0x7ff6968f8feb in ??? (bun.exe)
+???:?:?: 0x7ff6968efd4c in ??? (bun.exe)
+???:?:?: 0x7ff6968e9ce0 in ??? (bun.exe)
+???:?:?: 0x7ff69699d972 in ??? (bun.exe)
+???:?:?: 0x7ff6966c1603 in ??? (bun.exe)
+???:?:?: 0x7ff69925e033 in ??? (bun.exe)
+???:?:?: 0x7ffaea33257c in ??? (KERNEL32.DLL)
+???:?:?: 0x7ffaeaceaa57 in ??? (ntdll.dll)
+
+(devika) d:\Source\devika\ui>
+```
+
+---
+
+_Comment by @AlexWaygood on 2024-04-06 17:48_
+
+Hi, thanks for opening the issue! Is it possible you meant to open this over at https://github.com/oven-sh/bun rather than here? :)
+
+---
+
+_Closed by @AmitWiki on 2024-04-06 18:30_
+
+---

@@ -1,0 +1,187 @@
+---
+number: 4866
+title: Disallow single letter variables outside of comprehensions
+type: issue
+state: open
+author: gaborbernat
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-06-05T14:47:31Z
+updated_at: 2025-12-05T18:45:20Z
+url: https://github.com/astral-sh/ruff/issues/4866
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Disallow single letter variables outside of comprehensions
+
+---
+
+_Issue opened by @gaborbernat on 2023-06-05 14:47_
+
+Single letter variables are not descriptive enough, so disallow them outside of list comprehensions; because explicit is better than implicit.
+
+---
+
+_Comment by @zanieb on 2023-06-05 14:57_
+
+In your mind, would this include:
+
+```python
+for i in range(...):
+   ...
+```
+
+
+
+---
+
+_Comment by @gaborbernat on 2023-06-05 15:00_
+
+Most definitely 😊 
+
+```python
+for index/at/position in range(...):
+   ...
+```
+
+is preferable to a magic `i`. Hopefully we moved out of learning to code where `i`/`j` is a good practice, but not IMHO in production level coding.
+
+---
+
+_Comment by @charliermarsh on 2023-06-05 15:48_
+
+This would _sort of_ be solved by implementing `flake8-variable-names` (https://github.com/charliermarsh/ruff/issues/3463), though that doesn't special-case comprehensions.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-06-05 15:48_
+
+---
+
+_Comment by @Skylion007 on 2023-06-05 20:53_
+
+"index" is a commonly used and override it would trigger a complaint from the flake8-builtin rules.
+
+---
+
+_Comment by @eli-schwartz on 2023-06-07 00:31_
+
+> Most definitely :blush:
+> 
+> ```python
+> for index/at/position in range(...):
+>    ...
+> ```
+> 
+> is preferable to a magic `i`. Hopefully we moved out of learning to code where `i`/`j` is a good practice, but not IMHO in production level coding.
+
+I'm interested in learning more about the perspective that sed'ing all instances of i/a/p to index/at/position while still reusing the variable name in multiple incompatible contexts is better practice due to being longer.
+
+My understanding was that `i` is a magic programming word that means the English prose "index" in the same way that `index` is a magic programming word that means the English prose "index". Indexes are not exactly uncommon, so there will be many such variables.
+
+A reasonable argument could be made that people should be linted away from using `for index in foobars:` and told to instead use `for foobar in foobars:`. If you're going to concede and allow genericised terms like "index" I see no reason whatsoever to then go and mark genericised terms like "i" as violations.
+
+Maybe instead of designing a lint rule that allows people to mandate a minimum number of characters, a lint rule should be designed that allows people to mandate a minimum cognitive uniqueness? The referenced flake8-variable-names does this via `VNE002: variable name should be clarified`, it prevents using names like data/result/item/value/content/info but happens to be missing "index". It also has "val" but is missing "key"... probably both should be triggering that lint violation. :)
+
+---
+
+_Comment by @gaborbernat on 2023-06-07 01:15_
+
+I'd be ok to disallow index 😂 but at least single letter variables is my MVP.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:27_
+
+---
+
+_Comment by @mwesthelle on 2023-10-31 16:39_
+
+I'm a fan of the pylint approach, which forbids single letter variable names by default, but allows custom exceptions e.g. for loop variables (i, j ,k) via a `good-names` setting: https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#good-names.
+
+---
+
+_Referenced in [gentoo/portage#1356](../../gentoo/portage/pulls/1356.md) on 2024-07-04 19:02_
+
+---
+
+_Comment by @ssbarnea on 2025-08-11 10:08_
+
+Pylint rule worked fine for years, so it would make sense to just implement it the same way. I only recently discovered that ruff did not had time to implement that one.
+
+---
+
+_Comment by @boxydog on 2025-12-05 15:45_
+
+The issue I have with `i` is that it's hard to search for. Sure, if you're looking at one loop that fits in a couple of lines, it's fine, but if the loop goes over a screen, where are the `i`s? If I have to `git grep` how do I search for `i`? I use `idx`, `jdx`, `kdx`, etc., and it's so much easier to see and search for.
+
+---
+
+_Comment by @eli-schwartz on 2025-12-05 15:50_
+
+I usually grep for `\bi\b` for the same reason I would grep for `\bidx\b` or in fact `\bindex\b`.
+
+---
+
+_Comment by @boxydog on 2025-12-05 16:28_
+
+> I usually grep for `\bi\b` for the same reason I would grep for `\bidx\b` or in fact `\bindex\b`.
+
+That is a good suggestion. But, I never thought of it, so I'd say more obscure and more fussy. Also, my eyes hurt looking for "i" in a big block of code. I say, why not make code easier to read, easier to use?
+
+---
+
+_Comment by @eli-schwartz on 2025-12-05 16:49_
+
+Word boundaries are a tremendously useful tool either way (though I wouldn't say no to a --whole-word option for the grep program itself, that handled it for you).
+
+My grep will highlight the segment of the line that matches the pattern so it's very easy to spot even in big blocks of code.
+
+(I'm afraid opinions vary here -- I find `i` much easier to read than `idx` or `index` or even `foobar in foobars`, for loop iteration. So I imagine you'll find that inevitably, some projects enable a new warning and some projects complain whenever you write greenfield code that *doesn't* break the new warning. The grep trick is useful to have in your toolbox when working with diverse projects.)
+
+---
+
+_Comment by @boxydog on 2025-12-05 16:56_
+
+Sure, this is subjective. That's why I'd suggest ruff implement it for those people who want it, and others don't have to run it.
+
+You said:
+
+> I'm interested in learning more about the perspective that sed'ing all instances of i/a/p to index/at/position while still reusing the variable name in multiple incompatible contexts is better practice due to being longer.
+
+I'm giving you my perspective, and you're just saying you don't agree. So be it.
+
+P.S. Your grep will only highlight it if it isn't further piped through another grep, which removes highlighting for me. Anyway, for readability I'm talking in an IDE, not in grep output. Sure, word boundaries are very useful, but backslashes on the command line can sometimes be a pain (do I need 1, 2, or 4? what is the quoting here?), so I avoid them if I can. So I find this a non-trivial discussion that's not well suited to a github issue.
+
+---
+
+_Comment by @eli-schwartz on 2025-12-05 18:45_
+
+> Sure, this is subjective. That's why I'd suggest ruff implement it for those people who want it, and others don't have to run it.
+> 
+> You said:
+> 
+> [...]
+> 
+> I'm giving you my perspective, and you're just saying you don't agree. So be it.
+
+Yes, very true. :) I was responding about the grep trick because I think it's useful knowledge when grepping other people's codebases that may use different linter settings.
+
+
+
+> P.S. Your grep will only highlight it if it isn't further piped through another grep, which removes highlighting for me.
+
+For the record -- the default settings for grep are `--color=auto` but you can force color=always and it will work fine in a pipe (I do this).
+
+> Anyway, for readability I'm talking in an IDE, not in grep output.
+
+That I can't help you with. :( I know that vim supports highlighting searche matches but I have no idea what any other IDE does.
+
+
+> [...] So I find this a non-trivial discussion that's not well suited to a github issue.
+
+You definitely gave me a lot of food for thought, so thank you for that. :)
+
+---

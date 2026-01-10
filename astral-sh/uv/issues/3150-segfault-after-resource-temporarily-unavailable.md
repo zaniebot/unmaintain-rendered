@@ -1,0 +1,300 @@
+---
+number: 3150
+title: Segfault after Resource temporarily unavailable
+type: issue
+state: closed
+author: njzjz
+labels:
+  - question
+assignees: []
+created_at: 2024-04-19T23:19:59Z
+updated_at: 2024-04-23T20:32:40Z
+url: https://github.com/astral-sh/uv/issues/3150
+synced_at: 2026-01-10T01:23:25Z
+---
+
+# Segfault after Resource temporarily unavailable
+
+---
+
+_Issue opened by @njzjz on 2024-04-19 23:19_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I am using uv in a supercomputer at San Diego Supercomputer Center.
+
+```sh
+uv --version
+uv 0.1.34
+
+uname -a
+Linux login02 4.18.0-477.15.1.el8_8.x86_64 #1 SMP Wed Jun 28 15:04:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+
+lsb_release -a
+LSB Version:	:core-4.1-amd64:core-4.1-noarch
+Distributor ID:	Rocky
+Description:	Rocky Linux release 8.8 (Green Obsidian)
+Release:	8.8
+Codename:	GreenObsidian
+```
+
+
+It throws Segmentation fault after I tried to install a wheel file
+
+```
+uv pip install deepmd_kit-3.0.0a1.dev115+g885bdd0c-py37-none-manylinux_2_28_x86_64.whl 
+Resolved 12 packages in 9ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Fetching packages...
+Segmentation fault
+```
+
+Then I add `-v` to print detailed information.
+
+```
+uv pip install -v deepmd_kit-3.0.0a1.dev115+g885bdd0c-py37-none-manylinux_2_28_x86_64.whl 
+INFO Found a virtualenv through CONDA_PREFIX at: /home/njzjz/anaconda3/envs/pip
+DEBUG Cached interpreter info for Python 3.10.8, skipping probing: anaconda3/envs/pip/bin/python
+DEBUG Using Python 3.10.8 environment at anaconda3/envs/pip/bin/python
+DEBUG Trying to lock if free: /tmp/uv-c8e406d08d579f69.lock
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.10.8
+DEBUG Adding direct dependency: deepmd-kit*
+DEBUG Searching for a compatible version of deepmd-kit @ file:///home/njzjz/deepmd_kit-3.0.0a1.dev115+g885bdd0c-py37-none-manylinux_2_28_x86_64.whl (*)
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: numpy*
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: scipy*
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: pyyaml*
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: dargs>=0.4.1
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: h5py*
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: wcmatch*
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: packaging*
+DEBUG Adding transitive dependency for deepmd-kit==3.0.0a1.dev115+g885bdd0c: ml-dtypes*
+DEBUG Found fresh response for: https://pypi.org/simple/dargs/
+DEBUG Found installed version of dargs==0.4.3 that satisfies preference in >=0.4.1
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Found fresh response for: https://pypi.org/simple/wcmatch/
+DEBUG Found fresh response for: https://pypi.org/simple/pyyaml/
+DEBUG Found fresh response for: https://pypi.org/simple/h5py/
+DEBUG Found installed version of packaging==22.0 that satisfies preference in *
+DEBUG Found fresh response for: https://pypi.org/simple/ml-dtypes/
+DEBUG Found installed version of wcmatch==8.4.1 that satisfies preference in *
+DEBUG Found installed version of pyyaml==6.0 that satisfies preference in *
+DEBUG Found installed version of h5py==3.10.0 that satisfies preference in *
+DEBUG Found installed version of ml-dtypes==0.3.2 that satisfies preference in *
+DEBUG Found fresh response for: https://pypi.org/simple/scipy/
+DEBUG Found installed version of scipy==1.9.3 that satisfies preference in *
+DEBUG Found fresh response for: https://pypi.org/simple/numpy/
+DEBUG Found installed version of numpy==1.23.5 that satisfies preference in *
+DEBUG Searching for a compatible version of dargs (>=0.4.1)
+DEBUG Found installed version of dargs==0.4.3 that satisfies preference in >=0.4.1
+DEBUG Selecting: dargs==0.4.3 (installed)
+DEBUG Adding transitive dependency for dargs==0.4.3: typeguard>=4
+DEBUG Found fresh response for: https://pypi.org/simple/typeguard/
+DEBUG Found installed version of typeguard==4.1.5 that satisfies preference in >=4
+DEBUG Searching for a compatible version of typeguard (>=4)
+DEBUG Found installed version of typeguard==4.1.5 that satisfies preference in >=4
+DEBUG Selecting: typeguard==4.1.5 (installed)
+DEBUG Adding transitive dependency for typeguard==4.1.5: typing-extensions>=4.7.0
+DEBUG Found fresh response for: https://pypi.org/simple/typing-extensions/
+DEBUG Found installed version of typing-extensions==4.8.0 that satisfies preference in >=4.7.0
+DEBUG Searching for a compatible version of typing-extensions (>=4.7.0)
+DEBUG Found installed version of typing-extensions==4.8.0 that satisfies preference in >=4.7.0
+DEBUG Selecting: typing-extensions==4.8.0 (installed)
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Found installed version of numpy==1.23.5 that satisfies preference in *
+DEBUG Selecting: numpy==1.23.5 (installed)
+DEBUG Searching for a compatible version of scipy (*)
+DEBUG Found installed version of scipy==1.9.3 that satisfies preference in *
+DEBUG Selecting: scipy==1.9.3 (installed)
+DEBUG Adding transitive dependency for scipy==1.9.3: numpy>=1.18.5, <1.26.0
+DEBUG Searching for a compatible version of pyyaml (*)
+DEBUG Found installed version of pyyaml==6.0 that satisfies preference in *
+DEBUG Selecting: pyyaml==6.0 (installed)
+DEBUG Searching for a compatible version of h5py (*)
+DEBUG Found installed version of h5py==3.10.0 that satisfies preference in *
+DEBUG Selecting: h5py==3.10.0 (installed)
+DEBUG Adding transitive dependency for h5py==3.10.0: numpy>=1.17.3
+DEBUG Searching for a compatible version of wcmatch (*)
+DEBUG Found installed version of wcmatch==8.4.1 that satisfies preference in *
+DEBUG Selecting: wcmatch==8.4.1 (installed)
+DEBUG Adding transitive dependency for wcmatch==8.4.1: bracex>=2.1.1
+DEBUG Found fresh response for: https://pypi.org/simple/bracex/
+DEBUG Found installed version of bracex==2.3.post1 that satisfies preference in >=2.1.1
+DEBUG Searching for a compatible version of bracex (>=2.1.1)
+DEBUG Found installed version of bracex==2.3.post1 that satisfies preference in >=2.1.1
+DEBUG Selecting: bracex==2.3.post1 (installed)
+DEBUG Searching for a compatible version of packaging (*)
+DEBUG Found installed version of packaging==22.0 that satisfies preference in *
+DEBUG Selecting: packaging==22.0 (installed)
+DEBUG Searching for a compatible version of ml-dtypes (*)
+DEBUG Found installed version of ml-dtypes==0.3.2 that satisfies preference in *
+DEBUG Selecting: ml-dtypes==0.3.2 (installed)
+DEBUG Adding transitive dependency for ml-dtypes==0.3.2: numpy>1.20
+DEBUG Adding transitive dependency for ml-dtypes==0.3.2: numpy>=1.21.2
+DEBUG Tried 13 versions: bracex 1, dargs 1, deepmd-kit 1, h5py 1, ml-dtypes 1, numpy 1, packaging 1, pyyaml 1, root 1, scipy 1, typeguard 1, typing-extensions 1, wcmatch 1
+Resolved 12 packages in 7ms
+DEBUG Requirement already satisfied: bracex==2.3.post1
+DEBUG Requirement already installed: bracex==2.3.post1
+DEBUG Requirement already satisfied: dargs==0.4.3
+DEBUG Requirement already installed: dargs==0.4.3
+DEBUG Identified uncached requirement: deepmd-kit @ file:///home/njzjz/deepmd_kit-3.0.0a1.dev115+g885bdd0c-py37-none-manylinux_2_28_x86_64.whl
+DEBUG Requirement already satisfied: h5py==3.10.0
+DEBUG Requirement already installed: h5py==3.10.0
+DEBUG Requirement already satisfied: ml-dtypes==0.3.2
+DEBUG Requirement already installed: ml-dtypes==0.3.2
+DEBUG Requirement already satisfied: numpy==1.23.5
+DEBUG Requirement already installed: numpy==1.23.5
+DEBUG Requirement already satisfied: packaging==22.0
+DEBUG Requirement already installed: packaging==22.0
+DEBUG Requirement already satisfied: pyyaml==6.0
+DEBUG Requirement already installed: pyyaml==6.0
+DEBUG Requirement already satisfied: scipy==1.9.3
+DEBUG Requirement already installed: scipy==1.9.3
+DEBUG Requirement already satisfied: typeguard==4.1.5
+DEBUG Requirement already installed: typeguard==4.1.5
+DEBUG Requirement already satisfied: typing-extensions==4.8.0
+DEBUG Requirement already installed: typing-extensions==4.8.0
+DEBUG Requirement already satisfied: wcmatch==8.4.1
+DEBUG Requirement already installed: wcmatch==8.4.1
+DEBUG Unnecessary package: markdown==3.4.1
+DEBUG Unnecessary package: markupsafe==2.1.1
+DEBUG Unnecessary package: parmed==4.1.0
+DEBUG Unnecessary package: pillow==10.0.1
+DEBUG Unnecessary package: werkzeug==2.2.2
+DEBUG Unnecessary package: absl-py==1.3.0
+DEBUG Unnecessary package: ase==3.22.1
+DEBUG Unnecessary package: astunparse==1.6.3
+DEBUG Unnecessary package: cachetools==5.2.0
+DEBUG Unnecessary package: certifi==2022.12.7 (from file:///croot/certifi_1671487769961/work/certifi)
+DEBUG Unnecessary package: cffi==1.16.0
+DEBUG Unnecessary package: charset-normalizer==2.1.1
+DEBUG Unnecessary package: cloudpickle==3.0.0
+DEBUG Unnecessary package: cmake==3.27.7
+DEBUG Unnecessary package: contourpy==1.1.1
+DEBUG Unnecessary package: cycler==0.11.0
+DEBUG Unnecessary package: dm-tree==0.1.8
+DEBUG Unnecessary package: dpamber==0.4.0
+DEBUG Unnecessary package: dpdata==0.2.16
+DEBUG Unnecessary package: flatbuffers==23.5.26
+DEBUG Unnecessary package: fonttools==4.42.1
+DEBUG Unnecessary package: gast==0.4.0
+DEBUG Unnecessary package: google-auth==2.15.0
+DEBUG Unnecessary package: google-auth-oauthlib==1.0.0
+DEBUG Unnecessary package: google-pasta==0.2.0
+DEBUG Unnecessary package: grpcio==1.51.1
+DEBUG Unnecessary package: idna==3.4
+DEBUG Unnecessary package: jax==0.4.6
+DEBUG Unnecessary package: keras==3.0.5
+DEBUG Unnecessary package: kiwisolver==1.4.5
+DEBUG Unnecessary package: lammps==2023.8.2.2.0
+DEBUG Unnecessary package: libclang==14.0.6
+DEBUG Unnecessary package: markdown-it-py==3.0.0
+DEBUG Unnecessary package: matplotlib==3.8.0
+DEBUG Unnecessary package: mdurl==0.1.2
+DEBUG Unnecessary package: meson==1.3.0
+DEBUG Unnecessary package: monty==2023.9.25
+DEBUG Unnecessary package: namex==0.0.7
+DEBUG Unnecessary package: nvidia-cublas-cu12==12.3.4.1
+DEBUG Unnecessary package: nvidia-cuda-nvcc-cu12==12.3.103
+DEBUG Unnecessary package: nvidia-cuda-nvrtc-cu12==12.3.103
+DEBUG Unnecessary package: nvidia-cuda-runtime-cu12==12.3.101
+DEBUG Unnecessary package: nvidia-cudnn-cu12==8.9.6.50
+DEBUG Unnecessary package: nvidia-cufft-cu12==11.0.12.1
+DEBUG Unnecessary package: nvidia-curand-cu12==10.3.4.101
+DEBUG Unnecessary package: nvidia-cusolver-cu12==11.5.4.101
+DEBUG Unnecessary package: nvidia-cusparse-cu12==12.2.0.103
+DEBUG Unnecessary package: nvidia-nvjitlink-cu12==12.3.101
+DEBUG Unnecessary package: oauthlib==3.2.2
+DEBUG Unnecessary package: opt-einsum==3.3.0
+DEBUG Unnecessary package: protobuf==4.22.1
+DEBUG Unnecessary package: psutil==5.9.6
+DEBUG Unnecessary package: pyasn1==0.4.8
+DEBUG Unnecessary package: pyasn1-modules==0.2.8
+DEBUG Unnecessary package: pycparser==2.21
+DEBUG Unnecessary package: pygments==2.17.2
+DEBUG Unnecessary package: pyparsing==3.1.1
+DEBUG Unnecessary package: python-dateutil==2.8.2
+DEBUG Unnecessary package: python-hostlist==1.22
+DEBUG Unnecessary package: requests==2.28.1
+DEBUG Unnecessary package: requests-oauthlib==1.3.1
+DEBUG Unnecessary package: rich==13.7.1
+DEBUG Unnecessary package: rsa==4.9
+DEBUG Unnecessary package: six==1.16.0
+DEBUG Unnecessary package: tensorboard==2.16.2
+DEBUG Unnecessary package: tensorboard-data-server==0.7.0
+DEBUG Unnecessary package: tensorboard-plugin-wit==1.8.1
+DEBUG Unnecessary package: tensorflow==2.16.0rc0
+DEBUG Unnecessary package: tensorflow-estimator==2.15.0
+DEBUG Unnecessary package: tensorflow-io-gcs-filesystem==0.29.0
+DEBUG Unnecessary package: termcolor==2.1.1
+DEBUG Unnecessary package: tf-keras==2.16.0rc4
+DEBUG Unnecessary package: tqdm==4.66.1
+DEBUG Unnecessary package: urllib3==1.26.13
+DEBUG Preserving seed package: uv==0.1.34
+DEBUG Unnecessary package: wrapt==1.14.1
+thread 'tokio-runtime-worker' panicked at /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:168:10:
+The global thread pool has not been initialized.: ThreadPoolBuildError { kind: IOError(Os { code: 11, kind: WouldBlock, message: "Resource temporarily unavailable" }) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Segmentation fault
+```
+
+I follow the suggestion ``` run with `RUST_BACKTRACE=1` ```, but it gives empty backtrace.
+```
+thread 'tokio-runtime-worker' panicked at /root/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:168:10:
+The global thread pool has not been initialized.: ThreadPoolBuildError { kind: IOError(Os { code: 11, kind: WouldBlock, message: "Resource temporarily unavailable" }) }
+stack backtrace:
+Segmentation fault
+```
+
+I can't reproduce it on my local machine. I think the administrator of the supercomputer may limit the number of threads using some approach, and I am wondering if there is some way to set the maximum thread of the uv. 
+
+
+---
+
+_Comment by @charliermarsh on 2024-04-22 14:50_
+
+Interesting... I suppose we could expose this as an environment variable.
+
+---
+
+_Comment by @charliermarsh on 2024-04-23 19:12_
+
+Oh, can you try setting `RAYON_NUM_THREADS`?
+
+---
+
+_Comment by @charliermarsh on 2024-04-23 19:13_
+
+The underlying library that's throwing the error already supports this.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-04-23 19:13_
+
+---
+
+_Comment by @njzjz on 2024-04-23 20:29_
+
+> Oh, can you try setting `RAYON_NUM_THREADS`?
+
+Thanks, I confirm it works!
+
+---
+
+_Closed by @njzjz on 2024-04-23 20:29_
+
+---
+
+_Comment by @charliermarsh on 2024-04-23 20:32_
+
+Awesome. Documented here: https://github.com/astral-sh/uv/pull/3223. Thanks for following up.
+
+---

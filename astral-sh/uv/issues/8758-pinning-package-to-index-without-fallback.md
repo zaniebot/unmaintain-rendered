@@ -1,0 +1,223 @@
+---
+number: 8758
+title: Pinning package to index without fallback
+type: issue
+state: open
+author: wstrausser
+labels:
+  - question
+assignees: []
+created_at: 2024-11-01T18:06:56Z
+updated_at: 2024-11-04T20:23:46Z
+url: https://github.com/astral-sh/uv/issues/8758
+synced_at: 2026-01-10T01:24:32Z
+---
+
+# Pinning package to index without fallback
+
+---
+
+_Issue opened by @wstrausser on 2024-11-01 18:06_
+
+I am trying to pin an internal package to our internal package registry. For the sake of testing how the pinning works, I've called the package pandas:
+
+```
+# uv.toml
+[[index]]
+name = "my-index"
+url = "https://my.package.index/"
+
+[sources]
+pandas = { index = "my-index" }
+```
+
+When uv is able to find pandas on the internal index, it picks it up from there and runs it as expected. However, if it is unable to find it, it falls back to using pandas from the public PyPi registry.
+
+Due to the risk of dependency confusion attacks, we need to make sure that our internal packages are always installed from the internal index with no exception. If the internal index goes down for some reason, uv should simply fail to install the package instead of falling back to using something from a public index.
+
+It's possible I'm missing a setting that allows for configuring this, but I didn't see this behaviour described in the documentation. If this doesn't already exist, it seems like a necessity for security purposes.
+
+---
+
+_Comment by @zanieb on 2024-11-02 00:11_
+
+You can set the index as the default with `default = true` which is discussed in https://docs.astral.sh/uv/configuration/indexes/#defining-an-index and disables the default PyPI index.
+
+---
+
+_Label `question` added by @zanieb on 2024-11-02 00:11_
+
+---
+
+_Comment by @wstrausser on 2024-11-02 06:59_
+
+@zanieb Thanks for the tip, I hadn't thought to use the default flag for this.
+
+I'll give this a try tomorrow. However, my immediate question is, wouldn't this prevent installation of dependencies that are on the public index? If my package depends on `requests`, for instance, I want to make sure that my package is always installed from the private index, while `requests` and really everything else is resolved just as it would in a default setup.
+
+---
+
+_Comment by @charliermarsh on 2024-11-02 13:30_
+
+Yes that’s right. But given that clarification in your requirements, I think the index is already doing  what you want, without any changes to the configuration you posted. If you explicitly associate a dependency with an index, we will only ever look at that index — we would never get Pandas from PyPI (but we would look at PyPI for Pandas’ dependencies).
+
+---
+
+_Comment by @zanieb on 2024-11-02 13:58_
+
+Yeah, like in response to:
+
+> we need to make sure that our internal packages are always installed from the internal index with no exception. If the internal index goes down for some reason, uv should simply fail to install the package instead of falling back to using something from a public index.
+
+This should already be the case. Unless someone passes `--no-sources`?
+
+---
+
+_Comment by @wstrausser on 2024-11-02 19:18_
+
+> Yes that’s right. But given that clarification in your requirements, I think the index is already doing what you want, without any changes to the configuration you posted. If you explicitly associate a dependency with an index, we will only ever look at that index — we would never get Pandas from PyPI (but we would look at PyPI for Pandas’ dependencies).
+
+This isn't what I'm seeing happen in my case. Perhaps I'm doing something wrong, so I'll try to explain what I'm doing with as much detail as possible.
+
+### Package side
+
+**`pyproject.toml`**
+
+```
+[project]
+name = "pandas"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+pandas = "pandas:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+publish-url = "https://my.package.index/"
+```
+
+**`src/pandas/__init__.py`**
+
+```
+def main() -> None:
+    print("Hello from pandas!")
+```
+
+### Client side
+
+**`~/.config/uv.toml`**
+```
+[[index]]
+name = "my-index"
+url = "https://my.package.index/"
+
+[sources]
+pandas = { index = "my-index" }
+```
+
+With the package published on the index:
+```
+$ uvx pandas
+Installed 1 package in 2ms
+Hello from pandas!
+```
+After clearing the uv cache and deleting the package from the index:
+
+```
+$ uvx pandas
+Prepared 6 packages in 1.11s
+Installed 6 packages in 38ms
+ + numpy==2.1.3
+ + pandas==2.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2024.2
+ + six==1.16.0
+ + tzdata==2024.2
+The executable `pandas` was not found.
+warning: Package `pandas` does not provide any executables.
+```
+
+If I instead try using my pandas as a dependency in a script with a `pyproject.toml` file, I get a similar result. uv then populates my `uv.lock` file with the following entry for pandas:
+
+```
+[[package]]
+name = "pandas"
+version = "2.2.3"
+source = { registry = "https://my.package.index/" }
+dependencies = [
+    { name = "numpy" },
+    { name = "python-dateutil" },
+    { name = "pytz" },
+    { name = "tzdata" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9c/d6/9f8431bacc2e19dca897724cd097b1bb224a6ad5433784a44b587c7c13af/pandas-2.2.3.tar.gz", hash = "sha256:4f18ba62b61d7e192368b84517265a99b4d7ee8912f8708660fb4a366cc82667", size = 4399213 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/22/3b8f4e0ed70644e85cfdcd57454686b9057c6c38d2f74fe4b8bc2527214a/pandas-2.2.3-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:f00d1345d84d8c86a63e476bb4955e46458b304b9575dcf71102b5c705320015", size = 12477643 },
+    { url = "https://files.pythonhosted.org/packages/e4/93/b3f5d1838500e22c8d793625da672f3eec046b1a99257666c94446969282/pandas-2.2.3-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:3508d914817e153ad359d7e069d752cdd736a247c322d932eb89e6bc84217f28", size = 11281573 },
+    { url = "https://files.pythonhosted.org/packages/f5/94/6c79b07f0e5aab1dcfa35a75f4817f5c4f677931d4234afcd75f0e6a66ca/pandas-2.2.3-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:22a9d949bfc9a502d320aa04e5d02feab689d61da4e7764b62c30b991c42c5f0", size = 15196085 },
+    { url = "https://files.pythonhosted.org/packages/e8/31/aa8da88ca0eadbabd0a639788a6da13bb2ff6edbbb9f29aa786450a30a91/pandas-2.2.3-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f3a255b2c19987fbbe62a9dfd6cff7ff2aa9ccab3fc75218fd4b7530f01efa24", size = 12711809 },
+    { url = "https://files.pythonhosted.org/packages/ee/7c/c6dbdb0cb2a4344cacfb8de1c5808ca885b2e4dcfde8008266608f9372af/pandas-2.2.3-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:800250ecdadb6d9c78eae4990da62743b857b470883fa27f652db8bdde7f6659", size = 16356316 },
+    { url = "https://files.pythonhosted.org/packages/57/b7/8b757e7d92023b832869fa8881a992696a0bfe2e26f72c9ae9f255988d42/pandas-2.2.3-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:6374c452ff3ec675a8f46fd9ab25c4ad0ba590b71cf0656f8b6daa5202bca3fb", size = 14022055 },
+    { url = "https://files.pythonhosted.org/packages/3b/bc/4b18e2b8c002572c5a441a64826252ce5da2aa738855747247a971988043/pandas-2.2.3-cp313-cp313-win_amd64.whl", hash = "sha256:61c5ad4043f791b61dd4752191d9f07f0ae412515d59ba8f005832a532f8736d", size = 11481175 },
+    { url = "https://files.pythonhosted.org/packages/76/a3/a5d88146815e972d40d19247b2c162e88213ef51c7c25993942c39dbf41d/pandas-2.2.3-cp313-cp313t-macosx_10_13_x86_64.whl", hash = "sha256:3b71f27954685ee685317063bf13c7709a7ba74fc996b84fc6821c59b0f06468", size = 12615650 },
+    { url = "https://files.pythonhosted.org/packages/9c/8c/f0fd18f6140ddafc0c24122c8a964e48294acc579d47def376fef12bcb4a/pandas-2.2.3-cp313-cp313t-macosx_11_0_arm64.whl", hash = "sha256:38cf8125c40dae9d5acc10fa66af8ea6fdf760b2714ee482ca691fc66e6fcb18", size = 11290177 },
+    { url = "https://files.pythonhosted.org/packages/ed/f9/e995754eab9c0f14c6777401f7eece0943840b7a9fc932221c19d1abee9f/pandas-2.2.3-cp313-cp313t-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:ba96630bc17c875161df3818780af30e43be9b166ce51c9a18c1feae342906c2", size = 14651526 },
+    { url = "https://files.pythonhosted.org/packages/25/b0/98d6ae2e1abac4f35230aa756005e8654649d305df9a28b16b9ae4353bff/pandas-2.2.3-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1db71525a1538b30142094edb9adc10be3f3e176748cd7acc2240c2f2e5aa3a4", size = 11871013 },
+    { url = "https://files.pythonhosted.org/packages/cc/57/0f72a10f9db6a4628744c8e8f0df4e6e21de01212c7c981d31e50ffc8328/pandas-2.2.3-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:15c0e1e02e93116177d29ff83e8b1619c93ddc9c49083f237d4312337a61165d", size = 15711620 },
+    { url = "https://files.pythonhosted.org/packages/ab/5f/b38085618b950b79d2d9164a711c52b10aefc0ae6833b96f626b7021b2ed/pandas-2.2.3-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:ad5b65698ab28ed8d7f18790a0dc58005c7629f227be9ecc1072aa74c0c1d43a", size = 13098436 },
+]
+```
+
+Based on this, it does seem that uv is using my index as the source for the package, but somehow the files themselves are coming from the public index. Not sure if this means that our registry is redirecting these requests to PyPI or if uv itself is doing that. In case it's relevant, our index is on a self-hosted GitLab instance.
+
+---
+
+_Comment by @charliermarsh on 2024-11-02 19:59_
+
+We don't respect sources defined in `uv.toml`. This will be an error in the next minor release. You should move the contents of `~/.config/uv.toml` into `pyproject.toml`.
+
+---
+
+_Comment by @wstrausser on 2024-11-02 20:15_
+
+Thanks, that is good to know. However, I'm still seeing the exact same results with the source specified in `pyproject.toml`. Again, not sure if the source still appearing in the `uv.lock` file means that it's the registry itself doing this.
+
+Also, not respecting sources in `uv.toml` would unfortunately not work for what we are trying to do. We would love to use uv as a single global Python package manager so that developers can manage internal CLI tools on their machines, or for deploying and executing scripts on servers. Is this not an intended use case for uv?
+
+---
+
+_Comment by @charliermarsh on 2024-11-02 20:26_
+
+I misunderstood what you're trying to do here, but no, it won't work. We don't respect sources on tool installs, which are global (though we do respect indexes). Sources are intended for use in _projects_. I defer to @zanieb on whether we want that to be supported, since it intersects with the tool design.
+
+---
+
+_Comment by @wstrausser on 2024-11-02 20:43_
+
+Thanks for clarifying, and apologies if my explanation wasn't clear. Still getting accustomed to uv's way of doing things, but I've found it to be a godsend and such a massive leap from every Python packaging solution I've used in the past. Huge kudos to you and everyone else who's working on this.
+
+This would be a really helpful feature to have. It sounds like we can still specify the index globally, but without the ability to also pin packages globally, there is a risk of unintentionally executing a tool that isn't our own.
+
+---
+
+_Comment by @wstrausser on 2024-11-04 18:38_
+
+Just wanted to follow up here to say that this indeed doesn't even seem to be a uv issue but rather a GitLab issue. By default, [GitLab forwards requests for packages that aren't on the registry to PyPI](https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html#install-a-pypi-package). Knowing this, I've set our private index to default and feel satisfied enough that this should avoid any potential security issues.
+
+I still think it would be nice to pin tools, but otherwise wanted to mention this in case anyone else is encountering similar issues.
+
+---
+
+_Comment by @zanieb on 2024-11-04 20:23_
+
+Thanks!
+
+I need to think about how to pin indexes for tools. It seems nice to have but I'm not sure how we'll support it yet.
+
+---

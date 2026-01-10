@@ -1,0 +1,416 @@
+---
+number: 6293
+title: Init project without src
+type: issue
+state: closed
+author: santigandolfo
+labels:
+  - question
+assignees: []
+created_at: 2024-08-21T02:02:11Z
+updated_at: 2025-09-24T08:48:56Z
+url: https://github.com/astral-sh/uv/issues/6293
+synced_at: 2026-01-10T01:23:58Z
+---
+
+# Init project without src
+
+---
+
+_Issue opened by @santigandolfo on 2024-08-21 02:02_
+
+Hi, is there a way to init a uv project without a `src` directory and `[build-system]` in the `pyproject.toml`?
+
+I currently use rye and to do that I create my project with:
+```bash
+rye init --virtual
+```
+
+But `uv` looks to work differently. When I run:
+```bash
+uv init --virtual
+```
+
+1. It doesn't generate the `[project]` section in the `pyproject.toml`
+2. I'm forced to keep the `[tool.uv.workspace]` in the pyproject.toml (or else I get the error `error: No ``project`` table found in: ``/Users/<my_user>/<my_project>/pyproject.toml`` ` when I run `uv sync`)
+3. I'm not allowed to add dependencies like this:
+```bash
+uv add pydantic
+```
+I must do it like this:
+```bash
+uv add --dev pydantic
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 02:05_
+
+You can definitely remove the `src` directory if you don't want to use a `src` layout, but we do need a build system if you want to use a "real" project. Alternatively, if you want to use a virtual layout, it has to _not_ be a real project (i.e., you can't have a `[project]` section). It doesn't really make sense to have a `[project]` section for something that isn't a project.
+
+What are you looking to achieve? Why do you want a virtual layout?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-08-21 02:10_
+
+---
+
+_Comment by @santigandolfo on 2024-08-21 02:15_
+
+My problem is that the alternative `uv init` also has some things that don't work well for me, because it adds the `src` directory and a `[build-system]` section.
+And if I only delete the `src`  directory, when I run `uv add pydantic`I get this error:
+```console
+santiago@192 test_uv % uv add pydantic
+Using Python 3.12.4 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtualenv at: .venv
+Resolved 5 packages in 18ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: test-uv @ file:///Users/santiago/Desktop/test_uv
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 11, in <module>
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/build.py", line 83, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py", line 155, in build
+    artifact = version_api[version](directory, **build_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 494, in build_editable
+    return self.build_editable_detection(directory, **build_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 505, in build_editable_detection
+    for included_file in self.recurse_selected_project_files():
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py", line 180, in recurse_selected_project_files
+    if self.config.only_include:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/config.py", line 806, in only_include
+    only_include = only_include_config.get('only-include', self.default_only_include()) or self.packages
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 260, in default_only_include
+    return self.default_file_selection_options.only_include
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/functools.py", line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 248, in default_file_selection_options
+    raise ValueError(message)
+ValueError: Unable to determine which files to ship inside the wheel using the following heuristics: https://hatch.pypa.io/latest/plugins/builder/wheel/#default-file-selection
+
+The most likely cause of this is that there is no directory that matches the name of your project (test_uv).
+
+At least one file selection option must be defined in the `tool.hatch.build.targets.wheel` table, see: https://hatch.pypa.io/latest/config/build/
+
+As an example, if you intend to ship a directory named `foo` that resides within a `src` directory located at the root of your project, you can define the following:
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/foo"]
+---
+```
+
+And if I delete both I don't get that error, but the directory `test_uv.egg-info` is created.
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 02:20_
+
+How do you plan to structure your projects though? I'm just trying to understand your desired project layout and workflow. If you just want the build to work, you can add this to your `pyproject.toml` (even if you don't plan to create a `test_uv` directory):
+
+```toml
+[tool.hatch.build.targets.wheel]
+packages = ["test_uv"]
+```
+
+
+---
+
+_Comment by @santigandolfo on 2024-08-21 02:28_
+
+In my case the root folder would be called test_uv, and the structure inside of it would look like this for example:
+
+.venv
+main.py
+pyproject.toml
+README.md
+uv.lock
+
+In a larger case I would maybe have all my python files structured inside an app folder, for example on a FastAPI microservice, where I would also dockerize the proyect. I don't want to create a package or wheel
+
+---
+
+_Comment by @lukewiwa on 2024-08-21 02:31_
+
+> In my case the root folder would be called test_uv, and the structure inside of it would look like this for example:
+> 
+> .venv main.py pyproject.toml README.md uv.lock
+> 
+> In a larger case I would maybe have all my python files structured inside an app folder, for example on a FastAPI microservice, where I would also dockerize the proyect. I don't want to create a package or wheel
+
+@santigandolfo  In this specific case I believe a work around at the moment is to set this in your `pyproject.toml` file
+
+```toml
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+```
+
+
+---
+
+_Comment by @AndreuCodina on 2024-08-21 21:40_
+
+In my case, I have a `src` folder, but not a folder inside (i.e. `my-fastapi-app/my-fastapi-app/src`):
+
+```
+my-fastapi-app/
+    src/
+        main.py
+    pyproject.toml
+    uv.lock
+    .venv/
+```
+
+And, for example, when I execute `uv run ruff check`, I get this error:
+
+```
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: my-fastapi-app @ file:///workspaces/my-fastapi-app
+  Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+```
+
+---
+
+_Comment by @jbevi on 2024-08-22 19:29_
+
+> My problem is that the alternative `uv init` also has some things that don't work well for me, because it adds the `src` directory and a `[build-system]` section. And if I only delete the `src` directory, when I run `uv add pydantic`I get this error:
+> 
+> ```
+> santiago@192 test_uv % uv add pydantic
+> Using Python 3.12.4 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+> Creating virtualenv at: .venv
+> Resolved 5 packages in 18ms
+> error: Failed to prepare distributions
+>   Caused by: Failed to fetch wheel: test-uv @ file:///Users/santiago/Desktop/test_uv
+>   Caused by: Build backend failed to build wheel through `build_editable()` with exit status: 1
+> --- stdout:
+> 
+> --- stderr:
+> Traceback (most recent call last):
+>   File "<string>", line 11, in <module>
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/build.py", line 83, in build_editable
+>     return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+>                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py", line 155, in build
+>     artifact = version_api[version](directory, **build_data)
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 494, in build_editable
+>     return self.build_editable_detection(directory, **build_data)
+>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 505, in build_editable_detection
+>     for included_file in self.recurse_selected_project_files():
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py", line 180, in recurse_selected_project_files
+>     if self.config.only_include:
+>        ^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/config.py", line 806, in only_include
+>     only_include = only_include_config.get('only-include', self.default_only_include()) or self.packages
+>                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 260, in default_only_include
+>     return self.default_file_selection_options.only_include
+>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/opt/homebrew/Cellar/python@3.12/3.12.4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/functools.py", line 995, in __get__
+>     val = self.func(instance)
+>           ^^^^^^^^^^^^^^^^^^^
+>   File "/Users/santiago/Library/Caches/uv/builds-v0/.tmp0RSYov/lib/python3.12/site-packages/hatchling/builders/wheel.py", line 248, in default_file_selection_options
+>     raise ValueError(message)
+> ValueError: Unable to determine which files to ship inside the wheel using the following heuristics: https://hatch.pypa.io/latest/plugins/builder/wheel/#default-file-selection
+> 
+> The most likely cause of this is that there is no directory that matches the name of your project (test_uv).
+> 
+> At least one file selection option must be defined in the `tool.hatch.build.targets.wheel` table, see: https://hatch.pypa.io/latest/config/build/
+> 
+> As an example, if you intend to ship a directory named `foo` that resides within a `src` directory located at the root of your project, you can define the following:
+> 
+> [tool.hatch.build.targets.wheel]
+> packages = ["src/foo"]
+> ---
+> ```
+> 
+> And if I delete both I don't get that error, but the directory `test_uv.egg-info` is created.
+
+The same thing happens to me.
+A few days ago I heard about UV thanks to a post by Tiangolo on X. I'm testing it to see if we migrate from pipenv to uv.
+It seems that if /src does not exist, the installation of libraries fails.
+In my company, projects do not have a /src, but a /app.
+It doesn't seem like a correct solution to have to edit pyproject.toml by hand.
+
+---
+
+_Comment by @charliermarsh on 2024-08-22 20:33_
+
+You shouldn't need a `src` directory to use uv -- can you provide an example? E.g., this works without any `pyproject.toml` changes (it uses an `./app` directory): https://github.com/astral-sh/uv-fastapi-example
+
+
+---
+
+_Comment by @AndreuCodina on 2024-08-23 14:47_
+
+> You shouldn't need a `src` directory to use uv -- can you provide an example? E.g., this works without any `pyproject.toml` changes (it uses an `./app` directory): https://github.com/astral-sh/uv-fastapi-example
+
+That repository works with
+
+```bash
+uv run fastapi dev app/main.py
+```
+
+but there's a trick: in the `pyproject.toml` root you have this:
+
+```toml
+[project]
+name = "app"
+```
+
+so you're specifying you need a subfolder named `app`. Why do I need that? The project name should be `uv-fastapi-example`, and `app` would have no pyproject.toml or a pyproject.toml with `name = "app"`.
+
+---
+
+_Comment by @jbevi on 2024-08-23 15:35_
+
+Thanks for your answers. I'll tell you a little more, clarifying that I'm new to UV.
+We currently have projects already managed with pipenv. The Pipfile and Pipfile.lock files are maintained by the pipenv tool, we do not edit them by hand.
+I try to operate in the same way, that when running the tool the files are generated correctly (pyproject.toml and uv.lock).
+In order to migrate from pipenv to uv, as far as I know, I must first initialize the project by running **uv init** in the existing project folder. At that moment the /src folder is created and becomes essential for uv to work. The proposed solution requires modifying pyproject.toml by hand, which I don't like very much, I would prefer that the command line execution of uv already provides the option of, for example, initializing with another directory or none at all. This would help run the migration from pipenv automatically on many projects with a script, which I understand is not currently possible due to the need to modify pyproject.toml (although my script could modify pyproject.toml and remove /src but it requires a script smarter and will require further validation).
+
+---
+
+_Comment by @charliermarsh on 2024-08-23 15:39_
+
+Aside, this would be resolved by https://github.com/astral-sh/uv/issues/6511.
+
+---
+
+_Comment by @charliermarsh on 2024-08-23 15:45_
+
+@AndreuCodina -- To clarify, this works (`uv run fastapi dev src/uv_fastapi_example/app/main.py`):
+
+![Screenshot 2024-08-23 at 11 42 23 AM](https://github.com/user-attachments/assets/15796a78-65a7-4dbc-9c64-f723b8bb4453)
+
+As does this (`uv run fastapi dev uv_fastapi_example/app/main.py`):
+
+![Screenshot 2024-08-23 at 11 43 47 AM](https://github.com/user-attachments/assets/8f757e35-a354-4fa9-bdc0-a03a0cf7ecb2)
+
+Either of these are totally fine. You can also remove the `app` subdirectory if you want. I only included it there because your example from Discord wanted multiple top-level directories.
+
+
+---
+
+_Comment by @AndreuCodina on 2024-08-23 17:15_
+
+I see, but there's something I don't understand. I'll show a case to be more graphical.
+
+I want to create a repository called facedetector, with the next workspaces: `api`, `domain`, `infrastructure` and `common`.
+
+I'm very flexible in how to do it.
+
+If I execute `uv init facedetector` to create a new repository, a folder `facedetector` with a `src` folder is created, so I imagine I have to create the `api`, `domain`, `infrastructure` and `common` workspaces under `src`. Okay, but if I execute `uv init api` under `src`, the `api` workspace has a `src` under it too, so I'm confused (we have 2 `src` folders with different meaning).
+
+<img width="208" alt="image" src="https://github.com/user-attachments/assets/558a74a9-f40f-4d31-84a7-c945e3503f2d">
+
+But if I execute `uv init api` in the facedetector folder then I'm more confused.
+
+<img width="216" alt="image" src="https://github.com/user-attachments/assets/827d76e7-1c02-4c6c-a8a2-afe30e2d9b78">
+
+Is `src` the entry point of the repository and I don't have to have an `api` workspace?
+Please, can you clarify for me what's the architecture you're proposing?
+
+In .NET I always have this structure:
+
+```
+src/
+    api/
+        main.py
+    domain/
+    infrastructure/
+    common/
+tests/
+```
+
+
+---
+
+_Comment by @kbd on 2024-08-25 14:17_
+
+> How do you plan to structure your projects though? I'm just trying to understand your desired project layout and workflow. 
+
+I think it's a valid and common layout to have your top-level module be a top-level directory in your project. To pick one example, this is how [Django](https://github.com/django/django/) is structured. I would expect `uv init` to create a structure like this:
+
+```
+$ uv init hello
+$ tree hello
+hello
+├── pyproject.toml
+└── hello
+    └── __init__.py
+```
+
+This is the more natural layout, as when you launch the Python repl at the root of the project it can import your module. Imo, additions to the above basic layout should be behind flags. `--add-src`, `--add-readme`, etc.
+
+----
+
+FWIW, I generally make `create-X` scripts for every language. Here's my [create-python script](https://github.com/kbd/setup/blob/main/HOME/bin/create-python), which also initializes a fresh git repo with appropriate git ignores, sets up a tests dir, installs basic modules I'll always want (eg. pytest), sets up direnv to automatically activate my venv, etc.
+
+```
+$ create-python hello
+...
+$ tree hello
+hello
+├── README.md
+├── bin
+├── hello
+│   └── __init__.py
+├── justfile
+├── main
+├── poetry.lock
+├── poetry.toml
+├── pyproject.toml
+├── pytest.ini
+└── tests
+    └── __init__.py
+```
+
+I currently use Poetry to manage my Python projects (though I now use `uv` to manage my *user-level* `.venv`). I initialize my projects with (the equivalent of):
+
+```
+poetry init --no-interaction --name=hello --author="$(git config --get user.name)"
+```
+
+That doesn't presume any layout and conveniently lets me specify the author metadata during creation.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-26 14:23_
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 18:11_
+
+This exists now as of [v0.4.0](https://github.com/astral-sh/uv/releases/tag/0.4.0). You can run `uv init --app` to avoid creating a `src` layout. See: https://docs.astral.sh/uv/concepts/projects/#applications.
+
+
+---
+
+_Closed by @charliermarsh on 2024-08-28 18:11_
+
+---
+
+_Comment by @Lawouach on 2025-09-24 08:48_
+
+Hi @charliermarsh, do you think there was a regression on using `--app` to not generate the src directory?
+
+Whenever I'm using it, the `src` folder still gets created. The doc doesn't advertize the behavior either way https://docs.astral.sh/uv/reference/cli/#uv-init--app
+
+
+
+---

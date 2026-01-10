@@ -1,0 +1,120 @@
+---
+number: 11403
+title: "Rule duplication `F509` and `PLE1300`"
+type: issue
+state: open
+author: dhruvmanila
+labels:
+  - rule
+assignees: []
+created_at: 2024-05-13T11:29:31Z
+updated_at: 2024-06-25T16:04:45Z
+url: https://github.com/astral-sh/ruff/issues/11403
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# Rule duplication `F509` and `PLE1300`
+
+---
+
+_Issue opened by @dhruvmanila on 2024-05-13 11:29_
+
+Both rules check for invalid format character in `%` format style string.
+
+The implementation is almost the same:
+
+### `F509`
+https://github.com/astral-sh/ruff/blob/1f748b89ca73361146508b6f0af9afc756dc9cb2/crates/ruff_linter/src/checkers/ast/analyze/expression.rs#L1087-L1100
+
+### `PLE1300`
+https://github.com/astral-sh/ruff/blob/1f748b89ca73361146508b6f0af9afc756dc9cb2/crates/ruff_linter/src/rules/pylint/rules/bad_string_format_character.rs#L117-L125
+
+There's one difference which can be noticed when an implicitly concatenated string is used. `F509` looks at the concatenated string while `PLE1300` looks at each part of an implicitly concatenated string. Refer to https://play.ruff.rs/6efd9945-2a3b-43e4-b9b7-a8d041b98318. 
+
+Reference:
+* `F509` https://docs.astral.sh/ruff/rules/percent-format-unsupported-format-character/
+* `PLE1300` https://docs.astral.sh/ruff/rules/bad-string-format-character/
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-05-13 11:29_
+
+---
+
+_Referenced in [astral-sh/ruff#2714](../../astral-sh/ruff/issues/2714.md) on 2024-05-13 11:29_
+
+---
+
+_Added to milestone `v0.5.0` by @charliermarsh on 2024-05-13 14:51_
+
+---
+
+_Comment by @charliermarsh on 2024-05-13 14:51_
+
+@dhruvmanila - Let's remove `PLE1300` as part of v0.5.0?
+
+---
+
+_Comment by @zanieb on 2024-05-13 14:53_
+
+See https://github.com/astral-sh/ruff/pull/9756 for prior art.
+
+---
+
+_Comment by @dhruvmanila on 2024-05-13 14:57_
+
+> Let's remove `PLE1300` as part of v0.5.0?
+
+Yeah, that makes sense but there's one difference where `PLE1300` would check each part of an implicitly concatenated string while `F509` checks it as a whole. This means that the number of diagnostics would be reduced. That said, I think `F509` can be improved to either 
+1. Include all the invalid characters in the message or
+2. Raise violation for each invalid character and highlighting the part of the string instead of the entire string
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-06-25 03:50_
+
+---
+
+_Comment by @dhruvmanila on 2024-06-25 03:59_
+
+I'm looking into this and it seems that there's one behavior which is different - `PLE1300` looks at _both_ `%` style strings and `.format` strings while `F509` only looks at `%` style strings. Basically, `F509` is a subset of `PLE1300` which means we should remove `F509` instead.
+
+---
+
+_Comment by @Pierre-Sassoulas on 2024-06-25 04:14_
+
+Shouldn't they be aliased to match what's expected from each tool and not break rétro compatibility ? (There's another issue for human readable names where old_names from pylint and aliases came up). 
+
+---
+
+_Comment by @dhruvmanila on 2024-06-25 04:19_
+
+Yeah, sorry, I meant that `F509` will redirect to `PLE1300` similar to https://github.com/astral-sh/ruff/pull/9756
+
+---
+
+_Referenced in [astral-sh/ruff#12020](../../astral-sh/ruff/pulls/12020.md) on 2024-06-25 04:44_
+
+---
+
+_Comment by @dhruvmanila on 2024-06-25 16:04_
+
+We've decided to not do this via rule redirection but wait until rule re-categorization (#1774) is complete and merge these rules instead. Refer to #12020 for context.
+
+---
+
+_Removed from milestone `v0.5.0` by @dhruvmanila on 2024-06-25 16:04_
+
+---
+
+_Unassigned @dhruvmanila by @dhruvmanila on 2024-06-25 16:04_
+
+---
+
+_Referenced in [astral-sh/ruff#12178](../../astral-sh/ruff/issues/12178.md) on 2024-07-04 04:47_
+
+---
+
+_Referenced in [astral-sh/ruff#12481](../../astral-sh/ruff/issues/12481.md) on 2024-07-24 14:10_
+
+---

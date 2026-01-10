@@ -1,0 +1,233 @@
+---
+number: 6704
+title: "`F841` ignores redefinitions of local assignments"
+type: issue
+state: open
+author: mertcangokgoz
+labels:
+  - bug
+  - needs-decision
+assignees: []
+created_at: 2023-08-20T14:06:45Z
+updated_at: 2024-11-18T08:15:20Z
+url: https://github.com/astral-sh/ruff/issues/6704
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# `F841` ignores redefinitions of local assignments
+
+---
+
+_Issue opened by @mertcangokgoz on 2023-08-20 14:06_
+
+While developing complex code in Django, I realised that F841 was not working properly.  
+
+I am leaving a small code example. under normal conditions flake8 says that the "teams" in this code are not used, but I do not encounter any warning in ruff.
+
+Or even if it detects it, it shows the last one found, it must show all three 
+
+```python
+def test():
+    if user.amin_user:
+        teams = user.teams.all()
+        if user.teams.filter(name="admin").exists():
+            print("admin")
+        else:
+            print("not admin")
+
+    if user.related_user:
+        teams = user.teams.all()
+        if user.teams.filter(name="related").exists():
+            print("related")
+        else:
+            print("not related")
+
+    if user.test_user:
+        teams = user.teams.all()
+        if user.teams.filter(name="test").exists():
+            print("test")
+        else:
+            print("tests")
+
+    if user.related_user:
+        teams = user.teams.all()
+        if user.teams.filter(name="related").exists():
+            print("related")
+        else:
+            print("not related")
+```
+
+Ruff version: 0.0.285
+
+
+---
+
+_Comment by @charliermarsh on 2023-08-20 14:15_
+
+I see the same output here for Ruff and Flake8.
+
+Ruff:
+
+```
+❯ ruff check foo.py -n --select F841 --isolated
+foo.py:24:9: F841 [*] Local variable `teams` is assigned to but never used
+```
+
+Flake8:
+
+```
+❯ flake8 foo.py --select F841
+foo.py:24:9: F841 local variable 'teams' is assigned to but never used
+```
+
+What am I missing here? :)
+
+---
+
+_Label `waiting-on-author` added by @charliermarsh on 2023-08-20 14:15_
+
+---
+
+_Comment by @mertcangokgoz on 2023-08-20 14:27_
+
+Sorry, my example is wrong, the trouble starts exactly as follows.
+
+```
+def test():
+    if user.admin_user:
+        teams = user.teams.all()
+        if user.teams.filter(name="admin").exists():
+            print("admin")
+        else:
+            print("not admin")
+
+    if user.related_user:
+        if user.teams.filter(name="related").exists():
+            print("related")
+        else:
+            print("not related")
+
+    if user.test_user:
+        if user.teams.filter(name="test").exists():
+            print("test")
+        else:
+            print("tests")
+
+    if user.related_user:
+        if user.teams.filter(name="related").exists():
+            print("related")
+        else:
+            print("not related")
+
+    if user.org_user:
+        teams = user.teams.all()
+        if teams.filter(booking=True).exists():
+            return self.filter(models.Q(booking__isnull=False))
+        return self.filter()
+
+    return self.none()
+
+```
+
+---
+
+_Comment by @charliermarsh on 2023-08-20 14:32_
+
+Thanks, though I still don't see F841 errors for Ruff or Flake8 with that code:
+
+```
+❯ flake8 foo.py --select F841
+❯ ruff check foo.py -n --select F841
+```
+
+---
+
+_Comment by @mertcangokgoz on 2023-08-20 14:34_
+
+Yes, but normally you should see it, because the teams in line 3 have never been used :S
+
+---
+
+_Comment by @charliermarsh on 2023-08-20 17:28_
+
+There are a bunch of Pyflakes issues about this like https://github.com/PyCQA/pyflakes/issues/498 or the parent issue https://github.com/PyCQA/pyflakes/issues/715. It's not trivial because we need to handle cases like:
+
+```python
+a = 1
+if ...:
+  a = 2
+print(a)
+```
+
+Or, above:
+
+```python
+def test():
+    if user.admin_user:
+        teams = user.teams.all()
+        if user.teams.filter(name="admin").exists():
+            print("admin")
+        else:
+            print("not admin")
+
+    if user.org_user:
+        # Redefined `teams`, unused.
+        teams = user.teams.all()
+
+    # But it _might_ be used here.
+    if teams.filter(booking=True).exists():
+        return self.filter(models.Q(booking__isnull=False))
+
+    return self.filter()
+```
+
+Undecided on whether to keep this open as it does have parity with Pyflakes and this kind of branch analysis is probably a bigger project beyond this issue.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-20 17:28_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-08-20 17:28_
+
+---
+
+_Label `waiting-on-author` removed by @charliermarsh on 2023-08-20 17:28_
+
+---
+
+_Renamed from "`F841` Not working properly" to "`F841` ignores redefinitions of local assignments" by @charliermarsh on 2023-08-20 17:29_
+
+---
+
+_Comment by @mertcangokgoz on 2023-08-20 18:41_
+
+It makes it very difficult for us to find the definitions that the developer overlooked in the ci/cd process. Thank you for the information and tagging. <3 
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-11-18 08:15_
+
+I think Ruff should support this but it requires a branch sensitive analysis which Ruff doesn't support today
+
+---
+
+_Referenced in [astral-sh/ruff#14355](../../astral-sh/ruff/issues/14355.md) on 2024-11-18 08:15_
+
+---
+
+_Referenced in [astral-sh/ruff#16232](../../astral-sh/ruff/issues/16232.md) on 2025-02-18 22:18_
+
+---
+
+_Referenced in [microsoft/pyright#10102](../../microsoft/pyright/issues/10102.md) on 2025-03-17 11:50_
+
+---
+
+_Referenced in [astral-sh/ruff#18485](../../astral-sh/ruff/issues/18485.md) on 2025-06-05 21:39_
+
+---

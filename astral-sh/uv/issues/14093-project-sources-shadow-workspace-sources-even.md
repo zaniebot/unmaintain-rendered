@@ -1,0 +1,117 @@
+---
+number: 14093
+title: project sources shadow workspace sources, even when disabled by markers
+type: issue
+state: closed
+author: oconnor663
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-16T23:58:20Z
+updated_at: 2025-06-18T22:31:24Z
+url: https://github.com/astral-sh/uv/issues/14093
+synced_at: 2026-01-10T01:25:42Z
+---
+
+# project sources shadow workspace sources, even when disabled by markers
+
+---
+
+_Issue opened by @oconnor663 on 2025-06-16 23:58_
+
+### Summary
+
+Here's a minimal repro. `pyproject.toml` at the root of the workspace:
+
+```toml
+[tool.uv.workspace]
+members = ["foo"]
+
+[[tool.uv.sources.numpy]]
+path = "/var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+```
+
+And `foo/pyproject.toml`:
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["numpy"]
+
+[[tool.uv.sources.numpy]]
+path = "/var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+marker = "sys_platform == 'foobarbaz'"
+```
+
+So what we have is both a workspace-level and a project-level source for `numpy`. However, the project-level source is disabled by a `marker` that will never be true. Here's what I see when I `uv sync`:
+
+```
+$ rm -r .venv && uv sync
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 3 packages in 60ms
+Installed 1 package in 11ms
+ + numpy==2.2.0
+```
+
+Contrast that with what I see if I remove the project-level source:
+
+```
+$ rm -r .venv && uv sync
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.65ms
+Installed 1 package in 11ms
+ + numpy==2.2.0 (from file:///var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+```
+
+In this case the workspace-level source is used. The bug(?) is that it should've been used in both cases. I think the cause is structure of the following `if` statement:
+
+https://github.com/astral-sh/uv/blob/cf67d9c633c1545ae5f46a1020182f4cef62ae76/crates/uv-distribution/src/metadata/lowering.rs#L49-L55
+
+In that code, if there's a project-level source with a matching name, then any workspace-level source is ignored. But this happens before markers are checked.
+
+### Platform
+
+linux
+
+### Version
+
+uv 0.7.13 (62ed17b23 2025-06-12)
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @oconnor663 on 2025-06-16 23:58_
+
+---
+
+_Comment by @oconnor663 on 2025-06-17 14:41_
+
+@charliermarsh's judgment is that this behavior is plausibly correct, since there's no good use case for mixing sources like this. My first response was that since we allow _multiple_ sources for the same dependency, that didn't seem much different from mixing workspace and project sources. However, now that I've played with this a bit, I've realized that when there are multiple sources we require them to be _disjoint_, e.g.
+
+```
+error: Failed to parse: `foo/pyproject.toml`
+  Caused by: TOML parse error at line 9, column 1
+  |
+9 | [[tool.uv.sources.numpy]]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+Source markers must be disjoint, but the following markers overlap: `sys_platform == 'foobarbaz'` and `sys_platform == 'foobarbaz'`.
+```
+
+Requiring project level sources to be disjoint from workspace level sources seems silly, so I agree that we should probably just document the current behavior.
+
+---
+
+_Referenced in [astral-sh/uv#14136](../../astral-sh/uv/pulls/14136.md) on 2025-06-18 19:13_
+
+---
+
+_Closed by @oconnor663 on 2025-06-18 22:31_
+
+---

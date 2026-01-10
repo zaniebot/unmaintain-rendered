@@ -1,0 +1,170 @@
+---
+number: 789
+title: displaying help for subcommands should disable top level argument requirements
+type: issue
+state: closed
+author: Geal
+labels: []
+assignees: []
+created_at: 2016-12-28T13:31:38Z
+updated_at: 2018-08-02T03:29:58Z
+url: https://github.com/clap-rs/clap/issues/789
+synced_at: 2026-01-10T01:26:35Z
+---
+
+# displaying help for subcommands should disable top level argument requirements
+
+---
+
+_Issue opened by @Geal on 2016-12-28 13:31_
+
+### Rust Version
+
+rustc 1.15.0-nightly (2217bd771 2016-11-25)
+
+### Affected Version of clap
+
+2.19.2
+
+### Expected Behavior Summary
+
+With an executable taking a top level required argument "foo", and a subcommand "bar", displaying bar's help with `./clap-test bar --help` should display the help like this:
+
+```
+$ ./target/debug/clap-test bar --help
+clap-test-bar
+bar
+
+USAGE:
+    clap-test bar --baz <baz>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --baz <baz>    baz
+```
+
+### Actual Behavior Summary
+
+```
+$ ./target/debug/clap-test bar --help 
+error: The following required arguments were not provided:
+    --foo <FILE>
+
+USAGE:
+    clap-test --foo <FILE> [SUBCOMMAND]
+
+For more information try --help
+```
+
+### Steps to Reproduce the issue
+
+Build and run the attached code
+
+### Sample Code or Link to Sample Code
+
+```rust
+#[macro_use] extern crate clap;
+use clap::{App,Arg,SubCommand};
+
+fn main() {
+  let matches = App::new("test")
+                        .version(crate_version!())
+                        .arg(Arg::with_name("foo")
+                                    .long("foo")
+                                    .value_name("FILE")
+                                    .help("Sets a custom config file")
+                                    .takes_value(true)
+                                    .required(true))
+                        .subcommand(SubCommand::with_name("bar")
+                                    .about("bar")
+                                    .arg(Arg::with_name("baz").long("baz")
+                                         .takes_value(true).required(true).help("baz")))
+                        .get_matches();
+}
+```
+
+### Debug output
+
+```
+$ ./target/debug/clap-test bar --help
+*DEBUG:clap: fn=Parser::add_subcommand;
+*DEBUG:clap: Term width...None
+*DEBUG:clap: Is help...No
+*DEBUG:clap: VersionlessSubcommands set...false
+*DEBUG:clap: GlobalVersion set...false
+*DEBUG:clap: fn=get_matches_with;
+*DEBUG:clap: fn=create_help_and_version;
+*DEBUG:clap: Building --help
+*DEBUG:clap: Building --version
+*DEBUG:clap: Building help
+*DEBUG:clap: Begin parsing '"bar"' ([98, 97, 114])
+*DEBUG:clap: fn=check_is_new_arg;nvo=None
+*DEBUG:clap: Does arg allow leading hyphen...false
+*DEBUG:clap: Starts new arg...Probable value
+*DEBUG:clap: Starts new arg...false
+*DEBUG:clap: fn=possible_subcommand
+*DEBUG:clap: fn=validate_blacklist;blacklist=[]
+*DEBUG:clap: fn=validate_num_args;
+*DEBUG:clap: fn=create_usage;
+*DEBUG:clap: fn=create_usage_no_title;
+*DEBUG:clap: args_in_groups=[]
+*DEBUG:clap: fn=fmt
+*DEBUG:clap: fn=needs_flags_tag;
+*DEBUG:clap: iter;f=hclap_help;
+*DEBUG:clap: iter;f=vclap_version;
+*DEBUG:clap: fn=validate_required;required=["foo"];
+*DEBUG:clap: iter;name=foo
+*DEBUG:clap: fn=is_missing_required_ok;a=foo
+*DEBUG:clap: args_in_groups=[]
+*DEBUG:clap: fn=fmt
+*DEBUG:clap: fn=create_usage;
+*DEBUG:clap: fn=create_usage_no_title;
+*DEBUG:clap: args_in_groups=[]
+*DEBUG:clap: fn=fmt
+*DEBUG:clap: fn=needs_flags_tag;
+*DEBUG:clap: iter;f=hclap_help;
+*DEBUG:clap: iter;f=vclap_version;
+*DEBUG:clap: fn=color;
+*DEBUG:clap: Color setting...Auto
+*DEBUG:clap: fn=error;
+*DEBUG:clap: fn=is_a_tty;
+*DEBUG:clap: Use stderr...true
+*DEBUG:clap: fn=good;
+*DEBUG:clap: fn=is_a_tty;
+*DEBUG:clap: Use stderr...true
+error: The following required arguments were not provided:
+    --foo <FILE>
+
+USAGE:
+    clap-test --foo <FILE> [SUBCOMMAND]
+
+For more information try --help
+```
+
+
+---
+
+_Comment by @Geal on 2016-12-28 13:34_
+
+Trying different versions of calling help:
+
+prog bar --help -> doesn't work
+prog bar -h -> doesn't work
+prog bar help -> doesn't work
+prog help bar -> works
+
+
+---
+
+_Comment by @kbknapp on 2016-12-28 14:21_
+
+Thanks for letting me know about this! It's fixed, I'll push 2.19.3 to crates.io 😉 
+
+---
+
+_Closed by @homu on 2016-12-28 16:04_
+
+---

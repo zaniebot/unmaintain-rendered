@@ -1,0 +1,351 @@
+---
+number: 10529
+title: Failed to Build pyaudio
+type: issue
+state: closed
+author: Runelaron
+labels:
+  - question
+  - needs-mre
+assignees: []
+created_at: 2025-01-12T00:03:48Z
+updated_at: 2025-02-02T03:23:15Z
+url: https://github.com/astral-sh/uv/issues/10529
+synced_at: 2026-01-10T01:24:54Z
+---
+
+# Failed to Build pyaudio
+
+---
+
+_Issue opened by @Runelaron on 2025-01-12 00:03_
+
+cc cmd not found when building pyaudio from source.
+
+```bash
+
+  × Failed to build `pyaudio==0.2.14`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_py
+      copying src/pyaudio/__init__.py -> build/lib.linux-x86_64-cpython-312/pyaudio
+      running build_ext
+      building 'pyaudio._portaudio' extension
+      cc -pthread -fno-strict-overflow -Wsign-compare -Wunreachable-code -DNDEBUG -g -O3 -Wall -fPIC -fPIC -I/usr/local/include -I/usr/include -I/home/.cache/uv/builds-v0/.tmp4odXqs/include
+      -I/home/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/include/python3.12 -c src/pyaudio/device_api.c -o build/temp.linux-x86_64-cpython-312/src/pyaudio/device_api.o
+
+      [stderr]
+      error: command 'cc' failed: No such file or directory
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `pyaudio` (v0.2.14) was included because `realtimetts` (v0.1.0) depends on `pyaudio`
+```
+
+It seems pyaudio is unique and required portaudio.sh to be pulled in when build from source.
+
+```bash
+ pip install --use-pep517 'pyaudio==0.2.14'
+Collecting pyaudio==0.2.14
+  Downloading PyAudio-0.2.14.tar.gz (47 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: pyaudio
+  Building wheel for pyaudio (pyproject.toml) ... error
+  error: subprocess-exited-with-error
+  
+  × Building wheel for pyaudio (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [14 lines of output]
+      running bdist_wheel
+      running build
+      running build_py
+      creating build/lib.linux-x86_64-cpython-312/pyaudio
+      copying src/pyaudio/__init__.py -> build/lib.linux-x86_64-cpython-312/pyaudio
+      running build_ext
+      building 'pyaudio._portaudio' extension
+      creating build/temp.linux-x86_64-cpython-312/src/pyaudio
+      cc -pthread -fno-strict-overflow -Wsign-compare -Wunreachable-code -DNDEBUG -g -O3 -Wall -fPIC -fPIC -I/usr/local/include -I/usr/include -I/home/rune/code/packs/.venv/include -I/home/rune/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/include/python3.12 -c src/pyaudio/device_api.c -o build/temp.linux-x86_64-cpython-312/src/pyaudio/device_api.o
+      src/pyaudio/device_api.c:9:10: fatal error: portaudio.h: No such file or directory
+          9 | #include "portaudio.h"
+            |          ^~~~~~~~~~~~~
+      compilation terminated.
+      error: command '/usr/bin/cc' failed with exit code 1
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for pyaudio
+Failed to build pyaudio
+ERROR: ERROR: Failed to build installable wheels for some pyproject.toml based projects (pyaudio)
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-12 00:59_
+
+I'm slightly confused -- this is on the same machine? Why is `cc` not found?
+
+---
+
+_Comment by @Runelaron on 2025-01-12 01:10_
+
+I investigated further using the UV build troubleshooting here.
+https://docs.astral.sh/uv/reference/build_failures/#header-or-library-is-missing
+
+For some reason it is not reporting the full callback saying that portaudio.h is missing which requires  portaudio19-dev.
+
+I think the solution is to inform the user that this dependency does not exist if UV will always strict build from source.
+
+---
+
+_Comment by @zanieb on 2025-01-12 01:13_
+
+These failures are different, i.e., in the first one it fails missing `cc` which is very surprising. We'll need more details to determine why that happened.
+
+---
+
+_Comment by @zanieb on 2025-01-12 01:17_
+
+My attempt to reproduce encounters the expected missing header error
+
+```
+❯ docker run -it ghcr.io/astral-sh/uv:bookworm /bin/bash -c "apt-get update && apt-get install -y python3-dev && uv venv && uv pip install pyaudio==0.2.14"
+...
+  x Failed to build `pyaudio==0.2.14`
+  |-> The build backend returned an error
+  `-> Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_py
+      creating build/lib.linux-aarch64-cpython-311/pyaudio
+      copying src/pyaudio/__init__.py -> build/lib.linux-aarch64-cpython-311/pyaudio
+      running build_ext
+      building 'pyaudio._portaudio' extension
+      creating build/temp.linux-aarch64-cpython-311/src/pyaudio
+      aarch64-linux-gnu-gcc -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g -fstack-protector-strong
+      -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/include -I/usr/include
+      -I/root/.cache/uv/builds-v0/.tmpyeUlzO/include -I/usr/include/python3.11 -c src/pyaudio/device_api.c -o
+      build/temp.linux-aarch64-cpython-311/src/pyaudio/device_api.o
+
+      [stderr]
+      src/pyaudio/device_api.c:9:10: fatal error: portaudio.h: No such file or directory
+          9 | #include "portaudio.h"
+            |          ^~~~~~~~~~~~~
+      compilation terminated.
+      error: command '/usr/bin/aarch64-linux-gnu-gcc' failed with exit code 1
+
+      hint: This error likely indicates that you need to install a library that provides "portaudio.h" for `pyaudio@0.2.14`
+```
+
+We already have a hint for this error — and the error is from the downstream package not uv.
+
+Please share a minimal reproduction as described in #9452
+
+---
+
+_Label `question` added by @zanieb on 2025-01-12 01:17_
+
+---
+
+_Label `needs-mre` added by @zanieb on 2025-01-12 01:17_
+
+---
+
+_Comment by @Runelaron on 2025-01-12 01:55_
+
+Reproduction in the initial fail.
+
+```bash
+git clone https://github.com/KoljaB/RealtimeTTS.git
+cd RealtimeTTS
+uv init --python=3.12
+source .venv/bin/activate
+uv add -r requirements.txt
+```
+in the test
+```bash
+uv venv -p 3.13 --seed
+source .venv/bin/activate
+pip install --use-pep517 'pyaudio=0.2.14'
+```
+
+The only major difference is the use of -r requirements.txt
+It is quite odd, once I did the test I realized it was just a dependency error but of course at first I double checked if GCC was installed and it returned gcc is already the newest version (4:13.2.0-7ubuntu1)
+
+---
+
+_Comment by @zanieb on 2025-01-12 06:10_
+
+If I try that..
+
+```
+FROM ghcr.io/astral-sh/uv:bookworm
+
+RUN git clone https://github.com/KoljaB/RealtimeTTS.git
+WORKDIR RealtimeTTS
+RUN uv init --python=3.12
+RUN uv add -r requirements.txt
+```
+
+I get a different error
+
+```
+ > [5/5] RUN uv add -r requirements.txt:                                                                                     
+2.878 Using CPython 3.12.8                                                                                                   
+2.879 Creating virtual environment at: .venv                                                                                 
+7.039   × No solution found when resolving dependencies for split                                                            
+7.039   │ (python_full_version == '3.13.*'):                                                                                 
+7.044   ╰─▶ Because only the following versions of numpy{python_full_version ==
+7.044       '3.13.*'} are available:
+7.044           numpy{python_full_version == '3.13.*'}<=2.1.3
+7.044           numpy{python_full_version == '3.13.*'}==2.2.0
+7.044           numpy{python_full_version == '3.13.*'}==2.2.1
+7.044       and all versions of monotonic-alignment-search depend on
+7.044       numpy{python_full_version == '3.13.*'}>=2.1.3, we can conclude that all
+7.044       versions of monotonic-alignment-search depend on numpy>=2.1.3.
+7.044       And because coqui-tts==0.25.1 depends on monotonic-alignment-search, we
+7.044       can conclude that coqui-tts==0.25.1 depends on numpy>=2.1.3.
+7.044       And because coqui-tts==0.25.1 depends on numpy>=1.25.2,<2.0 and
+7.044       your project depends on coqui-tts==0.25.1, we can conclude that your
+7.044       project's requirements are unsatisfiable.
+7.044   help: If you want to add the package regardless of the failed resolution,
+7.044         provide the `--frozen` flag to skip locking and syncing.
+```
+
+---
+
+_Comment by @samypr100 on 2025-01-12 23:30_
+
+Assuming this is on ubuntu, this looks like missing portaudio headers on the host system. Using @zanieb's command on Ubuntu as an example, you would need the `portaudio19-dev` system package.
+
+e.g. `docker run -it ghcr.io/astral-sh/uv:bookworm /bin/bash -c "apt-get update && apt-get install -y python3-dev portaudio19-dev && uv venv && uv pip install pyaudio==0.2.14"` should work.
+
+Related to `CC` not found, that likely meant you didn't have any build tooling packages installed on your first attempt such as `build-essential`.
+
+The [pyaudio/setup.py](https://github.com/CristiFati/pyaudio/blob/master/setup.py) looks in `/usr/local/include`, `/usr/include` for these headers on linux. It does not bundle them as part of the package.
+
+---
+
+_Comment by @Runelaron on 2025-01-14 02:51_
+
+I thought the 3.13 error was due to pinning, and attempting to solve across multiple versions.
+
+I will see if I can reproduce it, but if I can't I will close it.
+
+---
+
+_Comment by @vladartym on 2025-01-14 20:11_
+
+I got the similar error on my m3 macbook.
+I needed to run `brew install portaudio` and then `uv sync` worked.
+
+
+---
+
+_Comment by @evanarlian on 2025-01-17 06:55_
+
+I also got the similar problem, but it says `-fdebug-default-version=4` is not recognized by cc.
+```
+uv add pyaudio
+```
+
+```
+Resolved 2 packages in 1ms
+  × Failed to build `pyaudio==0.2.14`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_py
+      copying src/pyaudio/__init__.py -> build/lib.linux-x86_64-cpython-312/pyaudio
+      running build_ext
+      building 'pyaudio._portaudio' extension
+      cc -pthread -fno-strict-overflow -Wsign-compare -Wunreachable-code -DNDEBUG -g -O3 -Wall -fdebug-default-version=4 -fPIC -I/tools/deps/include
+      -I/tools/deps/include/ncursesw -I/tools/deps/libedit/include -fPIC -I/usr/local/include -I/usr/include -I/home/evan/.cache/uv/builds-v0/.tmptDANQm/include
+      -I/home/evan/.local/share/uv/python/cpython-3.12.0-linux-x86_64-gnu/include/python3.12 -c src/pyaudio/device_api.c -o build/temp.linux-x86_64-cpython-312/src/pyaudio/device_api.o
+
+      [stderr]
+      cc: error: unrecognized command-line option ‘-fdebug-default-version=4’
+      error: command '/usr/bin/cc' failed with exit code 1
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `pyaudio` (v0.2.14) was included because `audiotest` (v0.1.0) depends on `pyaudio`
+```
+More info:
+* Tried using pip and conda, they are both fine.
+* I have portaudio on my system using `sudo apt install portaudio19-dev`.
+* I have cc installed.
+
+---
+
+**Update:** I managed to "solve" this by using python=3.11 instead of python=3.12
+```
+uv init --python=3.11
+uv add pyaudio
+```
+
+
+---
+
+_Comment by @zanieb on 2025-01-21 18:28_
+
+@evanarlian What does `cc` refer to? With standard Python distributions, usually `gcc` is used, but for ours we use `cc` which could point to a different compiler backend. You might get past the error by setting `CC=gcc`
+
+---
+
+_Comment by @konstin on 2025-01-21 18:43_
+
+Does the error also fail when using `pip install`, or only with uv?
+
+---
+
+_Comment by @evanarlian on 2025-01-22 16:32_
+
+@zanieb `cc` refers to `/usr/bin/x86_64-linux-gnu-gcc-11`, which is also what `gcc` points to.
+
+@konstin `pip` and `conda` install are fine, only with `uv`. The funny thing is I tried to replicate this issue on my local PC, and even on cloud VMs, but it seems to be fine now. I can't reproduce this currently.
+
+---
+
+_Comment by @Runelaron on 2025-01-25 14:18_
+
+I have not been able to reproduce it either on the system. The only rational I can find, is depending on what pyaudio is looking for/missing, the error returned for that specific misconfiguration.
+
+Not sure if the error should be clearer to convey that UV is trying to build from wheel specifically and that the wheel is missing a dependency, or just refer to this thread.
+
+For now:
+
+"UV builds from source , ensure missing dependencies in trace are resolved"
+
+CC & GCC - Debian
+```apt install build-essential ```
+
+Port Audio
+Mac:
+```brew install portaudio```
+
+Debian:
+```apt-get install portaudio19-dev python-all-dev ```
+
+
+---
+
+_Closed by @Runelaron on 2025-01-25 14:18_
+
+---
+
+_Comment by @zanieb on 2025-01-25 16:53_
+
+> Not sure if the error should be clearer to convey that UV is trying to build from wheel using CC specifically and that the wheel is missing a dependency, or just refer to this thread.
+
+This is specific to each package and depends how their build is configured — we do not control if they use `CC` or whatever. _Some_ builds use the same compiler that CPython was built with, hence using `cc` when using one of our Python distributions.
+
+---

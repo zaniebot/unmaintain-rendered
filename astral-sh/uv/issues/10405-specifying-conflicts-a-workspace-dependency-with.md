@@ -1,0 +1,137 @@
+---
+number: 10405
+title: Specifying conflicts a workspace dependency with conflicting extras?
+type: issue
+state: open
+author: shawnohare
+labels: []
+assignees: []
+created_at: 2025-01-08T19:08:02Z
+updated_at: 2025-01-08T19:08:02Z
+url: https://github.com/astral-sh/uv/issues/10405
+synced_at: 2026-01-10T01:24:53Z
+---
+
+# Specifying conflicts a workspace dependency with conflicting extras?
+
+---
+
+_Issue opened by @shawnohare on 2025-01-08 19:08_
+
+# # Description of Problem
+
+Using `uv==0.5.16` I created a workspace dependency `runtimes` with conflicting extras `cow5` and `cow6` and specify the conflict in that package's `pyproject.toml`. I want to include `runtimes[cow6]` in the main `dependencies` group of an `app` package. However, it's unclear to me how to specify the conflict in `app/pyproject.toml`, as `uv sync` complains about an unconditional reference to the conflicting extra. I suspect this is potentially related to #10238? 
+
+Below is a simple bash script that should create the packages and add the attempted conflict resolution.
+
+```bash
+rm -rf ./runtimes
+rm -rf ./app
+
+printf '[tool.uv.workspace]\nmembers = ["*"]' > pyproject.toml
+uv init --lib runtimes
+uv add --package "runtimes" --optional "cow5" "cowsay<6" --frozen
+uv add --package "runtimes" --optional "cow6" "cowsay>=6" --frozen
+
+cat << EOF >> runtimes/pyproject.toml
+
+[tool.uv]
+conflicts = [
+  [
+     { extra = "cow5"},
+     { extra = "cow6"},
+  ],
+]
+EOF
+# at this stage this works: uv sync --package "runtimes" --extra "cow6"
+
+
+uv init app
+uv add --package "app" "runtimes[cow6]" --frozen
+
+cat << EOF >> app/pyproject.toml
+
+[tool.uv]
+conflicts = [
+  [
+     { package = "runtimes", extra = "cow5"},
+     { package = "runtimes", extra = "cow6"},
+  ],
+]
+EOF
+
+echo "# runtimes/pyproject.toml"
+cat runtimes/pyproject.toml
+echo "# app/pyproject.toml"
+cat app/pyproject.toml
+
+# errors
+uv sync
+```
+The "library" `pyproject.toml` is below.
+
+```toml
+
+# runtimes/pyproject.toml
+[project]
+name = "runtimes"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Shawn O'Hare", email = "shawn@email.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+cow5 = [
+    "cowsay<6",
+]
+cow6 = [
+    "cowsay>=6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+conflicts = [
+  [
+     { extra = "cow5"},
+     { extra = "cow6"},
+  ],
+]
+```
+
+The "app" `pyproject.toml` is below.
+```toml
+# app/pyproject.toml
+[project]
+name = "app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "runtimes[cow6]",
+]
+
+[tool.uv.sources]
+runtimes = { workspace = true }
+
+[tool.uv]
+conflicts = [
+  [
+     { package = "runtimes", extra = "cow5"},
+     { package = "runtimes", extra = "cow6"},
+  ],
+]
+```
+
+## Context and workaround
+
+What I'm actually trying to do is utilize `uv` workspaces in a monorepo context where many common dependencies are pushed to dummy packages. Think pinned dependencies for machine learning runtimes, where individual projects (an app / inference endpoint) target a specific runtime. Originally I had thought to make a singular `runtimes` dummy package like the above, where runtime specific dependency sets are specified as optional dependencies. An obvious workaround for this particular situation is to simply make the various runtime targets separate dummy packages, but from a book-keeping perspective this seems sub-optimal (albeit very minor).
+
+---

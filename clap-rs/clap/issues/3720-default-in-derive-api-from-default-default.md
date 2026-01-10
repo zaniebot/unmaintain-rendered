@@ -1,0 +1,93 @@
+---
+number: 3720
+title: "Default in derive API from Default::default()"
+type: issue
+state: closed
+author: Shatur
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2022-05-11T20:15:26Z
+updated_at: 2022-05-11T20:28:23Z
+url: https://github.com/clap-rs/clap/issues/3720
+synced_at: 2026-01-10T01:27:45Z
+---
+
+# Default in derive API from Default::default()
+
+---
+
+_Issue opened by @Shatur on 2022-05-11 20:15_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.1.8
+
+### Describe your use case
+
+I have a struct with non-optional values but with defaults. Currently I define it like this:
+
+```rust
+#[derive(Args, Clone)]
+#[cfg_attr(test, derive(PartialEq, Debug))]
+pub(crate) struct ServerSettings {
+    /// Server name that will be visible to other players.
+    #[clap(short, long, default_value_t = ServerSettings::default().server_name)]
+    pub(crate) server_name: String,
+
+    /// IP address to bind.
+    #[clap(short, long, default_value_t = ServerSettings::default().ip)]
+    pub(crate) ip: String,
+
+    /// Port to use.
+    #[clap(short, long, default_value_t = ServerSettings::default().port)]
+    pub(crate) port: u16,
+
+    /// Game mode.
+    #[clap(short, long, default_value_t = ServerSettings::default().game_mode)]
+    pub(crate) game_mode: GameMode,
+
+    /// Game map.
+    #[clap(short, long, default_value_t = ServerSettings::default().map)]
+    pub(crate) map: Map,
+
+    /// Choose heroes randomly.
+    #[clap(short, long)]
+    pub(crate) random_heroes: bool,
+}
+```
+
+Because `default_value_t` uses `Default::default` for the underlying type, not from the struct. It's very unergonomic and error-prone.
+
+### Describe the solution you'd like
+
+It would be nice to have an attribute to use default value from the struct's `Default` trait.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @Shatur on 2022-05-11 20:15_
+
+---
+
+_Comment by @epage on 2022-05-11 20:28_
+
+Looks like we have #3116 for this, closing in favor if that issue.
+
+---
+
+_Closed by @epage on 2022-05-11 20:28_
+
+---

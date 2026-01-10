@@ -1,0 +1,44 @@
+---
+number: 14393
+title: Support an alternative means of specifying python version except .python-version
+type: issue
+state: closed
+author: trondhindenes
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-07-01T14:04:28Z
+updated_at: 2025-07-02T02:08:59Z
+url: https://github.com/astral-sh/uv/issues/14393
+synced_at: 2026-01-10T01:25:44Z
+---
+
+# Support an alternative means of specifying python version except .python-version
+
+---
+
+_Issue opened by @trondhindenes on 2025-07-01 14:04_
+
+### Summary
+
+Placing a .python-version file in a folder can have unwanted consequences, as it will be read by tools like pyenv. It would be good if uv had its own way of specifying the python version that would not have a risk of affecting other tools' behavior, such as a ".uv-python", a "uv" section in pyproject.toml or something. 
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @trondhindenes on 2025-07-01 14:04_
+
+---
+
+_Comment by @charliermarsh on 2025-07-02 02:08_
+
+I think this can feasibly be merged into https://github.com/astral-sh/uv/issues/4970, which covers adding some kind of `tool.uv.python-version`.
+
+---
+
+_Closed by @charliermarsh on 2025-07-02 02:08_
+
+---

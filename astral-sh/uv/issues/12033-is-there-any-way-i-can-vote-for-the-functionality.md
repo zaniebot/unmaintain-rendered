@@ -1,0 +1,68 @@
+---
+number: 12033
+title: Is there any way I can vote for the functionality that I would like to see in UV?
+type: issue
+state: closed
+author: Wintreist
+labels:
+  - question
+assignees: []
+created_at: 2025-03-07T07:59:24Z
+updated_at: 2025-03-07T10:48:32Z
+url: https://github.com/astral-sh/uv/issues/12033
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# Is there any way I can vote for the functionality that I would like to see in UV?
+
+---
+
+_Issue opened by @Wintreist on 2025-03-07 07:59_
+
+### Question
+
+First of all, I would like to thank the developers for the UV. I really like using it.
+
+I apologize if I may have angered you with this question, as UV is still under development.
+
+I would like to know if there is any way to "vote" for the functionality that I and other users would like to see?
+
+I see that there is a label "wish", does this mean that you will make such functionality when the time comes, or when the time comes, will you decide whether you will implement such functionality?
+
+By no means am I rushing you, but I would like to vote for some functionality, and patiently wait for its time to come.
+
+Specifically, right now, I would like to support the #5802 initiative. Specifically, I lack the functionality to "compile" a program without unnecessary difficulties (and this is how UV allows you to act in other areas), and transfer it to users' systems.
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @Wintreist on 2025-03-07 07:59_
+
+---
+
+_Comment by @my1e5 on 2025-03-07 10:45_
+
+The developers have stated:
+
+> If your request or problem is the same as an existing issue, please upvote the original post with a 👍 instead of adding a comment like "+1" or "I'm encountering this too". If you do comment, please make sure you're adding new context to the conversation. Similarly, please do not request status updates on issues — if progress has been made, the issue is usually updated.
+
+* see https://github.com/astral-sh/uv/issues/9452
+
+---
+
+_Comment by @Wintreist on 2025-03-07 10:48_
+
+Thank you
+
+---
+
+_Closed by @Wintreist on 2025-03-07 10:48_
+
+---

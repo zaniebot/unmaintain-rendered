@@ -1,0 +1,74 @@
+---
+number: 16962
+title: Multilingual support for rules D400 and D415
+type: issue
+state: open
+author: gakugaku
+labels:
+  - rule
+assignees: []
+created_at: 2025-03-25T04:48:41Z
+updated_at: 2025-04-11T06:18:38Z
+url: https://github.com/astral-sh/ruff/issues/16962
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# Multilingual support for rules D400 and D415
+
+---
+
+_Issue opened by @gakugaku on 2025-03-25 04:48_
+
+### Summary
+
+### Overview
+The rules [D400](https://docs.astral.sh/ruff/rules/missing-trailing-period/) (missing trailing period) and [D415](https://docs.astral.sh/ruff/rules/missing-terminal-punctuation/) (missing terminal punctuation) in Ruff currently target English only. They do not support terminal punctuation for other languages. For example, a Japanese comment using `。` at the end may be flagged incorrectly.
+
+### Proposed Changes
+
+- Update the logic for D400 and D415 to support multiple languages.  
+- Allow configuration of language-specific terminal punctuation (e.g., English: `.`, Japanese: `。`).  
+
+Example for D400/D415 in English:
+
+```python
+def average(values: list[float]) -> float:
+    """Return the mean of the given values."""
+```
+
+Example in Japanese
+```python
+def average(values: list[float]) -> float:
+    """平均値を返します。"""
+```
+
+
+---
+
+_Label `rule` added by @dylwil3 on 2025-03-25 12:02_
+
+---
+
+_Label `configuration` added by @dylwil3 on 2025-03-25 12:02_
+
+---
+
+_Comment by @MichaReiser on 2025-03-27 12:18_
+
+I'm somewhat leaning towards using a heuristic here rather than introducing a new configuration option. For example: Allow 。if the first sentence uses any non ascii characters 
+
+---
+
+_Label `configuration` removed by @MichaReiser on 2025-03-27 12:18_
+
+---
+
+_Comment by @Avasam on 2025-04-11 06:15_
+
+> Allow 。if the first sentence uses any non ascii characters 
+
+Accents are non-ASCII. That already includes many latin and nordic languages. 
+
+Why not just accept all terminal punctuation characters from any language? No heuristic, no configs. Probably low risk of false-negative? (I'd be surprised if someone manages to accidentally mixup terminal punctuation characters across languages in a way you'd want the rule to flag) 
+
+---

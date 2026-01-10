@@ -1,0 +1,703 @@
+---
+number: 13478
+title: Red Knot panics when analyzing black
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - bug
+  - ty
+assignees: []
+created_at: 2024-09-23T07:49:18Z
+updated_at: 2024-11-13T15:06:22Z
+url: https://github.com/astral-sh/ruff/issues/13478
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# Red Knot panics when analyzing black
+
+---
+
+_Issue opened by @MichaReiser on 2024-09-23 07:49_
+
+* [x] `tests/data/cases/pep_572_do_not_remove_parens.py`
+	<details><summary>Backtrace</summary>
+	
+	```
+	thread '<unnamed>' panicked at crates/red_knot_python_semantic/src/semantic_index/builder.rs:882:17:
+	assertion failed: self.current_assignment.is_none()
+	stack backtrace:
+	   0: rust_begin_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:665:5
+	   1: core::panicking::panic_fmt
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panicking.rs:74:14
+	   2: core::panicking::panic
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panicking.rs:148:5
+	   3: <red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder as ruff_python_ast::visitor::Visitor>::visit_expr
+	             at ./crates/red_knot_python_semantic/src/semantic_index/builder.rs:882:17
+	   4: <red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder as ruff_python_ast::visitor::Visitor>::visit_stmt
+	             at ./crates/red_knot_python_semantic/src/semantic_index/builder.rs:582:17
+	   5: ruff_python_ast::visitor::walk_body
+	             at ./crates/ruff_python_ast/src/visitor.rs:115:9
+	   6: ruff_python_ast::visitor::Visitor::visit_body
+	             at ./crates/ruff_python_ast/src/visitor.rs:94:9
+	   7: <red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder as ruff_python_ast::visitor::Visitor>::visit_stmt
+	             at ./crates/red_knot_python_semantic/src/semantic_index/builder.rs:786:21
+	   8: ruff_python_ast::visitor::walk_body
+	             at ./crates/ruff_python_ast/src/visitor.rs:115:9
+	   9: ruff_python_ast::visitor::Visitor::visit_body
+	             at ./crates/ruff_python_ast/src/visitor.rs:94:9
+	  10: red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder::build
+	             at ./crates/red_knot_python_semantic/src/semantic_index/builder.rs:412:9
+	  11: <red_knot_python_semantic::semantic_index::semantic_index::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_python_semantic/src/semantic_index.rs:45:5
+	  12: <red_knot_python_semantic::semantic_index::semantic_index::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  13: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  14: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  15: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  16: __rust_try
+	  17: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  18: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  19: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  20: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  21: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  22: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  23: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  24: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  25: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  26: red_knot_python_semantic::semantic_index::semantic_index::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  27: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  28: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  29: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  30: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  31: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  32: red_knot_python_semantic::semantic_index::semantic_index
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  33: red_knot_python_semantic::types::check_types
+	             at ./crates/red_knot_python_semantic/src/types.rs:35:17
+	  34: <red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_workspace/src/workspace.rs:416:23
+	  35: <red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  36: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  37: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  38: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  39: __rust_try
+	  40: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  41: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  42: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  43: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  44: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  45: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  46: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  47: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  48: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  49: red_knot_workspace::workspace::check_file::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  50: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  51: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  52: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  53: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  54: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  55: red_knot_workspace::workspace::check_file
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  56: red_knot_workspace::workspace::Workspace::check::{{closure}}::{{closure}}
+	             at ./crates/red_knot_workspace/src/workspace.rs:216:44
+	  57: rayon_core::scope::Scope::spawn::{{closure}}::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:526:57
+	  58: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  59: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  60: __rust_try
+	  61: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  62: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  63: rayon_core::unwind::halt_unwinding
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/unwind.rs:17:5
+	  64: rayon_core::scope::ScopeBase::execute_job_closure
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:689:28
+	  65: rayon_core::scope::ScopeBase::execute_job
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:679:29
+	  66: rayon_core::scope::Scope::spawn::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:526:13
+	  67: <rayon_core::job::HeapJob<BODY> as rayon_core::job::Job>::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/job.rs:169:9
+	  68: rayon_core::job::JobRef::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/job.rs:64:9
+	  69: rayon_core::registry::WorkerThread::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:860:9
+	  70: rayon_core::registry::WorkerThread::wait_until_cold
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:786:17
+	  71: rayon_core::registry::WorkerThread::wait_until
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:769:13
+	  72: rayon_core::latch::CountLatch::wait
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/latch.rs:400:17
+	  73: rayon_core::scope::ScopeBase::complete
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:668:9
+	  74: rayon_core::scope::scope::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:291:9
+	  75: rayon_core::registry::in_worker
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:951:13
+	  76: rayon_core::scope::scope
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:289:5
+	  77: red_knot_workspace::workspace::Workspace::check
+	             at ./crates/red_knot_workspace/src/workspace.rs:206:9
+	  78: red_knot_workspace::db::RootDatabase::check::{{closure}}
+	             at ./crates/red_knot_workspace/src/db.rs:55:27
+	  79: red_knot_workspace::db::RootDatabase::with_db::{{closure}}
+	             at ./crates/red_knot_workspace/src/db.rs:79:29
+	  80: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  81: __rust_try
+	  82: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  83: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  84: salsa::cancelled::Cancelled::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cancelled.rs:36:15
+	  85: red_knot_workspace::db::RootDatabase::with_db
+	             at ./crates/red_knot_workspace/src/db.rs:79:9
+	  86: red_knot_workspace::db::RootDatabase::check
+	             at ./crates/red_knot_workspace/src/db.rs:55:9
+	  87: red_knot::MainLoop::main_loop::{{closure}}
+	             at ./crates/red_knot/src/main.rs:306:45
+	  88: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  89: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  90: __rust_try
+	  91: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  92: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  93: rayon_core::unwind::halt_unwinding
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/unwind.rs:17:5
+	  94: rayon_core::registry::Registry::catch_unwind
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:367:27
+	  95: rayon_core::spawn::spawn_job::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/spawn/mod.rs:97:13
+	  96: <rayon_core::job::HeapJob<BODY> as rayon_core::job::Job>::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/job.rs:169:9
+	  97: rayon_core::job::JobRef::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/job.rs:64:9
+	note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+	```
+	</details>
+
+
+* [x] `src/blib2to3/pgen2/driver.py` 
+   <details><summary>Logs</summary>
+
+	```
+	2024-09-23 09:41:28.949226820 DEBUG Checking file '/home/micha/astral/black/tests/data/cases/  pep_572_do_not_remove_parens.py'
+	2024-09-23 09:43:38.612866625 DEBUG Module 'blib2to3.pgen2.tokenize' not found in the search paths.
+	thread '<unnamed>' panicked at crates/red_knot_python_semantic/src/types/infer.rs:192:25:
+	no entry found for key
+	stack backtrace:
+	   0: rust_begin_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:665:5
+	   1: core::panicking::panic_fmt
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panicking.rs:74:14
+	   2: core::panicking::panic_display
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panicking.rs:264:5
+	   3: core::option::expect_failed
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:2030:5
+	   4: core::option::Option<T>::expect
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:933:21
+	   5: <std::collections::hash::map::HashMap<K,V,S> as core::ops::index::Index<&Q>>::index
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/collections/hash/map.rs:1343:23
+	   6: red_knot_python_semantic::types::infer::TypeInference::expression_ty
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:192:25
+	   7: red_knot_python_semantic::types::definition_expression_ty
+	             at ./crates/red_knot_python_semantic/src/types.rs:122:9
+	   8: red_knot_python_semantic::types::FunctionType::return_type::{{closure}}
+	             at ./crates/red_knot_python_semantic/src/types.rs:934:21
+	   9: core::option::Option<T>::map
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1110:29
+	  10: red_knot_python_semantic::types::FunctionType::return_type
+	             at ./crates/red_knot_python_semantic/src/types.rs:926:9
+	  11: red_knot_python_semantic::types::Type::call
+	             at ./crates/red_knot_python_semantic/src/types.rs:531:68
+	  12: red_knot_python_semantic::types::Type::iterate
+	             at ./crates/red_knot_python_semantic/src/types.rs:587:17
+	  13: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_for_statement_definition
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:1272:13
+	  14: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_definition
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:419:17
+	  15: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:336:56
+	  16: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:2445:9
+	  17: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:114:5
+	  18: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  19: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  20: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  21: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  22: __rust_try
+	  23: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  24: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  25: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  26: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  27: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  28: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  29: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  30: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  31: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  32: red_knot_python_semantic::types::infer::infer_definition_types::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  33: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  34: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  35: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  36: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  37: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  38: red_knot_python_semantic::types::infer::infer_definition_types
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  39: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_definition
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:665:22
+	  40: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_for_statement
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:1234:13
+	  41: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_statement
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:644:46
+	  42: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:623:13
+	  43: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_function_body
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:618:9
+	  44: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_scope
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:349:54
+	  45: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:335:46
+	  46: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:2445:9
+	  47: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:73:5
+	  48: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  49: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  50: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  51: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  52: __rust_try
+	  53: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  54: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  55: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  56: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  57: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  58: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  59: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  60: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  61: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  62: red_knot_python_semantic::types::infer::infer_scope_types::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  63: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  64: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  65: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  66: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  67: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  68: red_knot_python_semantic::types::infer::infer_scope_types
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  69: red_knot_python_semantic::types::check_types
+	             at ./crates/red_knot_python_semantic/src/types.rs:39:22
+	  70: <red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_workspace/src/workspace.rs:416:23
+	  71: <red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  72: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  73: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  74: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  75: __rust_try
+	  76: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  77: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  78: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  79: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  80: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  81: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  82: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  83: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  84: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  85: red_knot_workspace::workspace::check_file::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  86: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  87: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  88: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  89: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  90: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  91: red_knot_workspace::workspace::check_file
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  92: red_knot_workspace::workspace::Workspace::check::{{closure}}::{{closure}}
+	             at ./crates/red_knot_workspace/src/workspace.rs:216:44
+	  93: rayon_core::scope::Scope::spawn::{{closure}}::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:526:57
+	  94: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  95: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  96: __rust_try
+	  97: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  98: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+   ```
+	<details>
+* [x] `tests/data/miscellaneous/pattern_matching_invalid.py` 
+   <details><summary>Backtrace</summary>
+   
+	```
+	thread '<unnamed>' panicked at crates/red_knot_python_semantic/src/types/infer.rs:2480:17:
+	name in a type expression is always 'load' but got: 'Invalid'
+	stack backtrace:
+	   0: rust_begin_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:665:5
+	   1: core::panicking::panic_fmt
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panicking.rs:74:14
+	   2: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_type_expression
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:2480:17
+	   3: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_annotation_expression
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:2466:26
+	   4: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_annotated_assignment_definition
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:1159:29
+	   5: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_definition
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:413:17
+	   6: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:336:56
+	   7: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:2445:9
+	   8: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:114:5
+	   9: <red_knot_python_semantic::types::infer::infer_definition_types::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  10: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  11: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  12: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  13: __rust_try
+	  14: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  15: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  16: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  17: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  18: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  19: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  20: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  21: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  22: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  23: red_knot_python_semantic::types::infer::infer_definition_types::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  24: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  25: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  26: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  27: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  28: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  29: red_knot_python_semantic::types::infer::infer_definition_types
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  30: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_definition
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:665:22
+	  31: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_annotated_assignment_statement
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:1131:13
+	  32: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_statement
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:639:45
+	  33: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_body
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:623:13
+	  34: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_module
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:585:9
+	  35: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region_scope
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:347:17
+	  36: red_knot_python_semantic::types::infer::TypeInferenceBuilder::infer_region
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:335:46
+	  37: red_knot_python_semantic::types::infer::TypeInferenceBuilder::finish
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:2445:9
+	  38: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_python_semantic/src/types/infer.rs:73:5
+	  39: <red_knot_python_semantic::types::infer::infer_scope_types::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  40: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  41: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  42: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  43: __rust_try
+	  44: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  45: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  46: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  47: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  48: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  49: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  50: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  51: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  52: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  53: red_knot_python_semantic::types::infer::infer_scope_types::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  54: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  55: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  56: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  57: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  58: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  59: red_knot_python_semantic::types::infer::infer_scope_types
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  60: red_knot_python_semantic::types::check_types
+	             at ./crates/red_knot_python_semantic/src/types.rs:39:22
+	  61: <red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration>::execute::inner_
+	             at ./crates/red_knot_workspace/src/workspace.rs:416:23
+	  62: <red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+	  63: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+	  64: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  65: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  66: __rust_try
+	  67: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  68: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  69: salsa::cycle::Cycle::catch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+	  70: salsa::function::execute::<impl salsa::function::IngredientImpl<C>>::execute
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+	  71: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch_cold
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+	  72: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+	  73: core::option::Option<T>::or_else
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:1550:21
+	  74: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::compute_value
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+	  75: salsa::function::fetch::<impl salsa::function::IngredientImpl<C>>::fetch
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+	  76: red_knot_workspace::workspace::check_file::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+	  77: salsa::attach::Attached::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+	  78: salsa::attach::attach::{{closure}}
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+	  79: std::thread::local::LocalKey<T>::try_with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:283:12
+	  80: std::thread::local::LocalKey<T>::with
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/local.rs:260:9
+	  81: salsa::attach::attach
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+	  82: red_knot_workspace::workspace::check_file
+	             at /home/micha/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+	  83: red_knot_workspace::workspace::Workspace::check::{{closure}}::{{closure}}
+	             at ./crates/red_knot_workspace/src/workspace.rs:216:44
+	  84: rayon_core::scope::Scope::spawn::{{closure}}::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:526:57
+	  85: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/panic/unwind_safe.rs:272:9
+	  86: std::panicking::try::do_call
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:557:40
+	  87: __rust_try
+	  88: std::panicking::try
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panicking.rs:521:19
+	  89: std::panic::catch_unwind
+	             at /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/panic.rs:350:14
+	  90: rayon_core::unwind::halt_unwinding
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/unwind.rs:17:5
+	  91: rayon_core::scope::ScopeBase::execute_job_closure
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:689:28
+	  92: rayon_core::scope::ScopeBase::execute_job
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:679:29
+	  93: rayon_core::scope::Scope::spawn::{{closure}}
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/scope/mod.rs:526:13
+	  94: <rayon_core::job::HeapJob<BODY> as rayon_core::job::Job>::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/job.rs:169:9
+	  95: rayon_core::job::JobRef::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/job.rs:64:9
+	  96: rayon_core::registry::WorkerThread::execute
+	             at /home/micha/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.12.1/src/registry.rs:860:9
+	note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+	```
+	</details>
+
+* [x] #14307 
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-09-23 07:49_
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2024-09-23 07:49_
+
+---
+
+_Referenced in [astral-sh/ruff#14091](../../astral-sh/ruff/pulls/14091.md) on 2024-11-04 13:12_
+
+---
+
+_Comment by @sharkdp on 2024-11-04 14:12_
+
+With #14091 merged (which fixed the issue in `src/blib2to3/pgen2/driver.py`), we can now run a release version of red-knot on the full `black` codebase. (The other two issues likely have been fixed in the meantime?)
+
+However, the debug version still fails due to some new debug assertions:
+```
+thread '<unnamed>' panicked at crates/red_knot_python_semantic/src/types/infer.rs:3752:17:
+assertion `left == right` failed
+  left: Invalid
+ right: Load
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+thread '<unnamed>' panicked at crates/red_knot_python_semantic/src/types/infer.rs:3752:17:
+assertion `left == right` failed
+  left: Invalid
+ right: Load
+```
+
+https://github.com/astral-sh/ruff/blob/a7a78f939c2c393aa846b97fdbd32c1c3bfc7b34/crates/red_knot_python_semantic/src/types/infer.rs#L3751-L3760
+
+---
+
+_Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 15:21_
+
+---
+
+_Assigned to @sharkdp by @sharkdp on 2024-11-12 15:33_
+
+---
+
+_Comment by @dhruvmanila on 2024-11-13 02:40_
+
+For context, the `ExprContext::Invalid` is used where the expressions are invalid i.e., these files contains syntax errors (#13778).
+
+---
+
+_Comment by @sharkdp on 2024-11-13 11:01_
+
+The two remaining panics from the original description and the assertions mentioned in my previous comment are now resolved.
+
+But there is a new panic, which I have opened a separate ticket for (#14307) and added to the list above.
+
+---
+
+_Comment by @sharkdp on 2024-11-13 15:05_
+
+Red knot can now run on the full `black` repository without any panics, allowing us to use it as a benchmark.
+
+Currently it takes 120 ms for a cold run (40 ms for the `src/` folder).
+
+---
+
+_Closed by @sharkdp on 2024-11-13 15:06_
+
+---

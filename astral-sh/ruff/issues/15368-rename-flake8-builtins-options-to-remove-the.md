@@ -1,0 +1,70 @@
+---
+number: 15368
+title: "Rename `flake8-builtins` options to remove the \"builtins\" prefix"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - configuration
+  - help wanted
+assignees: []
+created_at: 2025-01-09T08:19:34Z
+updated_at: 2025-03-13T14:37:40Z
+url: https://github.com/astral-sh/ruff/issues/15368
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Rename `flake8-builtins` options to remove the "builtins" prefix
+
+---
+
+_Issue opened by @dhruvmanila on 2025-01-09 08:19_
+
+The "builtins" prefix for the `flake8-builtins` options is redundant and is inconsistent with other options like [`allowed-unused-imports`](https://docs.astral.sh/ruff/settings/#lint_pyflakes_allowed-unused-imports) or [`allowed-markup-calls`](https://docs.astral.sh/ruff/settings/#lint_ruff_allowed-markup-calls).
+
+- [ ] Rename [`builtins-allowed-modules`](https://docs.astral.sh/ruff/settings/#lint_flake8-builtins_builtins-allowed-modules) -> `allowed-modules`
+- [ ] Rename [`builtins-ignorelist`](https://docs.astral.sh/ruff/settings/#lint_flake8-builtins_builtins-ignorelist) to `ignorelist`
+
+Although we _can_ tackle this in 0.9 release, I'd say we do the rename (maintaining backwards compatibility) after the 0.9 release and hard deprecate in 0.11.
+
+---
+
+_Label `configuration` added by @dhruvmanila on 2025-01-09 08:19_
+
+---
+
+_Referenced in [astral-sh/ruff#15348](../../astral-sh/ruff/pulls/15348.md) on 2025-01-09 08:20_
+
+---
+
+_Comment by @MichaReiser on 2025-01-09 08:32_
+
+Backward compat seems nice. We could change `builtins-allowed-modules` because the only rule using it is still in preview but it probably makes little sense to only add the backwards compatibility for one setting and not the other. 
+
+---
+
+_Comment by @MichaReiser on 2025-01-09 09:14_
+
+Considering that both settings have the `builtins` prefix I don't see this blocking the release (because we renamed A005)
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-01-09 09:24_
+
+---
+
+_Comment by @AlexWaygood on 2025-01-09 13:21_
+
+Yeah, the backwards incompatibility issue was why I didn't rename the setting at the same time as the rule (but I also didn't think hard about it; thanks @dhruvmanila for bringing this up!).
+
+I agree that we should probably change the name of all settings together (the `builtins-` prefix is redundant), and going through a deprecation period. Let's add the new names for the settings (and add a deprecation message for the old ones) in the next patch release after v0.9. We can then add a hard error on using the old names for the settings from v0.11.0.
+
+---
+
+_Referenced in [astral-sh/ruff#16092](../../astral-sh/ruff/pulls/16092.md) on 2025-02-11 01:51_
+
+---
+
+_Closed by @MichaReiser on 2025-03-13 14:37_
+
+---

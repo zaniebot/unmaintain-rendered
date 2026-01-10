@@ -1,0 +1,133 @@
+---
+number: 11577
+title: "Ignore D412 (`blank-lines-between-header-and-content`)  if a reStructuredText directive follows a section header"
+type: issue
+state: closed
+author: harupy
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2024-05-28T05:40:06Z
+updated_at: 2024-06-03T11:31:42Z
+url: https://github.com/astral-sh/ruff/issues/11577
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# Ignore D412 (`blank-lines-between-header-and-content`)  if a reStructuredText directive follows a section header
+
+---
+
+_Issue opened by @harupy on 2024-05-28 05:40_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Originally found in https://github.com/pytest-dev/pytest/pull/12375 where I was trying to fix pytest's API reference. The following code violates `D412`, but sphinx doesn't render the docstring correctly if the blank line after `Example:` is removed.
+
+```python
+# violates D412
+
+def f():
+    """
+    Example:
+
+    .. code-block:: python
+
+        import foo
+    """
+```
+
+Autofixed code:
+
+```python
+# doesn't violate D412, but sphinx fails to render correctly
+
+def f():
+    """
+    Example:
+    .. code-block:: python
+
+        import foo
+    """
+```
+
+![image](https://github.com/astral-sh/ruff/assets/17039389/03c5b34c-7969-4e27-b78d-ecd97b188017)
+
+Repro on playground: https://play.ruff.rs/b4c94827-8503-4568-978d-59e74a31a01b
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-05-28 13:57_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2024-05-28 13:57_
+
+---
+
+_Comment by @charliermarsh on 2024-05-28 15:43_
+
+We could disable `D412` enforcement when followed by a Sphinx code block?
+
+---
+
+_Comment by @harupy on 2024-05-29 02:26_
+
+@charliermarsh Thanks for the comment! I think any directive can cause the same issue. For example:
+
+```python
+def f():
+    """
+    Example:
+    .. note::
+
+        This example only works on windows.
+
+    .. code-block:: python
+
+        import foo
+    """
+```
+
+---
+
+update: tested this:
+
+<img width="687" alt="image" src="https://github.com/astral-sh/ruff/assets/17039389/9ecd7938-aeb6-4c92-b666-9353881a008b">
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-30 04:03_
+
+---
+
+_Referenced in [astral-sh/ruff#11609](../../astral-sh/ruff/pulls/11609.md) on 2024-05-30 04:19_
+
+---
+
+_Comment by @dhruvmanila on 2024-06-03 11:31_
+
+I think this is resolved by #11609, @charliermarsh feel free to re-open if it's not complete.
+
+---
+
+_Closed by @dhruvmanila on 2024-06-03 11:31_
+
+---
+
+_Referenced in [pytest-dev/pytest#12449](../../pytest-dev/pytest/pulls/12449.md) on 2024-06-11 07:39_
+
+---

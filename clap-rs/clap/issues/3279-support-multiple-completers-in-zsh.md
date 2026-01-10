@@ -1,0 +1,89 @@
+---
+number: 3279
+title: support multiple completers in Zsh
+type: issue
+state: open
+author: FranklinYu
+labels:
+  - C-enhancement
+  - A-completion
+  - E-easy
+assignees: []
+created_at: 2022-01-11T10:25:43Z
+updated_at: 2022-01-12T04:38:52Z
+url: https://github.com/clap-rs/clap/issues/3279
+synced_at: 2026-01-10T01:27:37Z
+---
+
+# support multiple completers in Zsh
+
+---
+
+_Issue opened by @FranklinYu on 2022-01-11 10:25_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+2.34
+
+### Describe your use case
+
+I have several completers enabled. When the position is asking for a file, Zsh will first find exact match, then try case-insensitive match. Most completions, such as the ones for coreutils, support this automatically (as it should). From [Zsh documentation](https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Control-Functions):
+
+> The `_main_complete` function uses the return status of the completer functions to decide if other completers should be called. If the return status is zero, no other completers are tried and the `_main_complete` function returns.
+
+### Describe the solution you'd like
+
+Currently the main completion function ends with
+
+https://github.com/clap-rs/clap/blob/d51ae89656fda527ef1bccf53fca0ad78ecb8c29/src/completions/zsh.rs#L47-L49
+
+The `initial_args` part ends with an `_arguments` command, which might return a non-zero status. If `subcommands` is non-empty, then this information is lost. Specifically, a `case` statement returns 0 _when no match_. I would recommend adding something in between to catch the `$status`, like
+
+```sh
+local args_status=$status
+```
+
+Then returning `$args_status` at the end.
+
+### Alternatives, if applicable
+
+Instead of just returning `$args_status` we might want to also consider `$args_status`. I need to do more investigation to know what to do here.
+
+### Additional Context
+
+I’m using Bat, so I’m testing completion with it. Other Clap users like `rg` and `fd` supply their own completion files:
+
+https://github.com/sharkdp/fd/blob/125cb81a5bc7b35005fbc9299052763d682915c1/contrib/completion/_fd#L170
+
+https://github.com/BurntSushi/ripgrep/blob/0b36942f680bfa9ae88a564f2636aa8286470073/complete/_rg#L339
+
+---
+
+_Label `C-enhancement` added by @FranklinYu on 2022-01-11 10:25_
+
+---
+
+_Label `A-completion` added by @epage on 2022-01-11 15:29_
+
+---
+
+_Label `E-easy` added by @epage on 2022-01-11 15:29_
+
+---
+
+_Comment by @epage on 2022-01-11 15:29_
+
+While this is marked for 2.34, I inspected the code and this looks unchanged in 3.0.
+
+---
+
+_Comment by @FranklinYu on 2022-01-12 04:38_
+
+Yes, I believe v3 is also affected. I marked it for v2 simply because I came from Bat using v2.
+
+---

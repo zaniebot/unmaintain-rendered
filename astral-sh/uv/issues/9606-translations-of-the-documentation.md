@@ -1,0 +1,70 @@
+---
+number: 9606
+title: Translations of the documentation
+type: issue
+state: open
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-12-03T14:26:31Z
+updated_at: 2024-12-08T04:20:26Z
+url: https://github.com/astral-sh/uv/issues/9606
+synced_at: 2026-01-10T01:24:43Z
+---
+
+# Translations of the documentation
+
+---
+
+_Issue opened by @zanieb on 2024-12-03 14:26_
+
+It'd be nice to have internationalized documentation with support for multiple languages as requested in https://github.com/astral-sh/uv/issues/5605#issuecomment-2495792315
+
+It's unclear if this is feasible for us given our rapid pace of development.
+
+---
+
+_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-12-03 14:26_
+
+---
+
+_Comment by @T-256 on 2024-12-03 17:05_
+
+IMO, there should be an infrastructure for translators too. For first milestone, I think docs could support multi versions. Also, status page for showing each language translated which version of docs would be cool.
+
+---
+
+_Comment by @FishAlchemist on 2024-12-03 17:53_
+
+Internationalized documentation is beneficial for non-English users, but I've seen some cases where only the English version is up-to-date, while other language versions are outdated. Therefore, if you want to support non-English users, it's crucial to ensure that users are aware of whether the documentation they are reading reflects the latest version.
+
+By the way, how can we ensure that the translations in other languages are accurate and reliable?
+To support it, would we need a community reviewer similar to winget-pkgs?
+
+Edit:
+However,  if UV is developing rapidly, I would not recommend having non-English documents, as they can easily lead to misunderstandings due to obsolescence.
+
+---
+
+_Comment by @MtkN1 on 2024-12-04 01:34_
+
+A good example of a project using mkdocs-material to provide internationalization is [FastAPI](https://fastapi.tiangolo.com/). While FastAPI's documentation internationalization is not complete and some pages are untranslated (in my language), its implementation and review process might be worth referencing.
+
+---
+
+_Comment by @samypr100 on 2024-12-04 04:53_
+
+I think the easiest starting place to have links to google translate of the page.
+
+For example, for german
+* https://docs.astral.sh/uv/ becomes https://docs-astral-sh.translate.goog/uv/?_x_tr_sl=en&_x_tr_tl=de&_x_tr_hl=en
+
+Similarly spanish becomes
+* https://docs-astral-sh.translate.goog/uv/?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=en
+
+---
+
+_Label `documentation` added by @samypr100 on 2024-12-08 04:20_
+
+---

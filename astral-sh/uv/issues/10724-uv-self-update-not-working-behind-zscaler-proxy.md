@@ -1,0 +1,129 @@
+---
+number: 10724
+title: uv self update not working behind zscaler proxy
+type: issue
+state: closed
+author: MonkeyLeeT
+labels:
+  - network
+assignees: []
+created_at: 2025-01-17T22:16:48Z
+updated_at: 2025-03-27T13:51:23Z
+url: https://github.com/astral-sh/uv/issues/10724
+synced_at: 2026-01-10T01:24:57Z
+---
+
+# uv self update not working behind zscaler proxy
+
+---
+
+_Issue opened by @MonkeyLeeT on 2025-01-17 22:16_
+
+Error looks like https://github.com/astral-sh/uv/issues/1474. Also any scripts requiring http requests are failing due to same certificate issue of `unable to get local issuer certificate`. 
+
+Running script directly with python3 works so my certificate is fine. Turning off zscaler (a corporate proxy) also works.
+
+I have followed suggestions from https://github.com/search?q=repo%3Aastral-sh%2Fuv+certificate&type=issues, but I'm still hitting the error as if the right certificate is not used by uv at all.
+
+- --native-tls flag when running uv command
+- export SSL_CERT_FILE to point to the cert file used by native python
+- Making sure the same certificate file is used across all python versions and certifi package.
+
+---
+
+_Renamed from "uv self update not working behind zscaler" to "uv self update not working behind zscaler proxy" by @MonkeyLeeT on 2025-01-17 22:16_
+
+---
+
+_Comment by @notatallshaw on 2025-01-17 22:56_
+
+Similar to https://github.com/astral-sh/uv/issues/10709 I think
+
+---
+
+_Comment by @charliermarsh on 2025-01-18 16:05_
+
+Can I merge into #10709?
+
+---
+
+_Comment by @deffi on 2025-01-18 18:12_
+
+This one is about certificates (SSL), while #10709 is about proxy authentication (user credentials). These might be two distinct issues.
+
+---
+
+_Comment by @notatallshaw on 2025-01-18 18:20_
+
+In most corporate environments the proxy just needs connection to be secure with the local certificates. The auth flow then occurs securly via redirects (similiar to oauth). I _assume_ reqwests can talk to proxies via SSL and just need the certificates, but I could be wrong, not all HTTP libraries support secure proxy connections.
+
+If the auth flow requires some byzantine authentication protocol (I've seen very obscure Microsoft APIs that even Microsoft recommended to not use anymore) then the chances are pretty small any Rust library will support it.
+
+---
+
+_Label `network` added by @charliermarsh on 2025-01-20 14:28_
+
+---
+
+_Comment by @deffi on 2025-01-20 16:29_
+
+For the record: #10709 turned out to be about the installer script and the Windows-specific machinery it invokes, and therefore unrelated to Python, reqwest, and certificates.
+
+---
+
+_Comment by @MonkeyLeeT on 2025-01-20 17:34_
+
+Somehow I couldn't reproduce it today with zscaler on, not sure if my corp did anything so I'll close this for now and reopen if I could reproduce.
+
+---
+
+_Closed by @MonkeyLeeT on 2025-01-20 17:34_
+
+---
+
+_Comment by @wleftwich on 2025-01-21 11:59_
+
+I ran into the same problem with Zscaler (on Linux Mint), and this is what worked
+```
+~$ uv python install 3.7
+error: Failed to install cpython-3.7.9-linux-x86_64-gnu
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20200822/cpython-3.7.9-x86_64-unknown-linux-gnu-pgo-20200823T0036.tar.zst
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20200822/cpython-3.7.9-x86_64-unknown-linux-gnu-pgo-20200823T0036.tar.zst)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+
+~$ # Find the Zscaler cert
+~$ ls -l /etc/ssl/certs/Z*
+lrwxrwxrwx 1 root root 49 Jan 15 09:52 /etc/ssl/certs/ZscalerRoot0.pem -> /usr/local/share/ca-certificates/ZscalerRoot0.crt
+~$ # Might need to `sudo update-ca-certificates`
+
+~$ export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+~$ uv python install 3.7
+Installed Python 3.7.9 in 2.53s
+ + cpython-3.7.9-linux-x86_64-gnu
+```
+
+At the company where I work, if you have SSL problems, "blame Zscaler" is usually correct.
+You also have to jump through some hoops to get it working with Docker.
+
+More info on this from Zscaler:
+https://community.zscaler.com/zenith/s/question/0D54u00009jZpG7CAK/installing-tls-ssl-root-certificates-to-nonstandard-environments
+
+
+
+
+
+---
+
+_Comment by @remerjohnson on 2025-03-27 13:51_
+
+
+> At the company where I work, if you have SSL problems, "blame Zscaler" is usually correct. You also have to jump through some hoops to get it working with Docker.
+
+I'm running into this exact issue with Docker. Did you ever find a way to set this up in Docker?
+
+
+
+---

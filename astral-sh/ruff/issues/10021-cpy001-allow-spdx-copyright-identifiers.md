@@ -1,0 +1,61 @@
+---
+number: 10021
+title: "CPY001: allow SPDX copyright identifiers"
+type: issue
+state: closed
+author: spaceone
+labels:
+  - rule
+assignees: []
+created_at: 2024-02-18T11:10:00Z
+updated_at: 2024-03-29T20:04:30Z
+url: https://github.com/astral-sh/ruff/issues/10021
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# CPY001: allow SPDX copyright identifiers
+
+---
+
+_Issue opened by @spaceone on 2024-02-18 11:10_
+
+`CPY001` should not detect, e.g.:
+
+```
+# SPDX-FileCopyrightText: 2022-2024 Univention GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+```
+
+see https://spdx.org/licenses/
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-02-18 11:30_
+
+---
+
+_Comment by @SimonMarynissen on 2024-03-22 09:31_
+
+The [Reuse Specification](https://reuse.software/spec/) with it's corresponding python [tool](https://github.com/fsfe/reuse-tool) implement this, so you could take a look there. It also checks for missing license specifiers.
+
+---
+
+_Comment by @charliermarsh on 2024-03-22 20:05_
+
+Can't you achieve this with https://docs.astral.sh/ruff/settings/#lint_flake8-copyright_notice-rgx?
+
+---
+
+_Comment by @charliermarsh on 2024-03-29 20:04_
+
+Oh, we do now allow these, I added it.
+
+---
+
+_Closed by @charliermarsh on 2024-03-29 20:04_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-29 20:04_
+
+---

@@ -1,0 +1,76 @@
+---
+number: 15370
+title: Weather uv can install a package by git with ssh.
+type: issue
+state: closed
+author: dwpeng
+labels:
+  - question
+assignees: []
+created_at: 2025-08-19T07:14:07Z
+updated_at: 2025-08-19T07:35:35Z
+url: https://github.com/astral-sh/uv/issues/15370
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# Weather uv can install a package by git with ssh.
+
+---
+
+_Issue opened by @dwpeng on 2025-08-19 07:14_
+
+### Question
+
+```bash
+$ uv pip install git@github.com:davidemms/OrthoFinder.git
+   Updating file:///home/dwpeng/github-source/antismash/github.com:davidemms/OrthoFinder.git (HEAD)                                                                                                                × Failed to download and build `git @ file:///home/dwpeng/github-source/antismash/github.com:davidemms/OrthoFinder.git`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into: /home/dwpeng/.cache/uv/git-v0/db/c7e19d0e804c75d1
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'file:///home/dwpeng/github-source/antismash/github.com:davidemms/OrthoFinder.git' '+HEAD:refs/remotes/origin/HEAD'` (exit
+      status: 128)
+      --- stderr
+      fatal: '/home/dwpeng/github-source/antismash/github.com:davidemms/OrthoFinder.git' does not appear to be a git repository
+      fatal: Could not read from remote repository.
+
+      Please make sure you have the correct access rights
+      and the repository exists.
+
+```
+
+### Platform
+
+Linux version 6.6.87.2-microsoft-standard-WSL2 (root@439a258ad544) (gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025
+
+### Version
+
+uv 0.8.0
+
+---
+
+_Label `question` added by @dwpeng on 2025-08-19 07:14_
+
+---
+
+_Comment by @dwpeng on 2025-08-19 07:16_
+
+version 0.8.12 also has this error.
+
+---
+
+_Comment by @konstin on 2025-08-19 07:21_
+
+This is the wrong URL format for cloning a git repository over SSH, see https://docs.astral.sh/uv/concepts/projects/dependencies/#git.
+
+---
+
+_Comment by @dwpeng on 2025-08-19 07:35_
+
+> This is the wrong URL format for cloning a git repository over SSH, see [docs.astral.sh/uv/concepts/projects/dependencies#git](https://docs.astral.sh/uv/concepts/projects/dependencies/#git).
+
+Thanks for your quik response. I have known how to fix it.
+
+---
+
+_Closed by @dwpeng on 2025-08-19 07:35_
+
+---

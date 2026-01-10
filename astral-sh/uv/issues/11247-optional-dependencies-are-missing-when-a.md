@@ -1,0 +1,146 @@
+---
+number: 11247
+title: Optional dependencies are missing when a requirement with option is overridden
+type: issue
+state: closed
+author: tderwedu
+labels:
+  - question
+assignees: []
+created_at: 2025-02-05T15:59:49Z
+updated_at: 2025-02-05T23:55:41Z
+url: https://github.com/astral-sh/uv/issues/11247
+synced_at: 2026-01-10T01:25:03Z
+---
+
+# Optional dependencies are missing when a requirement with option is overridden
+
+---
+
+_Issue opened by @tderwedu on 2025-02-05 15:59_
+
+### Summary
+
+When generating a lock with the `uv pip compile` command and adding external constraints with the `--overrides` option, optional packages are missing for packages that have options and are overridden. However, they are present with the `--constraints` option.
+
+## Example
+Suppose we have a requirements file and a file containing external constraints:
+### requirements.txt
+```txt
+dvc[gs]==3.50.3
+```
+We get the following results:
+### overrides.txt
+```txt
+dvc==3.50.3
+dvc-data==3.15.2
+dvc-gs==3.0.1
+dvc-http==2.32.0
+dvc-objects==5.1.0
+dvc-render==1.0.2
+dvc-studio-client==0.21.0
+dvc-task==0.40.2
+```
+## `--overrides`
+`uv pip compile requirements.txt --no-annotate --no-header --overrides overrides.txt -o lock.txt`:
+```txt
+# ...
+dvc==3.50.3
+dvc-data==3.15.2
+dvc-http==2.32.0
+dvc-objects==5.1.0
+dvc-render==1.0.2
+dvc-studio-client==0.21.0
+dvc-task==0.40.2
+# ...
+```
+`dvc-gs` and it's sub-dependencies are missing.
+
+## `--constraints`
+`uv pip compile requirements.txt --no-annotate --no-header --constraints overrides.txt -o lock.txt`:
+```txt
+# ...
+dvc==3.50.3
+dvc-data==3.15.2
+dvc-gs==3.0.1
+dvc-http==2.32.0
+dvc-objects==5.1.0
+dvc-render==1.0.2
+dvc-studio-client==0.21.0
+dvc-task==0.40.2
+# ...
+gcsfs==2024.10.0
+# ...
+google-api-core==2.24.0
+google-auth==2.37.0
+google-auth-oauthlib==1.2.1
+google-cloud-core==2.4.1
+google-cloud-storage==2.18.2
+google-crc32c==1.5.0
+google-resumable-media==2.7.2
+googleapis-common-protos==1.66.0
+# ...
+```
+
+[lock_with_constraints.txt](https://github.com/user-attachments/files/18675126/lock_with_constraints.txt)
+
+[lock_with_overrides.txt](https://github.com/user-attachments/files/18675133/lock_with_overrides.txt)
+
+### Platform
+
+Ubuntu 20.04 (WSL)
+
+### Version
+
+uv 0.5.28
+
+### Python version
+
+Python 3.10.6
+
+---
+
+_Label `bug` added by @tderwedu on 2025-02-05 15:59_
+
+---
+
+_Comment by @charliermarsh on 2025-02-05 16:05_
+
+Ah yeah, this is intentional. Without this, there'd be no way to disable extras when overriding. If you want the extra to be enabled, you should include it in the overrides.
+
+---
+
+_Comment by @tderwedu on 2025-02-05 16:16_
+
+@charliermarsh thanks for your quick answer!
+ You mean something like this:
+```txt
+dvc[gs]==3.50.3
+dvc==3.50.3
+dvc-data==3.15.2
+dvc-http==2.32.0
+# ...
+```
+?
+
+---
+
+_Comment by @charliermarsh on 2025-02-05 16:19_
+
+Yeah, although if you have `dvc[gs]==3.50.3`, you can omit `dvc==3.50.3`.
+
+`dvc[gs]==3.50.3` already implies `dvc==3.50.3`.
+
+---
+
+_Label `bug` removed by @zanieb on 2025-02-05 23:55_
+
+---
+
+_Label `question` added by @zanieb on 2025-02-05 23:55_
+
+---
+
+_Closed by @zanieb on 2025-02-05 23:55_
+
+---

@@ -1,0 +1,74 @@
+---
+number: 17008
+title: Bump version to 0.9.16
+type: pull_request
+state: closed
+author: zanieb
+labels:
+  - no-build
+  - no-test
+assignees: []
+base: main
+head: zb/0916
+created_at: 2025-12-06T00:24:03Z
+updated_at: 2025-12-06T13:52:08Z
+url: https://github.com/astral-sh/uv/pull/17008
+synced_at: 2026-01-10T01:26:19Z
+---
+
+# Bump version to 0.9.16
+
+---
+
+_Pull request opened by @zanieb on 2025-12-06 00:24_
+
+_No description provided._
+
+---
+
+_Label `no-build` added by @zanieb on 2025-12-06 13:33_
+
+---
+
+_Label `no-test` added by @zanieb on 2025-12-06 13:33_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-06 13:37_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/uv/branches/zb%2F0916?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #17008 will **not alter performance**
+
+<sub>Comparing <code>zb/0916</code> (bf3d9c5) with <code>main</code> (9635258)</sub>
+
+
+
+### Summary
+
+`✅ 2` untouched  
+`⏩ 3` skipped[^skipped]  
+
+
+
+[^skipped]: 3 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/uv/branches/zb%2F0916?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Marked ready for review by @zanieb on 2025-12-06 13:51_
+
+---
+
+_Merged by @zanieb on 2025-12-06 13:52_
+
+---
+
+_Closed by @zanieb on 2025-12-06 13:52_
+
+---
+
+_Branch deleted on 2025-12-06 13:52_
+
+---

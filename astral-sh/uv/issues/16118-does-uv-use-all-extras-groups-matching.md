@@ -1,0 +1,150 @@
+---
+number: 16118
+title: "Does `uv` use all extras/groups matching `dependencies_*` by default"
+type: issue
+state: open
+author: yarnabrina
+labels:
+  - question
+assignees: []
+created_at: 2025-10-03T19:37:55Z
+updated_at: 2025-10-21T16:45:57Z
+url: https://github.com/astral-sh/uv/issues/16118
+synced_at: 2026-01-10T01:26:03Z
+---
+
+# Does `uv` use all extras/groups matching `dependencies_*` by default
+
+---
+
+_Issue opened by @yarnabrina on 2025-10-03 19:37_
+
+### Question
+
+We are discussing internally to migrate to `uv `in [`sktime`](https://github.com/sktime/sktime). Being a framework with goal being providing unifoed interface, it has a high number of soft dependencies. To maintain the framework itself, we have a very broad `dependencies` and few additional optional dependencies currently to check some compatibility tests occasionally on CI while main CI runs on latest versions. Two of these have name `dependencies_lowest` and `dependencies_lower` and while running `uv sync`, it seems `uv` is trying to install these as well.
+
+Is it intended or a bug? If intended, is there a way to avoid this? I was trying with `conflicts` (once as extra and once as group) but both failed.
+
+### Artefacts
+
+1. `pyproject.toml`: https://github.com/sktime/sktime/blob/93e6bbc28c5e8364caed8db4186186b7153d74c9/pyproject.toml
+2. Traceback
+
+```shell
+  × No solution found when resolving dependencies for split (included: sktime[group:dependencies-lowest]; excluded:
+  │ sktime[group:dependencies-lower]):
+  ╰─▶ Because only the following versions of skforecast{python_full_version < '3.13'} are available:
+          skforecast{python_full_version < '3.13'}<=0.12.1
+          skforecast{python_full_version < '3.13'}==0.13.0
+          skforecast{python_full_version < '3.13'}==0.14.0
+          skforecast{python_full_version < '3.13'}>0.15
+      and skforecast==0.12.1 depends on scikit-learn>=1.2,<1.5, we can conclude that skforecast{python_full_version <
+      '3.13'}>=0.12.1,<0.13.0 depends on scikit-learn>=1.2,<1.5.
+      And because skforecast>=0.13.0,<=0.14.0 depends on scikit-learn>=1.2 and scikit-learn>=1.2, we can conclude that
+      skforecast{python_full_version < '3.13'}>=0.12.1,<0.15 depends on scikit-learn>=1.2.
+      And because sktime[all-extras-pandas2] depends on skforecast{python_full_version < '3.13'}>=0.12.1,<0.15 and
+      sktime:dependencies-lowest depends on scikit-learn==0.24.0, we can conclude that sktime:dependencies-lowest and
+      sktime[all-extras-pandas2] are incompatible.
+      And because your project requires sktime[all-extras-pandas2] and sktime:dependencies-lowest, we can conclude that your       
+      project's requirements are unsatisfiable.
+```
+3. PR: https://github.com/sktime/sktime/pull/8892
+
+### Platform
+
+Windows 11 x86_64
+
+### Version
+
+0.8.22
+
+---
+
+_Label `question` added by @yarnabrina on 2025-10-03 19:37_
+
+---
+
+_Referenced in [sktime/sktime#8892](../../sktime/sktime/pulls/8892.md) on 2025-10-04 18:45_
+
+---
+
+_Comment by @konstin on 2025-10-06 10:32_
+
+Can you use `uv pip install --resolution-lowest .` (https://docs.astral.sh/uv/reference/cli/#uv-pip-install--resolution) instead of encoding these manually? This option is meant specifically to test this case an avoid conflicts like the one you have.
+
+---
+
+_Comment by @yarnabrina on 2025-10-06 13:34_
+
+Thanks for the suggestion @konstin 
+
+@fkiraly @marrov what are your thoughts? We can try this, which will allow us to have the dynamic lowest resolution and seems easier to maintain over time. This will server the purpose of "lowest", but we'll loose the "lower" one which I guess is good-to-have but not must-have?
+
+---
+
+_Comment by @zanieb on 2025-10-06 13:52_
+
+> Two of these have name dependencies_lowest and dependencies_lower and while running uv sync, it seems uv is trying to install these as well.
+
+As a note, we're just trying to resolve these together to find a consistent resolution for the project — not install them. I'd expect declaring conflicts to fix the problem, if you want to go that route we can help figure out where that went wrong.
+
+I think Konsti's suggestion is better though.
+
+---
+
+_Comment by @fkiraly on 2025-10-06 15:40_
+
+> Thanks for the suggestion [@konstin](https://github.com/konstin)
+> 
+> [@fkiraly](https://github.com/fkiraly) [@marrov](https://github.com/marrov) what are your thoughts? We can try this, which will allow us to have the dynamic lowest resolution and seems easier to maintain over time. This will server the purpose of "lowest", but we'll loose the "lower" one which I guess is good-to-have but not must-have?
+
+This is not feasible since we also want to test intermediate states, e.g., "all core dependencies as they were in July 2023" or similar.
+
+The "lower" is actually must have since it is a 2 year back horizon. Most users have already migrated away from "lowest".
+
+
+---
+
+_Comment by @zanieb on 2025-10-06 15:43_
+
+You can test dependencies as they were in the past using `--exclude-newer`?
+
+---
+
+_Comment by @konstin on 2025-10-06 16:00_
+
+There's no native feature to constrain only core dependencies to an intermediate state, but there are some workarounds:
+
+* You can declare conflicts with your existing groups (https://docs.astral.sh/uv/concepts/resolution/#conflicting-dependencies). This allows optional dependency groups that conflict, but it's very verbose and likely doesn't look like what you want to model.
+* Use `uv pip install . -c core_packages_frozen_2023_07_01.txt`. This handles it outside of `pyproject.toml` and the project interface, otoh it's simple to configure.
+* You can use `--exclude-newer 2023-07-01`, which will pin all packages to the specific date. This is the closest to modelling a user that hasn't updated since then, but it constrains all packages.
+
+---
+
+_Comment by @yarnabrina on 2025-10-18 09:24_
+
+Hi @konstin @zanieb thanks you for the suggestions. I personally like the `--exclude-newer` flag as it seems more generalised, but for now I've kept our existing structure and will discuss internally.
+
+Can you kindly have a look at the linked PR (https://github.com/sktime/sktime/pull/8892)? This is my first migration attempt with `uv` for a big open source project as opposed to small internal POC's or fresh projects, so will really appreciate your feedbacks. If there are some other tips/tricks or general migration strategies, please let me know.
+
+One related question: once we migrate to `uv` (assuming all our core devs agree), we can't enforce that all our contributors use `uv` for local environment management. If they want to contribute something new, how do we ensure that `uv.lock` is updated correctly? Is it safe/recommended to skip committing of `uv.lock` file and let it be figured out during installation itself?
+
+---
+
+_Comment by @konstin on 2025-10-20 11:28_
+
+> One related question: once we migrate to `uv` (assuming all our core devs agree), we can't enforce that all our contributors use `uv` for local environment management. If they want to contribute something new, how do we ensure that `uv.lock` is updated correctly? Is it safe/recommended to skip committing of `uv.lock` file and let it be figured out during installation itself?
+
+Often packages commit to specific package manager and either require contributors to use it or wrap it in e.g. a Makefile. You can enforce the lockfile is up-to-date by using `--locked` in CI. It's possible to gitignore `uv.lock` if you don't want user to have to update it and you don't need locked versions in CI.
+
+You can also decouple the migration to `uv_build` from the migration to `uv.lock`, you can use each one individually with other build backends or other package managers too.
+
+---
+
+_Comment by @yarnabrina on 2025-10-21 16:39_
+
+> It's possible to gitignore uv.lock if you don't want user to have to update it and you don't need locked versions in CI.
+
+@marrov gave that suggestion already, I think we'll go with that for now if reviewers agree for a package build backend switch. If you get some bandwidth, a review of the PR will be much appreciated.
+
+---

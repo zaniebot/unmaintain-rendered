@@ -1,0 +1,96 @@
+---
+number: 9138
+title: "Add private function calls check to make sure there isn't one being called outside of the module it was defined "
+type: issue
+state: closed
+author: Eric-Mendes
+labels:
+  - question
+assignees: []
+created_at: 2023-12-14T18:34:46Z
+updated_at: 2024-01-16T05:17:43Z
+url: https://github.com/astral-sh/ruff/issues/9138
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# Add private function calls check to make sure there isn't one being called outside of the module it was defined 
+
+---
+
+_Issue opened by @Eric-Mendes on 2023-12-14 18:34_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+I have drafted a [pre-commit hook](https://github.com/Eric-Mendes/private-calls-pre-commit) to make sure there isn't a private function being called outside of the module it was defined. Would it make sense as an optional linting rule? If so I'd be happy to contribute with code.
+
+
+---
+
+_Comment by @charliermarsh on 2023-12-15 00:13_
+
+Is this similar to [`private-member-access`](https://docs.astral.sh/ruff/rules/private-member-access/)?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-12-15 00:13_
+
+---
+
+_Comment by @Eric-Mendes on 2023-12-15 15:13_
+
+Perhaps it could be an extension to that rule, @charliermarsh. My code doesn't check for class private member access. It checks for module private member access. Here's an example of something that should raise an exception:
+```python
+# a.py
+def _foo(*args, **kwargs):
+    return "Hello World"
+```
+
+```python
+# b.py
+import a
+
+print(a._foo())  # Raises an exception
+```
+
+```python
+# c.py
+from a import _foo
+
+print(_foo())  # Also raises an exception
+```
+
+Have I misunderstood the rule you've mentioned, or am I really onto something here?
+
+---
+
+_Comment by @charliermarsh on 2024-01-10 20:01_
+
+I believe this would be closed by https://github.com/astral-sh/ruff/pull/5920.
+
+---
+
+_Referenced in [astral-sh/ruff#5920](../../astral-sh/ruff/pulls/5920.md) on 2024-01-10 20:01_
+
+---
+
+_Comment by @Eric-Mendes on 2024-01-12 12:19_
+
+Indeed, @charliermarsh. Thanks for pointing that out, I didn't see that issue before.
+
+---
+
+_Closed by @charliermarsh on 2024-01-16 05:17_
+
+---
+
+_Referenced in [Eric-Mendes/private-calls-pre-commit#17](../../Eric-Mendes/private-calls-pre-commit/pulls/17.md) on 2024-01-22 16:43_
+
+---

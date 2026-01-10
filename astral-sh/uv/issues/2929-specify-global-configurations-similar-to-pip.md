@@ -1,0 +1,48 @@
+---
+number: 2929
+title: Specify global configurations similar to pip
+type: issue
+state: closed
+author: jmspereira
+labels: []
+assignees: []
+created_at: 2024-04-09T10:53:04Z
+updated_at: 2024-04-09T11:14:59Z
+url: https://github.com/astral-sh/uv/issues/2929
+synced_at: 2026-01-10T01:23:23Z
+---
+
+# Specify global configurations similar to pip
+
+---
+
+_Issue opened by @jmspereira on 2024-04-09 10:53_
+
+Hey everyone,
+
+Pip has a mechanism to specify configurations that override the configurations passed as parameters or environment variables (i.e., global configurations specified on pip-conf file). 
+
+In my case, I have some build scripts that are parametrized with extra-index-urls (as a parameter), and I override them with the pip.conf file in a CI process, with uv I am not able to do this because the parameter has a higher priority than the environment variable.
+
+Does someone know how to have the same functionally with uv? 
+Best!
+
+
+
+---
+
+_Comment by @konstin on 2024-04-09 10:54_
+
+We're tracking support for pip.conf in https://github.com/astral-sh/uv/issues/1404, but we will also add a global configuration for uv itself.
+
+---
+
+_Comment by @jmspereira on 2024-04-09 11:14_
+
+Thanks, I will close this issue since it is very similar to https://github.com/astral-sh/uv/issues/1404
+
+---
+
+_Closed by @jmspereira on 2024-04-09 11:14_
+
+---

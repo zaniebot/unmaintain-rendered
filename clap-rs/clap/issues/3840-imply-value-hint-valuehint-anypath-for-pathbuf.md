@@ -1,0 +1,131 @@
+---
+number: 3840
+title: "Imply `value_hint = ValueHint::AnyPath` for PathBuf/Option<PathBuf>"
+type: issue
+state: closed
+author: chrisduerr
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2022-06-16T14:42:22Z
+updated_at: 2022-06-16T15:28:53Z
+url: https://github.com/clap-rs/clap/issues/3840
+synced_at: 2026-01-10T01:27:47Z
+---
+
+# Imply `value_hint = ValueHint::AnyPath` for PathBuf/Option<PathBuf>
+
+---
+
+_Issue opened by @chrisduerr on 2022-06-16 14:42_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.2.5
+
+### Describe your use case
+
+Currently when generating clap completions, paths are not automatically suggested unless `value_hint = ValueHint::AnyPath` is added to the clap derive attribute.
+
+### Describe the solution you'd like
+
+Since a `PathBuf` clearly indicates a path should be taken as argument, it would be nice if the value hint attribute would be implied. Using `AnyPath` might not always be ideal but should provide a superior default for most users.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @chrisduerr on 2022-06-16 14:42_
+
+---
+
+_Referenced in [clap-rs/clap#3841](../../clap-rs/clap/pulls/3841.md) on 2022-06-16 15:00_
+
+---
+
+_Comment by @epage on 2022-06-16 15:00_
+
+Looks like we are on the same page! That was one of the first things I did when implementing value parser support.
+
+---
+
+_Comment by @epage on 2022-06-16 15:01_
+
+If you are not seeing this behavior, please product reproduction steps as its a bug
+
+---
+
+_Comment by @chrisduerr on 2022-06-16 15:14_
+
+Seems like even the simplest examples don't work:
+
+```rust
+use std::path::PathBuf;
+
+use clap::{ValueHint, Parser, CommandFactory};
+
+#[derive(Parser, Default, Debug)]
+#[clap()]
+pub struct Options {
+    path: PathBuf,
+}
+
+fn main() {
+    let options = Options::into_app();
+
+    let input = options
+        .get_arguments()
+        .find(|arg| arg.get_id() == "path")
+        .unwrap();
+
+    assert_eq!(input.get_value_hint(), clap::builder::ValueHint::AnyPath);
+}
+```
+
+---
+
+_Comment by @epage on 2022-06-16 15:27_
+
+Try
+```rust
+use std::path::PathBuf;
+
+use clap::{ValueHint, Parser, CommandFactory};
+
+#[derive(Parser, Default, Debug)]
+#[clap()]
+pub struct Options {
+    #[clap(value_parser)]
+    path: PathBuf,
+}
+
+fn main() {
+    let options = Options::into_app();
+
+    let input = options
+        .get_arguments()
+        .find(|arg| arg.get_id() == "path")
+        .unwrap();
+
+    assert_eq!(input.get_value_hint(), clap::builder::ValueHint::AnyPath);
+}
+```
+
+We didn't migrate people to `value_parser` by default but they need to opt-in to it out of a concern for breaking changes.  This will change with the release of clap 4.0
+
+---
+
+_Closed by @epage on 2022-06-16 15:28_
+
+---

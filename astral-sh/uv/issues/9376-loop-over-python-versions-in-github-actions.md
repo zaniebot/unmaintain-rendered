@@ -1,0 +1,82 @@
+---
+number: 9376
+title: loop over python versions in github actions
+type: issue
+state: closed
+author: zkurtz
+labels:
+  - question
+assignees: []
+created_at: 2024-11-23T01:30:05Z
+updated_at: 2024-11-26T23:30:17Z
+url: https://github.com/astral-sh/uv/issues/9376
+synced_at: 2026-01-10T01:24:40Z
+---
+
+# loop over python versions in github actions
+
+---
+
+_Issue opened by @zkurtz on 2024-11-23 01:30_
+
+[Here](https://github.com/zkurtz/dummio/blob/619e049bb005f0e30c0e17fe3822eb7de02dc625/.github/workflows/ci.yml#L13-L23) is what I did and it seems to work. But is that really the recommended way? It feels a bit hacky to overwrite `.python-version`. FWIW I'd appreciate any other feedback on that workflow config. I'm trying to set up uv with a few repos and would like to get my setup right.
+
+---
+
+_Comment by @samypr100 on 2024-11-23 01:59_
+
+👋 I believe you can use [UV_PYTHON](https://docs.astral.sh/uv/configuration/environment/#uv_python) instead
+
+---
+
+_Label `question` added by @samypr100 on 2024-11-23 01:59_
+
+---
+
+_Comment by @zkurtz on 2024-11-23 13:23_
+
+Seems to be working:
+```
+    - name: Set the python version for UV
+      run: echo "UV_PYTHON=${{ matrix.python-version }}" >> $GITHUB_ENV
+```
+
+
+---
+
+_Closed by @zkurtz on 2024-11-23 13:24_
+
+---
+
+_Comment by @zanieb on 2024-11-26 00:08_
+
+I'd be happy to review a pull request adding documentation if needed. There's a bit at http://docs.astral.sh/uv/guides/integration/github/#setting-up-python but this sounds different.
+
+---
+
+_Comment by @zkurtz on 2024-11-26 11:20_
+
+Although https://github.com/astral-sh/uv/issues/9376#issuecomment-2495478626 seems to be working, I'm still not clear if that's considered a recommendable/canonical approach. From the docs you linked ^^, there is also this option
+```
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+```
+but it's not obvious to me whether the python version here specifically overrides the python version that would be used by subsequent `uv run` commands, which should obey the `.python-version` file regardless of which other versions of python happen to be available on the system
+
+---
+
+_Comment by @zanieb on 2024-11-26 15:41_
+
+Yeah `uv run` would respect the `.python-version` file and ignore the installed version
+
+---
+
+_Comment by @zkurtz on 2024-11-26 21:53_
+
+https://github.com/astral-sh/uv/pull/9454
+
+---
+
+_Referenced in [astral-sh/uv#9454](../../astral-sh/uv/pulls/9454.md) on 2024-11-26 23:29_
+
+---

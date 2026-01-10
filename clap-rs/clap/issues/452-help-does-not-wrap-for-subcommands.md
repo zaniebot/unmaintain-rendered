@@ -1,0 +1,73 @@
+---
+number: 452
+title: Help does not wrap for subcommands
+type: issue
+state: closed
+author: crumblingstatue
+labels:
+  - C-bug
+  - A-help
+assignees: []
+created_at: 2016-03-16T08:14:49Z
+updated_at: 2018-08-02T03:29:48Z
+url: https://github.com/clap-rs/clap/issues/452
+synced_at: 2026-01-10T01:26:29Z
+---
+
+# Help does not wrap for subcommands
+
+---
+
+_Issue opened by @crumblingstatue on 2016-03-16 08:14_
+
+Help for flags, options and args do seem to wrap, but not for subcommands.
+![](http://i.imgur.com/koPsb5V.png)
+
+
+---
+
+_Referenced in [clap-rs/clap#450](../../clap-rs/clap/pulls/450.md) on 2016-03-16 08:18_
+
+---
+
+_Comment by @kbknapp on 2016-03-16 13:06_
+
+Thanks! Should have this fixed soon :+1:
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-03-16 13:07_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-03-16 13:07_
+
+---
+
+_Label `C: help message` added by @kbknapp on 2016-03-16 13:07_
+
+---
+
+_Label `C: subcommands` added by @kbknapp on 2016-03-16 13:07_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-03-16 13:07_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-03-16 13:07_
+
+---
+
+_Comment by @kbknapp on 2016-03-16 19:31_
+
+I have this working. I'll put in the PR once I get home and put out the new version.
+
+
+---
+
+_Closed by @homu on 2016-03-17 13:32_
+
+---

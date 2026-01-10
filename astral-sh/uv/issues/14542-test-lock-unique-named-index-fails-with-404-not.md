@@ -1,0 +1,62 @@
+---
+number: 14542
+title: "Test `lock_unique_named_index` fails with 404 Not Found"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - ci-flake
+assignees: []
+created_at: 2025-07-10T15:05:53Z
+updated_at: 2025-07-16T14:20:27Z
+url: https://github.com/astral-sh/uv/issues/14542
+synced_at: 2026-01-10T01:25:46Z
+---
+
+# Test `lock_unique_named_index` fails with 404 Not Found
+
+---
+
+_Issue opened by @zanieb on 2025-07-10 15:05_
+
+```
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: lock_unique_named_index
+    Source: crates/uv/tests/it/lock.rs:16418
+    ────────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ────────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬───────────────────────────────────────────────────────────────────
+        0       │-success: true
+        1       │-exit_code: 0
+              0 │+success: false
+              1 │+exit_code: 2
+        2     2 │ ----- stdout -----
+        3     3 │ 
+        4     4 │ ----- stderr -----
+        5       │-Resolved 2 packages in [TIME]
+              5 │+error: Request failed after 2 retries
+              6 │+  Caused by: Failed to fetch: `[https://example.com/iniconfig/`](https://example.com/iniconfig/%60)
+              7 │+  Caused by: HTTP status client error (404 Not Found) for url (https://example.com/iniconfig/)
+    ────────────┴───────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test lock::lock_unique_named_index ... FAILED
+```
+
+e.g. https://github.com/astral-sh/uv/actions/runs/16197053482/job/45726173752
+
+---
+
+_Label `ci-flake` added by @zanieb on 2025-07-10 15:05_
+
+---
+
+_Referenced in [astral-sh/uv#14657](../../astral-sh/uv/pulls/14657.md) on 2025-07-16 14:10_
+
+---
+
+_Closed by @zanieb on 2025-07-16 14:20_
+
+---

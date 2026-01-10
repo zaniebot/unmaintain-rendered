@@ -1,0 +1,89 @@
+---
+number: 3273
+title: "[clap_complete] Missing newline character for zsh completion at the end"
+type: issue
+state: closed
+author: xylous
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-01-09T12:43:38Z
+updated_at: 2022-01-10T14:22:28Z
+url: https://github.com/clap-rs/clap/issues/3273
+synced_at: 2026-01-10T01:27:37Z
+---
+
+# [clap_complete] Missing newline character for zsh completion at the end
+
+---
+
+_Issue opened by @xylous on 2022-01-09 12:43_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.57.0 (Arch Linux rust 1:1.57.0-1)
+
+### Clap Version
+
+3.0.5
+
+### Minimal reproducible code
+
+```rust
+use clap::App;
+use clap_complete::{generate, shells::Zsh};
+use std::io;
+
+fn main() {
+    let mut app = App::new("myapp")
+        .subcommand(App::new("test").subcommand(App::new("config")))
+        .subcommand(App::new("hello"));
+
+    generate(Zsh, &mut app, "myapp", &mut io::stdout());
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run
+```
+
+### Actual Behaviour
+
+When the command is ran, there's no newline character at the end of the output
+
+### Expected Behaviour
+
+There should be a newline character at the end of the output, like how there is on all other completions' outputs
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @xylous on 2022-01-09 12:43_
+
+---
+
+_Comment by @xylous on 2022-01-09 13:03_
+
+I created a pull request to solve this issue, https://github.com/clap-rs/clap/pull/3275
+
+To be fair, it isn't hard to solve.
+
+---
+
+_Closed by @epage on 2022-01-10 14:22_
+
+---

@@ -1,0 +1,279 @@
+---
+number: 6101
+title: "hardlinking warning -> how to silence it?"
+type: issue
+state: closed
+author: stas00
+labels:
+  - error messages
+assignees: []
+created_at: 2024-08-15T01:24:21Z
+updated_at: 2024-08-21T02:22:33Z
+url: https://github.com/astral-sh/uv/issues/6101
+synced_at: 2026-01-10T01:23:56Z
+---
+
+# hardlinking warning -> how to silence it?
+
+---
+
+_Issue opened by @stas00 on 2024-08-15 01:24_
+
+@charliermarsh, in https://github.com/astral-sh/uv/issues/5581 you resolved the issue with hardlinking in a shared environment, but how do we get rid of this warning?
+
+I now get it on my desktop as well, where I'm not sharing anything with anybody, but the cache and the conda envs aren't on the same drives.
+
+```
+$ uv pip install numpy==1.26.4
+Resolved 1 package in 4ms
+Uninstalled 1 package in 18ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                          
+
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. If this is intentional, use `--link-mode=copy` to suppress this warning.
+
+hint: If the cache and target directories are on different filesystems, hardlinking may not be supported.
+Installed 1 package in 50ms
+ - numpy==2.0.1
+ + numpy==1.26.4
+```
+
+I really don't care whether it's hardlinked or copied, but you can imagine that this is tedious to get this message on every use of `uv` - surely it's ok to warn once and be done, no?
+
+I'd be happy with an env var which would override the warning. and ideally then the warning would add an instruction on how to remove itself.
+
+Thank you
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-15 01:28_
+
+Hah sorry! Yeah, I bet that's annoying. I think the easiest thing to do is set `UV_LINK_MODE=copy` -- does that work?
+
+---
+
+_Comment by @stas00 on 2024-08-15 01:30_
+
+yes, could we please add it to the warning?
+
+```
+To remove this warning, set `UV_LINK_MODE=copy`
+```
+
+Thank you for the quick resolution, @charliermarsh - I forgot that on the shared env at work I did set `UV_LINK_MODE=copy` - so will do the same on my desktop now.
+
+---
+
+_Comment by @charliermarsh on 2024-08-15 01:31_
+
+Good idea.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-15 01:31_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-08-15 01:31_
+
+---
+
+_Referenced in [astral-sh/uv#6103](../../astral-sh/uv/pulls/6103.md) on 2024-08-15 01:36_
+
+---
+
+_Closed by @charliermarsh on 2024-08-15 03:14_
+
+---
+
+_Closed by @charliermarsh on 2024-08-15 03:14_
+
+---
+
+_Comment by @stas00 on 2024-08-19 18:10_
+
+@charliermarsh, unfortunately this didn't work, I still get the warning despite having `UV_LINK_MODE=copy` preset:
+
+```
+$ echo $UV_LINK_MODE
+copy
+
+$ uv pip install uv -P uv
+Resolved 1 package in 322ms
+Prepared 1 package in 511ms
+Uninstalled 1 package in 8ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. If this is intentional, use `--link-mode=copy` to suppress this warning.
+
+hint: If the cache and target directories are on different filesystems, hardlinking may not be supported.
+Installed 1 package in 18ms
+ - uv==0.2.36
+ + uv==0.2.37
+ 
+$ uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+Resolved 26 packages in 1.30s
+Prepared 1 package in 144ms
+Uninstalled 2 packages in 19ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 9ms
+ - torchaudio==2.2.2
+ - torchaudio==2.3.1
+ + torchaudio==2.4.0+cu124
+```
+
+---
+
+_Comment by @charliermarsh on 2024-08-19 18:11_
+
+Interesting, that shouldn't be possible, I'll take a look.
+
+---
+
+_Comment by @stas00 on 2024-08-19 18:12_
+
+Is it possible https://github.com/astral-sh/uv/pull/6103 didn't make it into the `uv==0.2.37` release?
+
+---
+
+_Comment by @charliermarsh on 2024-08-20 19:13_
+
+Is it possible that in the second command, you're not getting `0.2.37`?
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:29_
+
+On the shared environment where we had perms issue it seems to be fine - no warnings.
+
+This is on my desktop where the cache and the conda env are on different drives:
+
+```
+$ uv pip install uv -P uv
+Resolved 1 package in 294ms
+Prepared 1 package in 497ms
+Uninstalled 1 package in 0.40ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 13ms
+ - uv==0.2.37
+ + uv==0.3.0
+
+$ echo $UV_LINK_MODE
+copy
+
+$ uv --version
+uv 0.3.0
+
+$ uv pip install vllm==0.5.0
+Resolved 106 packages in 29ms
+░░░░░░░░░░░░░░░░░░░░ [0/3] Installing wheels...                                                                                           warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+█████████████░░░░░░░ [2/3] xformers==0.0.26.post1                                                                                         ^C
+```
+
+I even tried activating/deactivating conda envs as sometimes it'd glitch silently failing to activate some env but reporting it as activated, but no, the same behavior ensues. 
+
+Might you be able to reproduce by putting a cache on a different drive?
+
+---
+
+_Comment by @charliermarsh on 2024-08-20 19:34_
+
+Thanks. Yeah I'm just trying to figure out how this is possible. Those warnings only exist in functions that shouldn't be called at all if you have `copy` set. Do you see the same warnings with `--link-mode=copy`? Trying to understand if it's a problem with configuration or something else.
+
+---
+
+_Reopened by @charliermarsh on 2024-08-20 19:34_
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:35_
+
+the warning goes away if I use `uv pip install --link-mode=copy vllm==0.5.0`
+
+---
+
+_Comment by @charliermarsh on 2024-08-20 19:37_
+
+What about `UV_LINK_MODE=copy uv pip install vllm==0.5.0`?
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:37_
+
+whoah! no warning with `UV_LINK_MODE=copy uv pip install vllm==0.5.4` either
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:38_
+
+and I checked that there is no whitespace in the env var:
+```
+$ echo "[$UV_LINK_MODE]"
+[copy]
+```
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:39_
+
+this is totally strange, it's also fine if I first set again `export UV_LINK_MODE=copy` in the interactive shell.
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:40_
+
+aha! It wasn't exported in `~/.bashrc` - this is so silly - it's visible in the shell, but not to descendants. this is it.
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:42_
+
+hmm, how does one know if an env var is exported or not from inside bash.
+
+but adding the `export` solves the problem.
+
+---
+
+_Comment by @stas00 on 2024-08-20 19:46_
+
+oddly I made the same mistake on the shared env setup and there somehow it wasn't a problem. So bizarre.
+
+would it help to stress in the warning to use `export UV_LINK_MODE=copy`
+
+to check if an env var was exported I found one would do:
+```
+export -p | grep UV_LINK_MODE
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 01:57_
+
+Oh wow! That's so confusing. I'm glad you figured it out, sorry for the trouble.
+
+---
+
+_Closed by @charliermarsh on 2024-08-21 01:57_
+
+---
+
+_Comment by @stas00 on 2024-08-21 02:06_
+
+the mistake was all mine, as I blindly copied the suggestion from the warning and didn't think of adding `export` - hence the suggestion to help the user in the future by including `export` in the warning's message.
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 02:22_
+
+Good idea: https://github.com/astral-sh/uv/pull/6294
+
+---
+
+_Referenced in [astral-sh/uv#6300](../../astral-sh/uv/issues/6300.md) on 2024-08-21 12:41_
+
+---

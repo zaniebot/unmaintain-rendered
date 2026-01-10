@@ -1,0 +1,70 @@
+---
+number: 2705
+title: Pin clap_derive when making beta releases
+type: issue
+state: closed
+author: abonander
+labels:
+  - C-bug
+assignees: []
+created_at: 2021-08-16T23:02:46Z
+updated_at: 2021-08-18T09:06:22Z
+url: https://github.com/clap-rs/clap/issues/2705
+synced_at: 2026-01-10T01:27:23Z
+---
+
+# Pin clap_derive when making beta releases
+
+---
+
+_Issue opened by @abonander on 2021-08-16 23:02_
+
+In `sqlx-cli` we were pinning the previous beta release of `clap` via the following:
+
+```toml
+clap = "=3.0.0-beta.2"
+```
+
+However, because `clap` itself does not pin the version of `clap_derive`, when `3.0.0-beta.4` was released with breaking changes it made our users unable to simply run `cargo install sqlx-cli` as `clap 3.0.0-beta.2` was pulling in `clap_derive 3.0.0-beta.4` which generated incompatible code: https://github.com/launchbadge/sqlx/issues/1378
+
+I'm already working on a fix on our end, adding `clap_derive = "=3.0.0-beta.2"` to `sqlx-cli/Cargo.toml`, but I just wanted to put this out there if you're planning any more beta releases before 3.0 proper, that you should consider pinning `clap_derive` to the same version when importing it in `clap` so beta users don't have to remember to pin them both to avoid breakages.
+
+---
+
+_Referenced in [clap-rs/clap#2706](../../clap-rs/clap/pulls/2706.md) on 2021-08-17 00:23_
+
+---
+
+_Label `T: bug` added by @pksunkara on 2021-08-17 07:48_
+
+---
+
+_Comment by @pksunkara on 2021-08-17 07:48_
+
+Next time, please use the issue template.
+
+---
+
+_Closed by @pksunkara on 2021-08-17 08:43_
+
+---
+
+_Comment by @epage on 2021-08-17 16:16_
+
+For those curious, this Cargo behavior came up on internals back in June but seemed to fizzxle out: https://internals.rust-lang.org/t/changing-cargo-semver-compatibility-for-pre-releases/14820/12
+
+---
+
+_Comment by @pksunkara on 2021-08-18 09:06_
+
+Oh that would actually be nice. I always hated how npm treats pre releases. Adding this to my already long list of things to focus on after clap v3
+
+---
+
+_Referenced in [ajeetdsouza/zoxide#286](../../ajeetdsouza/zoxide/issues/286.md) on 2021-10-20 15:10_
+
+---
+
+_Referenced in [shreevatsa/pdf-glyph-mapping#10](../../shreevatsa/pdf-glyph-mapping/issues/10.md) on 2024-02-05 20:23_
+
+---

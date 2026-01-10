@@ -1,0 +1,39 @@
+---
+number: 5432
+title: "Suggestion: alt to pyenv"
+type: issue
+state: closed
+author: pdpark
+labels:
+  - question
+assignees: []
+created_at: 2024-07-24T23:35:05Z
+updated_at: 2024-09-16T01:43:56Z
+url: https://github.com/astral-sh/uv/issues/5432
+synced_at: 2026-01-10T01:23:48Z
+---
+
+# Suggestion: alt to pyenv
+
+---
+
+_Issue opened by @pdpark on 2024-07-24 23:35_
+
+If you want to provide Python installs like pyenv, this may be an option to consider: https://github.com/allyourcodebase/cpython
+
+
+---
+
+_Comment by @zanieb on 2024-07-25 03:14_
+
+Cool! We _are_ providing Python installs (in preview right now) but we're using https://github.com/indygreg/python-build-standalone
+
+---
+
+_Label `question` added by @zanieb on 2024-07-25 03:14_
+
+---
+
+_Closed by @charliermarsh on 2024-09-16 01:43_
+
+---

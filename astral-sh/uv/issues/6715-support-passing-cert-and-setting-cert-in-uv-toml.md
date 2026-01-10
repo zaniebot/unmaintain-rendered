@@ -1,0 +1,66 @@
+---
+number: 6715
+title: "Support passing `--cert` and setting `cert` in `uv.toml`"
+type: issue
+state: open
+author: kohlrabi
+labels:
+  - enhancement
+  - cli
+assignees: []
+created_at: 2024-08-27T19:15:01Z
+updated_at: 2025-10-20T16:58:00Z
+url: https://github.com/astral-sh/uv/issues/6715
+synced_at: 2026-01-10T01:24:04Z
+---
+
+# Support passing `--cert` and setting `cert` in `uv.toml`
+
+---
+
+_Issue opened by @kohlrabi on 2024-08-27 19:15_
+
+With the merge of #6591 it is now possible to trust hosts to disable certificate verification, but compared to pip the "other way" around, providing  a valid cert, is still a bit a bit lacking. I know it's currently possible to set a path to a cert file using `SSL_CERT_FILE`, but I think it would be more in line with pip and more consistent if `--cert CERTFILE` could be passed on the command line, and `uv.toml` got an option to set the cert file as well.
+
+---
+
+_Renamed from "Support passing --cert and setting cert in uv.toml" to "Support passing `--cert` and setting `cert` in `uv.toml`" by @kohlrabi on 2024-08-27 19:15_
+
+---
+
+_Comment by @samypr100 on 2024-08-27 19:18_
+
+Possible dupe of https://github.com/astral-sh/uv/issues/6572
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-27 21:06_
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-27 21:06_
+
+---
+
+_Comment by @DetachHead on 2025-01-15 23:51_
+
+does `native-tls` work for your use case? https://github.com/astral-sh/uv/issues/6572#issuecomment-2594166728
+
+---
+
+_Comment by @kohlrabi on 2025-03-14 12:35_
+
+Thanks @DetachHead, I have not tried. I didn't add the cert to the OS store, I just have a file. I will try.
+
+---
+
+_Comment by @ReveStobinson on 2025-10-17 21:48_
+
+> does `native-tls` work for your use case? [#6572 (comment)](https://github.com/astral-sh/uv/issues/6572#issuecomment-2594166728)
+
+@DetachHead I think there definitely is a use case for a `--cert` argument and/or environment variable for configuring the certificates. If using self-signed enterprise CA and a locally hosted package store, you may not want to build the certs into the image, instead treating it as a docker secret for security purposes. 
+
+This is easily accomplished with `pip` by passing the cert as a secret (e.g. `--mount=type=secret,id=certificate`) and then telling pip where the cert is just for that command with `--certs /run/secrets/certificate`. To make this happen with `uv` currently requires either a multi-stage build that copies the `.venv` directory over to a bare image, or several extra commands per RUN command that performs a uv pip install.
+
+
+---

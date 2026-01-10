@@ -1,0 +1,51 @@
+---
+number: 16971
+title: Adjust release script to handle uv-trampoline lockfile changes
+type: pull_request
+state: closed
+author: samypr100
+labels: []
+assignees: []
+base: main
+head: fix-release-script
+created_at: 2025-12-03T15:21:36Z
+updated_at: 2025-12-04T18:52:30Z
+url: https://github.com/astral-sh/uv/pull/16971
+synced_at: 2026-01-10T01:26:19Z
+---
+
+# Adjust release script to handle uv-trampoline lockfile changes
+
+---
+
+_Pull request opened by @samypr100 on 2025-12-03 15:21_
+
+## Summary
+
+Given `bump-workspace-crate-versions.py` will bump all crates, we also need to update uv-trampoline lockfile references to those new versions (for uv-static, uv-macros) after https://github.com/astral-sh/uv/pull/16950.
+
+## Test Plan
+
+Ran release script manually and verify uv-trampoline lockfile is up to date after the changes from bump-workspace-crate-versions.py
+
+---
+
+_Review requested from @zanieb by @samypr100 on 2025-12-03 15:21_
+
+---
+
+_Marked ready for review by @samypr100 on 2025-12-03 15:23_
+
+---
+
+_Merged by @zanieb on 2025-12-04 17:45_
+
+---
+
+_Closed by @zanieb on 2025-12-04 17:45_
+
+---
+
+_Branch deleted on 2025-12-04 18:52_
+
+---

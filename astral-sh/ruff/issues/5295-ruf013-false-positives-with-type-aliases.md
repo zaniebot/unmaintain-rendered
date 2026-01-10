@@ -1,0 +1,163 @@
+---
+number: 5295
+title: "RUF013: False positives with type aliases "
+type: issue
+state: closed
+author: araffin
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-22T10:36:47Z
+updated_at: 2023-10-18T16:59:20Z
+url: https://github.com/astral-sh/ruff/issues/5295
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# RUF013: False positives with type aliases 
+
+---
+
+_Issue opened by @araffin on 2023-06-22 10:36_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+```python
+from typing import Optional
+
+MaybeInt = Optional[int]
+
+
+def test(a: MaybeInt = None) -> None:
+    print(a)
+```
+
+`ruff test.py --select RUF`
+
+```
+test.py:6:13: RUF013 [*] PEP 484 prohibits implicit `Optional`
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+ruff version: 0.0.274
+
+found originally in https://github.com/DLR-RM/stable-baselines3.
+
+
+Is that intended or is that a false positive?
+
+EDIT: I think the problem comes more from the fact that RUF013 is a rule for a type checker, it will be hard to enforce for a linter
+
+---
+
+_Comment by @dhruvmanila on 2023-06-22 11:31_
+
+Thanks for opening this. This is a known issue.
+
+\cc @charliermarsh Any thoughts on how to go about solving this? 
+
+A simple solution would be to keep track of these aliases and resolve them while checking. This might not work for forward references if the alias is defined after the function definition but I think that should be rare.
+
+Another option would be to check if the top level type is a builtin type or coming from the `typing` module, if not then we can ignore flagging such instances. This would lead to false negatives but they're better than false positives.
+
+---
+
+_Label `bug` added by @dhruvmanila on 2023-06-22 11:31_
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 13:05_
+
+@dhruvmanila - Maybe we refine RUF013 so that it ignores any types we can't resolve? Like it only operates on primitives and things in the typing module.
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 13:09_
+
+Sorry, I'm realizing that was your second suggestion. I think we should just do that.
+
+---
+
+_Comment by @dhruvmanila on 2023-06-22 13:11_
+
+So, for nested types we would just consider it as `Any`, thus not flagging it.
+
+A false negative example which I think we should document it in the rule:
+
+```python
+Text = str | byte
+
+
+def f(arg: Text = None):
+	pass
+```
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-06-22 13:11_
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 13:13_
+
+Yeah, we should continue to flag:
+
+```python
+def f(arg: Union[str, byte] = None): ...
+```
+
+But not:
+
+```python
+Text = str | byte
+
+
+def f(arg: Text = None):
+	pass
+```
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 13:13_
+
+(Aliases within the same file, I think we can fix, if we want... Aliases across files we can't _yet_ fix.)
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 14:33_
+
+@dhruvmanila - Do you want to work on this now and include it in today's release? Or wait till the next release? Up to you, just want to decide if I should wait for it :)
+
+---
+
+_Comment by @dhruvmanila on 2023-06-22 14:35_
+
+Please go ahead with today's release. I'll work on it tomorrow.
+
+---
+
+_Referenced in [astral-sh/ruff#5344](../../astral-sh/ruff/pulls/5344.md) on 2023-06-23 17:11_
+
+---
+
+_Closed by @charliermarsh on 2023-06-23 22:51_
+
+---
+
+_Comment by @Avasam on 2023-10-18 16:59_
+
+Since there's no meta-issue about multi-file analysis, should this be re-open with the `label:multifile-analysis` ?
+
+Today I found 3 false-positives in typeshed using `logging._ExcInfoType` and `sys._ExitCode`
+
+---

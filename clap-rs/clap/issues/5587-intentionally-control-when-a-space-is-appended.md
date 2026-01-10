@@ -1,0 +1,311 @@
+---
+number: 5587
+title: Intentionally control when a space is appended for native completions
+type: issue
+state: open
+author: epage
+labels:
+  - C-bug
+  - A-completion
+  - S-waiting-on-design
+assignees: []
+created_at: 2024-07-19T14:25:34Z
+updated_at: 2025-08-28T13:07:12Z
+url: https://github.com/clap-rs/clap/issues/5587
+synced_at: 2026-01-10T01:28:14Z
+---
+
+# Intentionally control when a space is appended for native completions
+
+---
+
+_Issue opened by @epage on 2024-07-19 14:25_
+
+A trailing space signifies that there is nothing else to complete for this argument and the next argument should be started.
+
+Cases where a space is appropriate
+- long flags
+- values
+
+Cases where a space is not appropriate
+- options that allow `=`
+- short flags
+- delimiter-separated values
+
+Open questions
+- When there is only one option left for a completion and there is "something more", like `--opt` completing for `--option=value`, instead of completing to `--option` should we offer every `--option=value` possible?
+- Can we do that for `--option value` as well?
+- Should we prefer `--option=value` or `--option value`? (`requires_equals` and `num_args` being more than 1 are times when there isn't a choice)
+- When the "something more" is optional (using `num_args`), should we offer with space and without?
+
+Note: we might be able to defer some of these open questions as "parity with stable, static `clap_complete`" is the minimum bar
+
+---
+
+_Label `C-bug` added by @epage on 2024-07-19 14:25_
+
+---
+
+_Label `A-completion` added by @epage on 2024-07-19 14:25_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2024-07-19 14:25_
+
+---
+
+_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2024-07-19 14:25_
+
+---
+
+_Comment by @shannmu on 2024-07-22 18:02_
+
+## A trailing space design
+
+### What do we support now
+- subcommand
+    - itself
+    - aliases
+- positional argument
+- optional flags
+    - long flags
+    - short flags
+- values
+    - value hint, e.g. filepath
+    - custom possible values
+
+### Cases where we should append the trailing space
+- subcommand
+    - itself
+    - long alias(blocked on: https://github.com/clap-rs/clap/issues/5284)
+- positional argument
+- long flags without `Set` or `Append` action
+- long flags with `Set` or `Append` action & without `requires_equals`
+    - I think that if the long flags does not need the `=`, we could append the trailing space for the completion to show users that this long flags is complete.
+
+
+### Cases where we should not append the trailing space
+- subcommand
+    - short alias(blocked on: https://github.com/clap-rs/clap/issues/5284)
+- short flags
+- long flags with `Set` or `Append` action & with `requires_equals`(blocked on: https://github.com/clap-rs/clap/issues/3923)
+    - btw, i think that we could complete the long flags with format `format!("--{}=", long_flag)` rather than `format!("--{}", long_flag)` to show the users that this long flag needs `=` and value.
+
+### Cases that depend on the context
+#### values
+> [!NOTE]
+> **What is the context when completing the values of flag**
+> At the code level, it refers to the various settings of `Arg`.
+> - `num_args`
+> - `value_delimiter`
+> - `trailing_var_arg` refers to `num_args`
+> 
+> At the meaning of value level
+> - filepath
+> - custom possible values
+ 
+- not append the trailing space
+    - number of values are not matched the number of `num_arg`(blocked on: https://github.com/clap-rs/clap/issues/3921)
+        - In this way, users can better control whether to complete the next value.
+        - Also when the number of values matches the `num_args`, we could append a trailing space to show user that the multi-values of flag are completed.
+    - number of values matches the number of `num_arg` & value is a value hint(Blocked on: https://github.com/clap-rs/clap/issues/3921)
+        - We cannot be sure whether the user wants to use this filepath or create a new file based on this filepath. Other types of value hint are the same as filepath hint, because we cannot be sure whether the hint is complete.
+    - delimiter-separated values(blocked on: https://github.com/clap-rs/clap/issues/3922)
+        - It's abvious that we can't known the end of the delimiter-separated values.
+**NOTE: It seems that delimiter-separated values must be one raw_arg in command line. It means if the delimiter is space, we should pass the delimiter-separated values with the format `"va1 val2 val3"` rather than `val1 val2 val3`**.
+- append the trailing space
+    - number of values matches the number of `num_arg` & value is custom possible value((blocked on: https://github.com/clap-rs/clap/issues/3921))
+
+BTW, when checking the completion for the values of the flag, I found that we might support `ignore_case` for possible values if the arg is set with `ArgSettings::IgnoreCase`. This will also provide a great user experience.
+
+### Open questions
+> When there is only one option left for a completion and there is "something more", like --opt completing for --option=value, instead of completing to --option should we offer every --option=value possible?
+
+I think that we should not offer every --option=value possible. For example, if the completion of value comes from `clap::ValueHint::FilePath`, it may generate too many completions, which makes user confused. It would be better to let the user enter some leading prompt characters.
+
+> When the "something more" is optional (using num_args), should we offer with space and without
+
+I think this question was mentioned above.
+
+---
+
+_Comment by @shannmu on 2024-07-22 18:16_
+
+Only the cases of the values is relatively complex and are blocked by other issues. The cases for others are relatively certain. We could get benefit from https://github.com/clap-rs/clap/commit/67e31af334346e35a540c49ba2fec46bda5ae880, and add `has_space` to `CompletionCandidate`.
+
+---
+
+_Comment by @shannmu on 2024-07-22 18:20_
+
+Looking forward to your thoughts. Your feedback is really important!
+
+---
+
+_Comment by @epage on 2024-07-22 18:23_
+
+> number of values are not matched the number of num_arg
+
+This isn't a question of the number being matched as `num_args` only applies to `1 2 3` and not `1,2,3`.
+
+The way `num_args` ties into this is when no arguments are possible, like `num_args(0..=1)` for `--color` allowing `--color` to be a shortcut for `--color=always`.
+
+So this is a distinct case from the others.
+
+---
+
+_Comment by @epage on 2024-07-22 18:27_
+
+> I think that we should not offer every --option=value possible. For example, if the completion of value comes from clap::ValueHint::FilePath, it may generate too many completions, which makes user confused. It would be better to let the user enter some leading prompt characters.
+
+This is a question of framing.
+
+When we have
+```rust
+Arg::new("option")
+    .value_name("value")
+    .value_hint(ValueHint::FileType)
+    .requires_equals(true)
+```
+If the user has `foo --opt\t`, do we view completion as being only for the current token or do we view completion as for the end result?
+
+@ModProg would be good to get your input on this, if possible.
+
+---
+
+_Comment by @epage on 2024-07-22 18:29_
+
+> add has_space to CompletionCandidate.
+
+I think I'd prefer for this to be more descriptive, like `incomplete`.  Depending on how we want to handle "maybe incomplete", an `Option<bool>` or an enum might be needed (where `Incomplete` is just one variant)
+
+---
+
+_Comment by @epage on 2024-07-22 18:33_
+
+> Only the cases of the values is relatively complex and are blocked by other issues. 
+
+As mentioned in https://github.com/clap-rs/clap/issues/5587#issuecomment-2243557807, #3921 is not a blocker for this.  #3922 is a soft-blocker.  We could close this out for what is possible now and push responsibility for that case onto #3922 but I think I'd prefer to track this as a cohesive whole so we focus on what the entire user experience around this is.
+
+---
+
+_Comment by @ModProg on 2024-07-23 09:23_
+
+One thing to check is verify which shells actually support different behavior here, e.g., fish won't honer us providing the space or not, but uses a list of characters to decide (https://github.com/fish-shell/fish-shell/issues/7832).
+
+The list:
+https://github.com/fish-shell/fish-shell/blob/ff72080aac0263048b2a9906c34736b40994f6c2/src/reader.rs#L5589
+`'/', '@', ':', '.', ',', '-' or a '='`
+
+In my testing, a trailing slash in the completion was actually escaped: `example world\ `
+
+So e.g. for an option that is `numargs=0..=1`, at least for the fish shell we should provide at least both `--opt` and `--opt=`.
+
+> I think that we should not offer every --option=value possible.
+
+We could make this depend on two factors, number of possible values and whether there are other options left.
+
+`--opt\t`:
+`--optimal`, `--option`, `--option=`
+
+`--optio\t`:
+`--option`, `--option=a`, `--option=b`, `--option=c`
+
+---
+
+_Comment by @shannmu on 2024-07-23 16:05_
+
+I haven't found a way to handle fish's trailing space yet.
+As for bash, zsh, elvish, and powershell, we can close the trailing space and handle trailing space in the rust native completion logic.
+- bash
+  ```
+  complete -o nospace
+  ```
+   ```                   
+  nospace Tell readline not to append a space (the default) to words completed at the end of the line.
+  ```
+- zsh
+  ```
+  compadd -S "" -a completions
+  ```
+
+  ```
+  -P prefix
+  This gives a string to be inserted before each match. The string given is not considered as part of the match and any shell metacharacters in it will not be quoted when the string is inserted.
+  
+  -S suffix
+  Like -P, but gives a string to be inserted after each match.
+  ```
+- elvish & powershell
+They do not append the trailing space by default.
+Simple testing on:
+  ```
+  ~/clap> elvish --version
+  0.17.0+Ubuntu-1
+  ```
+  ```
+  PS C:\Users\shanmu\clap> $PSVersionTable
+  
+  Name                           Value
+  ----                           -----
+  PSVersion                      7.4.3
+  PSEdition                      Core
+  GitCommitId                    7.4.3
+  OS                             Microsoft Windows 10.0.22631
+  Platform                       Win32NT
+  PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0…}
+  PSRemotingProtocolVersion      2.3
+  SerializationVersion           1.1.0.1
+  WSManStackVersion              3.0
+  ```
+
+---
+
+_Comment by @ModProg on 2024-07-23 19:13_
+
+I think if we just extend `CompletionCandidate` to have a `should_space()` or `get_with_space()` don't care about the naming, the shell specifics shouldn't be an issue.
+
+Though it does mean, that for lists in something like *fish*, it could make sense to offer completions with trailing commas? Either exclusively or both, producing both should probably also be limited to when there aren't too many completions on screen.
+
+Either `--a=1,2,|` -> `1` `1,` `2` `2,` `3` `3,` or just `1,` `2,` `3,` (I'm not sure if we support trailing commas in the argument parsing).
+
+---
+
+_Comment by @epage on 2024-07-23 19:17_
+
+> (I'm not sure if we support trailing commas in the argument parsing).
+
+Looks like we just do a basic `split`:
+
+https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_builder/src/parser/parser.rs#L1164-L1166
+
+---
+
+_Referenced in [clap-rs/clap#5576](../../clap-rs/clap/pulls/5576.md) on 2024-07-24 15:26_
+
+---
+
+_Comment by @epage on 2024-07-25 18:07_
+
+See https://github.com/clap-rs/clap/pull/5576#discussion_r1690019695
+
+> Should `-ci[TAB]` complete to `-ci<file>` or `-ci `
+
+---
+
+_Comment by @ModProg on 2024-08-01 14:28_
+
+> Looks like we just do a basic split:\n\nhttps://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_builder/src/parser/parser.rs#L1164-L1166
+
+so if we go the route of using trailing `,` in fish, we'd need to make the parsing ignore a trailing comma.
+
+Though this would technically be a breaking change as I'd expect `-ax,y,` to produce `["x", "y", ""]` currently. But one would need to do `-ax,y,,` to get the same if we stripped the trailing comma.
+
+---
+
+_Referenced in [r0gue-io/pop-cli#332](../../r0gue-io/pop-cli/pulls/332.md) on 2024-11-06 11:05_
+
+---
+
+_Referenced in [eclipse-ankaios/ankaios#614](../../eclipse-ankaios/ankaios/issues/614.md) on 2025-11-06 08:01_
+
+---

@@ -1,0 +1,116 @@
+---
+number: 15023
+title: How to resolve workspace members for lsp in vscode
+type: issue
+state: closed
+author: Bryson14
+labels:
+  - question
+assignees: []
+created_at: 2025-08-02T00:33:01Z
+updated_at: 2025-08-04T00:58:11Z
+url: https://github.com/astral-sh/uv/issues/15023
+synced_at: 2026-01-10T01:25:51Z
+---
+
+# How to resolve workspace members for lsp in vscode
+
+---
+
+_Issue opened by @Bryson14 on 2025-08-02 00:33_
+
+_note_ : I have threw this together and used Claude to polish my phrasing.
+
+### Problem
+When using uv workspaces with multiple local packages, the Python LSP extension cannot resolve types for imports between workspace packages. While the code runs correctly and passes type checking, IntelliSense shows imported classes as `Any` type, breaking IDE functionality.
+
+### Environment
+- **LSP Extension**: [[Python extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python)](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+- **Tool**: uv workspaces
+- **Editor**: VS Code
+
+### Workspace Structure
+```
+my-project/
+├── pyproject.toml
+└── packages/
+    ├── library-a/
+    │   ├── pyproject.toml
+    │   └── src/
+    │       └── library_a/
+    │           └── __init__.py
+    └── library-b/
+        ├── pyproject.toml
+        └── src/
+            └── library_b/
+                ├── __init__.py
+                └── main.py
+```
+
+### Example Code
+
+**packages/library-a/src/library_a/__init__.py:**
+```python
+class MyClass:
+    def my_method(self) -> str:
+        return "Hello from MyClass"
+```
+
+**packages/library-b/src/library_b/main.py:**
+```python
+from library_a import MyClass  # Import works at runtime
+
+def use_class():
+    instance = MyClass()  # LSP shows MyClass as 'Any'
+    result = instance.my_method()  # No autocomplete/type hints
+    return result
+```
+
+### What Works
+- ✅ `uv build` - builds successfully
+- ✅ `uv sync` - resolves dependencies
+- ✅ `ruff check` - linting passes
+- ✅ `uvx mypy .` - type checking passes
+- ✅ Runtime execution works correctly
+
+### What Doesn't Work
+- ❌ IntelliSense shows `MyClass` as `Any` type
+- ❌ No autocomplete for methods on imported classes
+- ❌ No "Go to Definition" for local package imports
+- ❌ No type hints when hovering over imported symbols
+
+### Current Workaround
+Manually navigating between files or running `uvx mypy check` frequently, which impacts development productivity.
+
+### Question
+Is there a configuration or setup step needed to help the Python LSP resolve types for local packages in a uv workspace? Are there specific VS Code settings or pyproject.toml configurations that enable proper type resolution for workspace dependencies?
+
+### Platform
+
+MacOS 14
+
+### Version
+
+uv 0.8
+
+---
+
+_Label `question` added by @Bryson14 on 2025-08-02 00:33_
+
+---
+
+_Comment by @zanieb on 2025-08-02 13:54_
+
+I think you need `uv sync --all-packages` then point your IDE to that environment.
+
+---
+
+_Comment by @Bryson14 on 2025-08-03 03:56_
+
+Brilliant. That works like a charm
+
+---
+
+_Closed by @zanieb on 2025-08-04 00:58_
+
+---

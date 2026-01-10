@@ -1,0 +1,204 @@
+---
+number: 2760
+title: clap_derive ignores the value_delimiter
+type: issue
+state: closed
+author: ufoscout
+labels:
+  - C-bug
+  - A-parsing
+  - ":money_with_wings: $5"
+assignees: []
+created_at: 2021-09-09T10:30:50Z
+updated_at: 2021-09-18T23:55:39Z
+url: https://github.com/clap-rs/clap/issues/2760
+synced_at: 2026-01-10T01:27:25Z
+---
+
+# clap_derive ignores the value_delimiter
+
+---
+
+_Issue opened by @ufoscout on 2021-09-09 10:30_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.54.0 (a178d0322 2021-07-26)
+
+### Clap Version
+
+3.0.0-beta.4
+
+### Minimal reproducible code
+
+```rust
+#[derive(Clap)]
+pub struct Config {
+   #[clap(
+        long,
+        default_value = "first;second",
+        value_delimiter = ';'
+    )]
+    pub values: Vec<String>,
+
+}
+
+#[test]
+fn should_split_values() {
+    let args: Vec<std::ffi::OsString> = vec![];
+    let config = Config::parse_from(args);
+    assert_eq!(vec!["first".to_owned(), "second".to_owned()], config.values);
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+Execute the `should_split_values()` test
+
+### Actual Behaviour
+
+The test fails because the `default_value` was not split using the provided `value_delimiter`. 
+This is the test error:
+```
+'should_split_values' panicked at 'assertion failed: `(left == right)`
+  left: `["first", "second"]`,
+ right: `["first;second"]`',
+```
+
+
+### Expected Behaviour
+
+The test should pass and the `Config.values` field should contain the two values `"first"` and ` "second"`
+
+### Additional Context
+
+This code works as expected with structopt 0.3
+
+
+---
+
+_Label `T: bug` added by @ufoscout on 2021-09-09 10:30_
+
+---
+
+_Comment by @epage on 2021-09-09 14:16_
+
+Looks like this is specifically with handling of defaults, regardless of which API is used
+```rust
+use clap::{App, Arg, Clap};
+
+#[derive(Clap)]
+pub struct Config {
+    #[clap(long, default_value = "first;second", value_delimiter = ';')]
+    pub values: Vec<String>,
+}
+
+#[test]
+fn should_split_default() {
+    let args: Vec<std::ffi::OsString> = vec!["".into()];
+    let config = Config::parse_from(args);
+    assert_eq!(vec!["first".to_owned(), "second".to_owned()], config.values);
+}
+
+#[test]
+fn should_split_args() {
+    let args: Vec<std::ffi::OsString> = vec!["".into(), "--values=two;three".into()];
+    let config = Config::parse_from(args);
+    assert_eq!(vec!["two".to_owned(), "three".to_owned()], config.values);
+}
+
+#[test]
+fn builder_should_split_default() {
+    let m = App::new("multiple_values")
+        .arg(
+            Arg::new("option")
+                .long("option")
+                .about("multiple options")
+                .value_delimiter(';')
+                .default_value("first;second"),
+        )
+        .try_get_matches_from(vec![""]);
+
+    assert!(m.is_ok());
+    let m = m.unwrap();
+
+    assert_eq!(
+        m.values_of("option").unwrap().collect::<Vec<_>>(),
+        ["first", "second"]
+    );
+}
+
+#[test]
+fn builder_should_split_args() {
+    let m = App::new("multiple_values")
+        .arg(
+            Arg::new("option")
+                .long("option")
+                .about("multiple options")
+                .value_delimiter(';')
+                .default_value("first;second"),
+        )
+        .try_get_matches_from(vec!["", "--option=two;three"]);
+
+    assert!(m.is_ok());
+    let m = m.unwrap();
+
+    assert_eq!(
+        m.values_of("option").unwrap().collect::<Vec<_>>(),
+        ["two", "three"]
+    );
+}
+```
+
+---
+
+_Comment by @epage on 2021-09-09 14:16_
+
+```
+running 4 tests
+test builder_should_split_args ... ok
+test should_split_args ... ok
+test should_split_default ... FAILED
+test builder_should_split_default ... FAILED
+
+failures:
+
+---- should_split_default stdout ----
+thread 'should_split_default' panicked at 'assertion failed: `(left == right)`
+  left: `["first", "second"]`,
+ right: `["first;second"]`', tests/repo.rs:13:5
+
+---- builder_should_split_default stdout ----
+thread 'builder_should_split_default' panicked at 'assertion failed: `(left == right)`
+  left: `["first;second"]`,
+ right: `["first", "second"]`', tests/repo.rs:38:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+---
+
+_Label `C: parsing` added by @pksunkara on 2021-09-18 16:29_
+
+---
+
+_Label `:money_with_wings: $5` added by @pksunkara on 2021-09-18 16:29_
+
+---
+
+_Label `D: easy` added by @pksunkara on 2021-09-18 16:29_
+
+---
+
+_Referenced in [clap-rs/clap#2775](../../clap-rs/clap/pulls/2775.md) on 2021-09-18 22:22_
+
+---
+
+_Closed by @pksunkara on 2021-09-18 23:55_
+
+---

@@ -1,0 +1,370 @@
+---
+number: 5796
+title: "Package order in setup.py affects `uv pip` dependency resolution"
+type: issue
+state: closed
+author: tabedzki
+labels:
+  - question
+assignees: []
+created_at: 2024-08-05T17:22:00Z
+updated_at: 2024-08-06T14:32:29Z
+url: https://github.com/astral-sh/uv/issues/5796
+synced_at: 2026-01-10T01:23:52Z
+---
+
+# Package order in setup.py affects `uv pip` dependency resolution
+
+---
+
+_Issue opened by @tabedzki on 2024-08-05 17:22_
+
+## Issue
+When trying to install [datajoint/element-calcium-imaging](https://github.com/datajoint/element-calcium-imaging) as the repo currently is, I get an error related to distutils not being installed because it was resolved to an older version (0.19.3), which required `distutils`, which Python 3.12 has removed. (Not the main issue)
+
+Both `pip` and `uv` point to the older package if using the repo as clone. If I instead move the `scikit-image` to be the first package solved for in [setup.py](https://github.com/datajoint/element-calcium-imaging/blob/8b1b248c81c7e01ef479deaf4756d46f5c7eece8/setup.py#L43) from Line 43 to Line 38, `uv` solves for 0.24.0.  However, `pip` still points to the older package `0.19.3`.
+
+
+### Steps to replicate:
+
+1. `conda create -n uv-test python=3.12`
+2. `gh repo clone datajoint/element-calcium-imaging`
+3. `cd element-calcium-imaging && uv venv && source .venv/bin/activate`
+4. `uv pip install -e .` # Will fail due to removal of `distutils` while also saying version `0.19.3` (See below)
+
+Steps to "resolve":
+5. open setup.py and move `scikit-image` to before `datajoint` in the `install_requires`
+6. `uv pip install -e .`
+
+## General Questions
+
+1. Why does `uv` resolve differently from `pip` in this case?
+2. Why does the order of packaging affect `uv`'s dependency resolution?
+3. Is this related to #5161 ?
+
+
+## Console outputs
+
+
+`uv pip install -e . ` # with `scikit-image` listed after `datajoint` within requirements
+```
+dj-element-calcium-imaging git:(main) ✗ uv pip install -e .
+ Updated https://github.com/datajoint/element-interface.git (e1a1a86)
+Resolved 161 packages in 1.44s
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: scikit-image==0.19.3
+  Caused by: Failed to build: `scikit-image==0.19.3`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 8, in <module>
+  File "/Users/ct5868/Library/Caches/uv/environments-v0/.tmpYerlHN/lib/python3.12/site-packages/setuptools/__init__.py", line 10, in <module>
+    import distutils.core
+ModuleNotFoundError: No module named 'distutils'
+---
+```
+
+`pip install -e .` # regardless of `scikit-image` position with requirements
+```
+[truncated pip output]
+
+Collecting scipy>=1.9 (from scikit-image->element-calcium-imaging==0.10.1)
+  Using cached scipy-1.14.0-cp312-cp312-macosx_14_0_arm64.whl.metadata (60 kB)
+INFO: pip is looking at multiple versions of scikit-image to determine which version is compatible with other requirements. This could take a while.
+Collecting scikit-image (from element-calcium-imaging==0.10.1)
+  Using cached scikit_image-0.23.2-cp312-cp312-macosx_12_0_arm64.whl.metadata (14 kB)
+  Using cached scikit_image-0.23.1-cp312-cp312-macosx_12_0_arm64.whl.metadata (14 kB)
+  Using cached scikit_image-0.22.0-cp312-cp312-macosx_12_0_arm64.whl.metadata (13 kB)
+  Using cached scikit_image-0.21.0.tar.gz (22.7 MB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Installing backend dependencies ... done
+  Preparing metadata (pyproject.toml) ... done
+  Using cached scikit_image-0.20.0.tar.gz (22.9 MB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Installing backend dependencies ... done
+  Preparing metadata (pyproject.toml) ... done
+  Using cached scikit-image-0.19.3.tar.gz (22.2 MB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [33 lines of output]
+      Traceback (most recent call last):
+        File "/Users/ct5868/conda_env_txt/y/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+          main()
+        File "/Users/ct5868/conda_env_txt/y/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/ct5868/conda_env_txt/y/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 112, in get_requires_for_build_wheel
+          backend = _build_backend()
+                    ^^^^^^^^^^^^^^^^
+        File "/Users/ct5868/conda_env_txt/y/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 77, in _build_backend
+          obj = import_module(mod_path)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/ct5868/conda_env_txt/y/lib/python3.12/importlib/__init__.py", line 90, in import_module
+          return _bootstrap._gcd_import(name[level:], package, level)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+        File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+        File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+        File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+        File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+        File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+        File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+        File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+        File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+        File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+        File "/private/var/folders/98/ncnp2y1n00qc_4y4ndc9mw240000gp/T/com.apple.shortcuts.mac-helper/pip-build-env-f5v0hm9i/overlay/lib/python3.12/site-packages/setuptools/__init__.py", line 16, in <module>
+          import setuptools.version
+        File "/private/var/folders/98/ncnp2y1n00qc_4y4ndc9mw240000gp/T/com.apple.shortcuts.mac-helper/pip-build-env-f5v0hm9i/overlay/lib/python3.12/site-packages/setuptools/version.py", line 1, in <module>
+          import pkg_resources
+        File "/private/var/folders/98/ncnp2y1n00qc_4y4ndc9mw240000gp/T/com.apple.shortcuts.mac-helper/pip-build-env-f5v0hm9i/overlay/lib/python3.12/site-packages/pkg_resources/__init__.py", line 2172, in <module>
+          register_finder(pkgutil.ImpImporter, find_on_path)
+                          ^^^^^^^^^^^^^^^^^^^
+      AttributeError: module 'pkgutil' has no attribute 'ImpImporter'. Did you mean: 'zipimporter'?
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─> See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+```
+
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Output from `uv pip install -e .` with the `scikit-image` being first
+```
+ Updated https://github.com/datajoint/element-interface.git (e1a1a86)
+Resolved 161 packages in 1.42s
+   Built element-calcium-imaging @ file:///Users/ct5868/code/dj-element-calcium-imaging
+Prepared 1 package in 549ms
+Installed 161 packages in 555ms
+ + aiobotocore==2.13.1
+ + aiohappyeyeballs==2.3.4
+ + aiohttp==3.10.1
+ + aioitertools==0.11.0
+ + aiosignal==1.3.1
+ + annotated-types==0.7.0
+ + appdirs==1.4.4
+ + appnope==0.1.4
+ + argon2-cffi==23.1.0
+ + argon2-cffi-bindings==21.2.0
+ + arrow==1.3.0
+ + asciitree==0.3.3
+ + asttokens==2.4.1
+ + attrs==24.1.0
+ + bidsschematools==0.7.2
+ + blessed==1.20.0
+ + blinker==1.8.2
+ + botocore==1.34.131
+ + cachelib==0.9.0
+ + certifi==2024.7.4
+ + cffi==1.16.0
+ + charset-normalizer==3.3.2
+ + ci-info==0.3.0
+ + click==8.1.7
+ + click-didyoumean==0.3.1
+ + comm==0.2.2
+ + contourpy==1.2.1
+ + cryptography==43.0.0
+ + cycler==0.12.1
+ + dandi==0.62.4
+ + dandischema==0.10.2
+ + dash==2.17.1
+ + dash-core-components==2.0.0
+ + dash-extensions==1.0.18
+ + dash-html-components==2.0.0
+ + dash-table==5.0.0
+ + dataclass-wizard==0.22.3
+ + datajoint==0.13.6
+ + debugpy==1.8.3
+ + decorator==5.1.1
+ + dnspython==2.6.1
+ + editorconfig==0.12.4
+ + element-calcium-imaging==0.10.1 (from file:///Users/ct5868/code/dj-element-calcium-imaging)
+ + element-interface==0.6.1 (from git+https://github.com/datajoint/element-interface.git@e1a1a86c89954bdcec82f408e5b3b3fa503e880f)
+ + email-validator==2.2.0
+ + etelemetry==0.3.1
+ + executing==2.0.1
+ + fasteners==0.19
+ + flask==3.0.3
+ + flask-caching==2.3.0
+ + fonttools==4.53.1
+ + fqdn==1.5.1
+ + frozenlist==1.4.1
+ + fscacher==0.4.1
+ + fsspec==2024.6.1
+ + h5py==3.11.0
+ + hdmf==3.14.3
+ + humanize==4.10.0
+ + idna==3.7
+ + imageio==2.34.2
+ + importlib-metadata==8.2.0
+ + interleave==0.2.1
+ + ipykernel==6.29.5
+ + ipython==8.26.0
+ + ipywidgets==8.1.3
+ + isodate==0.6.1
+ + isoduration==20.11.0
+ + itsdangerous==2.2.0
+ + jaraco-classes==3.4.0
+ + jaraco-context==5.3.0
+ + jaraco-functools==4.0.2
+ + jedi==0.19.1
+ + jinja2==3.1.4
+ + jmespath==1.0.1
+ + joblib==1.4.2
+ + jsbeautifier==1.15.1
+ + jsonpointer==3.0.0
+ + jsonschema==4.23.0
+ + jsonschema-specifications==2023.12.1
+ + jupyter-client==8.6.2
+ + jupyter-core==5.7.2
+ + jupyterlab-widgets==3.0.11
+ + keyring==25.3.0
+ + keyrings-alt==5.0.1
+ + kiwisolver==1.4.5
+ + lazy-loader==0.4
+ + markupsafe==2.1.5
+ + matplotlib==3.9.0
+ + matplotlib-inline==0.1.7
+ + minio==7.2.7
+ + more-itertools==10.3.0
+ + multidict==6.0.5
+ + natsort==8.4.0
+ + nest-asyncio==1.6.0
+ + networkx==3.3
+ + numcodecs==0.13.0
+ + numpy==2.0.1
+ + nwbinspector==0.4.37
+ + otumat==0.3.1
+ + packaging==24.1
+ + pandas==2.2.2
+ + parso==0.8.4
+ + pexpect==4.9.0
+ + pillow==10.4.0
+ + platformdirs==4.2.2
+ + plotly==5.23.0
+ + prompt-toolkit==3.0.47
+ + psutil==6.0.0
+ + ptyprocess==0.7.0
+ + pure-eval==0.2.3
+ + pycparser==2.22
+ + pycryptodome==3.20.0
+ + pycryptodomex==3.20.0
+ + pydantic==2.8.2
+ + pydantic-core==2.20.1
+ + pydot==3.0.1
+ + pygments==2.18.0
+ + pymysql==1.1.1
+ + pynwb==2.6.0
+ + pyout==0.7.3
+ + pyparsing==3.1.2
+ + python-dateutil==2.9.0.post0
+ + pytz==2024.1
+ + pyyaml==6.0.1
+ + pyzmq==26.1.0
+ + referencing==0.35.1
+ + requests==2.32.3
+ + retrying==1.3.4
+ + rfc3339-validator==0.1.4
+ + rfc3987==1.3.8
+ + rpds-py==0.19.1
+ + ruamel-yaml==0.18.6
+ + ruamel-yaml-clib==0.2.8
+ + ruff==0.4.10
+ + s3fs==2024.6.1
+ + scikit-image==0.24.0
+ + scipy==1.14.0
+ + semantic-version==2.10.0
+ + setuptools==72.1.0
+ + six==1.16.0
+ + stack-data==0.6.3
+ + tenacity==9.0.0
+ + tifffile==2024.7.24
+ + tornado==6.4.1
+ + tqdm==4.66.5
+ + traitlets==5.14.3
+ + types-python-dateutil==2.9.0.20240316
+ + typing-extensions==4.12.2
+ + tzdata==2024.1
+ + uri-template==1.3.0
+ + urllib3==2.2.2
+ + watchdog==4.0.1
+ + wcwidth==0.2.13
+ + webcolors==24.6.0
+ + werkzeug==3.0.3
+ + widgetsnbextension==4.0.11
+ + wrapt==1.16.0
+ + yarl==1.9.4
+ + zarr==2.18.2
+ + zarr-checksum==0.4.2
+ + zipp==3.19.2
+```
+
+
+
+---
+
+_Renamed from "Package order in setup.py affects dependency resolution" to "Package order in setup.py affects `uv pip` dependency resolution" by @tabedzki on 2024-08-05 17:23_
+
+---
+
+_Label `question` added by @zanieb on 2024-08-05 17:24_
+
+---
+
+_Comment by @zanieb on 2024-08-05 17:27_
+
+Some prior discussion at https://github.com/astral-sh/uv/issues/5474#issuecomment-2252856834, does the context there help?
+
+(3) Yes, this is related to #5161 and the reply at https://github.com/astral-sh/uv/issues/5161#issuecomment-2235933773 is relevant.
+
+
+
+---
+
+_Comment by @tabedzki on 2024-08-05 17:47_
+
+Thanks, I missed #5474 . 
+
+So would this mean that one is highly encouraged to write minimum package versions to have a reproducible environment when using `uv pip` to prevent differences when solving for dependencies?
+
+---
+
+_Comment by @konstin on 2024-08-06 08:37_
+
+Do https://github.com/astral-sh/uv/blob/6e310f270282e8783c526c53c181e76ce8475c3f/docs/concepts/resolution.md and https://github.com/astral-sh/uv/blob/865f9eeef726e57b9d79da55960244d92d21df0f/docs/reference/resolver-internals.md answer those questions?
+
+---
+
+_Comment by @tabedzki on 2024-08-06 14:32_
+
+Thanks konstin. That does help clear up the design aspect of `uv pip` and what it seeks to do/how to it works.
+
+
+---
+
+_Closed by @tabedzki on 2024-08-06 14:32_
+
+---

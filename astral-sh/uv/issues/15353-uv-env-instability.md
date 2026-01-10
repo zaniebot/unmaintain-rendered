@@ -1,0 +1,227 @@
+---
+number: 15353
+title: uv env instability
+type: issue
+state: open
+author: benzid-wael
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-18T15:07:29Z
+updated_at: 2025-08-21T23:06:48Z
+url: https://github.com/astral-sh/uv/issues/15353
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# uv env instability
+
+---
+
+_Issue opened by @benzid-wael on 2025-08-18 15:07_
+
+### Summary
+
+I want to report an issue with uv environment, I'm encountering the issue with click and customtkinter, but let me use the latter to describe it here
+
+Hey experts,
+
+When I import the customtkinter package, I get the following error
+
+```
+Traceback (most recent call last):
+  File "/Users/wbenzid/Projects/mwareeth/mwareeth.py", line 9, in <module>
+    from gui.app import MwareethApp
+  File "/Users/wbenzid/Projects/mwareeth/gui/app.py", line 10, in <module>
+    import customtkinter as ctk
+  File "/Users/wbenzid/Projects/mwareeth/.venv/lib/python3.12/site-packages/customtkinter/__init__.py", line 22, in <module>
+    from .windows import ctk_tk
+  File "/Users/wbenzid/Projects/mwareeth/.venv/lib/python3.12/site-packages/customtkinter/windows/ctk_tk.py", line 10, in <module>
+    from .widgets.scaling import CTkScalingBaseClass
+ImportError: cannot import name 'CTkScalingBaseClass' from 'customtkinter.windows.widgets.scaling' (/Users/wbenzid/Projects/mwareeth/.venv/lib/python3.12/site-packages/customtkinter/windows/widgets/scaling/__init__.py)
+make: *** [run] Error 1
+```
+
+If I run uv remove, then uv add it get fixed
+
+After sometime the env get corrupted while I didn't install or remove any new package
+
+This is the output of `uv tree`
+
+
+```
+Resolved 101 packages in 9ms
+mwareeth v0.0.0
+├── customtkinter v5.2.2
+│   ├── darkdetect v0.8.0
+│   └── packaging v25.0
+├── graphviz v0.21
+├── pillow v11.3.0
+├── pyinstaller v6.15.0
+│   ├── altgraph v0.17.4
+│   ├── macholib v1.16.3
+│   │   └── altgraph v0.17.4
+│   ├── packaging v25.0
+│   ├── pyinstaller-hooks-contrib v2025.8
+│   │   ├── packaging v25.0
+│   │   └── setuptools v80.9.0
+│   └── setuptools v80.9.0
+├── pywebview v6.0
+│   ├── bottle v0.13.4
+│   ├── proxy-tools v0.1.0
+│   ├── pyobjc-core v11.1
+│   ├── pyobjc-framework-cocoa v11.1
+│   │   └── pyobjc-core v11.1
+│   ├── pyobjc-framework-quartz v11.1
+│   │   ├── pyobjc-core v11.1
+│   │   └── pyobjc-framework-cocoa v11.1 (*)
+│   ├── pyobjc-framework-security v11.1
+│   │   ├── pyobjc-core v11.1
+│   │   └── pyobjc-framework-cocoa v11.1 (*)
+│   ├── pyobjc-framework-webkit v11.1
+│   │   ├── pyobjc-core v11.1
+│   │   └── pyobjc-framework-cocoa v11.1 (*)
+│   └── typing-extensions v4.14.1
+├── tkcalendar v1.6.1
+│   └── babel v2.17.0
+├── autoflake v2.3.1 (group: dev)
+│   └── pyflakes v3.4.0
+├── babel v2.17.0 (group: dev)
+├── black v25.1.0 (group: dev)
+│   ├── click v8.1.8
+│   ├── mypy-extensions v1.1.0
+│   ├── packaging v25.0
+│   ├── pathspec v0.12.1
+│   └── platformdirs v4.3.8
+├── click v8.1.8 (group: dev)
+├── coverage v7.10.3 (group: dev)
+├── flake8 v7.3.0 (group: dev)
+│   ├── mccabe v0.7.0
+│   ├── pycodestyle v2.14.0
+│   └── pyflakes v3.4.0
+├── hypothesis v6.138.1 (group: dev)
+│   ├── attrs v25.3.0
+│   └── sortedcontainers v2.4.0
+├── ipython v9.4.0 (group: dev)
+│   ├── decorator v5.2.1
+│   ├── ipython-pygments-lexers v1.1.1
+│   │   └── pygments v2.19.2
+│   ├── jedi v0.19.2
+│   │   └── parso v0.8.4
+│   ├── matplotlib-inline v0.1.7
+│   │   └── traitlets v5.14.3
+│   ├── pexpect v4.9.0
+│   │   └── ptyprocess v0.7.0
+│   ├── prompt-toolkit v3.0.51
+│   │   └── wcwidth v0.2.13
+│   ├── pygments v2.19.2
+│   ├── stack-data v0.6.3
+│   │   ├── asttokens v3.0.0
+│   │   ├── executing v2.2.0
+│   │   └── pure-eval v0.2.3
+│   └── traitlets v5.14.3
+├── isort v6.0.1 (group: dev)
+├── mypy v1.17.1 (group: dev)
+│   ├── mypy-extensions v1.1.0
+│   ├── pathspec v0.12.1
+│   └── typing-extensions v4.14.1
+├── pre-commit v4.3.0 (group: dev)
+│   ├── cfgv v3.4.0
+│   ├── identify v2.6.13
+│   ├── nodeenv v1.9.1
+│   ├── pyyaml v6.0.2
+│   └── virtualenv v20.34.0
+│       ├── distlib v0.4.0
+│       ├── filelock v3.19.1
+│       └── platformdirs v4.3.8
+├── pyimportcheck v0.1.6 (group: dev)
+│   └── click v8.1.8
+├── pyinstaller v6.15.0 (group: dev) (*)
+├── pyre-check v0.9.25 (group: dev)
+│   ├── click v8.1.8
+│   ├── dataclasses-json v0.5.7
+│   │   ├── marshmallow v3.26.1
+│   │   │   └── packaging v25.0
+│   │   ├── marshmallow-enum v1.5.1
+│   │   │   └── marshmallow v3.26.1 (*)
+│   │   └── typing-inspect v0.9.0
+│   │       ├── mypy-extensions v1.1.0
+│   │       └── typing-extensions v4.14.1
+│   ├── libcst v1.8.2
+│   │   └── pyyaml v6.0.2
+│   ├── psutil v7.0.0
+│   ├── pyre-extensions v0.0.32
+│   │   ├── typing-extensions v4.14.1
+│   │   └── typing-inspect v0.9.0 (*)
+│   ├── tabulate v0.9.0
+│   ├── testslide v2.7.1
+│   │   ├── psutil v7.0.0
+│   │   ├── pygments v2.19.2
+│   │   └── typeguard v2.13.3
+│   ├── tomli v2.2.1
+│   ├── tomli-w v1.2.0
+│   ├── typing-extensions v4.14.1
+│   └── typing-inspect v0.9.0 (*)
+├── pytest v8.4.1 (group: dev)
+│   ├── iniconfig v2.1.0
+│   ├── packaging v25.0
+│   ├── pluggy v1.6.0
+│   └── pygments v2.19.2
+├── pytest-cov v6.2.1 (group: dev)
+│   ├── coverage v7.10.3
+│   ├── pluggy v1.6.0
+│   └── pytest v8.4.1 (*)
+├── pytest-snapshot v0.9.0 (group: dev)
+│   └── pytest v8.4.1 (*)
+├── pytest-timeout v2.4.0 (group: dev)
+│   └── pytest v8.4.1 (*)
+├── ruff v0.12.9 (group: dev)
+├── setuptools v80.9.0 (group: dev)
+├── toml v0.10.2 (group: dev)
+├── types-psutil v7.0.0.20250801 (group: dev)
+├── types-pyautogui v0.9.3.20241230 (group: dev)
+│   └── types-pyscreeze v1.0.1.20250801
+│       └── pillow v11.3.0
+├── types-setuptools v80.9.0.20250809 (group: dev)
+├── types-toml v0.10.8.20240310 (group: dev)
+├── typing-extensions v4.14.1 (group: dev)
+├── viztracer v1.0.4 (group: dev)
+│   └── objprint v0.3.0
+└── vulture v2.14 (group: dev)
+(*) Package tree already displayed
+```
+
+The weird issue is that when I reinstall customtkinter it get fixed, but after sometimes I get similar issue
+
+Any idea about the issue?
+
+### Platform
+
+macOs M4
+
+### Version
+
+uv 0.8.8 (9a54754b0 2025-08-08)
+
+### Python version
+
+Python 3.12.11
+
+---
+
+_Label `bug` added by @benzid-wael on 2025-08-18 15:07_
+
+---
+
+_Comment by @powercoconola on 2025-08-21 23:00_
+
+Can you provide a reproducible project setup? 
+
+In other words, help me to make the problem happen on my PC.
+
+---
+
+_Comment by @zanieb on 2025-08-21 23:06_
+
+More on how to do that at https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/
+
+---

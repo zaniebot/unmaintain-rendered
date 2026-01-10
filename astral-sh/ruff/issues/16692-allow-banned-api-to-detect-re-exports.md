@@ -1,0 +1,83 @@
+---
+number: 16692
+title: Allow banned-api to detect re-exports
+type: issue
+state: open
+author: purajit
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-03-12T19:52:47Z
+updated_at: 2025-03-12T21:53:28Z
+url: https://github.com/astral-sh/ruff/issues/16692
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# Allow banned-api to detect re-exports
+
+---
+
+_Issue opened by @purajit on 2025-03-12 19:52_
+
+### Summary
+
+With the following file system:
+```
+# ruff.toml
+[lint.flake8-tidy-imports.banned-api]
+"pkg.a.fa".msg = "DO NOT USE"
+
+# pkg/a.py
+def fa():
+    pass
+
+# pkg/b.py
+from pkg.a import fa
+
+# pkg/c.py
+from pkg.b import fa
+```
+
+Running ruff:
+```sh
+$ ruff check --select TID251 pkg/b.py
+pkg/b.py:1:19: TID251 `pkg.a.fa` is banned: DO NOT USE
+  |
+1 | from pkg.a import fa
+  |                   ^^ TID251
+  |
+
+Found 1 error.
+
+$ ruff check --select TID251 pkg/c.py
+All checks passed!
+```
+
+I know this goes further from the scope of the rule from which it was derived, but IMO this is an important option. If there is a strong reason to ban an API - either because you're trying to eliminate a pattern, or because you want to enforce a internal wrapper, banning just the single import doesn't go all the way. Several Python packages tend to explicitly re-export certain module members for convenience - for example `celery.app.shared_task` and `celery.shared_task`.
+
+---
+
+_Label `rule` added by @ntBre on 2025-03-12 20:37_
+
+---
+
+_Comment by @ntBre on 2025-03-12 20:40_
+
+This sounds like an interesting idea. This might be easier with better type inference and multi-file analysis to detect that the symbols are the same.
+
+---
+
+_Comment by @purajit on 2025-03-12 21:30_
+
+> This sounds like an interesting idea. This might be easier with better type inference and multi-file analysis to detect that the symbols are the same.
+
+Yeah I figured; we currently have a custom pylint checker, but since astroid actually evaluates Python, it's able to see that `celery.app.shared_task == celery.shared_task`, and we're able to use that to universally catch most usual types of manipulation that could result in the rule being bypassed.
+
+For what it's worth I've already re-done the rules with `banned-api` and just explicitly included the common re-exported paths, since it's so much more convenient (and we won't have to maintain a custom linter rule), but it would be good to have a general solution.
+
+---
+
+_Label `type-inference` added by @ntBre on 2025-03-12 21:53_
+
+---

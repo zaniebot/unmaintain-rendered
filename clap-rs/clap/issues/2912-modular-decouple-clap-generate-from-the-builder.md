@@ -1,0 +1,97 @@
+---
+number: 2912
+title: "[modular] Decouple clap_generate from the builder API"
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - A-completion
+  - S-blocked
+assignees: []
+created_at: 2021-10-19T15:36:38Z
+updated_at: 2021-12-13T22:05:54Z
+url: https://github.com/clap-rs/clap/issues/2912
+synced_at: 2026-01-10T01:27:29Z
+---
+
+# [modular] Decouple clap_generate from the builder API
+
+---
+
+_Issue opened by @epage on 2021-10-19 15:36_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+Building on #2912, if we can move `clap_generate` to only depend on `clap_reflect` and not `clap`, that will be a good test case and would unlock future help improvements.
+
+### Describe the solution you'd like
+
+Port `clap_generate` to `clap_reflect`, expanding it as needed.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @epage on 2021-10-19 15:36_
+
+---
+
+_Assigned to @epage by @epage on 2021-10-19 15:36_
+
+---
+
+_Referenced in [clap-rs/clap#2913](../../clap-rs/clap/issues/2913.md) on 2021-10-19 15:38_
+
+---
+
+_Referenced in [clap-rs/clap#1232](../../clap-rs/clap/issues/1232.md) on 2021-11-15 14:31_
+
+---
+
+_Referenced in [epage/clapng#92](../../epage/clapng/issues/92.md) on 2021-12-06 17:34_
+
+---
+
+_Referenced in [epage/clapng#225](../../epage/clapng/issues/225.md) on 2021-12-06 22:21_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:08_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:08_
+
+---
+
+_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2021-12-13 17:55_
+
+---
+
+_Label `A-completion` added by @epage on 2021-12-13 22:03_
+
+---
+
+_Label `S-blocked` added by @epage on 2021-12-13 22:03_
+
+---
+
+_Referenced in [pacak/bpaf#41](../../pacak/bpaf/issues/41.md) on 2022-08-31 13:33_
+
+---

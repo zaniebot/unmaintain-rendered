@@ -1,0 +1,92 @@
+---
+number: 2068
+title: Eradicate false positive
+type: issue
+state: closed
+author: JonathanPlasse
+labels: []
+assignees: []
+created_at: 2023-01-21T19:16:57Z
+updated_at: 2023-01-22T18:26:02Z
+url: https://github.com/astral-sh/ruff/issues/2068
+synced_at: 2026-01-10T01:22:40Z
+---
+
+# Eradicate false positive
+
+---
+
+_Issue opened by @JonathanPlasse on 2023-01-21 19:16_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+Hi,
+```
+# SPDX-License-Identifier: BSD-3-Clause
+```
+is deleted by eradicate even if it is not a valid code if uncommented.
+
+---
+
+_Comment by @charliermarsh on 2023-01-21 19:17_
+
+You can configure Ruff to allow those comments via `task-tags`! Check out #2064.
+
+---
+
+_Closed by @charliermarsh on 2023-01-21 19:17_
+
+---
+
+_Comment by @JonathanPlasse on 2023-01-21 20:25_
+
+Kebab-case is not a valid python name so it should not count as valid code.
+I do not remember the name of the helper that checks if a python name is valid or not.
+It could be used to remove this false positive.
+I could work on it if you want.
+
+---
+
+_Comment by @charliermarsh on 2023-01-21 20:42_
+
+Sure thing!
+
+---
+
+_Comment by @charliermarsh on 2023-01-21 20:42_
+
+(We have an `is_identifier` method in `src/python/identifiers.rs`.)
+
+---
+
+_Comment by @JonathanPlasse on 2023-01-22 15:50_
+
+It is not possible to fix.
+In the context of a `dict`. This is a valid code if `SPDX`, `License`, `Identifier`, `BSD`, and `Clause` are `int` variables.
+```python
+{
+    SPDX-License-Identifier: BSD-3-Clause
+}
+```
+
+---
+
+_Comment by @charliermarsh on 2023-01-22 18:25_
+
+Ah ok. Thanks for taking a look. At least we have a valid workaround.
+
+---
+
+_Comment by @JonathanPlasse on 2023-01-22 18:26_
+
+You are welcome.
+
+---

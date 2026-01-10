@@ -1,0 +1,83 @@
+---
+number: 11766
+title: "`ruff server` does not load new configuration files when they are created"
+type: issue
+state: closed
+author: snowsignal
+labels:
+  - server
+assignees: []
+created_at: 2024-06-05T22:28:22Z
+updated_at: 2024-07-12T05:00:10Z
+url: https://github.com/astral-sh/ruff/issues/11766
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# `ruff server` does not load new configuration files when they are created
+
+---
+
+_Issue opened by @snowsignal on 2024-06-05 22:28_
+
+If you create a new `pyproject.toml` / `ruff.toml` configuration file in your workspace, we reload any existing configuration but do not 'register' the new configuration file.
+
+This has been a known limitation of `Index::reload_settings`:
+
+```rust
+/// Reloads relevant existing settings files based on a changed settings file path.
+/// This does not currently register new settings files.
+```
+
+---
+
+_Label `server` added by @snowsignal on 2024-06-05 22:28_
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-06-07 20:14_
+
+---
+
+_Added to milestone `Ruff Server: Stable` by @snowsignal on 2024-06-17 16:27_
+
+---
+
+_Removed from milestone `Ruff Server: Stable` by @snowsignal on 2024-06-27 04:47_
+
+---
+
+_Added to milestone `Ruff Server: Post-Stable` by @snowsignal on 2024-06-27 04:47_
+
+---
+
+_Comment by @dhruvmanila on 2024-07-09 07:21_
+
+I'm not sure whether this is actually a problem or not because it's suppose to be handled on the client side. The client will send us request on file events (create, change, delete). So, this should work.
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-07-09 07:21_
+
+---
+
+_Unassigned @snowsignal by @dhruvmanila on 2024-07-09 07:21_
+
+---
+
+_Referenced in [astral-sh/ruff#12253](../../astral-sh/ruff/pulls/12253.md) on 2024-07-09 07:22_
+
+---
+
+_Comment by @dhruvmanila on 2024-07-09 07:34_
+
+As seen in the test plan of https://github.com/astral-sh/ruff/pull/12253, I'm creating a new `pyproject.toml` file in a nested folder and the diagnostics are being refreshed accordingly. At the end, I delete the file and it's refreshed as per the root `pyproject.toml` file.
+
+---
+
+_Closed by @dhruvmanila on 2024-07-12 05:00_
+
+---
+
+_Closed by @dhruvmanila on 2024-07-12 05:00_
+
+---

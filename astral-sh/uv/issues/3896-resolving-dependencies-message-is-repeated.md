@@ -1,0 +1,43 @@
+---
+number: 3896
+title: "\"Resolving dependencies\" message is repeated"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-05-29T03:50:07Z
+updated_at: 2024-05-29T13:23:41Z
+url: https://github.com/astral-sh/uv/issues/3896
+synced_at: 2026-01-10T01:23:32Z
+---
+
+# "Resolving dependencies" message is repeated
+
+---
+
+_Issue opened by @charliermarsh on 2024-05-29 03:50_
+
+This hasn't shipped, but it's present on main:
+
+![Screenshot 2024-05-28 at 11 32 13 PM](https://github.com/astral-sh/uv/assets/1309177/4b89ff5b-2573-4e7a-b8b4-2756240cc9c3)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-05-29 03:50_
+
+---
+
+_Assigned to @ibraheemdev by @charliermarsh on 2024-05-29 03:50_
+
+---
+
+_Referenced in [astral-sh/uv#3901](../../astral-sh/uv/pulls/3901.md) on 2024-05-29 10:56_
+
+---
+
+_Closed by @charliermarsh on 2024-05-29 13:23_
+
+---

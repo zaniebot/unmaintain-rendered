@@ -1,0 +1,35 @@
+---
+number: 260
+title: "Fail if `--extra` or `--all-extra` is used without a pyproject input"
+type: issue
+state: closed
+author: zanieb
+labels: []
+assignees: []
+created_at: 2023-10-31T19:36:05Z
+updated_at: 2023-11-03T17:07:34Z
+url: https://github.com/astral-sh/uv/issues/260
+synced_at: 2026-01-10T01:23:03Z
+---
+
+# Fail if `--extra` or `--all-extra` is used without a pyproject input
+
+---
+
+_Issue opened by @zanieb on 2023-10-31 19:36_
+
+These flags do not apply to requirements files, just `pyproject.toml` sources. If one is not provided, we should error to inform the user their provided option will not be used.
+
+---
+
+_Referenced in [astral-sh/uv#292](../../astral-sh/uv/pulls/292.md) on 2023-11-02 17:03_
+
+---
+
+_Closed by @zanieb on 2023-11-03 17:07_
+
+---
+
+_Referenced in [astral-sh/uv#4762](../../astral-sh/uv/issues/4762.md) on 2024-07-03 10:03_
+
+---

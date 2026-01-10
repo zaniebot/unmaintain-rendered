@@ -1,0 +1,119 @@
+---
+number: 3061
+title: Hidden possible values
+type: issue
+state: closed
+author: dbrgn
+labels: []
+assignees: []
+created_at: 2021-12-05T13:45:11Z
+updated_at: 2021-12-06T13:54:02Z
+url: https://github.com/clap-rs/clap/issues/3061
+synced_at: 2026-01-10T01:27:31Z
+---
+
+# Hidden possible values
+
+---
+
+_Issue opened by @dbrgn on 2021-12-05 13:45_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+3.0.0-beta.5
+
+### Describe your use case
+
+In [tealdeer](https://github.com/dbrgn/tealdeer/) a user can override the platform / OS by using the `--platform=(linux|osx|sunos|windows)` flag. This is how we implement the parameter:
+
+    /// Override the operating system
+    #[clap(
+        short = 'p',
+        long = "platform",
+        requires = "command",
+        possible_values = ["linux", "osx", "sunos", "windows"],
+    )]
+    platform: Option<PlatformType>,
+
+In the next version, we will probably rename `osx` to `macos` but keep `osx` for backwards compatibility. However, this means both options will be listed in the `--help` docs and in auto-generated completion files. To the end user, this may be confusing.
+
+### Describe the solution you'd like
+
+It would be nice if I could specify `hidden_possible_values` that are accepted, but not listed in docs and completions.
+
+    /// Override the operating system
+    #[clap(
+        short = 'p',
+        long = "platform",
+        requires = "command",
+        possible_values = ["linux", "macos", "sunos", "windows"],
+        hidden_possible_values = ["osx"],
+    )]
+    platform: Option<PlatformType>,
+
+### Alternatives, if applicable
+
+Alternatively I could specify `.hide_possible_values(true)` and include the possible values in the help text, but then the value still shows up in the completion, which might confuse the user ("what's the difference between macos and osx?").
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @dbrgn on 2021-12-05 13:45_
+
+---
+
+_Comment by @epage on 2021-12-06 12:58_
+
+You're in luck; we already support this!  This is a reported earlier in https://github.com/clap-rs/clap/issues/2756 which was fixed in https://github.com/clap-rs/clap/issues/2756 and https://github.com/clap-rs/clap/pull/2762.
+
+It went through some iteration since then, so for a recent example, see https://docs.rs/clap/3.0.0-beta.5/clap/struct.Arg.html#method.possible_values
+
+---
+
+_Comment by @dbrgn on 2021-12-06 13:33_
+
+Oh, I'm sorry to have missed this both in the docs and in the issue tracker 😕 But awesome that it's already supported!
+
+---
+
+_Closed by @dbrgn on 2021-12-06 13:33_
+
+---
+
+_Comment by @epage on 2021-12-06 13:38_
+
+btw is there a reason you are using `possible_values` instead of deriving `ArgEnum` on an `enum` and using `#[clap(arg_enum)]`? 
+
+Also, an alias (which shouldn't be visible) should also work in your case.
+
+---
+
+_Comment by @dbrgn on 2021-12-06 13:49_
+
+@epage yeah, we have a custom `FromStr` implementation for this type: https://github.com/dbrgn/tealdeer/blob/4a92bed585ae15c58a348e886910fe8dd575624f/src/types.rs#L67-L84 I don't think deriving would work in this case, right?
+
+---
+
+_Comment by @pksunkara on 2021-12-06 13:52_
+
+Hmm.. I think it does. IIRC we tried to allow it work with that trait. But maybe the code changed?
+
+---
+
+_Comment by @dbrgn on 2021-12-06 13:54_
+
+Well, the custom `FromStr` works for me, so that's fine 🙂
+
+---
+
+_Referenced in [ducaale/xh#152](../../ducaale/xh/issues/152.md) on 2021-12-23 20:54_
+
+---

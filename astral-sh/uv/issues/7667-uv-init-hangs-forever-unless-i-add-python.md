@@ -1,0 +1,214 @@
+---
+number: 7667
+title: "`uv init` hangs forever unless I add `--python-preference only-managed`"
+type: issue
+state: open
+author: will-henney
+labels:
+  - bug
+  - uv python
+assignees: []
+created_at: 2024-09-24T18:29:42Z
+updated_at: 2024-12-18T21:16:37Z
+url: https://github.com/astral-sh/uv/issues/7667
+synced_at: 2026-01-10T01:24:17Z
+---
+
+# `uv init` hangs forever unless I add `--python-preference only-managed`
+
+---
+
+_Issue opened by @will-henney on 2024-09-24 18:29_
+
+Hi,
+
+Just trying out uv for the first time (previous experience with rye), and weirdly I ran into problems running the first example command in the Getting Started docs:
+
+```
+$ uv -v init example
+DEBUG uv 0.4.15
+DEBUG Searching for default Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+```
+
+and it just hangs forever until killed, using almost no CPU resources. 
+
+I guessed it was a problem with the search for pre-existing local python installations, so I tried it with
+
+```
+$ uv -v init example --python-preference only-managed
+```
+
+and that works fine. 
+
+System is macOS Sonoma 14.2.1 (23C71) running on intel 
+
+```
+$ uv --version
+uv 0.4.15 (0d81bfbc6 2024-09-21)
+
+$ uname -a
+Darwin gris.local 23.2.0 Darwin Kernel Version 23.2.0: Wed Nov 15 21:54:10 PST 2023; root:xnu-10002.61.3~2/RELEASE_X86_64 x86_64
+```
+
+Thanks
+
+Will
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Comment by @zanieb on 2024-09-24 18:32_
+
+That's really weird — can you share the output of `RUST_LOG=uv=trace uv python find -v`?
+
+---
+
+_Comment by @will-henney on 2024-09-24 19:46_
+
+So, now that I have run once with `only-managed` it seems to be working fine even without that flag. I get
+
+```
+$ RUST_LOG=uv=trace uv python find -v
+DEBUG uv 0.4.15
+DEBUG Searching for default Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/will/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.12.6-macos-x86_64-none`
+TRACE Cached interpreter info for Python 3.12.6, skipping probing: /Users/will/.local/share/uv/python/cpython-3.12.6-macos-x86_64-none/bin/python3
+DEBUG Found `cpython-3.12.6-macos-x86_64-none` at `/Users/will/.local/share/uv/python/cpython-3.12.6-macos-x86_64-none/bin/python3` (managed installations)
+/Users/will/.local/share/uv/python/cpython-3.12.6-macos-x86_64-none/bin/python3
+```
+
+However, if I try and get back to the initial conditions after installing uv for the first time by nuking .local/share/uv, then I can reproduce the hanging behavior:
+
+```
+$ rm -r ~/.local/share/uv
+$ RUST_LOG=uv=trace uv python find -v
+DEBUG uv 0.4.15
+DEBUG Searching for default Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/will/.local/share/uv/python`
+TRACE Searching PATH for executables: python3, python
+TRACE Checking `PATH` directory for interpreters: /Users/will/.cargo/bin
+TRACE Checking `PATH` directory for interpreters: /Users/will/.gem/ruby/2.6.0/bin
+TRACE Checking `PATH` directory for interpreters: /Users/will/mambaforge/condabin
+TRACE Checking `PATH` directory for interpreters: /Users/will/.rye/shims
+TRACE Found possible Python executable: /Users/will/.rye/shims/python3
+TRACE Querying interpreter executable at /Users/will/.rye/shims/python3
+^C
+```
+
+So it looks like the problem might be with the rye-installed python. I will check this next
+
+---
+
+_Comment by @zanieb on 2024-09-24 19:53_
+
+I wonder if the Rye shim is invoking uv so it cycles?
+
+---
+
+_Label `bug` added by @zanieb on 2024-09-24 19:54_
+
+---
+
+_Label `uv python` added by @zanieb on 2024-09-24 19:54_
+
+---
+
+_Comment by @will-henney on 2024-09-24 23:57_
+
+Could be ...
+
+```
+$ ls -l /Users/will/.rye/shims/python3
+lrwxr-xr-x  1 will  staff  26 Aug 14 13:17 /Users/will/.rye/shims/python3 -> /Users/will/.rye/shims/rye
+
+$ rye --version
+rye 0.38.0
+commit: 0.38.0 (3e3c8540f 2024-08-02)
+platform: macos (x86_64)
+self-python: cpython@3.12.1
+symlink support: true
+uv enabled: true
+```
+
+I did `rye self update` so it is now on 0.39.0 but that did not help
+
+
+---
+
+_Comment by @bluss on 2024-09-25 06:46_
+
+Could you run the rye shim (in the same directory as previous experiments) and `print(sys.executable)`
+
+---
+
+_Comment by @will-henney on 2024-09-25 17:18_
+
+OK, we seem to be getting somewhere. It turns out that the rye shim hangs when I try to run it outside of any rye or uv managed project. So this explains the `uv init` hangs
+
+Looking at the rye docs, it seems that it should be finding the system python in this case, which I guess is the part that seems to be broken on my machine. 
+
+If I do 
+```
+$ rye config --set-bool behavior.global-python=true
+```
+then the shim now does work in non-managed directories:
+```
+# will @ gris in ~/tmp [10:46:53]
+$ /Users/will/.rye/shims/python
+Python 3.12.1 (main, Jan  8 2024, 06:38:22) [Clang 16.0.3 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys; print(sys.executable)
+/Users/will/.rye/py/cpython@3.12.1/install/bin/python3
+```
+and `uv init` now works fine, even starting from an empty ~/.local/share/uv folder:
+
+```
+$ uv -v init example-4
+DEBUG uv 0.4.16
+DEBUG Searching for default Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/will/.local/share/uv/python`
+DEBUG Found `cpython-3.12.1-macos-x86_64-none` at `/Users/will/.rye/shims/python` (search path)
+DEBUG Writing Python versions to `/Users/will/tmp/example-4/.python-version`
+Initialized project `example-4` at `/Users/will/tmp/example-4`
+```
+Oddly, this now seems to be picking up a homebrew version of python
+```
+$ (cd example-4; uv run hello.py)
+Using CPython 3.12.4 interpreter at: /usr/local/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Hello from example-4!
+```
+
+Then I double-checked by running
+```
+rye config --set-bool behavior.global-python=false
+mv ~/.local/share/uv/python ~/.local/share/uv/python-MOVED
+uv -v init example-6
+```
+and that reproduced the hang again.
+
+
+
+---
+
+_Comment by @kazuar on 2024-12-18 21:16_
+
+Happened to me as well.
+
+Running `rye config --set-bool behavior.global-python=true` solved the issue.
+
+
+---

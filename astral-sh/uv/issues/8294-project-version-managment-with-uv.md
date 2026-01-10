@@ -1,0 +1,40 @@
+---
+number: 8294
+title: Project version managment with uv
+type: issue
+state: closed
+author: evan-young-icx
+labels: []
+assignees: []
+created_at: 2024-10-17T15:52:32Z
+updated_at: 2024-10-17T16:39:57Z
+url: https://github.com/astral-sh/uv/issues/8294
+synced_at: 2026-01-10T01:24:26Z
+---
+
+# Project version managment with uv
+
+---
+
+_Issue opened by @evan-young-icx on 2024-10-17 15:52_
+
+Hello, feature request: Poetry has commands for managing the version of the project in the pyproject.toml file. I am able to execute a Poetry command to bump the version in pyproject.toml and then read that value into an environment variable and use that to label a docker image build. There doesn't seem to be any project version management in UV as yet. See Poetry Documentation at [https://python-poetry.org/docs/cli/#version](https://python-poetry.org/docs/cli/#version) 
+
+
+---
+
+_Comment by @FishAlchemist on 2024-10-17 16:38_
+
+I think this issue is a duplicate of https://github.com/astral-sh/uv/issues/6298, right?.
+
+---
+
+_Comment by @charliermarsh on 2024-10-17 16:39_
+
+Yeah, makes sense to combine into that one.
+
+---
+
+_Closed by @charliermarsh on 2024-10-17 16:39_
+
+---

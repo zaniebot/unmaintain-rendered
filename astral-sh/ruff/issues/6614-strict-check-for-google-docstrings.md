@@ -1,0 +1,85 @@
+---
+number: 6614
+title: Strict check for google docstrings
+type: issue
+state: closed
+author: urtow
+labels:
+  - rule
+assignees: []
+created_at: 2023-08-16T12:09:49Z
+updated_at: 2023-08-16T14:51:45Z
+url: https://github.com/astral-sh/ruff/issues/6614
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Strict check for google docstrings
+
+---
+
+_Issue opened by @urtow on 2023-08-16 12:09_
+
+ruff version:
+
+ruff --version
+ruff 0.0.284
+
+Settings:
+
+```
+[tool.ruff]
+select = [
+"E",
+"F",
+"D"
+]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+```
+
+Test file:
+```
+"""Module."""
+
+def foo(a: int) -> int:
+    """Bar."""
+    return a
+```
+
+
+`ruff check --isolated t.py`
+
+Returns no Errors, but google style (https://google.github.io/styleguide/pyguide.html#383-functions-and-methods) asks for "Args" and "Returns" sections
+
+---
+
+_Comment by @zanieb on 2023-08-16 12:58_
+
+Hey @urtow 
+
+If you run Ruff with the `--isolated` flag it won't read your config so you won't get the expected violations. That said, I'm not sure we support what you're looking for yet. I don't see a rule in the original pydocstyle to check for missing sections either. Related https://github.com/PyCQA/pydocstyle/issues/626
+
+---
+
+_Label `rule` added by @zanieb on 2023-08-16 12:59_
+
+---
+
+_Comment by @charliermarsh on 2023-08-16 13:07_
+
+Thanks for filing. Yeah, neither pydocstyle nor Ruff support this right now. We _could_, but we'd need to make it an opt-in setting. I think this is a duplicate of https://github.com/astral-sh/ruff/issues/2310.
+
+---
+
+_Closed by @charliermarsh on 2023-08-16 13:07_
+
+---
+
+_Comment by @urtow on 2023-08-16 14:51_
+
+Yes, it's duplicate.
+
+Okay, here i have reason for learn rust and make request :)
+
+---

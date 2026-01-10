@@ -1,0 +1,113 @@
+---
+number: 9716
+title: Extend allowed dunder methods (PLW3201)
+type: issue
+state: open
+author: johnslavik
+labels:
+  - rule
+assignees: []
+created_at: 2024-01-30T19:51:01Z
+updated_at: 2024-01-30T20:48:11Z
+url: https://github.com/astral-sh/ruff/issues/9716
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Extend allowed dunder methods (PLW3201)
+
+---
+
+_Issue opened by @johnslavik on 2024-01-30 19:51_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Opened as a followup to discussion at #9706.
+
+Kudos to @AlexWaygood for scraping all dunders from CPython:
+> This is the set of dunders that were surfaced in my script and are not currently listed by ruff as excluded from this rule:
+> 
+> ```
+> ['__cmp__',
+>  '__conform__',
+>  '__getinitargs__',
+>  '__getitem_inner__',
+>  '__getslice__',
+>  '__import__',
+>  '__isabstractmethod__',
+>  '__members__',
+>  '__newobj__',
+>  '__newobj_ex__',
+>  '__nonzero__',
+>  '__parameters__',
+>  '__rich__',
+>  '__rich_console__',
+>  '__rich_measure__',
+>  '__rich_repr__',
+>  '__setslice__',
+>  '__signature__',
+>  '__tp_del__',
+>  '__typing_is_unpacked_typevartuple__',
+>  '__typing_unpacked_tuple_args__',
+>  '__unicode__',
+>  '__version__',
+>  '__wrapped__']
+> ```
+> 
+> Most of them seem to be definitions in tests, internal implementation details that are undocumented, and/or leftovers from Python 2 that still haven't been cleaned up. The `__rich_*__` ones are because I have `rich` installed in a venv inside my cpython local clone, I think?
+> 
+> I like that the script surfaced `__import__` -- that's the literal definition of Python's `import` statement right there 😄
+
+In my opinion, it would be useful to add `__wrapped__` , `__isabstractmethod__` and `__signature__` to the list in case one wants to define those as properties (it's a niche use case though), especially since `__class__` is in the list.
+`__rich_*__` should definitely be supported, a lot of critical tools & libraries have integrations with rich (including pip or Pydantic).
+
+Some external libraries also implement their own dunders, such as pyarrow's [`__arrow_array__` used in pandas](https://github.com/pandas-dev/pandas/blob/9b95e4596c5d47b5dcc3cbedf143023475930595/pandas/core/arrays/string_.py#L429) or [`__attrs_post_init__` from attrs](https://www.attrs.org/en/stable/init.html#post-init) (among others) which I can see being supported now.
+How should we research and collect them? What criteria should we have?
+
+---
+
+_Referenced in [astral-sh/ruff#9706](../../astral-sh/ruff/pulls/9706.md) on 2024-01-30 19:51_
+
+---
+
+_Comment by @johnslavik on 2024-01-30 19:55_
+
+Current list of known dunder methods:
+https://github.com/astral-sh/ruff/blob/541aef4e6c569949350818b256d7b53eea1b995a/crates/ruff_linter/src/rules/pylint/helpers.rs#L205-L337
+
+---
+
+_Comment by @AlexWaygood on 2024-01-30 20:39_
+
+I feel like the `__rich_*__` methods (and `__arrow_array__` for PyArrow) would be good candidates for the [`tool.pylint.allow-dunder-method-names`](https://docs.astral.sh/ruff/settings/#pylint-allow-dunder-method-names) setting that you can use in your `pyproject.toml` file. I love `rich`, I think it's a fantastic library, but as a CPython core dev I have to point out that they _are_ violating the [contract specified by the Python reference documentation](https://docs.python.org/3/reference/lexical_analysis.html#reserved-classes-of-identifiers), which states that all dunders are reserved for use by CPython internals and the CPython standard library:
+
+> `__*__`
+> 
+>    System-defined names, informally known as “dunder” names. These names are defined by the interpreter and its implementation (including the standard library). Current system names are discussed in the [Special method names](https://docs.python.org/3/reference/datamodel.html#specialnames) section and elsewhere. More will likely be defined in future versions of Python. _Any_ use of `__*__` names, in any context, that does not follow explicitly documented use, is subject to breakage without warning.
+
+But having said that, I see we already include some third-party dunders in our list -- the `__attrs_*__` dunders are all included :)
+
+> In my opinion, it would be useful to add `__wrapped__` , `__isabstractmethod__` and `__signature__` to the list in case one wants to define those as properties (it's a niche use case though), especially since `__class__` is in the list.
+
+I have no objection to adding exemptions for these, since they're all ~public (some of them have less-than-ideal docs, but that's probably a CPython issue really). But I think they should only be allowed as properties -- defining them as methods would likely be a mistake. I see we treat methods decorated with `@property` exactly the same way as other methods for this rule currently -- do you happen to know if pylint does the same thing?
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-01-30 20:42_
+
+---
+
+_Renamed from "Extend allowed dunder methods" to "Extend allowed dunder methods (PLW3201)" by @AlexWaygood on 2024-01-30 20:48_
+
+---
+
+_Referenced in [astral-sh/ruff#15624](../../astral-sh/ruff/issues/15624.md) on 2025-01-20 23:04_
+
+---

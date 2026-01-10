@@ -1,0 +1,93 @@
+---
+number: 965
+title: Puffin fails with python-build-standalone
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+assignees: []
+created_at: 2024-01-18T14:37:45Z
+updated_at: 2024-01-18T15:32:32Z
+url: https://github.com/astral-sh/uv/issues/965
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Puffin fails with python-build-standalone
+
+---
+
+_Issue opened by @konstin on 2024-01-18 14:37_
+
+To reproduce:
+
+```shell
+rye init a
+cd a
+rye pin --relaxed cpython@3.12
+rye sync # Create the venv
+source .venv/bin/activate
+rye add meine_stadt_transparent
+puffin pip compile --no-cache pyproject.toml
+```
+
+```
+error: Failed to download and build: django-settings-export==1.2.1
+  Caused by: Failed to build: django-settings-export==1.2.1
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel`:
+--- stdout:
+
+--- stderr:
+Could not find platform independent libraries <prefix>
+Could not find platform dependent libraries <exec_prefix>
+Python path configuration:
+  PYTHONHOME = (not set)
+  PYTHONPATH = (not set)
+  program name = '/tmp/.tmplgCMCy/.venv/bin/python'
+  isolated = 0
+  environment = 1
+  user site = 1
+  safe_path = 0
+  import site = 1
+  is in build tree = 0
+  stdlib dir = '/install/lib/python3.12'
+  sys._base_executable = '/home/konsti/.rye/py/cpython@3.12.0/install/bin/python3.12'
+  sys.base_prefix = '/install'
+  sys.base_exec_prefix = '/install'
+  sys.platlibdir = 'lib'
+  sys.executable = '/tmp/.tmplgCMCy/.venv/bin/python'
+  sys.prefix = '/install'
+  sys.exec_prefix = '/install'
+  sys.path = [
+    '/install/lib/python312.zip',
+    '/install/lib/python3.12',
+    '/install/lib/python3.12/lib-dynload',
+  ]
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x00007fa7c1a8c740 (most recent call first):
+  <no Python frame>
+---
+```
+
+This error can happen when loading python through libpython and not setting `PYTHONHOME`, needs investigation why it happens with standalone python.
+
+---
+
+_Label `bug` added by @konstin on 2024-01-18 14:37_
+
+---
+
+_Referenced in [astral-sh/uv#966](../../astral-sh/uv/pulls/966.md) on 2024-01-18 15:30_
+
+---
+
+_Closed by @konstin on 2024-01-18 15:32_
+
+---
+
+_Referenced in [astral-sh/uv#1640](../../astral-sh/uv/issues/1640.md) on 2024-03-02 02:16_
+
+---

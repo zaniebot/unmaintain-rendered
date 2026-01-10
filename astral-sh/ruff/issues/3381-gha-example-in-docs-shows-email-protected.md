@@ -1,0 +1,69 @@
+---
+number: 3381
+title: "GHA example in docs shows \"email protected\""
+type: issue
+state: closed
+author: wichert
+labels: []
+assignees: []
+created_at: 2023-03-07T08:21:51Z
+updated_at: 2023-03-07T22:53:19Z
+url: https://github.com/astral-sh/ruff/issues/3381
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# GHA example in docs shows "email protected"
+
+---
+
+_Issue opened by @wichert on 2023-03-07 08:21_
+
+The [GitHub Action section](https://beta.ruff.rs/docs/editor-integrations/#github-actions) in the ruff documentation does not show actions correctly: it replaces them with "actions/[email protected]".
+
+![image](https://user-images.githubusercontent.com/199657/223364787-89d4df61-0fd3-409d-80c4-a882b5cad0b3.png)
+
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 14:36_
+
+Woah that's bizarre! For me it shows this:
+
+![Screen Shot 2023-03-07 at 9 35 22 AM](https://user-images.githubusercontent.com/1309177/223453700-c5bafdfe-f4c6-4451-b8e9-83c3231cbe27.png)
+
+
+---
+
+_Comment by @wichert on 2023-03-07 15:51_
+
+Huh.. did something change? I can't seem to reproduce it anymore 🤔 
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 22:21_
+
+I actually did just reproduce it once but now I can't reproduce it again.
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 22:51_
+
+Oh, I think this is a Cloudflare thing? https://support.cloudflare.com/hc/en-us/articles/200170016-What-is-Email-Address-Obfuscation-#:~:text=Prevent%20Cloudflare%20from%20obfuscating%20email,%2D%2D%2Femail_off%2D%2D%3E
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 22:53_
+
+I just turned it off, hopefully resolved.
+
+---
+
+_Closed by @charliermarsh on 2023-03-07 22:53_
+
+---
+
+_Comment by @charliermarsh on 2023-03-07 22:53_
+
+Thanks for bringing this to my attention!
+
+---

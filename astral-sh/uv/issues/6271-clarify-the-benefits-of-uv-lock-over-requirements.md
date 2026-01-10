@@ -1,0 +1,139 @@
+---
+number: 6271
+title: "Clarify the benefits of `uv.lock` over `requirements.txt`"
+type: issue
+state: open
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-08-20T19:55:44Z
+updated_at: 2024-10-30T11:30:37Z
+url: https://github.com/astral-sh/uv/issues/6271
+synced_at: 2026-01-10T01:23:57Z
+---
+
+# Clarify the benefits of `uv.lock` over `requirements.txt`
+
+---
+
+_Issue opened by @zanieb on 2024-08-20 19:55_
+
+e.g. as discussed in [Discord](https://discord.com/channels/1039017663004942429/1039017663512449056/1275540373971800116)
+
+> Yes, but there are a couple caveats. (1) requirements.txt is not automatically used — you need to manually construct the environment and remember to do so every time you change branches. In contrast, uv run automatically ensures that uv.lock is up-to-date and that all commands are run in a consistent environment. (2) uv.lock uses cross-platform resolution by default, requirements.txt only targets a single platform (though you can use the --universal flag to generate a cross-platform file). The uv.lock format is has more information about requirements in it and is designed to be performant and auditable.
+
+---
+
+_Label `documentation` added by @zanieb on 2024-08-20 19:55_
+
+---
+
+_Comment by @danielkelshaw on 2024-08-21 00:17_
+
+I was just reading over the new docs for uv (which are great by the way!) and am just wondering about the use case for the `uv.lock` vs. `requirements.txt`? I understand that the `uv.lock` captures the current environment, is it not also the job for the `requirements.txt` to capture this? If so, would it make sense to have something like:
+
+```bash
+$ uv pip compile uv.lock -o requirements.txt
+```
+
+in order to capture the exact state of the environment, rather than relying on the `pyproject.toml` for instance? Perhaps I have misunderstood - but a small section in the docs to clarify may be helpful!
+
+
+---
+
+_Comment by @zanieb on 2024-08-21 03:25_
+
+`uv.lock` resolves the dependencies declared in the `pyproject.toml` — it doesn't capture the current environment. Instead, the project's environment is constructed _from_ the lockfile.
+
+Similarly,`requirements.txt` can be generated from a `pyproject.toml` — but it also supports other sources, like a `requirements.in` file. 
+
+In both cases, you'd sync an environment with the lockfile. It's a matter of format. Unfortunately `requirements.txt` is an unspecified and complex format, which makes it hard to extend. In contrast, `uv.lock` has a bunch of information that lets us improve the performance of subsequent resolutions andensure that the environment is up-to-date before running commands. We also designed it to precisely track package sources for easy auditing. 
+
+   
+
+---
+
+_Comment by @astronautas on 2024-08-21 12:23_
+
+> `uv.lock` resolves the dependencies declared in the `pyproject.toml` — it doesn't capture the current environment. Instead, the project's environment is constructed _from_ the lockfile.
+> 
+> Similarly,`requirements.txt` can be generated from a `pyproject.toml` — but it also supports other sources, like a `requirements.in` file.
+> 
+> In both cases, you'd sync an environment with the lockfile. It's a matter of format. Unfortunately `requirements.txt` is an unspecified and complex format, which makes it hard to extend. In contrast, `uv.lock` has a bunch of information that lets us improve the performance of subsequent resolutions andensure that the environment is up-to-date before running commands. We also designed it to precisely track package sources for easy auditing.
+
+Hmm, yet another lockfile format. Not a biggie though, it's just a matter of regenerating it and using uv within your CI/CD instead of pip. But still.
+
+---
+
+_Comment by @zanieb on 2024-08-21 12:47_
+
+We are engaging heavily in PEP 751 — which defines a standard for lockfiles. Once there's a standard, we plan to use it.
+
+---
+
+_Comment by @keatingw on 2024-08-22 15:07_
+
+Let me know if this should go into a separate issue, but the one missing link for me with `uv.lock` is an ability to install from it independent of the project. The main use case on my mind is caching dependency installs with Docker (I note the docs [highlight the way to do this with the pip interface](https://docs.astral.sh/uv/guides/integration/docker/#installing-a-project_1), but I can't think of a way to do so with the lockfile at present).
+
+I'm currently just duplicating the workflow by using `uv pip compile` to create a `requirements.txt` in addition to the lockfile, but would love to avoid this since it's hard to make sure that this is actually in sync with `uv.lock`, rather than a new resolution for the dependencies declared. (Plus removing the duplication is a side benefit, though not a huge deal)
+
+Thanks for the fantastic work on uv!
+
+---
+
+_Comment by @zanieb on 2024-08-22 16:09_
+
+@keatingw thank you! Extensive discussion about that at https://github.com/astral-sh/uv/issues/4028 — we should provide a way to do that soon.
+
+---
+
+_Comment by @bjornasm on 2024-10-24 09:16_
+
+>In both cases, you'd sync an environment with the lockfile.
+
+How?
+
+---
+
+_Comment by @zanieb on 2024-10-24 12:39_
+
+@bjornasm 
+
+I'm not quite sure what you're looking for, but `uv venv && uv pip sync requirements.txt` or `uv sync` (for `uv.lock`)
+
+---
+
+_Comment by @bjornasm on 2024-10-26 22:26_
+
+Thanks for the answer @zanieb , I think then it warrants an bugreport from me, because uv sync seemed to overwrite the lockfile with what was in pyproj toml, not the other way as I expected. Will do another test to see if I can reproduce. (In either case I should also propose that this is added explicitly to the documentation, I cant seem to find the exact workflow of this stated anywhere).
+
+---
+
+_Comment by @charliermarsh on 2024-10-27 18:52_
+
+`uv sync` will always re-lock the project, unless you pass `--frozen`. It's not a bug and it's well-documented.
+
+---
+
+_Comment by @zanieb on 2024-10-28 14:09_
+
+The lockfile will never be used to update the `pyproject.toml`, the `pyproject.toml` is the source of truth of your dependencies. The `uv.lock` captures exactly which versions of your dependencies will be installed, within their constraints.
+
+---
+
+_Comment by @bjornasm on 2024-10-30 11:30_
+
+Thank you @zanieb and @charliermarsh , sorry for taking over this issue as it is clearly a separate (and individual?) issue with documentation. Since the lockfile was proposed to be added to source control, I inferred that it is the lockfile that should be used when setting up an existing (remote) project locally. But I guess that both the lockfile and pyproject.toml has to be added to source?
+
+It would be great to have some workflow/use case based examples, for us who have not worked with .toml and lockfiles before, I would be glad to open up a separate issue for it, with some suggestions.
+
+---
+
+_Referenced in [tattle-made/feluda#430](../../tattle-made/feluda/issues/430.md) on 2024-11-05 11:26_
+
+---
+
+_Referenced in [fandango-fuzzer/fandango#731](../../fandango-fuzzer/fandango/issues/731.md) on 2025-12-01 10:08_
+
+---

@@ -1,0 +1,162 @@
+---
+number: 3113
+title: Layering env, args, and config
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - A-parsing
+  - S-waiting-on-design
+assignees: []
+created_at: 2021-12-09T16:10:22Z
+updated_at: 2023-06-30T12:19:30Z
+url: https://github.com/clap-rs/clap/issues/3113
+synced_at: 2026-01-10T01:27:33Z
+---
+
+# Layering env, args, and config
+
+---
+
+_Issue opened by @epage on 2021-12-09 16:10_
+
+Maintainer's note
+- https://github.com/clap-rs/clap/discussions/2763
+- #748
+---
+
+<a href="https://github.com/synek317"><img src="https://avatars.githubusercontent.com/u/1183738?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [synek317](https://github.com/synek317)**
+_Monday Feb 19, 2018 at 10:02 GMT_
+_Originally opened as https://github.com/TeXitoi/structopt/issues/72_
+
+----
+
+There is great [config-rs](https://github.com/mehcode/config-rs)  crate that provides hierarchical configuration and deserialization into struct. I think it would be great if clap / structopt could handle feature like this. With this, one can handle app configuration that can be provided in multiple config files and/or command line all in one place and with single structure.
+
+I suggest to add `from_opts_and_config` function that would accept `Config` instance (from config-rs) that would provide defaults when argument is not passed in command line.
+
+I think that it is a best way because only structopt has full knowledge if and what arguments has been passed and which are mandatory and what should be default value if arg is not passed. Config crate requires that all values are defined, otherwise deserialization returns `Err`.
+
+Of course config-rs dependency should be configurable with features.
+
+If you think it is a good idea, I could prepare some implementation.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Monday Feb 19, 2018 at 13:40 GMT_
+
+----
+
+You might be interested in https://github.com/TeXitoi/structopt/issues/32
+
+StructOpt is just a wrapper above clap. Looking at your proposition, it seems better to include this functionality directly in clap. But you may have some arguments to do it in structopt.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/synek317"><img src="https://avatars.githubusercontent.com/u/1183738?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [synek317](https://github.com/synek317)**
+_Monday Feb 19, 2018 at 13:46 GMT_
+
+----
+
+I have done a sketch implementation and it is very simple to use config-rs in StructOpt. However, that is not really a great argument.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Monday Feb 19, 2018 at 13:59 GMT_
+
+----
+
+You can point to a branch, and I'll look a it to seen what is your idea.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Wednesday Feb 21, 2018 at 14:53 GMT_
+
+----
+
+@synek317 ping
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/synek317"><img src="https://avatars.githubusercontent.com/u/1183738?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [synek317](https://github.com/synek317)**
+_Friday Feb 23, 2018 at 16:42 GMT_
+
+----
+
+After some tries I think that there is a better way to solve this. Clap has 'default_value' attrs. If it could be 'default_value_fn' then merging config from file(s) with command line args could be done by 3rd party lib.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/synek317"><img src="https://avatars.githubusercontent.com/u/1183738?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [synek317](https://github.com/synek317)**
+_Monday Mar 05, 2018 at 04:50 GMT_
+
+----
+
+@TeXitoi Could you please take a look at my solution sketch at https://www.reddit.com/r/rust/comments/81tp16/wip_platformconfig_multisource_configuration_for/ ?
+
+
+---
+
+_Referenced in [clap-rs/clap#3124](../../clap-rs/clap/issues/3124.md) on 2021-12-09 16:29_
+
+---
+
+_Renamed from "Feature-gated config-rs handling" to "Config layering" by @epage on 2021-12-09 16:34_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-09 16:34_
+
+---
+
+_Comment by @epage on 2021-12-09 16:35_
+
+See also https://github.com/clap-rs/clap/discussions/2763
+
+---
+
+_Renamed from "Config layering" to "Layering env, args, and config" by @epage on 2021-12-10 19:41_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-13 22:38_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-13 22:38_
+
+---
+
+_Referenced in [clap-rs/clap#748](../../clap-rs/clap/issues/748.md) on 2021-12-14 15:07_
+
+---
+
+_Referenced in [mintlayer/mintlayer-core#277](../../mintlayer/mintlayer-core/pulls/277.md) on 2022-07-14 20:55_
+
+---
+
+_Referenced in [clap-rs/clap#5099](../../clap-rs/clap/issues/5099.md) on 2023-08-29 00:15_
+
+---

@@ -1,0 +1,62 @@
+---
+number: 15131
+title: Strings after linebreak formatting are not combined
+type: issue
+state: closed
+author: tobiasdiez
+labels:
+  - formatter
+assignees: []
+created_at: 2024-12-24T11:02:48Z
+updated_at: 2024-12-29T14:59:54Z
+url: https://github.com/astral-sh/ruff/issues/15131
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Strings after linebreak formatting are not combined
+
+---
+
+_Issue opened by @tobiasdiez on 2024-12-24 11:02_
+
+The following code
+```python
+for unknown_key in kwds:
+            raise TypeError("{} is not a valid keyword "
+                            "argument".format(unknown_key))
+```
+is reformatted as
+```python
+for unknown_key in kwds:
+            raise TypeError("{} is not a valid keyword " "argument".format(unknown_key))
+```
+
+The middle part `" "` should have been removed as well.
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2024-12-24 12:26_
+
+---
+
+_Comment by @AlexWaygood on 2024-12-24 13:20_
+
+Thanks for the report! This is already fixed in the preview style for the formatter (which you can opt into using `tool.ruff.preview = true` in your pyproject.toml file, if you're using a pyproject.toml file). I believe it's also one of the changes to our formatter's behaviour that we plan to stabilise as part of our next minor release, which we're hoping to do in January
+
+---
+
+_Comment by @MichaReiser on 2024-12-24 13:56_
+
+Yes, exactly what @AlexWaygood said. See #13371 . 
+
+---
+
+_Closed by @MichaReiser on 2024-12-24 13:56_
+
+---
+
+_Comment by @tobiasdiez on 2024-12-29 14:59_
+
+Awesome! Thank you both!
+
+---

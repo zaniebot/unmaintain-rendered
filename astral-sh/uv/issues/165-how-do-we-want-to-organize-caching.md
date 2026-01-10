@@ -1,0 +1,42 @@
+---
+number: 165
+title: How do we want to organize caching?
+type: issue
+state: closed
+author: konstin
+labels: []
+assignees: []
+created_at: 2023-10-22T14:52:58Z
+updated_at: 2023-11-30T01:55:47Z
+url: https://github.com/astral-sh/uv/issues/165
+synced_at: 2026-01-10T01:23:03Z
+---
+
+# How do we want to organize caching?
+
+---
+
+_Issue opened by @konstin on 2023-10-22 14:52_
+
+We need to cache:
+
+ * http request, ideally with default, always refresh, offline first and offline modes
+ * wheels we downloaded
+ * built wheels
+ * python interpreter metadata
+...and possible more later.
+
+Personally, i like giving each it's own bucket/folder so you can clear individual caches and see which one has which size. Where possible, i also like to keep the name of thing such as e.g. storing the wheel under its name which makes it much easier to introspect and debug the cache (which some hierarchy to avoid to many files in one directory which otherwise causes problems). That's unfortunately not really possible for generic urls but may be possible if we key things by their target (e.g. "pypi-metadata-foo_lib-1.2.3a1").
+
+
+---
+
+_Comment by @charliermarsh on 2023-11-30 01:55_
+
+Going to close for now, since we've made a lot of progress here.
+
+---
+
+_Closed by @charliermarsh on 2023-11-30 01:55_
+
+---

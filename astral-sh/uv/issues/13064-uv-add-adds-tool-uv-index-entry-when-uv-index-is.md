@@ -1,0 +1,64 @@
+---
+number: 13064
+title: "`uv add` adds `[[tool.uv.index]]` entry when `UV_INDEX` is set"
+type: issue
+state: open
+author: sebastian-cradle
+labels:
+  - bug
+  - needs-decision
+assignees: []
+created_at: 2025-04-23T08:58:34Z
+updated_at: 2025-04-25T01:41:53Z
+url: https://github.com/astral-sh/uv/issues/13064
+synced_at: 2026-01-10T01:25:28Z
+---
+
+# `uv add` adds `[[tool.uv.index]]` entry when `UV_INDEX` is set
+
+---
+
+_Issue opened by @sebastian-cradle on 2025-04-23 08:58_
+
+### Summary
+
+This is likely related to:  https://github.com/astral-sh/uv/issues/12483
+
+Background/Context: we have a mono-repo with multiple projects and host our packages in an internal repo.
+In order to not have to replicate the index configuration in each `pyproject.toml`, we set the `UV_INDEX` env variable (we do this via mise).
+
+Now when adding a package via `uv add`, e.g.:
+
+`uv add "my-internal-package>=0.0.1"`
+
+The add command also adds a `[[tool.uv.index]]` section to the `pyproject.toml` pointing to the index specified via the `UV_INDEX` env variable.
+
+Is there a way to have the add command not do that?
+
+### Platform
+
+Darwin 24.1.0 arm64
+
+### Version
+
+0.6.16
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @sebastian-cradle on 2025-04-23 08:58_
+
+---
+
+_Comment by @charliermarsh on 2025-04-25 01:41_
+
+It's not easy to change since we have no way of differentiating between `UV_INDEX=foo` and `--index=foo` -- Clap (the CLI parser) doesn't distinguish them at all, unfortunately. I'm a little unsure as to whether we _want_ to omit it, though. I _think_ I agree with you (that it should be omitted).
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2025-04-25 01:41_
+
+---

@@ -1,0 +1,149 @@
+---
+number: 3156
+title: "Cannot install flash-attn —`ModuleNotFoundError: No module named 'packaging'`"
+type: issue
+state: closed
+author: adrianlyjak
+labels: []
+assignees: []
+created_at: 2024-04-20T02:22:47Z
+updated_at: 2024-04-20T03:20:39Z
+url: https://github.com/astral-sh/uv/issues/3156
+synced_at: 2026-01-10T01:23:25Z
+---
+
+# Cannot install flash-attn —`ModuleNotFoundError: No module named 'packaging'`
+
+---
+
+_Issue opened by @adrianlyjak on 2024-04-20 02:22_
+
+I cannot install flash-attn due to an error from not finding `packaging`
+
+Reproduction:
+
+```bash
+$ uv venv
+Using Python 3.12.2 interpreter at: /home/adrianlyjak/.rye/py/cpython@3.12.2/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+$ uv pip install flash-attn
+error: Failed to download and build: flash-attn==2.5.7
+  Caused by: Failed to build: flash-attn==2.5.7
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/home/adrianlyjak/.cache/uv/.tmpsCJzgg/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 325, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=['wheel'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adrianlyjak/.cache/uv/.tmpsCJzgg/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 295, in _get_build_requires
+    self.run_setup()
+  File "/home/adrianlyjak/.cache/uv/.tmpsCJzgg/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 487, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/home/adrianlyjak/.cache/uv/.tmpsCJzgg/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 311, in run_setup
+    exec(code, locals())
+  File "<string>", line 9, in <module>
+ModuleNotFoundError: No module named 'packaging'
+---
+```
+
+I tried installing `packaging`, but that doesn't help
+
+```
+$ uv pip install packaging
+Resolved 1 package in 74ms
+Installed 1 package in 4ms
+ + packaging==24.0
+(futz2) adrianlyjak@metatron:~/dev/futz2$ uv pip install flash-attn
+error: Failed to download and build: flash-attn==2.5.7
+...
+ModuleNotFoundError: No module named 'packaging'
+```
+
+uv version
+
+```
+$ uv --version
+uv 0.1.35
+```
+
+Same install works with pip and same version of python (3.12.2).
+
+Verbose output:
+
+```
+$ uv pip install flash-attn --verbose
+INFO Found a virtualenv through VIRTUAL_ENV at: /home/adrianlyjak/dev/futz2/.venv
+DEBUG Cached interpreter info for Python 3.12.2, skipping probing: .venv/bin/python
+DEBUG Using Python 3.12.2 environment at .venv/bin/python
+DEBUG Trying to lock if free: .venv/.lock
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.12.2
+DEBUG Adding direct dependency: flash-attn*
+DEBUG Found fresh response for: https://pypi.org/simple/flash-attn/
+DEBUG Searching for a compatible version of flash-attn (*)
+DEBUG Selecting: flash-attn==2.5.7 (flash_attn-2.5.7.tar.gz)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/21/cb/33a1f833ac4742c8adba063715bf769831f96d99dbbbb4be1b197b637872/flash_attn-2.5.7.tar.gz
+DEBUG Preparing metadata for: flash-attn==2.5.7
+DEBUG No static `PKG-INFO` available for: flash-attn==2.5.7 (DynamicPkgInfo(UnsupportedMetadataVersion("2.1")))
+DEBUG No static `pyproject.toml` available for: flash-attn==2.5.7 (MissingPyprojectToml)
+DEBUG Solving with target Python version 3.12.2
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG Found fresh response for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==69.5.1 (setuptools-69.5.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f7/29/13965af254e3373bceae8fb9a0e6ea0d0e571171b80d6646932131d6439b/setuptools-69.5.1-py3-none-any.whl.metadata
+DEBUG Tried 2 versions: root 1, setuptools 1
+DEBUG Installing in setuptools==69.5.1 in /home/adrianlyjak/.cache/uv/.tmpAfdtCD/.venv
+DEBUG Requirement already cached: setuptools==69.5.1
+DEBUG Installing build requirement: setuptools==69.5.1
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+error: Failed to download and build: flash-attn==2.5.7
+  Caused by: Failed to build: flash-attn==2.5.7
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/home/adrianlyjak/.cache/uv/.tmpAfdtCD/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 325, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=['wheel'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adrianlyjak/.cache/uv/.tmpAfdtCD/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 295, in _get_build_requires
+    self.run_setup()
+  File "/home/adrianlyjak/.cache/uv/.tmpAfdtCD/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 487, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/home/adrianlyjak/.cache/uv/.tmpAfdtCD/.venv/lib/python3.12/site-packages/setuptools/build_meta.py", line 311, in run_setup
+    exec(code, locals())
+  File "<string>", line 9, in <module>
+ModuleNotFoundError: No module named 'packaging'
+---
+```
+
+---
+
+_Comment by @charliermarsh on 2024-04-20 02:26_
+
+You may need to run with `--no-build-isolation`.
+
+---
+
+_Comment by @adrianlyjak on 2024-04-20 03:20_
+
+aha, that seems to have worked. There's also a bunch of misc compilation dependencies and torch that I need to install as well first to build it
+
+```
+uv pip install ninja setuptools wheel torch psutil numpy
+sudo apt install clang
+uv pip install flash-attn --no-build-isolation # builds forever
+```
+
+---
+
+_Closed by @adrianlyjak on 2024-04-20 03:20_
+
+---

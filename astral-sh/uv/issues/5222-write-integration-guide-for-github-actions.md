@@ -1,0 +1,78 @@
+---
+number: 5222
+title: Write integration guide for GitHub Actions
+type: issue
+state: closed
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-07-19T14:50:24Z
+updated_at: 2024-07-24T14:31:00Z
+url: https://github.com/astral-sh/uv/issues/5222
+synced_at: 2026-01-10T01:23:46Z
+---
+
+# Write integration guide for GitHub Actions
+
+---
+
+_Issue opened by @zanieb on 2024-07-19 14:50_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+---
+
+_Label `documentation` added by @zanieb on 2024-07-19 14:50_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-07-19 14:50_
+
+---
+
+_Comment by @zanieb on 2024-07-22 17:07_
+
+Started work on this in #5239 but it's missing caching due to some outstanding work determining efficient cache setup in CI.
+
+---
+
+_Comment by @jbw-vtl on 2024-07-24 10:17_
+
+Not directly GitHub actions related, however keen on some recommendations for handling UV cache in a CI environment such as GitHub / Jenkins etc.
+
+There's a statement in the docs clearly documenting it's not safe to modify the cache manually
+
+> Note that it's not safe to modify the uv cache directly (e.g., uv cache clean) while other uv commands are running, and never safe to modify the cache directly (e.g., by removing a file or directory).
+
+However often in CI environments we might not want to have an infinitely growing cache, using cleanup configurations such as max cache sizes / keep by last used etc. However reading the above, worried that policies such as these might corrupt the cache / cause issues.
+How would we cleanup caches safely in a CI environment, without having to drop the whole cache?
+I.e. clean all artifacts not used in the last week, etc.
+
+Do let me know if this should be tracked under a separate issue.
+
+---
+
+_Referenced in [astral-sh/uv#5409](../../astral-sh/uv/issues/5409.md) on 2024-07-24 14:30_
+
+---
+
+_Comment by @zanieb on 2024-07-24 14:30_
+
+Let's chat over in https://github.com/astral-sh/uv/issues/5409 since I technically wrote this integration guide
+
+---
+
+_Closed by @zanieb on 2024-07-24 14:30_
+
+---

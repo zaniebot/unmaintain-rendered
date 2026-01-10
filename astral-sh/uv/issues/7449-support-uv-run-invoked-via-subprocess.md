@@ -1,0 +1,110 @@
+---
+number: 7449
+title: support uv run invoked via subprocess
+type: issue
+state: closed
+author: mraesener-aubex
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-09-17T06:55:28Z
+updated_at: 2024-09-17T13:29:55Z
+url: https://github.com/astral-sh/uv/issues/7449
+synced_at: 2026-01-10T01:24:15Z
+---
+
+# support uv run invoked via subprocess
+
+---
+
+_Issue opened by @mraesener-aubex on 2024-09-17 06:55_
+
+`system='Windows', release='10', version='10.0.20348', machine='AMD64'`
+`uv 0.4.10 (690716484 2024-09-13)`
+
+not sure if that's actually working as intended but @charliermarsh's "uv should just elevate the experience/abstract things away" (if I got that right) leads me to thinking this might be something `uv` wants to handle.
+
+the topic is that `process.terminate()` terminates uv (I guess), not the python interpreter invoked with `uv run`, when used via `subprocess`. example steps to reproduce:
+
+```bash
+uv init my_foo
+```
+
+```python
+# app.py
+import tkinter as tk
+
+app = tk.Tk("foo")
+app.mainloop()
+```
+
+```python
+# main.py
+"""
+example module just to run a hello world tkinter app via subprocess.
+1st invocation gets started and closed as expected.
+2nd invocation via `uv run` eliminating the need to find the correct python interpreter, but terminate doesn't close the python interpreter then.
+""" 
+import subprocess
+import time
+from pathlib import Path
+
+
+venv_python = (
+    subprocess.check_output(
+        ["uv", "run", "python", "-c", "import sys; print(sys.executable)"]
+    )
+    .decode()
+    .strip()
+)
+
+app = Path(__file__) / ".." / "app.py"
+
+# works and closes the tkinter app from app.py after 3 seconds
+process = subprocess.Popen(
+    [venv_python, app],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+)
+
+time.sleep(3)
+
+process.terminate()
+
+
+# works rather unexpected since it terminates the uv run process I guess
+# tkinter app keeps running
+process = subprocess.Popen(
+    ["uv", "run", app],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+)
+
+time.sleep(3)
+
+process.terminate()
+```
+
+just experienced this and though it's worth an issue.
+
+greetings,
+Marius
+
+---
+
+_Comment by @zanieb on 2024-09-17 13:29_
+
+Thanks for the report, definitely a bug.
+
+Related to #6738 
+Sort of a duplicate of https://github.com/astral-sh/uv/issues/6724 — let's track this there.
+
+---
+
+_Closed by @zanieb on 2024-09-17 13:29_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-09-17 13:29_
+
+---

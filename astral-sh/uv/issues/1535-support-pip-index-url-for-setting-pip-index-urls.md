@@ -1,0 +1,200 @@
+---
+number: 1535
+title: "Support `PIP_INDEX_URL` for setting `pip` index urls"
+type: issue
+state: closed
+author: humanzz
+labels:
+  - compatibility
+assignees: []
+created_at: 2024-02-16T19:49:56Z
+updated_at: 2024-11-06T22:07:19Z
+url: https://github.com/astral-sh/uv/issues/1535
+synced_at: 2026-01-10T01:23:07Z
+---
+
+# Support `PIP_INDEX_URL` for setting `pip` index urls
+
+---
+
+_Issue opened by @humanzz on 2024-02-16 19:49_
+
+This is a request to support using alternative index urls - not just via the `--index-url` option - but also via the related pip environment variables
+- `PIP_INDEX_URL`
+- `PIP_TRUSTED_HOST` (to support none https schemes)
+
+The use case I'm having is that I use a local pip server/proxy running on `http://127.0.0.1:<port>/...`. (This is to adhere to existing work policies/standards when using `pip`).
+
+---
+
+_Renamed from "Support `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` for setting pip index urls" to "Support `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` for setting `pip` index urls" by @humanzz on 2024-02-16 19:50_
+
+---
+
+_Comment by @marcelbischoff on 2024-02-16 20:20_
+
+Also seeing 405s for a private PIP repo, probably worse a separate issue once I figure out more.
+
+---
+
+_Comment by @zanieb on 2024-02-16 20:39_
+
+We support `PIP_INDEX_URL` via `UV_INDEX_URL` — we won't support pip environment variables.
+
+See #1339 for discussion around trusted host support.
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-16 20:40_
+
+---
+
+_Label `compatibility` added by @zanieb on 2024-02-16 20:40_
+
+---
+
+_Comment by @humanzz on 2024-02-16 21:00_
+
+Thanks for the prompt response @zanieb.
+Though not-ideal, I believe things can work with the `UV_INDEX_URL`.
+I'll drop a comment on #1339 about `PIP_TRUSTED_HOST` to maybe have it supported via `UV_TRUSTED_HOST`.
+
+---
+
+_Referenced in [astral-sh/uv#1339](../../astral-sh/uv/issues/1339.md) on 2024-02-16 21:03_
+
+---
+
+_Comment by @baggiponte on 2024-02-16 21:59_
+
++1! This is kinda smart. UV_* env cars should take precedence, but being able to understand PIP_* vars could drive adoption.
+
+For example: a client I work with has to inject PIP_INDEX_URL as a Docker build arg. If I wanted to use UV in my images, I'd have to open a PR with the devops team just for that. Tough luck.
+
+---
+
+_Referenced in [astral-sh/uv#1688](../../astral-sh/uv/issues/1688.md) on 2024-02-19 14:28_
+
+---
+
+_Comment by @teruokun on 2024-02-22 18:18_
+
+Also +1 in general if the idea is to be a drop-in replacement for `pip`.  I know pip supports an unwieldy number of command-line and configuration variables, so it's fine if the feature-set only matches what is reasonable forward-looking `pip` usage rather than the kitchen sink of legacy options, but if the goal is that I can take most reasonable `pip` commands and simply replace it with `uv pip` and have it usually work, that would be the best possible user experience OOTB.
+
+---
+
+_Comment by @zanieb on 2024-02-23 04:31_
+
+I've considered it some more and basically I don't see a problem supporting these where it's not too invasive. Ideally we'd support `UV_INDEX_URL` and `PIP_INDEX_URL`. I think some pip flags, like `PIP_PREFER_BINARY`, do not belong in our top level `UV_*` namespace so we'd either _only_ support the `pip` variable or also have `UV_PIP_..`? I'm not sure — there are some open questions around this. There's also the discussion in #1657 which may complicate the naming of these variables.
+
+I'd like to get consensus from other maintainers before work begins on this though. cc @charliermarsh 
+
+
+---
+
+_Label `duplicate` removed by @zanieb on 2024-02-23 04:32_
+
+---
+
+_Referenced in [astral-sh/uv#2183](../../astral-sh/uv/issues/2183.md) on 2024-03-04 22:28_
+
+---
+
+_Renamed from "Support `PIP_INDEX_URL` and `PIP_TRUSTED_HOST` for setting `pip` index urls" to "Support `PIP_INDEX_URL` for setting `pip` index urls" by @zanieb on 2024-03-04 22:29_
+
+---
+
+_Referenced in [astral-sh/uv#1789](../../astral-sh/uv/issues/1789.md) on 2024-03-04 22:29_
+
+---
+
+_Comment by @david-waterworth on 2024-03-04 22:56_
+
+Is `UV_INDEX_URL` already implemented? It doesn't appear to be working for me - I'm using AWS Code Artifact and set UV_INDEX_URL=PIP_INDEX_URL then tried to install `uv pip install torch --verbose`, the messages imply it's still uisng pypi.org
+
+```
+uv_installer::downloader::download total=2
+   uv_installer::downloader::get_wheel name=torch==2.2.1, size=Some(755527312), url="https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl"
+     uv_distribution::distribution_database::get_or_build_wheel dist=Built(Registry(RegistryBuiltDist { filename: WheelFilename { name: PackageName("torch"), version: "2.2.1", python_tag: ["cp310"], abi_tag: ["cp310"], platform_tag: ["manylinux1_x86_64"] }, file: File { dist_info_metadata: Some(Hashes(Hashes { md5: None, sha256: Some("e562543ed257f1ebd1ec5abf008dee10394cc142113816cd9536d1d0d61ce46c") })), filename: "torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl", hashes: Hashes { md5: None, sha256: Some("8d3bad336dd2c93c6bcb3268e8e9876185bda50ebde325ef211fb565c7d15273") }, requires_python: Some(VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "3.8.0" }])), size: Some(755527312), upload_time_utc_ms: Some(1708629418225), url: AbsoluteUrl("https://files.pythonhosted.org/packages/a7/ad/fbe7d4cffb76da4e478438853b51305361c719cff929ab70a808e7fb75e7/torch-2.2.1-cp310-cp310-manylinux1_x86_64.whl"), yanked: Some(Bool(false)) }, index: Pypi(VerbatimUrl { url: Url { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }) }))
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/home/dave/.cache/uv/wheels-v0/pypi/torch/torch-2.2.1-cp310-cp310-manylinux1_x86_64.http
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-04 23:13_
+
+Yup -- I ran ` UV_INDEX_URL=https://test.pypi.org/simple cargo run pip install requests --refresh --reinstall --verbose` and see:
+
+```
+ uv_resolver::resolver::process_request request=Prefetch requests *
+ uv_client::cached_client::from_path_sync path="/Users/crmarsh/Library/Caches/uv/simple-v3/e8208120cae3ba69/requests.rkyv"
+          0.144222s   0ms DEBUG uv_client::cached_client Found stale response for: https://test.pypi.org/simple/requests/
+          0.144244s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://test.pypi.org/simple/requests/
+       uv_client::cached_client::revalidation_request url="https://test.pypi.org/simple/requests/"
+          0.250039s 106ms DEBUG uv_client::cached_client Found not-modified response for: https://test.pypi.org/simple/requests/
+       uv_client::cached_client::refresh_cache file=/Users/crmarsh/Library/Caches/uv/simple-v3/e8208120cae3ba69/requests.rkyv
+...
+ uv_installer::downloader::download total=1
+   uv_installer::downloader::get_wheel name=requests==2.5.4.1, size=Some(468942), url="https://test-files.pythonhosted.org/packages/6d/00/8ed1b6ea43b10bfe28d08e6af29fd6aa5d8dab5e45ead9394a6268a2d2ec/requests-2.5.4.1-py2.py3-none-any.whl"
+     uv_distribution::distribution_database::get_or_build_wheel dist=Built(Registry(RegistryBuiltDist { filename: WheelFilename { name: PackageName("requests"), version: "2.5.4.1", python_tag: ["py2", "py3"], abi_tag: ["none"], platform_tag: ["any"] }, file: File { dist_info_metadata: Some(Hashes(Hashes { md5: None, sha256: Some("9f5d3a2d16cc59a5bb12d972cd8a46bd7f2ee620f2501c8fd561fa104658fc51") })), filename: "requests-2.5.4.1-py2.py3-none-any.whl", hashes: Hashes { md5: None, sha256: Some("0a2c98e46121e7507afb0edc89d342641a1fb9e8d56f7d592d4975ee6b685f9a") }, requires_python: None, size: Some(468942), upload_time_utc_ms: Some(1426282195769), url: AbsoluteUrl("https://test-files.pythonhosted.org/packages/6d/00/8ed1b6ea43b10bfe28d08e6af29fd6aa5d8dab5e45ead9394a6268a2d2ec/requests-2.5.4.1-py2.py3-none-any.whl"), yanked: Some(Bool(false)) }, index: Url(VerbatimUrl { url: Url { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("test.pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: Some("https://test.pypi.org/simple") }) }))
+```
+
+
+---
+
+_Comment by @zanieb on 2024-03-04 23:13_
+
+Yes `UV_INDEX_URL` is implemented. Have you tried using `export`? Can you `echo $UV_INDEX_URL` to confirm it's set?
+
+---
+
+_Comment by @david-waterworth on 2024-03-04 23:22_
+
+Yes it's exported and I tried echo,
+
+```
+echo $UV_INDEX_URL
+https://XXX@XXX-XXX.d.codeartifact.ap-southeast-2.amazonaws.com/pypi/XXX/simple/
+```
+
+(uv version is 0.1.14)
+
+---
+
+_Comment by @david-waterworth on 2024-03-04 23:37_
+
+Ahh no sorry it wasn't exported, it works now thanks!
+
+---
+
+_Comment by @morotti on 2024-03-25 11:21_
+
+Hello, any update on this issue?
+
+It would be really helpful for uv adoption if uv could understand `PIP_INDEX_URL` out of the box. :) 
+
+---
+
+_Comment by @copdips on 2024-10-03 19:22_
+
+in `~/.bashrc`:
+
+```bash
+export UV_DEFAULT_INDEX=$PIP_INDEX_URL
+```
+
+---
+
+_Comment by @zanieb on 2024-10-03 19:39_
+
+Thanks @copdips 
+
+I don't think we'll support reading pip variables — we support `UV_INDEX_URL` and `UV_EXTRA_INDEX_URL`.
+
+---
+
+_Closed by @zanieb on 2024-10-03 19:39_
+
+---

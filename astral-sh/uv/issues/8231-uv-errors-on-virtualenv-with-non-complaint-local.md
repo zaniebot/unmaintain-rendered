@@ -1,0 +1,73 @@
+---
+number: 8231
+title: "uv errors on virtualenv with non-complaint local version in `.dist-info`"
+type: issue
+state: closed
+author: arrdem
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-10-16T00:01:40Z
+updated_at: 2024-10-17T20:23:03Z
+url: https://github.com/astral-sh/uv/issues/8231
+synced_at: 2026-01-10T01:24:25Z
+---
+
+# uv errors on virtualenv with non-complaint local version in `.dist-info`
+
+---
+
+_Issue opened by @arrdem on 2024-10-16 00:01_
+
+```
+(abnormal) ➜  source git:(main) uv --version
+uv 0.4.21 (Homebrew 2024-10-14)
+(abnormal) ➜  source git:(main) venv-sync
+Using Python 3.11.10 environment at /Users/gsirois/venvs/python3.11-2
+error: Failed to read metadata from: `/Users/gsirois/venvs/python3.11-2/lib/python3.11/site-packages/protobuf-4.25.3.post1_abnormal.87071f8fe87.dist-info`
+  Caused by: after parsing `4.25.3.post1`, found `_abnormal.87071f8fe87`, which is not part of a valid version
+```
+
+Per https://packaging.python.org/en/latest/specifications/version-specifiers/#local-version-identifiers it is expected that Python packaging implementations support `+` symbols in the version number as a "local" part. It appears that during installation at least some versions of `pip` normalize local version suffixes using `_` which breaks UV.
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 00:07_
+
+I don't see anything in the spec suggesting that the `+` should be replaced there -- that seems like a bug somewhere else?
+
+---
+
+_Comment by @arrdem on 2024-10-16 00:10_
+
+Yeah I agree with you on the spec -- trying to find where this is coming from ~in pip~. Edit: Doesn't seem to be pip behavior.
+
+---
+
+_Comment by @arrdem on 2024-10-16 00:30_
+
+This is pretty clearly something that came out of an old `python3 -m build`... the wheel artifact contains the `_` part in its `.dist-info` tree. Question is how.
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-10-16 12:18_
+
+---
+
+_Renamed from "UV barfs on virtualenvs containing packages with local version identifiers" to "UV raises error when virtualenv contains non-complaint local version in `.dist-info`" by @charliermarsh on 2024-10-16 12:18_
+
+---
+
+_Renamed from "UV raises error when virtualenv contains non-complaint local version in `.dist-info`" to "uv errors on virtualenv with non-complaint local version in `.dist-info`" by @charliermarsh on 2024-10-16 12:18_
+
+---
+
+_Comment by @arrdem on 2024-10-17 20:22_
+
+Okay after some more digging I'm going to say this is on our side and the artifact is bad. Apologies.
+
+---
+
+_Closed by @arrdem on 2024-10-17 20:23_
+
+---

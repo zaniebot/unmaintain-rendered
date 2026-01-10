@@ -1,0 +1,137 @@
+---
+number: 169
+title: Replace application level settings with enum variants
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - S-waiting-on-decision
+  - A-builder
+assignees: []
+created_at: 2015-07-29T22:16:06Z
+updated_at: 2018-08-02T03:29:41Z
+url: https://github.com/clap-rs/clap/issues/169
+synced_at: 2026-01-10T01:26:25Z
+---
+
+# Replace application level settings with enum variants
+
+---
+
+_Issue opened by @kbknapp on 2015-07-29 22:16_
+
+Currently, there are several "Application level" options or settings, which are set with various methods and a `bool`.  I would favor using an `enum` instead.
+
+Although, using a method and a `bool` does have it's advantages when dynamically generating arguments.
+### Example Changes
+
+``` rust
+let app = App::new("test")
+        .subcommands_required(true)
+        .unified_help_message(true)
+        .versionless_subcommands(true)
+```
+
+Would become
+
+``` rust
+let app = App::new("test")
+        .settings(&[
+            AppOptions::SubCommandsRequired,
+            AppOptions::UnifiedHelpMessage,
+            AppOptions::VersionlessSubcommands
+        ])
+```
+
+or
+
+``` rust
+let app = App::new("test")
+        .setting(AppOptions::SubCommandsRequired)
+        .setting(AppOptions::UnifiedHelpMessage)
+        .setting(AppOptions::VersionlessSubcommands)
+```
+### TBD
+
+This would deprecate all those other methods, but wouldn't be removed until 2.x.
+
+I'd still need to decide on a name ~~`options()`~~, `settings()`, etc (Edit: I'm leaning towards `settings` so as to not be confused with command line `options`)
+### Affected "App Settings"
+
+Here's the full list of current "application level settings"
+- `subcommands_negate_reqs(bool)`
+- `subcommand_required(bool)`
+- `arg_required_else_help(bool)`
+- `global_version(bool)`
+- `versionless_subcommands(bool)`
+- `unified_help_message(bool)`
+- `wait_on_error(bool)`
+- `subcommand_required_else_help(bool)`
+
+To be clear, I'm still on the fence about this change. Because once it's made, what's to say the methods of `Arg` shouldn't be changed? But when you do that, why not just make _all_ `Arg` methods a member of `ArgOptions` or whatever it's called? Seems like a slippery slope...but maybe a good one?
+
+Also, the methods of `App` do have somewhat of a delineation between "app settings" and "adding args/subcommands/groups/etc" where as `Arg`s do not.
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2015-07-29 22:17_
+
+---
+
+_Label `W: maybe` added by @kbknapp on 2015-07-29 22:17_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2015-07-29 22:17_
+
+---
+
+_Label `C: app` added by @kbknapp on 2015-07-29 22:17_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-07-29 22:17_
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2015-07-29 22:22_
+
+---
+
+_Label `T: enhancement` removed by @kbknapp on 2015-07-29 22:22_
+
+---
+
+_Comment by @severen on 2015-07-30 12:13_
+
+I like how it looks, personally I would prefer to use an `enum` rather than methods using a `bool`.
+
+
+---
+
+_Comment by @kbknapp on 2015-07-30 23:04_
+
+The more I think about it, the more I like it. Especially because adding new options only means adding a new enum value, not increasing the API space of `App`.
+
+The downside is that adding any new "settings" would require either adding a new method which is instantly deprecated, or begin fracturing into "some things can be set with an enum, other older settings with an enum or method"
+
+For the intial implementation `App` will be the only thing affected, I will chew on `Arg` some more.
+
+
+---
+
+_Referenced in [clap-rs/clap#173](../../clap-rs/clap/pulls/173.md) on 2015-08-14 22:26_
+
+---
+
+_Comment by @kbknapp on 2015-08-15 00:41_
+
+Closed with #173 
+
+
+---
+
+_Closed by @kbknapp on 2015-08-15 00:41_
+
+---

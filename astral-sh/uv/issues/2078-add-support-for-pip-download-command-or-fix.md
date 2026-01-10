@@ -1,0 +1,166 @@
+---
+number: 2078
+title: "Add support for pip download command or fix \"Failed to download distributions\" error message in offline mode"
+type: issue
+state: closed
+author: mborus
+labels:
+  - error messages
+  - windows
+  - compatibility
+assignees: []
+created_at: 2024-02-29T10:14:51Z
+updated_at: 2025-01-08T16:59:07Z
+url: https://github.com/astral-sh/uv/issues/2078
+synced_at: 2026-01-10T01:23:11Z
+---
+
+# Add support for pip download command or fix "Failed to download distributions" error message in offline mode
+
+---
+
+_Issue opened by @mborus on 2024-02-29 10:14_
+
+I've tried downloading and installing downloaded files with uv (0.1.12 (f68b2d1d5 2024-02-28)) and it seems 
+that pip's download functionality is not fully supported.
+
+My use case: I need to install Python packages offline or with internet access filtered from a USB stick.
+
+With pip I can issue this command
+
+    python -m pip download -r requirements.txt 
+
+and it will download all required files into a folder 
+
+I can then copy this folder to a target machine with filtered (or no) internet and run
+
+    python -m pip install -r requirements.txt --no-index --find-links .
+
+and install.
+
+The download command is not supported by uv.
+The offline install syntax seems to work (I used pip to download)
+but throws an error "Failed to download distributions" (when it shouldn't attempt downloads)
+
+    (312_venv) C:\data\install\python312>python -m uv pip install -r requirements.txt --find-links . --no-index
+    Resolved 225 packages in 59.80s
+    error: Failed to download distributions
+      Caused by: Failed to unzip wheel: pandas==2.2.1
+      Caused by: failed to rename file from \\?\C:\Users\<removed>\AppData\Local\uv\cache\.tmpMqkbVd to \\?\C:\Users\<removed>\AppData\Local\uv\cache\archive-v0\gG2ZOtGzn-FK9d-qIxqXW
+      Caused by: Zugriff verweigert (os error 5)
+
+After installing with pip, the next run of uv works fine and reports
+ 
+     Audited 49 packages in 199ms
+
+Testcase for Windows 10 to reproduce problem
+
+On internet connected PC
+- Download a fresh Python 3.12.2 for Windows and install it
+- Get requirements.txt from https://github.com/mborus/requirements-txt/blob/main/requirements_312_incomplete.txt
+- connect USB stick, from CMD.EXE move to the drive, create a folder and enter it.
+- copy the python installer there and the requirements.txt file
+- run "py -3.12 -m pip download pip uv" 
+- run "py -3.12 -m pip download -r requirements.txt" 
+
+On offline PC
+- Connect USB stick
+- Install Python 3.12.2 for all Users
+- Use CMD.EXE to move inside the folder
+- create a venv and activate it
+- run "python -m pip install uv pip --no-index --find-links ."
+- run "python -m uv pip install -r requirements.txt --no-index --find-links ."
+
+
+
+
+---
+
+_Label `compatibility` added by @konstin on 2024-02-29 10:25_
+
+---
+
+_Comment by @konstin on 2024-02-29 10:27_
+
+The failed to download error is misleading, the error that renaming the file failed. Could you have the same problem about some corporate security software as in https://github.com/astral-sh/uv/issues/1491 ?
+
+---
+
+_Comment by @mborus on 2024-02-29 10:46_
+
+> The failed to download error is misleading, the error that renaming the file failed. Could you have the same problem about some corporate security software as in #1491 ?
+
+Thanks, yes that's a good guess, because the reason why I install from downloads is to get around our firewall.
+And there's strange virus scanning going on. I never had problems like this with pip in years...
+
+To check I ran the whole testcase fresh and it finished without an error. So uv can install from a folder.
+
+It would be nice to change the confusing error message (and to include pip's download flag) and maybe some needed retry logic.
+
+---
+
+_Label `compatibility` removed by @konstin on 2024-02-29 10:47_
+
+---
+
+_Label `error messages` added by @konstin on 2024-02-29 10:47_
+
+---
+
+_Label `compatibility` added by @konstin on 2024-02-29 10:47_
+
+---
+
+_Comment by @omdaniel on 2024-02-29 16:46_
+
+I am not sure the pip has the same mechanism of unziping a package and then nearly instantaneously trying to access the contents, perhaps this is a side effect of the speed of execution. My hunch is that simply retrying several times after the os send a read access error would resolve this particular issue at the expense of adding some complexity to the code for an issue that probably only effects an exceedingly small fraction of users
+
+---
+
+_Comment by @konstin on 2024-03-01 10:57_
+
+I'd be fine with adding retry workarounds, but i'd need an environment to reproduce and test the fix.
+
+---
+
+_Comment by @mborus on 2024-03-01 11:20_
+
+> I'd be fine with adding retry workarounds, but i'd need an environment to reproduce and test the fix.
+
+One work around that could help terminal users is an optional parameter that asks the user to confirm retries if uv decides that it has a file access error. I could test a fix attempt mid next week when I come in for an office workday.
+
+---
+
+_Comment by @johannesloibl on 2024-06-05 06:42_
+
+We have the same problem frequently on our Windows-based Gitlab runners.
+Usually re-running solves the issue most of the times, but it's pretty annoying.
+
+```
+error: Failed to download and build `fire==0.6.0`
+  Caused by: Failed to write to the distribution cache
+  Caused by: failed to rename file from \\?\D:\glb\r8ALcmRh\0\global_projects\.....\.cache\uv\built-wheels-v3\.tmpVhMjHj\fire-0.6.0 to \\?\D:\glb\r8ALcmRh\0\global_projects\.....\.cache\uv\built-wheels-v3\index\70e6dbc41e17fe7c\fire\0.6.0\-zjUg4RGmAQ8yytArRU5B\fire-0.6.0.tar.gz
+  Caused by: Access is denied. (os error 5)
+```
+
+---
+
+_Label `windows` added by @konstin on 2024-07-02 09:33_
+
+---
+
+_Comment by @zanieb on 2024-07-04 15:27_
+
+I think regarding the Windows problem we have #4605 / #1491 and for `pip download` we have https://github.com/astral-sh/uv/issues/3163 to track these things.
+
+---
+
+_Closed by @zanieb on 2024-07-04 15:27_
+
+---
+
+_Comment by @tleonhardt on 2025-01-08 16:58_
+
+I would very much like `uv` to have the capability to do a `uv pip download` to support some rare cases when I need to deal with installing software on systems that are not connected to the Internet or a PyPI mirror.
+
+---

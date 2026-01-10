@@ -1,0 +1,53 @@
+---
+number: 5760
+title: "Add a platform filter for `uv tree`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+  - preview
+assignees: []
+created_at: 2024-08-04T18:14:29Z
+updated_at: 2024-08-05T18:51:19Z
+url: https://github.com/astral-sh/uv/issues/5760
+synced_at: 2026-01-10T01:23:52Z
+---
+
+# Add a platform filter for `uv tree`
+
+---
+
+_Issue opened by @charliermarsh on 2024-08-04 18:14_
+
+_No description provided._
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-08-04 18:14_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-08-04 18:14_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-04 18:20_
+
+---
+
+_Referenced in [astral-sh/uv#5763](../../astral-sh/uv/pulls/5763.md) on 2024-08-04 18:57_
+
+---
+
+_Referenced in [astral-sh/uv#5764](../../astral-sh/uv/pulls/5764.md) on 2024-08-04 19:25_
+
+---
+
+_Closed by @charliermarsh on 2024-08-05 18:51_
+
+---
+
+_Closed by @charliermarsh on 2024-08-05 18:51_
+
+---

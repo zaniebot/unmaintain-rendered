@@ -1,0 +1,148 @@
+---
+number: 16330
+title: "`UV_PYTHON_INSTALL_MIRROR` variable is removed after 0.9.0"
+type: issue
+state: closed
+author: birnevogel11
+labels:
+  - question
+assignees: []
+created_at: 2025-10-16T16:23:07Z
+updated_at: 2025-10-16T17:36:10Z
+url: https://github.com/astral-sh/uv/issues/16330
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# `UV_PYTHON_INSTALL_MIRROR` variable is removed after 0.9.0
+
+---
+
+_Issue opened by @birnevogel11 on 2025-10-16 16:23_
+
+### Summary
+
+Sorry to interrupt you. I check the env `UV_PYTHON_INSTALL_MIRROR`. It exists in 0.8.x, but it's removed in 0.9.x
+
+```
+$ uvx --from uv==0.8.0 uv python install --help | grep mirror -A2 | head -2
+      --mirror <MIRROR>
+          Set the URL to use as the source for downloading Python installations [env: UV_PYTHON_INSTALL_MIRROR=]
+```
+
+```
+$ uvx --from uv==0.9.0 uv python install --help | grep mirror -A2 | head -2
+      --mirror <MIRROR>                                        Set the URL to use as the source for downloading Python installations
+      --pypy-mirror <PYPY_MIRROR>                              Set the URL to use as the source for downloading PyPy installations
+```
+
+But the document still provides the env var https://docs.astral.sh/uv/reference/environment/#uv_python_install_mirror.
+
+Do you have a plan to keep it or to remove it? Thanks.
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+0.9.3
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @birnevogel11 on 2025-10-16 16:23_
+
+---
+
+_Comment by @charliermarsh on 2025-10-16 16:24_
+
+It actually is still supported, it's just no longer in the `--help`. I think we need to fix the `--help`. We have no plan to remove it.
+
+---
+
+_Comment by @birnevogel11 on 2025-10-16 16:33_
+
+@charliermarsh  Thanks for the quick reply. I try to use it in this situation. For example, the command works in 0.8.x but not for 0.9.x
+
+```bash
+UV_PYTHON_INSTALL_MIRROR=<internal-mirror-for-python-build-standalone-repo>
+
+uv tool run -p 3.12 --from black black --help
+```
+
+Then it still tries to download from public GitHub. Can you help to check?
+
+---
+
+_Comment by @charliermarsh on 2025-10-16 16:34_
+
+I'll take a look.
+
+---
+
+_Comment by @charliermarsh on 2025-10-16 16:37_
+
+Above, I think you need `export UV_PYTHON_INSTALL_MIRROR=<internal-mirror-for-python-build-standalone-repo>`? Just confirming.
+
+---
+
+_Comment by @charliermarsh on 2025-10-16 16:41_
+
+This appears to be working for me:
+```
+❯ UV_PYTHON_INSTALL_MIRROR=https://example.com cargo run -- python install 3.14  -v
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/uv python install 3.14 -v`
+DEBUG uv 0.9.3+4 (0a2b16040 2025-10-16)
+DEBUG Acquired lock for `/Users/crmarsh/.local/share/uv/python`
+DEBUG No installation found for request `3.14 (cpython-3.14-macos-aarch64-none)`
+DEBUG Found download `cpython-3.14.0-macos-aarch64-none` for request `3.14 (cpython-3.14-macos-aarch64-none)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.14.0-20251014-aarch64-apple-darwin-install_only_stripped.tar.gz to temporary location: /Users/crmarsh/.local/share/uv/python/.temp/.tmpqXolD1
+DEBUG No netrc file found
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `/Users/crmarsh/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG No credentials file found at /Users/crmarsh/.local/share/uv/credentials/credentials.toml
+error: Failed to install cpython-3.14.0-macos-aarch64-none
+  Caused by: Failed to download https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz
+  Caused by: HTTP status client error (404 Not Found) for url (https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz)
+DEBUG Released lock at `/Users/crmarsh/.local/share/uv/python/.lock`
+```
+
+```
+❯ UV_PYTHON_INSTALL_MIRROR=https://example.com cargo run -- tool run -p 3.14 --from black black --help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target/debug/uv tool run -p 3.14 --from black black --help`
+error: Failed to download https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz
+  Caused by: HTTP status client error (404 Not Found) for url (https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz)
+```
+
+---
+
+_Label `bug` removed by @zanieb on 2025-10-16 16:56_
+
+---
+
+_Label `question` added by @zanieb on 2025-10-16 16:56_
+
+---
+
+_Comment by @birnevogel11 on 2025-10-16 17:27_
+
+I did not try in this way. Thank you. Let me try to run in this way.
+
+---
+
+_Comment by @birnevogel11 on 2025-10-16 17:36_
+
+It works with `export UV_PYTHON_INSTALL_MIRROR`. Sorry for the stupid error. I will close the ticket. Thanks for the support!
+
+---
+
+_Closed by @birnevogel11 on 2025-10-16 17:36_
+
+---

@@ -1,0 +1,71 @@
+---
+number: 7598
+title: Format jupyter notebooks
+type: issue
+state: closed
+author: konstin
+labels:
+  - formatter
+  - help wanted
+assignees: []
+created_at: 2023-09-22T13:35:26Z
+updated_at: 2023-10-02T14:44:21Z
+url: https://github.com/astral-sh/ruff/issues/7598
+synced_at: 2026-01-10T01:22:47Z
+---
+
+# Format jupyter notebooks
+
+---
+
+_Issue opened by @konstin on 2023-09-22 13:35_
+
+We currently lint and fix python files and jupyter notebook but only format python files.
+
+Formatting jupyter notebooks can reuse the infrastructure we use to lint and fix them, it should mostly be a matter of formatting each cell in a loop (being mindful of leading and trailing newlines) and adding a test.
+
+---
+
+_Label `formatter` added by @konstin on 2023-09-22 13:35_
+
+---
+
+_Label `good first issue` added by @konstin on 2023-09-22 13:35_
+
+---
+
+_Label `good first issue` removed by @MichaReiser on 2023-09-27 13:38_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2023-09-27 13:38_
+
+---
+
+_Added to milestone `Formatter: Beta` by @charliermarsh on 2023-10-01 18:08_
+
+---
+
+_Comment by @charliermarsh on 2023-10-01 18:08_
+
+This isn't _required_ for the Beta but it'd be nice to have for the release announcement and such.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-01 20:10_
+
+---
+
+_Comment by @charliermarsh on 2023-10-01 20:12_
+
+I have a working version of this going.
+
+---
+
+_Referenced in [astral-sh/ruff#7749](../../astral-sh/ruff/pulls/7749.md) on 2023-10-01 23:34_
+
+---
+
+_Closed by @charliermarsh on 2023-10-02 14:44_
+
+---

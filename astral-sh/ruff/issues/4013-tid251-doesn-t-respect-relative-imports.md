@@ -1,0 +1,64 @@
+---
+number: 4013
+title: "TID251 doesn't respect relative imports"
+type: issue
+state: closed
+author: henryiii
+labels:
+  - bug
+assignees: []
+created_at: 2023-04-19T01:57:43Z
+updated_at: 2023-04-19T18:30:15Z
+url: https://github.com/astral-sh/ruff/issues/4013
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# TID251 doesn't respect relative imports
+
+---
+
+_Issue opened by @henryiii on 2023-04-19 01:57_
+
+If you ban `typing.Protocol`, then `from .typing import Protocol` is flagged, defeating the purpose of the check for that usage (forcing a wrapper module to be used). Shouldn't this require and resolve absolute names?
+
+Trying to keep a bug from happening again in cibuildwheel and ran into this. Currently looking into renaming the module to `._compat.typing`, which I think would work around this (edit: it does).
+
+---
+
+_Referenced in [pypa/cibuildwheel#1479](../../pypa/cibuildwheel/pulls/1479.md) on 2023-04-19 02:06_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-04-19 02:18_
+
+---
+
+_Comment by @charliermarsh on 2023-04-19 02:37_
+
+Yeah that seems wrong. Will look into it.
+
+---
+
+_Comment by @charliermarsh on 2023-04-19 03:41_
+
+I should be able to fix this tomorrow and include it in the upcoming release.
+
+---
+
+_Comment by @henryiii on 2023-04-19 04:19_
+
+Nice, thanks!
+
+---
+
+_Referenced in [astral-sh/ruff#4024](../../astral-sh/ruff/pulls/4024.md) on 2023-04-19 16:55_
+
+---
+
+_Referenced in [astral-sh/ruff#4025](../../astral-sh/ruff/pulls/4025.md) on 2023-04-19 17:58_
+
+---
+
+_Closed by @charliermarsh on 2023-04-19 18:30_
+
+---

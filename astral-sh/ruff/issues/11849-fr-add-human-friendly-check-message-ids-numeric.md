@@ -1,0 +1,90 @@
+---
+number: 11849
+title: "FR: Add human-friendly check/message ids. Numeric ids (E999 etc) are not human friendly - they communicate nothing on their own."
+type: issue
+state: closed
+author: gpshead
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-06-12T21:30:24Z
+updated_at: 2024-06-12T21:43:50Z
+url: https://github.com/astral-sh/ruff/issues/11849
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# FR: Add human-friendly check/message ids. Numeric ids (E999 etc) are not human friendly - they communicate nothing on their own.
+
+---
+
+_Issue opened by @gpshead on 2024-06-12 21:30_
+
+Ruff appears to support `# noqa: E666` style directives in code to disable particular lint warnings.  (per https://docs.astral.sh/ruff/linter/#error-suppression)
+
+I suggest learning from what your predecessor [PyCQA](https://meta.pycqa.org/introduction.html) tooling such as `pylint` has gone through: While under the hood checks/messages may have a number, those are an implementation detail and unfriendly to expose to humans. Nobody reading that comment can tell what it does or whether it may still apply.  Adopt canonical check names.  The first of these is obviously better:
+
+```
+from _extension import public_api  # pylint: disable=unused-import
+```
+
+Anyone reading that can understand what check is being disabled and reason about why and whether or not it makes sense.
+
+While this version is effectively meaningless to a code maintainer:
+
+```
+from _extension import public_api  # noqa: F401
+```
+
+Something's being disabled, but they have no ability to understand what.  But those aren't the canonical source and have no guarantees to actually be what behavior the number controls.  nobody is ever going to look it up.  nobody will delete it when no longer as a result.  Requiring that people add additional comments to explain away the mysterious number is undesirable.  Everything needed is communicated in one canonical readable form if the disabled thing had a name instead of a number.
+
+was it an unused import?  was it importing a name from a module?  was it a naming convention violation?  etc.
+
+I realize that ruff also has the key feature of being able to flag of a noqa trigger had no effect.  Great!  But you cannot assume everyone is always using ruff at all times and having it direct the edits to their code.  What gets recorded into code needs to be useful to maintainers even without the tooling being present.  When people do code reviews they need to be able to understand everything on a line rather than skipping mystery bits.
+
+I came here to file this as a core dev is attempting to splatter # noqa comments into standard library in https://github.com/python/cpython/pull/120421 and the lack of human understandable comments is considered a problem.
+
+---
+
+It sees little mailing list traffic these days, but there's a public trove of conversation spanning over a decade about python code quality tooling in the https://mail.python.org/archives/list/code-quality@python.org/ list archive.  I encourage ruff maintainers to join and to at try and tease out the important historical conversations at some point.
+
+All linters should aim to support common idioms for expressing things when possible - otherwise everyone winds up with code becoming an alphabet soup of directives for competing and redundant tools over time as it flows between many different developers and different tools evolve.
+
+I expect a lot of ruff's checks already line up with named-checks that pylint already has so you could adopt many of those names for starters when adding the not-a-number noqa message id feature.
+
+---
+
+_Comment by @gpshead on 2024-06-12 21:32_
+
+FWIW if you _do_ already support names, please just update your documentation to say so. :)
+
+---
+
+_Comment by @zanieb on 2024-06-12 21:35_
+
+Hi!
+
+I totally agree, numbers aren't very friendly for many forms of user interaction. We already have an issue tracking this change https://github.com/astral-sh/ruff/issues/1773 and we just haven't had the time to do the massive amount of work required to make names a first-class part of the user experience.
+
+I'm going to close this as a duplicate, but thanks for the additional context!
+
+---
+
+_Closed by @zanieb on 2024-06-12 21:35_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-06-12 21:36_
+
+---
+
+_Comment by @gpshead on 2024-06-12 21:37_
+
+oh sweet, somehow my search didn't find that one.  thanks!
+
+---
+
+_Comment by @zanieb on 2024-06-12 21:43_
+
+GitHub's search is the bane of my existence :)
+
+---

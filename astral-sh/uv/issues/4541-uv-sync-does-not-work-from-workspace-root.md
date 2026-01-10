@@ -1,0 +1,189 @@
+---
+number: 4541
+title: UV sync does not work from workspace root
+type: issue
+state: closed
+author: mjclarke94
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-06-26T10:02:03Z
+updated_at: 2024-06-29T16:44:00Z
+url: https://github.com/astral-sh/uv/issues/4541
+synced_at: 2026-01-10T01:23:39Z
+---
+
+# UV sync does not work from workspace root
+
+---
+
+_Issue opened by @mjclarke94 on 2024-06-26 10:02_
+
+`uv sync` bails out early if it sees there is no `[project]` table in `pyproject.toml`, but currently the absence of this table is used to imply that this is the workspace root. 
+
+```
+>> uv sync
+warning: `uv sync` is experimental and may change without warning.
+error: No `project` table found in: `/Users/matt/dev/sync_issue/pyproject.toml`
+```
+
+May be resolved by/need to be considered as part of #4025 
+
+---
+
+_Comment by @konstin on 2024-06-26 11:56_
+
+Could you describe the structure of your project in more detail and ideally attach your `pyproject.toml`?
+
+---
+
+_Label `needs-mre` added by @konstin on 2024-06-26 11:56_
+
+---
+
+_Comment by @mjclarke94 on 2024-06-26 16:15_
+
+Sure :) Here's a MRE
+
+```
+>> eza --tree
+.
+├── modules
+│  ├── module_a
+│  │  ├── a.py
+│  │  └── pyproject.toml
+│  └── module_b
+│     ├── b.py
+│     └── pyproject.toml
+└── pyproject.toml
+```
+
+```
+>> bat pyproject.toml
+───────┬────────────────────────────────────────────────────────────────
+       │ File: pyproject.toml
+───────┼────────────────────────────────────────────────────────────────
+   1   │ [tool.uv.workspace]
+   2   │ members = ["modules/module_a", "modules/module_b"]
+───────┴────────────────────────────────────────────────────────────────
+```
+
+
+```
+>> bat modules/module_a/pyproject.toml
+───────┬────────────────────────────────────────────────────────────────
+       │ File: modules/module_a/pyproject.toml
+───────┼────────────────────────────────────────────────────────────────
+   1   │ [project]
+   2   │ name = "module_a"
+   3   │ version = "0.0.1"
+───────┴────────────────────────────────────────────────────────────────
+```
+
+```
+>> bat modules/module_b/pyproject.toml
+───────┬────────────────────────────────────────────────────────────────
+       │ File: modules/module_b/pyproject.toml
+───────┼────────────────────────────────────────────────────────────────
+   1   │ [project]
+   2   │ name = "module_b"
+   3   │ version = "0.0.1"
+───────┴────────────────────────────────────────────────────────────────
+```
+
+```
+>> uv sync
+warning: `uv sync` is experimental and may change without warning.
+error: No `project` table found in: `/Users/matt/dev/elysia/workspace_test/pyproject.toml`
+
+>> cd modules/module_a/; uv add module-b
+warning: `uv add` is experimental and may change without warning.
+warning: No `requires-python` field found in the workspace. Defaulting to `>=3.12`.
+error: Failed to download and build: `module-a @ file:///Users/matt/dev/workspace_test/modules/module_a`
+  Caused by: Failed to parse entry for: `module-b`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+```
+
+The error message in the final command makes me think I might not have this set up properly! (Same error with `module_b` and `module-b` as a sanity check)
+
+---
+
+_Comment by @charliermarsh on 2024-06-26 16:20_
+
+These look like real errors to me, thank you.
+
+---
+
+_Comment by @charliermarsh on 2024-06-26 16:23_
+
+The `uv sync` error I can replicate in `./scripts/workspaces/albatross-virtual-workspace`.
+
+The `uv add` error I can replicate by running `cargo run add seeds --preview` in `./scripts/workspaces/albatross-virtual-workspace/packages/albatross`.
+
+---
+
+_Label `needs-mre` removed by @charliermarsh on 2024-06-26 16:23_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-06-26 16:23_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-06-26 16:23_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-26 16:26_
+
+---
+
+_Comment by @charliermarsh on 2024-06-26 16:29_
+
+For the latter, I guess we currently require that you mark the dependency as a workspace package, e.g., in `module_a/pyproject.toml`, you'd need to add:
+
+```toml
+[tool.uv.sources]
+module-b = { workspace = true }
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-06-26 16:31_
+
+Oh, ok, you need to do: `uv add module-b --workspace`. Not sure if we should just make the error better, or make this automatic. \cc @ibraheemdev
+
+---
+
+_Comment by @charliermarsh on 2024-06-26 16:31_
+
+It looks like Cargo infers that it's a workspace dep.
+
+---
+
+_Referenced in [astral-sh/uv#4552](../../astral-sh/uv/issues/4552.md) on 2024-06-26 16:32_
+
+---
+
+_Comment by @charliermarsh on 2024-06-26 16:39_
+
+We'll track `uv add` here: https://github.com/astral-sh/uv/issues/4552.
+
+I'll use this issue to track the `uv sync` behavior.
+
+
+---
+
+_Referenced in [astral-sh/uv#4555](../../astral-sh/uv/pulls/4555.md) on 2024-06-26 17:01_
+
+---
+
+_Referenced in [astral-sh/uv#4636](../../astral-sh/uv/pulls/4636.md) on 2024-06-28 20:54_
+
+---
+
+_Closed by @charliermarsh on 2024-06-29 16:44_
+
+---

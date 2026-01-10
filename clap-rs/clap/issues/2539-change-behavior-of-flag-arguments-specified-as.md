@@ -1,0 +1,192 @@
+---
+number: 2539
+title: Change behavior of flag arguments specified as env vars
+type: issue
+state: closed
+author: jacobsvante
+labels:
+  - ":money_with_wings: $10"
+assignees: []
+created_at: 2021-06-16T13:29:27Z
+updated_at: 2021-08-10T22:44:19Z
+url: https://github.com/clap-rs/clap/issues/2539
+synced_at: 2026-01-10T01:27:20Z
+---
+
+# Change behavior of flag arguments specified as env vars
+
+---
+
+_Issue opened by @jacobsvante on 2021-06-16 13:29_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+I have a little CLI app that I also execute as a CronJob in Kubernetes. For this I used Helm to set up templates and "values files" which in turn generate the required Kubernetes manifests.
+
+The little Clap CLI I've cfeated is called like this:
+```
+./sync-data --store-source-cache
+```
+
+Now when I set up the Kubernetes CronJob values file I prefer to do it the Twelve-Factor App way, specifying the options and arguments as environment variables instead (which might differ between staging/production etc).
+
+It works well for arguments and parameters. But for flags it feels a bit awkward, having to comment out the environment variable from the `values.yaml` files (there's one with base settings, one for prod env, one for staging env).
+
+So currently it looks like this:
+
+```yaml
+# base/values.yaml (base file)
+envVars:
+  SOME_ARGUMENT: "SOME VALUE"
+  # LOAD_SOURCE_CACHE: "true"
+
+# prod/values.yaml
+envVars:
+  LOAD_SOURCE_CACHE: "true"
+
+# staging/values.yaml
+envVars: {}
+  # LOAD_SOURCE_CACHE: "true"
+```
+
+As you can see I have to comment out `LOAD_SOURCE_CACHE: ""` in the base and staging values files. (The base and the prod/staging file are merged together)
+
+Example `main.rs` which shows current behavior:
+```rust
+use clap::Clap;
+
+#[derive(Clap)]
+struct Opts {
+    #[clap(long, env, takes_value = false)]
+    load_source_cache: bool,
+}
+
+fn main() {
+    let opts: Opts = Opts::parse();
+    println!("Value for load_source_cache: {}", opts.load_source_cache);
+}
+```
+
+Example output with 3.0.0-beta.2:
+```
+❯ cargo run -q
+load_source_cache: false
+❯ LOAD_SOURCE_CACHE=1 cargo run -q
+load_source_cache: true
+❯ LOAD_SOURCE_CACHE=0 cargo run -q
+load_source_cache: true
+❯ LOAD_SOURCE_CACHE=false cargo run -q
+load_source_cache: true
+❯ LOAD_SOURCE_CACHE=true cargo run -q
+load_source_cache: true
+```
+
+### Describe the solution you'd like
+
+What I would like to be able to specify in the files instead is:
+
+```yaml
+# base/values.yaml (base file)
+envVars:
+  SOME_ARGUMENT: "SOME VALUE"
+  LOAD_SOURCE_CACHE: "false"
+
+# prod/values.yaml
+envVars:
+  LOAD_SOURCE_CACHE: "true"
+
+# staging/values.yaml
+envVars:
+  LOAD_SOURCE_CACHE: "false"
+```
+
+I.e. the value set for the "flag env var" should be specified with:
+- "1" / "0"
+- "true" / "false"
+- "yes" / "no"
+
+Any other value would be ignored (maybe empty value would mean `false`).
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @jacobsvante on 2021-06-16 13:29_
+
+---
+
+_Label `C: args` added by @pksunkara on 2021-06-17 11:14_
+
+---
+
+_Label `C: settings` added by @pksunkara on 2021-06-17 11:14_
+
+---
+
+_Label `:money_with_wings: $10` added by @pksunkara on 2021-06-17 11:14_
+
+---
+
+_Referenced in [clap-rs/clap#2619](../../clap-rs/clap/pulls/2619.md) on 2021-07-26 17:53_
+
+---
+
+_Comment by @rami3l on 2021-07-30 22:49_
+
+@epage @pksunkara 
+
+Thoughts: it seems that Python developers have a rather handy function [`strtobool`] to handle this:
+
+> True values are y, yes, t, true, on and 1; false values are n, no, f, false, off and 0. Raises ValueError if val is anything else.
+
+I think this mechanism will suit most of the cases.
+
+The current possible ways to implement a flag (before #2619) are:
+1. `--flag` (determined by presence) in CLI, `FLAG=anything` in env
+2. The `pseudo-flag` pattern, which gives the library user greater freedom to choose what they want for the input
+    - This might be combined with `default_missing_value`, as suggested by @ldm0 in https://github.com/clap-rs/clap/issues/1649#issuecomment-890316771.
+
+I propose that we can have in the future:
+1. `--flag` + `--flag=bool` (`bool` is determined by [`strtobool`]) in CLI, `FLAG=bool` in env
+2. The `pseudo-flag` pattern (remains unchanged)
+
+[`strtobool`]: https://docs.python.org/3/distutils/apiref.html#distutils.util.strtobool
+
+I'm aware of the fact that for CLI flags there is a separate issue https://github.com/clap-rs/clap/issues/1649, so first I'd like to focus on the possibility of using the [`strtobool`] approach just for env args.
+
+---
+
+_Referenced in [clap-rs/clap#1649](../../clap-rs/clap/issues/1649.md) on 2021-08-02 17:59_
+
+---
+
+_Referenced in [clap-rs/clap#2664](../../clap-rs/clap/pulls/2664.md) on 2021-08-05 19:43_
+
+---
+
+_Referenced in [TeXitoi/structopt#488](../../TeXitoi/structopt/issues/488.md) on 2021-08-09 13:02_
+
+---
+
+_Closed by @pksunkara on 2021-08-10 22:44_
+
+---
+
+_Referenced in [TeXitoi/structopt#503](../../TeXitoi/structopt/issues/503.md) on 2021-10-11 12:05_
+
+---
+
+_Referenced in [solana-labs/solana-program-library#4511](../../solana-labs/solana-program-library/issues/4511.md) on 2023-06-08 23:26_
+
+---

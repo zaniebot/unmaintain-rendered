@@ -1,0 +1,86 @@
+---
+number: 8428
+title: Cannot  download Docker image
+type: issue
+state: closed
+author: hipertracker
+labels:
+  - question
+  - needs-mre
+assignees: []
+created_at: 2024-10-21T21:25:14Z
+updated_at: 2024-10-25T19:59:11Z
+url: https://github.com/astral-sh/uv/issues/8428
+synced_at: 2026-01-10T01:24:28Z
+---
+
+# Cannot  download Docker image
+
+---
+
+_Issue opened by @hipertracker on 2024-10-21 21:25_
+
+From the web site: https://github.com/astral-sh/uv/pkgs/container/uv/292207825?tag=python3.13-bookworm
+
+```
+Install from the command line
+
+$ docker pull ghcr.io/astral-sh/uv:python3.13-bookworm
+```
+
+It does not work:
+
+`Error response from daemon: Head "https://ghcr.io/v2/astral-sh/uv/manifests/python3.13-bookworm": denied: denied`
+
+I am using macOS 15.0.1 but that problem is not related to OS
+
+---
+
+_Comment by @charliermarsh on 2024-10-21 21:40_
+
+Unfortunately this works just fine for me -- I suspect it must be some problem on your local machine?
+
+```
+❯ docker pull ghcr.io/astral-sh/uv:python3.13-bookworm
+python3.13-bookworm: Pulling from astral-sh/uv
+c1e0ef7b956a: Pull complete
+95b894d63c77: Pull complete
+cb5594266b1b: Pull complete
+59d4884f8528: Pull complete
+d2dab3c2913c: Pull complete
+19c44926628f: Pull complete
+8c7b7fcf5c89: Pull complete
+aa102106d633: Pull complete
+Digest: sha256:4d581fc3122da64c46092b55cca4239e15b677db200c9e133f446c0adf5bf35d
+Status: Downloaded newer image for ghcr.io/astral-sh/uv:python3.13-bookworm
+ghcr.io/astral-sh/uv:python3.13-bookworm
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview ghcr.io/astral-sh/uv:python3.13-bookworm
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-21 21:40_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-10-22 01:23_
+
+---
+
+_Closed by @charliermarsh on 2024-10-22 23:55_
+
+---
+
+_Comment by @hipertracker on 2024-10-23 20:07_
+
+It was a fault of Docker Desktop for Mac. After reinstallation the problem has gone.
+
+---
+
+_Comment by @jareks on 2024-10-25 19:58_
+
+For me, I just had to `docker login  ghcr.io`. Instructions: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
+
+---

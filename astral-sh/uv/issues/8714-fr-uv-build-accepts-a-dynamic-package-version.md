@@ -1,0 +1,317 @@
+---
+number: 8714
+title: "FR: `uv build` accepts a dynamic \"package version\" argument"
+type: issue
+state: open
+author: charlesnicholson
+labels:
+  - wish
+assignees: []
+created_at: 2024-10-31T01:32:41Z
+updated_at: 2025-07-25T21:33:58Z
+url: https://github.com/astral-sh/uv/issues/8714
+synced_at: 2026-01-10T01:24:31Z
+---
+
+# FR: `uv build` accepts a dynamic "package version" argument
+
+---
+
+_Issue opened by @charlesnicholson on 2024-10-31 01:32_
+
+When we build "official" Python distribution package wheels from CI, we version the packages dynamically based on the current git tag. This is surprisingly complicated to do!
+
+The `build` package doesn't support a dynamic version supplied from the command-line: https://build.pypa.io/en/stable/#python--m-build-options
+
+So, we ended up using this thing: https://github.com/pypa/setuptools-scm?tab=readme-ov-file#pyprojecttoml-usage
+
+Our pyproject.toml files look like this:
+```
+[project]
+name = "my_company.package"
+dynamic = ["version"]
+...
+```
+
+And then we have to provide the version as an environment variable to the build:
+```
+SETUPTOOLS_SCM_PRETEND_VERSION=1.2.3 path/to/venv/bin/python -m build ...
+```
+
+It's all very roundabout and contrived; I just want to do this:
+```
+path/to/venv/bin/python -m build --version=1.2.3 ...
+```
+
+I don't know if there's appetite in extending `uv build` to solve this with fewer packages and with a simple command-line, but it would make our lives a lot simpler, and we'd be able to ditch both the `build` and the `setuptools-scm` packages in favor of stock `uv`.
+
+---
+
+_Comment by @zanieb on 2024-10-31 04:49_
+
+Seems sensible, although we probably need our own build backend to support this? I presume setting the dynamic version is build backend dependent and we're unlikely to tie into their options.
+
+You could also change the version statically, per the workflow in https://github.com/astral-sh/uv/issues/6298, though that's annoying because if you want the committed `pyproject.toml` to be correct you need to do it ahead of time.
+
+As a simple workaround, I set the version to `0.0.0` then do [`sed -i -e "s/0.0.0/${GITHUB_REF#refs/*/}/" pyproject.toml`](https://github.com/astral-sh/packse/blob/70abfe8f64a9746452c02cb514942f879c7eaccc/.github/workflows/release.yaml#L34-L36).
+
+---
+
+_Comment by @charlesnicholson on 2024-10-31 12:24_
+
+Thanks for the response! Yeah, I landed on the same options you did, I think- in the end I chose not to do in-place modifications of the git `pyproject.toml` files b/c we can sometimes do a "versioned" build locally and we have to remember to git-reset all of the toml files. So for us it's "better" to do this Rube Goldberg silliness :)
+
+
+---
+
+_Comment by @charlesnicholson on 2024-10-31 12:29_
+
+Also, re-reading your response saying "we're unlikely to tie into their options"- Sorry if I wasn't clear; I would love to fully abandon this `setuptools-scm` thing; it's just totally a hack I'm using because it just happens to have an environment-variable interface to setting the version in the distribution package!
+
+---
+
+_Comment by @zanieb on 2024-10-31 19:23_
+
+There's https://github.com/astral-sh/uv/issues/3957 to track implementation of our own build backend.
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-11-01 13:40_
+
+---
+
+_Comment by @paveldikov on 2024-11-02 00:45_
+
++1 on a UX/ecosystem level. Versioning is such a fundamental build concern and it is so unfortunate that developers have to dance around it with build-backend plugins -- it's super clunky and fragile. I can similarly attest to having burnt a lot of time shimming things with `setuptools-scm` and the like. Frankly, package versioning should have been externalised to begin with.
+
+Architecturally though I'm a -0.5 as this somewhat violates PEP 517. In the current standard, dynamic versioning is fully controlled by the build-backend (as regrettable as this is). And so the only way for the frontend can influence the choice of version, is if the backend is actively willing to be influenced.
+
+I.e. `uv build --version 1.2.3` would _only_ reliably result in a `1.2.3` version if and only if the build-backend is `uv` itself, or is similarly aware of some `uv`-specific build config API. A non-`uv`-aware backend would silently ignore this option, or even error out because it can't plug the metadata gap. This _may_ be an acceptable compromise in the interim, FWIW.
+
+(IMHO this problem should ultimately be solved at the PEP level)
+
+---
+
+_Comment by @charlesnicholson on 2024-11-02 00:50_
+
+Agreed, after reading up more on this, a `uv` build backend seems like the only sane place for such an implementation to live. 
+
+---
+
+_Comment by @wu-clan on 2024-11-03 09:15_
+
+pdm does a great job at this：https://pdm-project.org/en/latest/reference/pep621/
+
+---
+
+_Comment by @zanieb on 2024-11-03 15:20_
+
+@wu-clan I don't see how that's any different than uv? That just looks like a PEP 621 reference guide.
+
+---
+
+_Comment by @wu-clan on 2024-11-03 16:28_
+
+@zanieb Yes, if you look closely, you'll find https://backend.pdm-project.org/metadata/#dynamic-project-version, which is a very useful feature, especially for libraries
+
+---
+
+_Referenced in [canonical/testflinger#537](../../canonical/testflinger/pulls/537.md) on 2025-04-02 20:05_
+
+---
+
+_Comment by @vancromy on 2025-05-07 11:08_
+
+With uv_build now in preview mode and pushed into main it would be amazing to get this FR implemented. We've been using https://github.com/mtkennerly/poetry-dynamic-versioning so far (very similar to setuptools_scm and hatch-vcs) and it would be the last hurdle for us to port over to uv (which is so fast :rocket:) :)
+
+---
+
+_Comment by @snus-kin on 2025-07-03 13:29_
+
+Not sure if there's a better place to put this comment but now that the uv build backend is stable is this issue tracked elsewhere? I'd like to use it but am stumbling over dynamic versioning, we'd previously used setuptools and a `version.py` file for this. `sed` is a possible workaround but would be nice if it was supported more officially.
+
+---
+
+_Comment by @seandstewart on 2025-07-03 14:47_
+
+Piling on here - a `--version=` flag would be great and is a general way to solve dynamic versions and is the only thing blocking my organization from adoption of uv's new build backend. 
+
+It would also be very slick to have some sort of extension like https://github.com/ofek/hatch-vcs which could do the work of pulling in the version number from VCS and injecting it into the package metadata directly. 
+
+---
+
+_Comment by @zanieb on 2025-07-03 14:56_
+
+Can ya'll clarify why running `uv version` before `uv build` is insufficient?
+
+---
+
+_Comment by @jzazo on 2025-07-03 15:25_
+
+I was using [uv-dynamic-versioning](https://github.com/ninoseki/uv-dynamic-versioning) to calculate dev versions when I push to main. When I tag a version manually, then `uv version` would work, but then this has to be committed and locked prior to publishing the package (which I guess CI could do). But the dynamic solution allows to not commit anything while relying on VCS tags and works also for dev versions.
+
+---
+
+_Comment by @seandstewart on 2025-07-03 18:53_
+
+I've done this many ways. The four main patterns I've come across or used:
+
+Static version artifact, automated versioning:
+1. On merge to main, generate new version
+2. Update `version` in my toml and/or the `__version__` const in the package ->
+3. Commit + tag the change
+4. Push new commit + tag to main
+5. On tag creation
+6. Build distribution and upload
+7. Generate Release artifact.
+
+Dynamic version from vcs, automated versioning:
+1. On merge to main, generate new version
+2. Tag current commit and push
+3. Build distribution and upload to registry
+4. Generate Release and upload distribution artifacts.
+
+Static version artifact, manual versioning:
+1. Create Release artifact (automatically creates your tag).
+2. On tag creation
+3. Update the version in my toml and/or the `__version__` const in the package.
+4. Commit + push the change
+5. Build distribution and upload to registry
+6. Update Release with distribution artifacts.
+
+Dynamic version artifact, manual versioning:
+1. Create Release artifact (automatically creates your tag).
+2. On tag creation
+3. Build distribution and upload to registry
+4. Update Release with distribution artifacts.
+
+Removing a static version from the toml/package reduces the complexity of your CD pipeline. It also means you don't have to juggle permissions and secrets for enabling the automation to push to source control.
+
+Another thing worth noted that is hinted at in the above comment - if you don't have to update the toml, then you don't have to regenerate your lock. This is really useful for code bases which may ship a container image, as it means they don't have to jump through hoops to avoid busting the container build cache just because they updated the version number of the application. Here's an example Dockerfile which demonstrates how one might dance around this issue (pulled from a real production application using poetry - org-specifics redacted):
+
+```Dockerfile
+FROM python:3.12 as poetry
+
+WORKDIR /app
+
+ENV POETRY_VERSION="1.8.5"
+ENV POETRY_URL="https://install.python-poetry.org"
+
+RUN curl -sSL "${POETRY_URL}" | python3 -
+
+COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
+RUN /root/.local/bin/poetry export --only=main -f requirements.txt -o requirements.txt
+
+FROM python:3.12-slim as dependencies
+
+WORKDIR /app
+
+ENV PIP_DEFAULT_TIMEOUT=100 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_PREFER_BINARY=1 \
+    PIP_NO_INPUT=1
+
+COPY --from=poetry /app/requirements.txt requirements.txt
+
+RUN python -m venv .venv \
+    && .venv/bin/pip install -r requirements.txt
+
+FROM python:3.12-slim as main
+
+WORKDIR /app
+
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONHASHSEED=random \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    TZ="UTC"
+
+COPY --from=dependencies /app/.venv .venv
+COPY schema schema
+COPY src src
+COPY pyproject.toml pyproject.toml
+RUN .venv/bin/pip install -e .
+
+EXPOSE 8080/tcp
+ENTRYPOINT [".venv/bin/myapp"]
+CMD ["start"]
+```
+
+As you can see, you have to create a dedicated stage just to extract the dependency pins in a way which doesn't depend upon the pyproject.toml until *after* you've installed the dependencies into your build env. If the versioning were dynamic, the Dockerfile could be as little as a single stage.
+
+---
+
+_Comment by @cbrnr on 2025-07-04 06:13_
+
+I've used the dynamic version feature with hatchling because I want to have the `__version__` attribute in a single place (e.g., `__init__.py`), and I don't want to manually sync it in another place (i.e., `pyproject.toml`).
+
+---
+
+_Comment by @snus-kin on 2025-07-04 08:30_
+
+> Can ya'll clarify why running `uv version` before `uv build` is insufficient?
+
+Cheers this works better for me I think, doing something like this for the version attribute to use in code (we use this for e.g. logging)
+
+```py
+import importlib.metadata
+
+__version__ = importlib.metadata.version("my_module")
+```
+
+Worth mentioning that the service we're using for this is pretty lax around versioning anyways, probably this is less appropriate for libraries etc. 
+
+---
+
+_Comment by @konstin on 2025-07-04 10:01_
+
+> I've used the dynamic version feature with hatchling because I want to have the `__version__` attribute in a single place (e.g., `__init__.py`), and I don't want to manually sync it in another place (i.e., `pyproject.toml`).
+
+For this case specifically I strongly recommend the `importlib.metadata` solution that @snus-kin shared. Nowadays, `pyproject.toml` is much better suited as the canonical location of this information, where it can be discovered by tools.
+
+---
+
+_Comment by @my1e5 on 2025-07-04 11:38_
+
+@snus-kin 
+
+> now that the uv build backend is stable is this issue tracked elsewhere?
+
+There is
+
+* https://github.com/astral-sh/uv/issues/14037
+* https://github.com/astral-sh/uv/issues/11718
+
+---
+
+_Referenced in [gt-sse-center/copier-UvScaffolding#26](../../gt-sse-center/copier-UvScaffolding/issues/26.md) on 2025-07-18 14:23_
+
+---
+
+_Comment by @charlesnicholson on 2025-07-25 21:26_
+
+It's a little subtle, but if this is planned to be built I'd greatly prefer a way to customize the version string instead of having uv simply grab the tag straight from git. Sometimes we want to edit or decorate the tag, like removing suffix metadata etc. Being able to pass an arbitrary (legal) version as a command-line arg or environment variable to `uv build` would be much more flexible. 
+
+---
+
+_Referenced in [astral-sh/uv#14946](../../astral-sh/uv/issues/14946.md) on 2025-07-28 20:54_
+
+---
+
+_Referenced in [jeandemeusy/api-lib#21](../../jeandemeusy/api-lib/issues/21.md) on 2025-08-22 21:10_
+
+---
+
+_Referenced in [TorchSim/torch-sim#311](../../TorchSim/torch-sim/pulls/311.md) on 2025-10-27 14:51_
+
+---
+
+_Referenced in [bmwcarit/zubbi#110](../../bmwcarit/zubbi/pulls/110.md) on 2025-11-03 10:34_
+
+---
+
+_Referenced in [sky-uk/kfp-operator#922](../../sky-uk/kfp-operator/pulls/922.md) on 2025-11-10 14:25_
+
+---

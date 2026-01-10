@@ -1,0 +1,40 @@
+---
+number: 4736
+title: "INP001: there is no automatic fixer"
+type: issue
+state: open
+author: saippuakauppias
+labels:
+  - fixes
+assignees: []
+created_at: 2023-05-30T21:47:07Z
+updated_at: 2023-05-31T04:43:47Z
+url: https://github.com/astral-sh/ruff/issues/4736
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# INP001: there is no automatic fixer
+
+---
+
+_Issue opened by @saippuakauppias on 2023-05-30 21:47_
+
+There is no automatic fix for rule https://beta.ruff.rs/docs/rules/implicit-namespace-package/ , which could simply create a `__init__.py` file next to the file from the error.
+
+In my opinion, there are no other options here when file `__init__.py` is not required, so a fixer can be made.
+
+---
+
+_Comment by @charliermarsh on 2023-05-31 04:43_
+
+This seems reasonable but we don't have support for fixes that modify the _filesystem_ right now, only fixes that modify file contents.
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-05-31 04:43_
+
+---
+
+_Referenced in [astral-sh/ruff#15029](../../astral-sh/ruff/issues/15029.md) on 2024-12-17 10:52_
+
+---

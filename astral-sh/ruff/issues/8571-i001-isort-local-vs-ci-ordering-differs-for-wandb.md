@@ -1,0 +1,138 @@
+---
+number: 8571
+title: I001 (isort) local vs CI ordering differs for wandb
+type: issue
+state: closed
+author: StuartMesham
+labels:
+  - question
+assignees: []
+created_at: 2023-11-08T22:11:14Z
+updated_at: 2023-11-09T07:20:48Z
+url: https://github.com/astral-sh/ruff/issues/8571
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# I001 (isort) local vs CI ordering differs for wandb
+
+---
+
+_Issue opened by @StuartMesham on 2023-11-08 22:11_
+
+# Summary
+
+Isort places the wandb import at different positions when I run ruff locally compared to on my CI.
+
+# Problem description
+
+In [this file](https://github.com/StuartMesham/transformer-stu/blob/e141468a96e2c58a9a90135bc8ec84008d1c05d5/train.py) I have the following imports:
+
+```python
+import os.path
+import shutil
+from functools import partial
+from glob import glob
+
+import click
+import jax
+import jax.numpy as jnp
+import optax
+import tensorflow as tf
+import tensorflow_text as tf_text
+import wandb
+from flax.training.early_stopping import EarlyStopping
+from flax.training.train_state import TrainState
+from jax import random
+from orbax.checkpoint import (
+    CheckpointManager,
+    CheckpointManagerOptions,
+    PyTreeCheckpointer,
+)
+from tqdm.auto import tqdm
+
+from data_loading import bucket, get_translation_dataset
+from transformer import Transformer
+```
+
+This passes (is unmodified by) my [GitHub action](https://github.com/StuartMesham/transformer-stu/blob/e141468a96e2c58a9a90135bc8ec84008d1c05d5/.github/workflows/ci.yml). When I run it [locally via pre-commit](https://github.com/StuartMesham/transformer-stu/blob/e141468a96e2c58a9a90135bc8ec84008d1c05d5/.pre-commit-config.yaml) using `pre-commit run --all-files`, it makes the following modification:
+
+```diff
+@@ -9,7 +9,6 @@
+ import optax
+ import tensorflow as tf
+ import tensorflow_text as tf_text
+-import wandb
+ from flax.training.early_stopping import EarlyStopping
+ from flax.training.train_state import TrainState
+ from jax import random
+@@ -20,6 +19,7 @@
+ )
+ from tqdm.auto import tqdm
+ 
++import wandb
+ from data_loading import bucket, get_translation_dataset
+ from transformer import Transformer
+```
+
+If I remove the `--fix` argument from my `.pre-commit-config.yaml` I see that it's outputting the `I001` (Import block is un-sorted or un-formatted) error code.
+
+# Expected behaviour
+
+The file should not be modified run I run `pre-commit run --all-files` locally.
+
+# My environment
+
+I'm using ruff version 0.4.1.
+
+Here's my `ruff.toml`:
+```toml
+target-version = "py311"
+
+select = ["F", "W", "I", "D", "UP"]
+ignore = ["D100"]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.pycodestyle]
+max-doc-length = 120
+```
+
+Thanks in advance for any help!
+
+---
+
+_Comment by @charliermarsh on 2023-11-09 00:43_
+
+@StuartMesham - This happens occasionally with `wandb` specifically because it often creates a `wandb` directory in your project, and then Ruff thinks that this `wandb` directory means `wandb` is a first-party dependency. Can you try either removing your local `wandb` directory (if it exists), or marking it as known-third-party?
+
+```toml
+[isort]
+known-third-party = ["wandb"]
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2023-11-09 01:59_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-11-09 01:59_
+
+---
+
+_Renamed from "I001 (isort) inconsistent results on Apple Silicon vs x86" to "I001 (isort) local vs CI ordering differs for wandb" by @StuartMesham on 2023-11-09 07:18_
+
+---
+
+_Comment by @StuartMesham on 2023-11-09 07:20_
+
+Thanks @charliermarsh that solved it!
+
+I have updated the issue title and description to make it easier for others to find.
+
+---
+
+_Closed by @StuartMesham on 2023-11-09 07:20_
+
+---

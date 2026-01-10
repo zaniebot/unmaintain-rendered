@@ -1,0 +1,141 @@
+---
+number: 4728
+title: Offline mode confusion
+type: issue
+state: open
+author: minusf
+labels: []
+assignees: []
+created_at: 2024-07-02T12:49:11Z
+updated_at: 2024-11-06T19:59:27Z
+url: https://github.com/astral-sh/uv/issues/4728
+synced_at: 2026-01-10T01:23:40Z
+---
+
+# Offline mode confusion
+
+---
+
+_Issue opened by @minusf on 2024-07-02 12:49_
+
+Here I go again trying to use `uv` as poor man's devpi offline replacement.
+
+Some confusions about this were cleared up in an issue before (https://github.com/astral-sh/uv/issues/3468)
+
+Everything is working as explained there, however it doesn't seem to work for private packages (not on pypi).
+
+Consider the following case (first I download our private package, but it could come from extra index url as well):
+```
+$ uv pip install /path/to/private_package-0.1.whl  # ends up in uv cache
+$ uv pip install all_the_rest_from_pypi
+```
+
+when blowing away this `venv` and trying to recreate it offline, `private_package.whl` is not picked up from the cache (`~/Library/Caches/uv/wheels-v1/url/...`):
+
+```
+$ uv pip install private_package==0.1
+  × No solution found when resolving dependencies:
+  ╰─▶ Because private_package was not found in the package registry and you require private_package==0.1, we can conclude that the requirements are unsatisfiable.
+
+$ uv --offline pip install private_package==0.1
+  × No solution found when resolving dependencies:
+  ╰─▶ Because private_package was not found in the cache and you require private_package==0.1, we can conclude that the requirements are unsatisfiable.
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+      hint: Packages were unavailable because the network was disabled
+```
+
+My happy path expectation was that once I add `private_package-0.1.whl` to an existing `venv`, it will be cached forever and I don't need to setup an extra index url and/or keep the private packages offline manually in some folder.
+
+
+
+---
+
+_Comment by @ewianda on 2024-11-06 15:11_
+
+Slightly related to this is that if run `uv pip compile` repeatedly with no change to the `requirements.in` , it doesn't utilize the cache
+
+---
+
+_Comment by @zanieb on 2024-11-06 15:34_
+
+It seems likely that we are attempting to check the index for available package versions and your private index does not allow caching?
+
+
+
+---
+
+_Comment by @zanieb on 2024-11-06 15:34_
+
+Can you provide verbose logs with `-v`? Using a minimal `requirements.in` would be nice. Be sure to redact any credentials.
+
+---
+
+_Comment by @ewianda on 2024-11-06 17:47_
+
+>  your private index does not allow caching?z
+
+
+I think this is the part that confuses me. I would have thought that the caching depends on the file being present in `~/.cache/uv` possibly by using the sha256 or something similar and not on the pypi index.
+
+I am using Google Artifact registry which doesn't support index cache
+
+---
+
+_Comment by @zanieb on 2024-11-06 17:50_
+
+We cache HTTP responses from the index — if they do not allow caching we cannot use those to see what packages are available.
+
+You'll need to provide more information as requested above for me to know if this is relevant here.
+
+---
+
+_Comment by @ewianda on 2024-11-06 19:21_
+
+[re_install.txt](https://github.com/user-attachments/files/17651967/re_install.txt)
+[clean_install.txt](https://github.com/user-attachments/files/17651968/clean_install.txt)
+
+
+---
+
+_Comment by @zanieb on 2024-11-06 19:27_
+
+Sorry it looks like those both succeed?
+
+---
+
+_Comment by @ewianda on 2024-11-06 19:43_
+
+My bad. I think I might have hijacked this issue; I was pointing out that since the private index doesn't use the local file as a cache, It takes as long to reinstall even with no change to the requirements.
+
+ If I pass `--offline`, I get the same error as OP
+ 
+ 
+
+---
+
+_Comment by @zanieb on 2024-11-06 19:59_
+
+There it looks like there are two problems:
+
+```
+           uv_client::cached_client::read_and_parse_cache file=/home/ewianda/.cache/uv/wheels-v2/index/5b6580228aafb78d/cowsay/cowsay-6.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path="/home/ewianda/.cache/uv/wheels-v2/index/5b6580228aafb78d/cowsay/cowsay-6.1-py3-none-any.msgpack"
+            0.718341s   0ms DEBUG uv_client::cached_client Found stale response for: https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a
+            0.718379s   0ms DEBUG uv_client::cached_client Sending revalidation request for: https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a
+           uv_client::cached_client::revalidation_request url="https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a"
+            1.034380s 316ms DEBUG uv_client::cached_client Found modified response for: https://us-python.pkg.dev/b6i-cicd/benchpython/cowsay/cowsay-6.1-py3-none-any.whl#sha256=274b1e6fc1b966d53976333eb90ac94cb07a450a700b455af9fbdf882244b30a
+           uv_client::cached_client::new_cache file=/home/ewianda/.cache/uv/wheels-v2/index/5b6580228aafb78d/cowsay/cowsay-6.1-py3-none-any.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=cowsay-6.1-py3-none-any.whl
+        1.034478s 316ms WARN uv_client::registry_client Range requests not supported for cowsay-6.1-py3-none-any.whl; streaming wheel
+```
+
+"Found stale response for" indicates that the cached HTTP response is outdated, i.e., we have exceeded the cache time and must check again.
+
+"read_metadata_range_request wheel=cowsay-6.1-py3-none-any.whl" indicates that the index does not support a metadata endpoint and we must read the wheel to determine the package's requirements. I believe we can install from cached wheels, but not read metadata from them. 
+
+As a bonus problem, "Range requests not supported" indicates the registry does not support range requests so we must stream the whole wheel to determine the packge's requirements.
+
+I believe the solution to this would be to use a proper `uv.lock` file where we can pin to specific download URLs and avoid having to read metadata from the index.
+
+---

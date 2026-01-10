@@ -1,0 +1,236 @@
+---
+number: 5822
+title: "`arg_required_else_help` with no arguments."
+type: issue
+state: closed
+author: Leandros
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-11-18T08:00:17Z
+updated_at: 2024-11-18T16:17:06Z
+url: https://github.com/clap-rs/clap/issues/5822
+synced_at: 2026-01-10T01:28:17Z
+---
+
+# `arg_required_else_help` with no arguments.
+
+---
+
+_Issue opened by @Leandros on 2024-11-18 08:00_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.81.0 (eeb90cda1 2024-09-04)
+
+### Clap Version
+
+4.5.21
+
+### Minimal reproducible code
+
+```rust
+use clap::Command;
+
+fn main() {
+    let cli = Command::new("repro")
+        .subcommand(Command::new("start").arg_required_else_help(true))
+        .arg_required_else_help(true);
+
+    let matches = cli.get_matches();
+    match matches.subcommand() {
+        Some(("start", _args)) => {
+            println!("start the engines!");
+        }
+        Some(_) | None => unreachable!(),
+    }
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- start
+```
+
+### Actual Behaviour
+
+It prints the help.
+
+### Expected Behaviour
+
+It should print `start the engines!`; because it executes the `start` sub-command without arguments, and because there are no required arguments, no arguments are missing.
+
+### Additional Context
+
+The same issue happens even if there are non-required arguments. Below is another repro, which includes a non-required argument:
+
+```rust
+use clap::{Arg, ArgAction, Command};
+
+fn main() {
+    let cli = Command::new("repro")
+        .subcommand(
+            Command::new("start").arg_required_else_help(true).arg(
+                Arg::new("verbose")
+                    .short('v')
+                    .long("verbose")
+                    .action(ArgAction::SetTrue)
+                    .required(false),
+            ),
+        )
+        .arg_required_else_help(true);
+
+    let matches = cli.get_matches();
+    match matches.subcommand() {
+        Some(("start", _args)) => {
+            println!("start the engines!");
+        }
+        Some(_) | None => unreachable!(),
+    }
+}
+```
+
+It still inhibits this behavior.
+
+### Debug Output
+
+```
+     Running `target/debug/clap_repro start`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="repro"
+[clap_builder::builder::command]Command::_propagate:repro
+[clap_builder::builder::command]Command::_check_help_and_version:repro expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:repro
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"start"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("start")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some("start")
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of start to "clap_repro start"
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of start to "repro-start"
+[clap_builder::builder::command]Command::_build: name="start"
+[clap_builder::builder::command]Command::_propagate:start
+[clap_builder::builder::command]Command::_check_help_and_version:start expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:start
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=start
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:verbose:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="verbose", source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: ["false"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::write_help_err: repro-start, use_long=false
+[  clap_builder::output::help]write_help
+[clap_builder::output::help_template]HelpTemplate::new cmd=start, use_long=false
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=verbose
+[clap_builder::output::help_template]HelpTemplate::write_templated_help
+[clap_builder::output::help_template]HelpTemplate::write_before_help
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::write_help_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=verbose
+[clap_builder::builder::command]Command::groups_for_arg: id="verbose"
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: [OPTIONS] required
+[ clap_builder::output::usage]Usage::write_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::write_subcommand_usage
+[ clap_builder::output::usage]Usage::create_usage_no_title: usage=clap_repro start [OPTIONS]
+[clap_builder::output::help_template]HelpTemplate::write_all_args
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=verbose
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_args Options
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=verbose
+[clap_builder::output::help_template]HelpTemplate::write_args: arg="verbose" longest=9
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_args: arg="help" longest=9
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=verbose
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--verbose
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--help
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--verbose
+[clap_builder::output::help_template]HelpTemplate::short
+[clap_builder::output::help_template]HelpTemplate::long
+[clap_builder::output::help_template]HelpTemplate::align_to_about: arg=verbose, next_line_help=false, longest=9
+[clap_builder::output::help_template]HelpTemplate::align_to_about: positional=false arg_len=9, spaces=2
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=17, spaces=0, avail=83
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--help
+[clap_builder::output::help_template]HelpTemplate::short
+[clap_builder::output::help_template]HelpTemplate::long
+[clap_builder::output::help_template]HelpTemplate::align_to_about: arg=help, next_line_help=false, longest=9
+[clap_builder::output::help_template]HelpTemplate::align_to_about: positional=false arg_len=6, spaces=5
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=17, spaces=10, avail=83
+[clap_builder::output::help_template]HelpTemplate::write_after_help
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+Usage: clap_repro start [OPTIONS]
+
+Options:
+  -v, --verbose
+  -h, --help     Print help
+```
+
+---
+
+_Label `C-bug` added by @Leandros on 2024-11-18 08:00_
+
+---
+
+_Comment by @epage on 2024-11-18 15:33_
+
+> It should print start the engines!; because it executes the start sub-command without arguments, and because there are no required arguments, no arguments are missing.
+
+I think there might be confusion with `arg_required_else_help`.  It isn't saying "if an argument is required and missing, print the help" but "any argument is required and if one isn't present, print the help".  See also [the docs](https://docs.rs/clap/latest/clap/struct.Command.html#method.arg_required_else_help).
+
+So in case given, `start` has `arg_required_else_help(true)` and with `cargo run -- start`, no arguments are passed to `start`, so help is printed.  This is working as expected.  Users need to determine whether `arg_required_else_help` is pertinent for their CLI.  For example, `clap_derive` only sets it when a subcommand is required as that is the only time it knows for sure that an argument is required.
+
+---
+
+_Comment by @Leandros on 2024-11-18 16:17_
+
+Interesting, so it's working as expected. Somehow, for me personally, this wasn't clear from the one-liner in the documentation that you're referring to.
+
+I'll close this.
+
+---
+
+_Closed by @Leandros on 2024-11-18 16:17_
+
+---

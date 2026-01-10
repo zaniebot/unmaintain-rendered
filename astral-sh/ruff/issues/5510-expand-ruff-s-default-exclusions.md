@@ -1,0 +1,67 @@
+---
+number: 5510
+title: "Expand Ruff's default exclusions"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - configuration
+assignees: []
+created_at: 2023-07-04T18:57:10Z
+updated_at: 2023-07-04T20:25:18Z
+url: https://github.com/astral-sh/ruff/issues/5510
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Expand Ruff's default exclusions
+
+---
+
+_Issue opened by @charliermarsh on 2023-07-04 18:57_
+
+Like Black, I'd like to add:
+
+- `.vscode`
+- `.ipynb_checkpoints`
+- `.pytest_cache`
+
+Unlike Black, I'd also like to add `.pyenv`.
+
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-07-04 18:57_
+
+---
+
+_Comment by @charliermarsh on 2023-07-04 18:57_
+
+Anyone for or against this?
+
+---
+
+_Comment by @dhruvmanila on 2023-07-04 19:11_
+
+What's the motivation behind `.pyenv`? Isn't that probably always going to be in the home directory unlike others which could be in a project directory?
+
+---
+
+_Comment by @charliermarsh on 2023-07-04 19:12_
+
+It's relevant in the context of VS Code: https://github.com/astral-sh/ruff/discussions/5509
+
+---
+
+_Comment by @dhruvmanila on 2023-07-04 19:16_
+
+Makes sense then! No objections from my side 👍
+
+---
+
+_Referenced in [astral-sh/ruff#5513](../../astral-sh/ruff/pulls/5513.md) on 2023-07-04 20:11_
+
+---
+
+_Closed by @charliermarsh on 2023-07-04 20:25_
+
+---

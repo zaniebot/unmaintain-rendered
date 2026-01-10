@@ -1,0 +1,50 @@
+---
+number: 13337
+title: RUF001 gives a false-positive with an emoji
+type: issue
+state: open
+author: RubenVanEldik
+labels:
+  - bug
+assignees: []
+created_at: 2024-09-12T07:42:50Z
+updated_at: 2024-11-17T17:26:16Z
+url: https://github.com/astral-sh/ruff/issues/13337
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# RUF001 gives a false-positive with an emoji
+
+---
+
+_Issue opened by @RubenVanEldik on 2024-09-12 07:42_
+
+I tried to find if there were any existing issues, but I couldn't find anything. 
+
+I think I found a small false positive in RUF001. The ℹ️ contains the smaller unicode letter \u2139 which looks a lot like the letter "i". So when pasting the emoji ℹ️ into my code I got a Ruff error that my code includes an ambiguous unicode character.
+
+I can circumvent this by pasting the full unicode version of the emoji (`\u2139\ufe0f`), but this doesn't improve readability. Nor do I think that there is a chance that people conuse the emoji ℹ️ with the letter "i".
+
+Is this intended behaviour, or is this indeed a small false positive? If it's a bug I would be willing to look into it! :)
+
+Ruff playground example [here](https://play.ruff.rs/4225a620-26ce-4a42-80e7-185b572bad22).
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-09-12 18:39_
+
+---
+
+_Comment by @MichaReiser on 2024-09-12 18:40_
+
+Thanks. Yeah this seems off. We try to match VS code's behavior. I would have to look into it how they solve it, possibly by looking at grapheme clusters rather than characters. 
+
+---
+
+_Comment by @dylwil3 on 2024-11-17 17:26_
+
+Just in case someone else (like me) is having trouble reproducing this: I had to surround the emoji in quotes in the playground example before actually getting a Ruff diagnostic emitted (before that only the underlying _editor backend_ for the playground emits a warning.)
+
+[Playground link](https://play.ruff.rs/f9df04ad-f298-47a2-8b36-ebaaebd90581)
+
+---

@@ -1,0 +1,70 @@
+---
+number: 5913
+title: "Formatter: F-Strings (`FormattedValue` and `JoinedStr`)"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+assignees: []
+created_at: 2023-07-20T10:04:49Z
+updated_at: 2023-08-01T06:26:32Z
+url: https://github.com/astral-sh/ruff/issues/5913
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Formatter: F-Strings (`FormattedValue` and `JoinedStr`)
+
+---
+
+_Issue opened by @MichaReiser on 2023-07-20 10:04_
+
+Format fstring expressions. 
+
+---
+
+_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-20 10:04_
+
+---
+
+_Comment by @MichaReiser on 2023-07-20 10:05_
+
+Currently blocked by https://github.com/astral-sh/ruff/issues/5907
+
+---
+
+_Label `formatter` added by @konstin on 2023-07-20 14:55_
+
+---
+
+_Comment by @davidszotten on 2023-07-20 22:22_
+
+so i started looking at this a bit (which is how i found #5907)
+
+will push a wip pr i think so you can check i'm on the right track
+
+---
+
+_Referenced in [astral-sh/ruff#5932](../../astral-sh/ruff/pulls/5932.md) on 2023-07-20 22:24_
+
+---
+
+_Assigned to @davidszotten by @MichaReiser on 2023-07-21 05:09_
+
+---
+
+_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 16:08_
+
+---
+
+_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
+
+---
+
+_Closed by @MichaReiser on 2023-08-01 06:26_
+
+---

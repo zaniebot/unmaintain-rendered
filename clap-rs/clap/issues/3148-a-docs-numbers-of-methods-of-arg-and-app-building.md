@@ -1,0 +1,91 @@
+---
+number: 3148
+title: "[A-docs] Numbers of methods of arg and app building in FAQ.md are wrong."
+type: issue
+state: closed
+author: vi
+labels:
+  - C-bug
+  - A-docs
+assignees: []
+created_at: 2021-12-10T23:26:48Z
+updated_at: 2022-01-11T18:30:19Z
+url: https://github.com/clap-rs/clap/issues/3148
+synced_at: 2026-01-10T01:27:34Z
+---
+
+# [A-docs] Numbers of methods of arg and app building in FAQ.md are wrong.
+
+---
+
+_Issue opened by @vi on 2021-12-10 23:26_
+
+### Please complete the following tasks
+
+- [ ] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [ ] I have searched the existing issues
+
+### Rust Version
+
+Not applicable
+
+### Clap Version
+
+v3.0.0-rc.4
+
+### Minimal reproducible code
+
+Not applicable
+
+### Steps to reproduce the bug with the above code
+
+Look at https://github.com/clap-rs/clap/blob/v3.0.0-rc.4/docs/FAQ.md, linked from README:
+
+> To build an App there are three [?]:
+>
+>  * Derive Macros
+>  *  Builder Pattern
+>
+> To build an Arg there are four [?]:
+>
+>  *  Derive Macros
+>  *  Builder Pattern
+
+
+### Actual Behaviour
+
+`FAQ.md`'s app and arg creation lists' introductory phrases are contradictory, probably leftover from Clap v2.
+
+### Expected Behaviour
+
+FAQ does not contain phrases that are not play well with actual content in it.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @vi on 2021-12-10 23:26_
+
+---
+
+_Renamed from "Numbers of methods of arg and app building in FAQ.md are wrong." to "[A-docs] Numbers of methods of arg and app building in FAQ.md are wrong." by @vi on 2021-12-10 23:29_
+
+---
+
+_Referenced in [clap-rs/clap#3149](../../clap-rs/clap/pulls/3149.md) on 2021-12-10 23:36_
+
+---
+
+_Closed by @epage on 2021-12-11 15:06_
+
+---
+
+_Label `A-docs` added by @epage on 2022-01-11 18:30_
+
+---

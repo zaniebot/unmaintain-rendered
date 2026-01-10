@@ -1,0 +1,50 @@
+---
+number: 10889
+title: Document how to specify subdirectory in git urls
+type: issue
+state: closed
+author: mickvangelderen
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-01-23T08:05:19Z
+updated_at: 2025-01-23T13:58:41Z
+url: https://github.com/astral-sh/uv/issues/10889
+synced_at: 2026-01-10T01:24:58Z
+---
+
+# Document how to specify subdirectory in git urls
+
+---
+
+_Issue opened by @mickvangelderen on 2025-01-23 08:05_
+
+### Summary
+
+Currently [the documentation mentions](https://docs.astral.sh/uv/concepts/projects/dependencies/#git): 
+
+> A subdirectory may be specified if the package isn't in the repository root.
+
+From this sentence it is not clear **how** to actually specify the subdirectory. Only while writing a PR to add a `--subdirectory` parameter to `uv add` (which turns out to be unnecessary) I found out that the subdirectory should be specified in the URL as a fragment: `<url>#subdirectory=<subdirectory>`.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @mickvangelderen on 2025-01-23 08:05_
+
+---
+
+_Referenced in [astral-sh/uv#10894](../../astral-sh/uv/pulls/10894.md) on 2025-01-23 12:29_
+
+---
+
+_Closed by @charliermarsh on 2025-01-23 13:58_
+
+---
+
+_Closed by @charliermarsh on 2025-01-23 13:58_
+
+---

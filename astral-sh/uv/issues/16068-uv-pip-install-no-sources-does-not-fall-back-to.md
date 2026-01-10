@@ -1,0 +1,211 @@
+---
+number: 16068
+title: "`uv pip install --no-sources` does not fall back to pre-existing dependencies in the environment that satisfy the requirements (uv>=v0.8.18)"
+type: issue
+state: closed
+author: pausz
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-30T03:16:47Z
+updated_at: 2025-10-02T13:32:16Z
+url: https://github.com/astral-sh/uv/issues/16068
+synced_at: 2026-01-10T01:26:03Z
+---
+
+# `uv pip install --no-sources` does not fall back to pre-existing dependencies in the environment that satisfy the requirements (uv>=v0.8.18)
+
+---
+
+_Issue opened by @pausz on 2025-09-30 03:16_
+
+### Summary
+
+Hello 👋. I thought `uv pip install --no-sources` would inherently first use pre-existing dependencies in the environment if they satisfy the requirements. For uv < 0.8.18, this is/was true, but for uv >=0.8.18, it isn't. Which version has the bug?  
+
+
+To reproduce:
+
+```bash
+# Setup
+mkdir uv-sandbox
+cd uv-sandbox
+
+uv init --lib package_a
+uv init --lib package_b
+
+```
+
+package_a's pyproject.toml:
+
+```toml
+
+[project]
+name = "package-a"
+version = "0.1.0"
+description = "The package A"
+readme = "README.md"
+authors = [
+    { name = "PSL"}
+]
+requires-python = ">=3.12"
+dependencies = ["numpy"]
+
+[build-system]
+requires = ["uv_build>=0.8.17,<0.9.0"]
+build-backend = "uv_build"
+```
+
+package_b's pyproject.toml:
+```toml
+[project]
+name = "package-b"
+version = "0.1.0"
+description = "The package B"
+readme = "README.md"
+authors = [
+    { name = "pausz"}
+]
+requires-python = ">=3.12"
+dependencies = ["package_a"]
+
+[build-system]
+requires = ["uv_build>=0.8.17,<0.9.0"]
+build-backend = "uv_build"
+
+
+[tool.uv.sources]
+package-a = {git = "ssh://git@github.com/pausz/package_a.git", branch = "main"}
+```
+
+
+By the way, both toy repositories are publicly available:
+
+`package_a`: https://github.com/pausz/package_a
+`package_b`: https://github.com/pausz/package_b
+
+
+
+
+### Test with uv 0.8.17
+
+```bash
+# 
+uv venv
+source .venv/bin/activate
+
+uv pip install package_a/.
+```
+
+Output
+```
+Resolved 2 packages in 39ms
+      Built package-a @ file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a
+Prepared 1 package in 6ms
+Installed 2 packages in 17ms
+ + numpy==2.3.3
+ + package-a==0.1.0 (from file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a)
+```
+
+Then 
+```bash
+uv pip install --no-sources package_b/.
+```
+
+Output
+```
+Resolved 3 packages in 363ms
+      Built package-b @ file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_b
+Prepared 1 package in 9ms
+Installed 1 package in 1ms
+ + package-b==0.1.0 (from file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_b)
+```
+
+### Test with uv 0.8.18 and 0.8.22
+
+```bash
+# Get rid of previous virtual environment
+deactivate
+rm -r .venv
+
+# upgrade from 0.8.17 to 0.8.22, but also tested with 0.8.18 with pip install --force uv==0.8.18
+pipx upgrade uv
+
+# Make new environment
+uv venv
+source .venv/bin/activate
+
+# Install dependency of package-b
+uv pip install package_a/.
+```
+
+Output
+```bash
+Resolved 2 packages in 6ms
+      Built package-a @ file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a
+Prepared 1 package in 5ms
+Installed 2 packages in 18ms
+ + numpy==2.3.3
+ + package-a==0.1.0 (from file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a)
+```
+
+Then 
+
+```
+uv pip install --no-sources package_b/.
+```
+
+Output:
+
+```bash
+  × No solution found when resolving dependencies:
+  ╰─▶ Because package-a was not found in the package registry and package-b==0.1.0 depends on package-a, we can conclude that package-b==0.1.0
+      cannot be used.
+      And because only package-b==0.1.0 is available and you require package-b, we can conclude that your requirements are unsatisfiable.
+```
+
+
+#### Use case
+We want to pre-install heavy dependencies in an environment on a VM. These dependencies are in private repositories and for security reasons, for the time being, we are not providing the VM with our github credentials. We could of course update the uv sources table in pyproject.toml (of package_b in this example) to reference local paths, but prior to uv == 0.8.18,  the `--no-sources` option does what we need. Ideally we want to use the latest and greatest uv version ✨ , except that in this case, the recent versions break our installation process. 
+
+### Platform
+
+Ubuntu 24.04.3 LTS
+
+### Version
+
+uv 0.8.17 &  0.8.18, 0.8.22
+
+### Python version
+
+3.12.3 & 3.13.5
+
+---
+
+_Label `bug` added by @pausz on 2025-09-30 03:16_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-09-30 03:34_
+
+---
+
+_Comment by @charliermarsh on 2025-09-30 03:34_
+
+I can look tomorrow, likely a result of my change.
+
+---
+
+_Comment by @charliermarsh on 2025-10-01 15:57_
+
+(Apologies this slipped, but it's on my list for today.)
+
+---
+
+_Referenced in [astral-sh/uv#16094](../../astral-sh/uv/pulls/16094.md) on 2025-10-02 00:11_
+
+---
+
+_Closed by @charliermarsh on 2025-10-02 13:32_
+
+---

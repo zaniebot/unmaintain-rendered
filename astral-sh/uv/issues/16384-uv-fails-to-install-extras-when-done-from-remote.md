@@ -1,0 +1,551 @@
+---
+number: 16384
+title: "`uv` fails to install extras when done from remote"
+type: issue
+state: closed
+author: mflova
+labels:
+  - question
+assignees: []
+created_at: 2025-10-21T12:50:26Z
+updated_at: 2025-10-28T23:52:45Z
+url: https://github.com/astral-sh/uv/issues/16384
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# `uv` fails to install extras when done from remote
+
+---
+
+_Issue opened by @mflova on 2025-10-21 12:50_
+
+### Summary
+
+It seems I am not able to install extras when using a git-related source. As an example, let's say:
+
+```
+uv add sphinx[lint]@git+https://github.com/sphinx-doc/sphinx
+```
+
+This throws:
+
+```
+warning: The package `sphinx @ git+https://github.com/sphinx-doc/sphinx@90192fc7635dba51933ea56f779cf5ca77a29bc9` does not have an extra named `lint`
+```
+
+This same command but with `poetry add` is working without any issue. The extra is being detected
+
+<details>
+  <summary>Full output with --verbose</summary>
+
+  ```
+DEBUG uv 0.9.4 (88f519a3b 2025-10-18)
+DEBUG Acquired shared lock for `C:\Users\<USER>\AppData\Local\uv\cache`
+DEBUG Found project root: `C:\Users\<USER>\git\delete\delete`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\<USER>\git\delete\delete`
+DEBUG Reading Python requests from version file at `C:\Users\<USER>\git\delete\delete\.python-version`        
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.13`
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\Temp\uv-b41f454712b7d7cb.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: delete @ file:///C:/Users/<USER>/git/delete/delete
+DEBUG No workspace root found, using project root
+DEBUG Resolving despite existing lockfile due to mismatched requirements for: `delete==0.1.0`
+  Requested: {Requirement { name: PackageName("sphinx"), extras: [], groups: [], marker: true, source: Git { git: GitUrl { repository: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("github.com")), port: None, path: "/sphinx-doc/sphinx", query: None, fragment: None }, reference: DefaultBranch, precise: None }, subdirectory: None, url: VerbatimUrl { url: DisplaySafeUrl { scheme: "git+https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("github.com")), port: None, path: "/sphinx-doc/sphinx", query: None, fragment: None }, given: None } }, origin: None }}  
+  Existing: {}
+DEBUG Attempting GitHub fast path for: sphinx @ git+https://github.com/sphinx-doc/sphinx
+DEBUG Querying GitHub for commit at: https://api.github.com/repos/sphinx-doc/sphinx/commits/HEAD
+DEBUG No netrc file found
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `C:\Users\<USER>\AppData\Roaming\uv\credentials\credentials.toml.lock`
+DEBUG No credentials file found at C:\Users\<USER>\AppData\Roaming\uv\credentials\credentials.toml
+DEBUG GitHub API request failed for: https://api.github.com/repos/sphinx-doc/sphinx/commits/HEAD (403 Forbidden)
+DEBUG Fetching source distribution from Git: https://github.com/sphinx-doc/sphinx
+DEBUG Acquired lock for `https://github.com/sphinx-doc/sphinx`
+DEBUG Updating Git source `https://github.com/sphinx-doc/sphinx`
+   Updating https://github.com/sphinx-doc/sphinx (HEAD)
+DEBUG Skipping GitHub fast path attempt for: https://github.com/sphinx-doc/sphinx (rate-limited)
+DEBUG Performing a Git fetch for: https://github.com/sphinx-doc/sphinx
+    Updated https://github.com/sphinx-doc/sphinx (90192fc7635dba51933ea56f779cf5ca77a29bc9)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\git-v0\locks\f56396552c4d00c5`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\sdists-v9\git\86e91d76fddeb4f7\90192fc7635dba51`
+DEBUG No static `pyproject.toml` available for: sphinx @ git+https://github.com/sphinx-doc/sphinx (DynamicField("version"))
+DEBUG No static `PKG-INFO` available for: sphinx @ git+https://github.com/sphinx-doc/sphinx (MissingPkgInfo)DEBUG Using cached metadata for: sphinx @ git+https://github.com/sphinx-doc/sphinx
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\sdists-v9\git\86e91d76fddeb4f7\90192fc7635dba51\.lock`
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: >=3.13
+DEBUG Adding direct dependency: delete*
+DEBUG Searching for a compatible version of delete @ file:///C:/Users/<USER>/git/delete/delete (*)
+DEBUG Adding direct dependency: sphinx*
+DEBUG Searching for a compatible version of sphinx @ git+https://github.com/sphinx-doc/sphinx (*)
+DEBUG Adding transitive dependency for sphinx==8.3.0: alabaster>=0.7.14
+DEBUG Adding transitive dependency for sphinx==8.3.0: babel>=2.13
+DEBUG Adding transitive dependency for sphinx==8.3.0: colorama{sys_platform == 'win32'}>=0.4.6
+DEBUG Adding transitive dependency for sphinx==8.3.0: docutils>=0.20, <0.23
+DEBUG Adding transitive dependency for sphinx==8.3.0: imagesize>=1.3
+DEBUG Adding transitive dependency for sphinx==8.3.0: ipython>=9.6.0
+DEBUG Adding transitive dependency for sphinx==8.3.0: jinja2>=3.1
+DEBUG Adding transitive dependency for sphinx==8.3.0: packaging>=23.0
+DEBUG Adding transitive dependency for sphinx==8.3.0: pygments>=2.17
+DEBUG Adding transitive dependency for sphinx==8.3.0: requests>=2.30.0
+DEBUG Adding transitive dependency for sphinx==8.3.0: roman-numerals-py>=1.0.0
+DEBUG Adding transitive dependency for sphinx==8.3.0: snowballstemmer>=2.2
+DEBUG Adding transitive dependency for sphinx==8.3.0: sphinxcontrib-applehelp>=1.0.7
+DEBUG Adding transitive dependency for sphinx==8.3.0: sphinxcontrib-devhelp>=1.0.6
+DEBUG Adding transitive dependency for sphinx==8.3.0: sphinxcontrib-htmlhelp>=2.0.6
+DEBUG Adding transitive dependency for sphinx==8.3.0: sphinxcontrib-jsmath>=1.0.1
+DEBUG Adding transitive dependency for sphinx==8.3.0: sphinxcontrib-qthelp>=1.0.6
+DEBUG Adding transitive dependency for sphinx==8.3.0: sphinxcontrib-serializinghtml>=1.1.9
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\alabaster.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\babel.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\colorama.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\docutils.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\imagesize.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\ipython.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\jinja2.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\packaging.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\pygments.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\requests.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\roman-numerals-py.lock`       
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\snowballstemmer.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-applehelp.lock` 
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-devhelp.lock`   
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-htmlhelp.lock`  
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-jsmath.lock`    
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-qthelp.lock`    
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-serializinghtml.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/alabaster/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\alabaster.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/babel/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\babel.lock`
+DEBUG Searching for a compatible version of alabaster (>=0.7.14)
+DEBUG Found fresh response for: https://pypi.org/simple/docutils/
+DEBUG Selecting: alabaster==1.0.0 [compatible] (alabaster-1.0.0-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\docutils.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/ipython/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\ipython.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/imagesize/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\imagesize.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/colorama/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\colorama.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\packaging.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/roman-numerals-py/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\roman-numerals-py.lock`        
+DEBUG Found fresh response for: https://pypi.org/simple/jinja2/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\jinja2.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/sphinxcontrib-applehelp/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-applehelp.lock`  
+DEBUG Found fresh response for: https://pypi.org/simple/pygments/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\pygments.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/sphinxcontrib-devhelp/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-devhelp.lock`    
+DEBUG Found fresh response for: https://pypi.org/simple/sphinxcontrib-jsmath/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-jsmath.lock`     
+DEBUG Found fresh response for: https://pypi.org/simple/sphinxcontrib-serializinghtml/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-serializinghtml.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/sphinxcontrib-htmlhelp/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-htmlhelp.lock`   
+DEBUG Found fresh response for: https://pypi.org/simple/requests/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\requests.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/sphinxcontrib-qthelp/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\sphinxcontrib-qthelp.lock`     
+DEBUG Found fresh response for: https://pypi.org/simple/snowballstemmer/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\snowballstemmer.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\babel\babel-2.17.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\docutils\docutils-0.22.2-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\alabaster\alabaster-1.0.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\ipython\ipython-9.6.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\imagesize\imagesize-1.4.1-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\colorama\colorama-0.4.6-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\packaging\packaging-25.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\roman-numerals-py\roman_numerals_py-3.1.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\jinja2\jinja2-3.1.6-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-applehelp\sphinxcontrib_applehelp-2.0.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\pygments\pygments-2.19.2-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-devhelp\sphinxcontrib_devhelp-2.0.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-jsmath\sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-serializinghtml\sphinxcontrib_serializinghtml-2.0.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-htmlhelp\sphinxcontrib_htmlhelp-2.1.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\requests\requests-2.32.5-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-qthelp\sphinxcontrib_qthelp-2.0.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\snowballstemmer\snowballstemmer-3.0.1-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/7e/b3/6b4067be973ae96ba0d615946e314c5ae35f9f993eca561b356540bb0c2b/alabaster-1.0.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\alabaster\alabaster-1.0.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b7/b8/3fe70c75fe32afc4bb507f75563d39bc5642255d1d94f1f23604725780bf/babel-2.17.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of babel (>=2.13)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\babel\babel-2.17.0-py3-none-any.lock`
+DEBUG Selecting: babel==2.17.0 [compatible] (babel-2.17.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ff/62/85c4c919272577931d407be5ba5d71c20f0b616d31a0befe0ae45bb79abd/imagesize-1.4.1-py2.py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of colorama{sys_platform == 'win32'} (>=0.4.6)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\imagesize\imagesize-1.4.1-py2.py3-none-any.lock`
+DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/48/c5/d5e07995077e48220269c28a221e168c91123ad5ceee44d548f54a057fc0/ipython-9.6.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for colorama==0.4.6: colorama==0.4.6
+DEBUG Adding transitive dependency for colorama==0.4.6: colorama{sys_platform == 'win32'}==0.4.6
+DEBUG Searching for a compatible version of colorama (==0.4.6)
+DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\ipython\ipython-9.6.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\packaging\packaging-25.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\colorama\colorama-0.4.6-py2.py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/27/83/859ecdd180cacc13b1f7e857abf8582a64552ea7a061057a6c716e790fce/sphinxcontrib_qthelp-2.0.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of colorama{sys_platform == 'win32'} (==0.4.6)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-qthelp\sphinxcontrib_qthelp-2.0.0-py3-none-any.lock`
+DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/66/dd/f95350e853a4468ec37478414fc04ae2d61dad7a947b3015c3dcc51a09b9/docutils-0.22.2-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of docutils (>=0.20, <0.23)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\docutils\docutils-0.22.2-py3-none-any.lock`
+DEBUG Selecting: docutils==0.22.2 [compatible] (docutils-0.22.2-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/53/97/d2cbbaa10c9b826af0e10fdf836e1bf344d9f0abb873ebc34d1f49642d3f/roman_numerals_py-3.1.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of imagesize (>=1.3)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\roman-numerals-py\roman_numerals_py-3.1.0-py3-none-any.lock`
+DEBUG Selecting: imagesize==1.4.1 [compatible] (imagesize-1.4.1-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of ipython (>=9.6.0)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\pygments\pygments-2.19.2-py3-none-any.lock`
+DEBUG Selecting: ipython==9.6.0 [compatible] (ipython-9.6.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for ipython==9.6.0: colorama{sys_platform == 'win32'}*
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\jinja2\jinja2-3.1.6-py3-none-any.lock`
+DEBUG Adding transitive dependency for ipython==9.6.0: decorator*
+DEBUG Adding transitive dependency for ipython==9.6.0: ipython-pygments-lexers*
+DEBUG Adding transitive dependency for ipython==9.6.0: jedi>=0.16
+DEBUG Adding transitive dependency for ipython==9.6.0: matplotlib-inline*
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for ipython==9.6.0: pexpect{sys_platform != 'emscripten' and sys_platform != 'win32'}>4.3
+DEBUG Adding transitive dependency for ipython==9.6.0: prompt-toolkit>=3.0.41, <3.1.0
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\requests\requests-2.32.5-py3-none-any.lock`
+DEBUG Adding transitive dependency for ipython==9.6.0: pygments>=2.4.0
+DEBUG Adding transitive dependency for ipython==9.6.0: stack-data*
+DEBUG Adding transitive dependency for ipython==9.6.0: traitlets>=5.13.0
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/35/7a/987e583882f985fe4d7323774889ec58049171828b58c2217e7f79cdf44e/sphinxcontrib_devhelp-2.0.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of jinja2 (>=3.1)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-devhelp\sphinxcontrib_devhelp-2.0.0-py3-none-any.lock`
+DEBUG Selecting: jinja2==3.1.6 [compatible] (jinja2-3.1.6-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/52/a7/d2782e4e3f77c8450f727ba74a8f12756d5ba823d81b941f1b04da9d033a/sphinxcontrib_serializinghtml-2.0.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for jinja2==3.1.6: markupsafe>=2.0
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-serializinghtml\sphinxcontrib_serializinghtml-2.0.0-py3-none-any.lock`
+DEBUG Searching for a compatible version of packaging (>=23.0)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c2/42/4c8646762ee83602e3fb3fbe774c2fac12f317deb0b5dbeeedd2d3ba4b77/sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl.metadata
+DEBUG Selecting: packaging==25.0 [compatible] (packaging-25.0-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-jsmath\sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of pygments (>=2.17)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/5d/85/9ebeae2f76e9e77b952f4b274c27238156eae7979c5421fba91a28f4970d/sphinxcontrib_applehelp-2.0.0-py3-none-any.whl.metadata
+DEBUG Selecting: pygments==2.19.2 [compatible] (pygments-2.19.2-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-applehelp\sphinxcontrib_applehelp-2.0.0-py3-none-any.lock`
+DEBUG Searching for a compatible version of requests (>=2.30.0)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/0a/7b/18a8c0bcec9182c05a0b3ec2a776bba4ead82750a55ff798e8d406dae604/sphinxcontrib_htmlhelp-2.1.0-py3-none-any.whl.metadata
+DEBUG Selecting: requests==2.32.5 [compatible] (requests-2.32.5-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\sphinxcontrib-htmlhelp\sphinxcontrib_htmlhelp-2.1.0-py3-none-any.lock`
+DEBUG Adding transitive dependency for requests==2.32.5: certifi>=2017.4.17
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c8/78/3565d011c61f5a43488987ee32b6f3f656e7f107ac2782dd57bdd7d91d9a/snowballstemmer-3.0.1-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for requests==2.32.5: charset-normalizer>=2, <4
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\snowballstemmer\snowballstemmer-3.0.1-py3-none-any.lock`
+DEBUG Adding transitive dependency for requests==2.32.5: idna>=2.5, <4
+DEBUG Adding transitive dependency for requests==2.32.5: urllib3>=1.21.1, <3
+DEBUG Searching for a compatible version of roman-numerals-py (>=1.0.0)
+DEBUG Selecting: roman-numerals-py==3.1.0 [compatible] (roman_numerals_py-3.1.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\decorator.lock`
+DEBUG Searching for a compatible version of snowballstemmer (>=2.2)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\ipython-pygments-lexers.lock` 
+DEBUG Selecting: snowballstemmer==3.0.1 [compatible] (snowballstemmer-3.0.1-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\jedi.lock`
+DEBUG Searching for a compatible version of sphinxcontrib-applehelp (>=1.0.7)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\matplotlib-inline.lock`       
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\pexpect.lock`
+DEBUG Selecting: sphinxcontrib-applehelp==2.0.0 [compatible] (sphinxcontrib_applehelp-2.0.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\prompt-toolkit.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\stack-data.lock`
+DEBUG Searching for a compatible version of sphinxcontrib-devhelp (>=1.0.6)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\traitlets.lock`
+DEBUG Selecting: sphinxcontrib-devhelp==2.0.0 [compatible] (sphinxcontrib_devhelp-2.0.0-py3-none-any.whl)   
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\markupsafe.lock`
+DEBUG Searching for a compatible version of sphinxcontrib-htmlhelp (>=2.0.6)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\charset-normalizer.lock`      
+DEBUG Selecting: sphinxcontrib-htmlhelp==2.1.0 [compatible] (sphinxcontrib_htmlhelp-2.1.0-py3-none-any.whl) 
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\certifi.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\idna.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\urllib3.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/ipython-pygments-lexers/
+DEBUG Searching for a compatible version of sphinxcontrib-jsmath (>=1.0.1)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\ipython-pygments-lexers.lock`  
+DEBUG Selecting: sphinxcontrib-jsmath==1.0.1 [compatible] (sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl) 
+DEBUG Found fresh response for: https://pypi.org/simple/matplotlib-inline/
+DEBUG Searching for a compatible version of sphinxcontrib-qthelp (>=1.0.6)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\matplotlib-inline.lock`        
+DEBUG Selecting: sphinxcontrib-qthelp==2.0.0 [compatible] (sphinxcontrib_qthelp-2.0.0-py3-none-any.whl)     
+DEBUG Found fresh response for: https://pypi.org/simple/pexpect/
+DEBUG Searching for a compatible version of sphinxcontrib-serializinghtml (>=1.1.9)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\pexpect.lock`
+DEBUG Selecting: sphinxcontrib-serializinghtml==2.0.0 [compatible] (sphinxcontrib_serializinghtml-2.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/decorator/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\decorator.lock`
+DEBUG Searching for a compatible version of decorator (*)
+DEBUG Found fresh response for: https://pypi.org/simple/jedi/
+DEBUG Selecting: decorator==5.2.1 [compatible] (decorator-5.2.1-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\jedi.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/prompt-toolkit/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\prompt-toolkit.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/stack-data/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\stack-data.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/traitlets/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\traitlets.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\ipython-pygments-lexers\ipython_pygments_lexers-1.1.1-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\matplotlib-inline\matplotlib_inline-0.1.7-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\pexpect\pexpect-4.9.0-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\jedi\jedi-0.19.2-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\decorator\decorator-5.2.1-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\prompt-toolkit\prompt_toolkit-3.0.52-py3-none-any.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/markupsafe/
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\stack-data\stack_data-0.6.3-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\markupsafe.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\traitlets\traitlets-5.14.3-py3-none-any.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/certifi/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\certifi.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/idna/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\idna.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/urllib3/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\urllib3.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/charset-normalizer/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\charset-normalizer.lock`       
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\markupsafe\markupsafe-3.0.3-cp313-cp313-macosx_10_13_x86_64.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\certifi\certifi-2025.10.5-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\idna\idna-3.11-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d9/33/1f075bf72b0b747cb3288d011319aaf64083cf2efef8354174e3ed4540e2/ipython_pygments_lexers-1.1.1-py3-none-any.whl.metadata
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\urllib3\urllib3-2.5.0-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\ipython-pygments-lexers\ipython_pygments_lexers-1.1.1-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/8f/8e/9ad090d3553c280a8060fbf6e24dc1c0c29704ee7d1c372f0c174aa59285/matplotlib_inline-0.1.7-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\matplotlib-inline\matplotlib_inline-0.1.7-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl.metadata
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\charset-normalizer\charset_normalizer-3.4.4-cp313-cp313-macosx_10_13_universal2.lock`
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\pexpect\pexpect-4.9.0-py2.py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/4e/8c/f3147f5c4b73e7550fe5f9352eaa956ae838d5c51eb58e7a25b9f3e2643b/decorator-5.2.1-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\decorator\decorator-5.2.1-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of ipython-pygments-lexers (*)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\prompt-toolkit\prompt_toolkit-3.0.52-py3-none-any.lock`
+DEBUG Selecting: ipython-pygments-lexers==1.1.1 [compatible] (ipython_pygments_lexers-1.1.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c0/5a/9cac0c82afec3d09ccd97c8b6502d48f165f9124db81b4bcb90b4af974ee/jedi-0.19.2-py2.py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for ipython-pygments-lexers==1.1.1: pygments*
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\jedi\jedi-0.19.2-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of jedi (>=0.16)
+DEBUG Selecting: jedi==0.19.2 [compatible] (jedi-0.19.2-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for jedi==0.19.2: parso>=0.8.4, <0.9.0
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\stack-data\stack_data-0.6.3-py3-none-any.lock`
+DEBUG Searching for a compatible version of matplotlib-inline (*)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl.metadata
+DEBUG Selecting: matplotlib-inline==0.1.7 [compatible] (matplotlib_inline-0.1.7-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\traitlets\traitlets-5.14.3-py3-none-any.lock`
+DEBUG Adding transitive dependency for matplotlib-inline==0.1.7: traitlets*
+DEBUG Searching for a compatible version of pexpect{sys_platform != 'emscripten' and sys_platform != 'win32'} (>4.3)
+DEBUG Selecting: pexpect==4.9.0 [compatible] (pexpect-4.9.0-py2.py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\parso.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/38/2f/907b9c7bbba283e68f20259574b13d005c121a0fa4c175f9bed27c4597ff/markupsafe-3.0.3-cp313-cp313-macosx_10_13_x86_64.whl.metadata
+DEBUG Adding transitive dependency for pexpect==4.9.0: pexpect==4.9.0
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\markupsafe\markupsafe-3.0.3-cp313-cp313-macosx_10_13_x86_64.lock`
+DEBUG Adding transitive dependency for pexpect==4.9.0: pexpect{sys_platform != 'emscripten' and sys_platform != 'win32'}==4.9.0
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pexpect (==4.9.0)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\urllib3\urllib3-2.5.0-py3-none-any.lock`
+DEBUG Selecting: pexpect==4.9.0 [compatible] (pexpect-4.9.0-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for pexpect==4.9.0: ptyprocess>=0.5
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\idna\idna-3.11-py3-none-any.lock`
+DEBUG Searching for a compatible version of pexpect{sys_platform != 'emscripten' and sys_platform != 'win32'} (==4.9.0)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/97/45/4b3a1239bbacd321068ea6e7ac28875b03ab8bc0aa0966452db17cd36714/charset_normalizer-3.4.4-cp313-cp313-macosx_10_13_universal2.whl.metadata    
+DEBUG Selecting: pexpect==4.9.0 [compatible] (pexpect-4.9.0-py2.py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\charset-normalizer\charset_normalizer-3.4.4-cp313-cp313-macosx_10_13_universal2.lock`
+DEBUG Adding transitive dependency for pexpect==4.9.0: ptyprocess>=0.5
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e4/37/af0d2ef3967ac0d6113837b44a4f0bfe1328c2b9763bd5b1744520e5cfed/certifi-2025.10.5-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of prompt-toolkit (>=3.0.41, <3.1.0)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\certifi\certifi-2025.10.5-py3-none-any.lock`
+DEBUG Selecting: prompt-toolkit==3.0.52 [compatible] (prompt_toolkit-3.0.52-py3-none-any.whl)
+DEBUG Adding transitive dependency for prompt-toolkit==3.0.52: wcwidth*
+DEBUG Searching for a compatible version of stack-data (*)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\ptyprocess.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/parso/
+DEBUG Selecting: stack-data==0.6.3 [compatible] (stack_data-0.6.3-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\parso.lock`
+DEBUG Adding transitive dependency for stack-data==0.6.3: asttokens>=2.1.0
+DEBUG Adding transitive dependency for stack-data==0.6.3: executing>=1.2.0
+DEBUG Adding transitive dependency for stack-data==0.6.3: pure-eval*
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\parso\parso-0.8.5-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of traitlets (>=5.13.0)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\wcwidth.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/ptyprocess/
+DEBUG Selecting: traitlets==5.14.3 [compatible] (traitlets-5.14.3-py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\ptyprocess.lock`
+DEBUG Searching for a compatible version of markupsafe (>=2.0)
+DEBUG Selecting: markupsafe==3.0.3 [compatible] (markupsafe-3.0.3-cp313-cp313-macosx_10_13_x86_64.whl)      
+DEBUG Searching for a compatible version of certifi (>=2017.4.17)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\ptyprocess\ptyprocess-0.7.0-py2.py3-none-any.lock`
+DEBUG Selecting: certifi==2025.10.5 [compatible] (certifi-2025.10.5-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\asttokens.lock`
+DEBUG Searching for a compatible version of charset-normalizer (>=2, <4)
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\executing.lock`
+DEBUG Selecting: charset-normalizer==3.4.4 [compatible] (charset_normalizer-3.4.4-cp313-cp313-macosx_10_13_universal2.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/16/32/f8e3c85d1d5250232a5d3477a2a28cc291968ff175caeadaf3cc19ce0e4a/parso-0.8.5-py2.py3-none-any.whl.metadata
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\pure-eval.lock`
+DEBUG Searching for a compatible version of idna (>=2.5, <4)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\parso\parso-0.8.5-py2.py3-none-any.lock`
+DEBUG Selecting: idna==3.11 [compatible] (idna-3.11-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/wcwidth/
+DEBUG Searching for a compatible version of urllib3 (>=1.21.1, <3)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\wcwidth.lock`
+DEBUG Selecting: urllib3==2.5.0 [compatible] (urllib3-2.5.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of parso (>=0.8.4, <0.9.0)
+DEBUG Selecting: parso==0.8.5 [compatible] (parso-0.8.5-py2.py3-none-any.whl)
+DEBUG Searching for a compatible version of ptyprocess (>=0.5)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl.metadata
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\wcwidth\wcwidth-0.2.14-py2.py3-none-any.lock`
+DEBUG Selecting: ptyprocess==0.7.0 [compatible] (ptyprocess-0.7.0-py2.py3-none-any.whl)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\ptyprocess\ptyprocess-0.7.0-py2.py3-none-any.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/pure-eval/
+DEBUG Searching for a compatible version of wcwidth (*)
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\pure-eval.lock`
+DEBUG Selecting: wcwidth==0.2.14 [compatible] (wcwidth-0.2.14-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/executing/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\executing.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/asttokens/
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\simple-v18\pypi\asttokens.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\pure-eval\pure_eval-0.2.3-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\executing\executing-2.2.1-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\asttokens\asttokens-3.0.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/af/b5/123f13c975e9f27ab9c0770f514345bd406d0e8d3b7a0723af9d43f710af/wcwidth-0.2.14-py2.py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\wcwidth\wcwidth-0.2.14-py2.py3-none-any.lock`
+DEBUG Searching for a compatible version of asttokens (>=2.1.0)
+DEBUG Selecting: asttokens==3.0.0 [compatible] (asttokens-3.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\pure-eval\pure_eval-0.2.3-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\executing\executing-2.2.1-py2.py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/25/8a/c46dcc25341b5bce5472c718902eb3d38600a903b14fa6aeecef3f21a46f/asttokens-3.0.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\wheels-v5\pypi\asttokens\asttokens-3.0.0-py3-none-any.lock`
+DEBUG Searching for a compatible version of executing (>=1.2.0)
+DEBUG Selecting: executing==2.2.1 [compatible] (executing-2.2.1-py2.py3-none-any.whl)
+DEBUG Searching for a compatible version of pure-eval (*)
+DEBUG Selecting: pure-eval==0.2.3 [compatible] (pure_eval-0.2.3-py3-none-any.whl)
+DEBUG Tried 39 versions: alabaster 1, asttokens 1, babel 1, certifi 1, charset-normalizer 1, colorama 1, decorator 1, delete 1, docutils 1, executing 1, idna 1, imagesize 1, ipython 1, ipython-pygments-lexers 1, jedi 1, jinja2 1, markupsafe 1, matplotlib-inline 1, packaging 1, parso 1, pexpect 1, prompt-toolkit 1, ptyprocess 1, pure-eval 1, pygments 1, requests 1, roman-numerals-py 1, snowballstemmer 1, sphinx 1, sphinxcontrib-applehelp 1, sphinxcontrib-devhelp 1, sphinxcontrib-htmlhelp 1, sphinxcontrib-jsmath 1, sphinxcontrib-qthelp 
+1, sphinxcontrib-serializinghtml 1, stack-data 1, traitlets 1, urllib3 1, wcwidth 1
+DEBUG all marker environments resolution took 0.050s
+Resolved 39 packages in 1.01s
+DEBUG Using request timeout of 30s
+DEBUG Git source requirement already cached: sphinx==8.3.0 (from git+https://github.com/sphinx-doc/sphinx@90192fc7635dba51933ea56f779cf5ca77a29bc9)
+DEBUG Registry requirement already cached: alabaster==1.0.0
+DEBUG Registry requirement already cached: babel==2.17.0
+DEBUG Registry requirement already cached: colorama==0.4.6
+DEBUG Registry requirement already cached: docutils==0.22.2
+DEBUG Registry requirement already cached: imagesize==1.4.1
+DEBUG Registry requirement already cached: ipython==9.6.0
+DEBUG Registry requirement already cached: jinja2==3.1.6
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Registry requirement already cached: pygments==2.19.2
+DEBUG Registry requirement already cached: requests==2.32.5
+DEBUG Registry requirement already cached: roman-numerals-py==3.1.0
+DEBUG Registry requirement already cached: snowballstemmer==3.0.1
+DEBUG Registry requirement already cached: sphinxcontrib-applehelp==2.0.0
+DEBUG Registry requirement already cached: sphinxcontrib-devhelp==2.0.0
+DEBUG Registry requirement already cached: sphinxcontrib-htmlhelp==2.1.0
+DEBUG Registry requirement already cached: sphinxcontrib-jsmath==1.0.1
+DEBUG Registry requirement already cached: sphinxcontrib-qthelp==2.0.0
+DEBUG Registry requirement already cached: sphinxcontrib-serializinghtml==2.0.0
+DEBUG Registry requirement already cached: decorator==5.2.1
+DEBUG Registry requirement already cached: ipython-pygments-lexers==1.1.1
+DEBUG Registry requirement already cached: jedi==0.19.2
+DEBUG Registry requirement already cached: matplotlib-inline==0.1.7
+DEBUG Registry requirement already cached: prompt-toolkit==3.0.52
+DEBUG Registry requirement already cached: stack-data==0.6.3
+DEBUG Registry requirement already cached: traitlets==5.14.3
+DEBUG Registry requirement already cached: markupsafe==3.0.3
+DEBUG Registry requirement already cached: certifi==2025.10.5
+DEBUG Registry requirement already cached: charset-normalizer==3.4.4
+DEBUG Registry requirement already cached: idna==3.11
+DEBUG Registry requirement already cached: urllib3==2.5.0
+DEBUG Registry requirement already cached: parso==0.8.5
+DEBUG Registry requirement already cached: wcwidth==0.2.14
+DEBUG Registry requirement already cached: asttokens==3.0.0
+DEBUG Registry requirement already cached: executing==2.2.1
+DEBUG Registry requirement already cached: pure-eval==0.2.3
+Installed 36 packages in 1.30s
+ + alabaster==1.0.0
+ + asttokens==3.0.0
+ + babel==2.17.0
+ + certifi==2025.10.5
+ + charset-normalizer==3.4.4
+ + colorama==0.4.6
+ + decorator==5.2.1
+ + docutils==0.22.2
+ + executing==2.2.1
+ + idna==3.11
+ + imagesize==1.4.1
+ + ipython==9.6.0
+ + ipython-pygments-lexers==1.1.1
+ + jedi==0.19.2
+ + jinja2==3.1.6
+ + markupsafe==3.0.3
+ + matplotlib-inline==0.1.7
+ + packaging==25.0
+ + parso==0.8.5
+ + prompt-toolkit==3.0.52
+ + pure-eval==0.2.3
+ + pygments==2.19.2
+ + requests==2.32.5
+ + roman-numerals-py==3.1.0
+ + snowballstemmer==3.0.1
+ + sphinx==8.3.0 (from git+https://github.com/sphinx-doc/sphinx@90192fc7635dba51933ea56f779cf5ca77a29bc9)
+ + sphinxcontrib-applehelp==2.0.0
+ + sphinxcontrib-devhelp==2.0.0
+ + sphinxcontrib-htmlhelp==2.1.0
+ + sphinxcontrib-jsmath==1.0.1
+ + sphinxcontrib-qthelp==2.0.0
+ + sphinxcontrib-serializinghtml==2.0.0
+ + stack-data==0.6.3
+ + traitlets==5.14.3
+ + urllib3==2.5.0
+ + wcwidth==0.2.14
+DEBUG Released lock at `C:\Users\<USER>\git\delete\delete\.venv\.lock`
+DEBUG Released lock at `C:\Users\<USER>\AppData\Local\uv\cache\.lock
+</details> ```
+
+### Platform
+
+Windows 10
+
+### Version
+
+uv 0.9.4 (88f519a3b 2025-10-18)
+
+### Python version
+
+3.10
+
+---
+
+_Label `bug` added by @mflova on 2025-10-21 12:50_
+
+---
+
+_Comment by @konstin on 2025-10-21 13:16_
+
+The warning looks correct: `lint` is a dependency group, not an optional dependency / extra. `[dependency-groups]` entries are locally only, and we can't depend on them from another project.
+
+---
+
+_Label `bug` removed by @konstin on 2025-10-21 13:16_
+
+---
+
+_Label `question` added by @konstin on 2025-10-21 13:16_
+
+---
+
+_Closed by @charliermarsh on 2025-10-28 23:52_
+
+---

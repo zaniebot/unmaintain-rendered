@@ -1,0 +1,65 @@
+---
+number: 8229
+title: Detect and install tool python version
+type: issue
+state: open
+author: Tobi-De
+labels: []
+assignees: []
+created_at: 2024-10-15T21:56:54Z
+updated_at: 2024-10-16T18:42:46Z
+url: https://github.com/astral-sh/uv/issues/8229
+synced_at: 2026-01-10T01:24:25Z
+---
+
+# Detect and install tool python version
+
+---
+
+_Issue opened by @Tobi-De on 2024-10-15 21:56_
+
+This isn’t an issue, but since there’s no discussions tab, I’ll post it here.
+
+Is it possible to install a tool with the appropriate python version it needs without knowing it in advance? (in an automated fashion)
+
+Here’s my scenario: I have a package  for which I build a wheel file. I then move the wheel file to another server that has  uv installed. Let's say my package specifies python >= 3.13, and the server has Python 3.12 installed. If I run uv tool install <path_to_wheel>, it doesn’t work because Python 3.13 isn’t installed on that server, which makes sense.
+
+Is there a way to automatically detect the Python version of the tool (maybe that can be extracted from the wheel somehow) and install the appropriate version? I want to automate this process, so I’m wondering if there’s a trick or method that can make this work.
+
+---
+
+_Comment by @my1e5 on 2024-10-15 22:41_
+
+Possibly related to my issue https://github.com/astral-sh/uv/issues/8206 ?
+
+You want uv to automatically detect that 3.13 is the suitable python version to use. I want uv to detect that 3.12 is the suitable python version to use.
+
+---
+
+_Comment by @Tobi-De on 2024-10-15 23:09_
+
+> Possibly related to my issue https://github.com/astral-sh/uv/issues/8206 ?
+> 
+> You want uv to automatically detect that 3.13 is the suitable python version to use. I want uv to detect that 3.12 is the suitable python version to use.
+
+Yep similar issue, in my case I want to use uv as part of an automated deployment workflow for any random packaged application, manually specifying the python version is not really an option
+
+---
+
+_Comment by @zanieb on 2024-10-16 03:34_
+
+Does https://github.com/astral-sh/uv/pull/7827 address this?
+
+---
+
+_Comment by @Tobi-De on 2024-10-16 05:49_
+
+> Does https://github.com/astral-sh/uv/pull/7827 address this?
+
+Yep, I think it does
+
+---
+
+_Referenced in [astral-sh/uv#11612](../../astral-sh/uv/issues/11612.md) on 2025-02-19 10:56_
+
+---

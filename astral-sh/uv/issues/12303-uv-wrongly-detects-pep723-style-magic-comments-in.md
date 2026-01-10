@@ -1,0 +1,230 @@
+---
+number: 12303
+title: uv wrongly detects PEP723 style magic comments in strings
+type: issue
+state: closed
+author: samuelcolvin
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2025-03-18T23:49:43Z
+updated_at: 2025-03-24T15:17:02Z
+url: https://github.com/astral-sh/uv/issues/12303
+synced_at: 2026-01-10T01:25:18Z
+---
+
+# uv wrongly detects PEP723 style magic comments in strings
+
+---
+
+_Issue opened by @samuelcolvin on 2025-03-18 23:49_
+
+### Summary
+
+code:
+
+```py
+print("""
+# /// script
+# dependencies = ["pydantic", "email-validator"]
+# ///
+import pydantic
+
+class Model(pydantic.BaseModel):
+    email: pydantic.EmailStr
+
+print(Model(email='hello@pydantic.dev'))
+""")
+```
+
+Running this prints:
+
+```
+error: failed to create directory `/Users/samuel/Library/Caches/uv/environments-v2/check-da89a400ed637ca7`: Permission denied (os error 13)
+```
+
+### Platform
+
+MacOS 15 ARM
+
+### Version
+
+uv 0.6.6 (c1a0bb85e 2025-03-12)
+
+### Python version
+
+Python 3.12.3
+
+---
+
+_Label `bug` added by @samuelcolvin on 2025-03-18 23:49_
+
+---
+
+_Comment by @zanieb on 2025-03-19 00:09_
+
+Alas.
+
+Fwiw, this matches the regex in the specification https://regex101.com/r/LNoSNF/1 — though I'm sure this isn't the intent.
+
+I presume we can use a heuristic to avoid this? I don't want to bring in a parser.
+
+`pipx` has the same behavior
+
+```
+❯ uvx pipx run -v example.py
+pipx >(setup:1110): pipx version is 1.7.1
+pipx >(setup:1111): Default python interpreter is '/Users/zb/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13'
+pipx >(_remove_all_expired_venvs:315): Removing expired venv /Users/zb/.local/pipx/.cache/CACHEDIR.TAG
+pipx >(create_venv:164): Creating virtual environment
+creating virtual environment...
+pipx >(run_subprocess:175): running /Users/zb/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13 -m venv --without-pip /Users/zb/.local/pipx/.cache/ea304b8314d56fb
+pipx >(run_subprocess:175): running <checking pip's availability>
+pipx >(run_subprocess:175): running /Users/zb/.local/pipx/.cache/ea304b8314d56fb/bin/python -c import sysconfig; print(sysconfig.get_path('purelib'))
+pipx >(run_subprocess:175): running /Users/zb/.local/pipx/shared/bin/python -c import sysconfig; print(sysconfig.get_path('purelib'))
+pipx >(run_subprocess:175): running /Users/zb/.local/pipx/.cache/ea304b8314d56fb/bin/python --version
+pipx >(install_unmanaged_packages:292): Installing pydantic, email-validator
+installing pydantic, email-validator...
+pipx >(run_subprocess:175): running /Users/zb/.local/pipx/.cache/ea304b8314d56fb/bin/python -m pip --no-input install pydantic email-validator
+pipx >(exec_app:375): exec_app: /Users/zb/.local/pipx/.cache/ea304b8314d56fb/bin/python example.py
+
+# /// script
+# dependencies = ["pydantic", "email-validator"]
+# ///
+import pydantic
+
+class Model(pydantic.BaseModel):
+    email: pydantic.EmailStr
+
+print(Model(email='hello@pydantic.dev'))
+```
+
+cc @ofek 
+
+---
+
+_Comment by @samuelcolvin on 2025-03-19 01:05_
+
+Presumably the magic comment should appear at the start of the file, perhaps allowing for blank lines? If so, that should be pretty easy to detect.
+
+I agree the original regex [here](https://packaging.python.org/en/latest/specifications/inline-script-metadata/#inline-script-metadata) would match on this, and I'm pretty sure my code in `mcp-run-python` [here](https://github.com/pydantic/pydantic-ai/blob/4c0f384a0626299382c22a8e3372638885e18286/mcp-run-python/src/prepare_env.py#L147-L156) would do the same (that's what I was testing when I found this).
+
+---
+
+_Comment by @zanieb on 2025-03-19 01:08_
+
+I think it needs to be able to appear after a shebang, which could be fairly complicated (e.g., https://github.com/astral-sh/uv/issues/12193#issuecomment-2726977692 — which is not quite a perfect example but does capture the possible complexity)
+
+---
+
+_Comment by @charliermarsh on 2025-03-19 01:17_
+
+I need to look back at the comments, but I seem to recall that this came up when the PEP was being discussed… I’ll look when I’m back at my computer.
+
+---
+
+_Comment by @ofek on 2025-03-19 01:39_
+
+The magic comment is allowed anywhere in the file because an anticipated use case is modification of the comment such as storing the contents of a lock file/dependency resolution. I don't think anything can be done here. In order to get your example working start immediately after the triple quotes i.e. don't have a leading new line character.
+
+---
+
+_Referenced in [pex-tool/pex#2722](../../pex-tool/pex/pulls/2722.md) on 2025-03-19 03:14_
+
+---
+
+_Comment by @ofek on 2025-03-19 04:03_
+
+I very much dislike solutions like the one that was opened in response to this issue: https://github.com/pex-tool/pex/pull/2722
+
+There's nothing preventing such liberties but I think we're in a bad situation if/when providers start getting requests to support parsing Python syntax.
+
+@samuelcolvin What's your use case for running scripts that happen to embed magic comments in multiline literals?
+
+---
+
+_Comment by @shauneccles on 2025-03-19 08:11_
+
+This seems like a "don't shoot yourself in the face" problem.
+
+I'd advocate that this is noted as an issue with the spec and if the spec changes to fix it then great.
+
+---
+
+_Comment by @samuelcolvin on 2025-03-19 10:24_
+
+> @samuelcolvin What's your use case for running scripts that happen to embed magic comments in multiline literals?
+
+I don't have a specific use case, as mentioned above I discovered this while debugging our MCP server for writing python that uses PEP 723 style comments for dependencies, so I had some code in a string within a python script.
+
+I was reporting it to be a good citizen, not particularly because I need a fix.
+
+---
+
+_Comment by @charliermarsh on 2025-03-20 15:16_
+
+Personally, I think we should _probably_ avoid changing anything here. The spec was designed with the intent of supporting non-Python consumers, and deviating from the spec puts pressure on _other_ tools to support those deviations.
+
+
+---
+
+_Comment by @notatallshaw on 2025-03-20 16:00_
+
+Accepting the magic comment in any location in the file matches the spec and is obvious to the user what happened after the fact, if sometimes surprising to the user before the fact.
+
+Therefore _if_ a tool rejects a magic comment based on the Python syntax, or some other measure, I would prefer it do it non-silently, give a big warning that a magic comment was detected but rejected due to reasons.
+
+As I recall, there was a [long discussion](https://discuss.python.org/t/pep-723-embedding-pyproject-toml-in-single-file-scripts/31151) about not having to parse Python, and the construction of this comment was made such that it was unlikely to accidentally result in false positives, but obviously giving an example of the spec itself would be one of those cases impossible to avoid.
+
+---
+
+_Comment by @ofek on 2025-03-20 16:38_
+
+Germane to the discussion: is there a plan to embed the lock file within scripts rather than generating a file beside the script? It would be nice to have portable reproducibility (without relying on that resolution date limit option).
+
+---
+
+_Comment by @notatallshaw on 2025-03-20 16:46_
+
+> is there a plan to embed the lock file within scripts
+
+I think that's https://github.com/astral-sh/uv/issues/11064
+
+---
+
+_Comment by @zanieb on 2025-03-20 17:30_
+
+Worth noting that I see some hiccups with the specification for this purpose too https://github.com/astral-sh/uv/issues/6318#issuecomment-2489572640
+
+---
+
+_Comment by @zanieb on 2025-03-20 17:31_
+
+If PEP 751 lands maybe we can have a `# /// lock` block :)
+
+---
+
+_Referenced in [pypa/packaging.python.org#1835](../../pypa/packaging.python.org/issues/1835.md) on 2025-03-21 16:21_
+
+---
+
+_Comment by @ncoghlan on 2025-03-21 16:23_
+
+I agree with the folks suggesting that nothing needs to change in `uv` here - the naive parsing in the spec is intentional, not accidental, and Python's string quoting is flexible enough that it isn't *necessary* to format strings in a way that triggers a misfire when generating code that happens to include PEP 723 comments.
+
+I filed https://github.com/pypa/packaging.python.org/issues/1835 to cover adding a note about this to the "Recommendations" section on the PEP 723 page (I'm open to bikeshedding on what we think the nicest "escaping" mechanism to recommend would be)
+
+---
+
+_Label `external` added by @zanieb on 2025-03-21 16:54_
+
+---
+
+_Closed by @charliermarsh on 2025-03-24 15:17_
+
+---
+
+_Referenced in [astral-sh/uv#16239](../../astral-sh/uv/issues/16239.md) on 2025-10-14 11:32_
+
+---

@@ -1,0 +1,58 @@
+---
+number: 4206
+title: Set required(false) by default for all arguments
+type: issue
+state: closed
+author: epage
+labels:
+  - M-breaking-change
+  - A-builder
+assignees: []
+created_at: 2022-09-12T21:55:31Z
+updated_at: 2022-09-13T00:48:00Z
+url: https://github.com/clap-rs/clap/issues/4206
+synced_at: 2026-01-10T01:27:51Z
+---
+
+# Set required(false) by default for all arguments
+
+---
+
+_Issue opened by @epage on 2022-09-12 21:55_
+
+### Discussed in https://github.com/clap-rs/clap/discussions/4203
+
+<div type='discussions-op-text'>
+
+<sup>Originally posted by **fritzrehde** September 11, 2022</sup>
+I am trying to simplify my argument parsing in clap.
+I want to do something like this: 
+```
+			arg!(-i --interval <SECS> "Seconds to wait between updates, 0 only executes once")
+				.required(false)
+				.default_value(DEFAULT_INTERVAL)
+				.value_parser(value_parser!(f64)),
+```
+However, most of my arguments are not required (and have a default value), but I don't want to write required(false) every time. Is there an easy way to set required(false) as default for all arguments?</div>
+
+---
+
+_Label `M-breaking-change` added by @epage on 2022-09-12 21:55_
+
+---
+
+_Label `A-builder` added by @epage on 2022-09-12 21:55_
+
+---
+
+_Added to milestone `4.0` by @epage on 2022-09-12 21:55_
+
+---
+
+_Referenced in [clap-rs/clap#4207](../../clap-rs/clap/pulls/4207.md) on 2022-09-12 22:11_
+
+---
+
+_Closed by @epage on 2022-09-13 00:48_
+
+---

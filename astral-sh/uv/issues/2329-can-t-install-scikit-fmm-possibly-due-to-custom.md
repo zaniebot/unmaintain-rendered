@@ -1,0 +1,480 @@
+---
+number: 2329
+title: "Can't install `scikit-fmm`, possibly due to custom build process (C deps)"
+type: issue
+state: closed
+author: ma-sadeghi
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-10T08:52:14Z
+updated_at: 2024-03-10T23:17:15Z
+url: https://github.com/astral-sh/uv/issues/2329
+synced_at: 2026-01-10T01:23:16Z
+---
+
+# Can't install `scikit-fmm`, possibly due to custom build process (C deps)
+
+---
+
+_Issue opened by @ma-sadeghi on 2024-03-10 08:52_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+## Reproduce
+```shell
+uv venv
+source .venv/bin/activate
+uv pip install scikit-fmm
+```
+
+## Output
+```shell
+Resolved 2 packages in 187ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: scikit-fmm==2023.4.2
+  Caused by: Failed to build: scikit-fmm==2023.4.2
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 0
+--- stdout:
+running bdist_wheel
+running build
+running config_cc
+unifing config_cc, config, build_clib, build_ext, build commands --compiler options
+running config_fc
+unifing config_fc, config, build_clib, build_ext, build commands --fcompiler options
+running build_src
+build_src
+building extension "skfmm.cfmm" sources
+building extension "skfmm.pheap" sources
+build_src: building npy-pkg config files
+running build_py
+creating build
+creating build/lib.linux-x86_64-cpython-310
+creating build/lib.linux-x86_64-cpython-310/skfmm
+copying skfmm/setup.py -> build/lib.linux-x86_64-cpython-310/skfmm
+copying skfmm/pfmm.py -> build/lib.linux-x86_64-cpython-310/skfmm
+copying skfmm/__init__.py -> build/lib.linux-x86_64-cpython-310/skfmm
+copying skfmm/heap.py -> build/lib.linux-x86_64-cpython-310/skfmm
+running build_ext
+customize UnixCCompiler
+customize UnixCCompiler using build_ext
+CCompilerOpt.cc_test_flags[1013] : testing flags (-march=native)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+creating /tmp/tmp0x1hnttj/tmp
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/distutils
+creating /tmp/tmp0x1hnttj/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/distutils/checks
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-march=native'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-O3)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-O3'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-Werror)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-Werror'
+CCompilerOpt.__init__[1701] : check requested baseline
+CCompilerOpt.cc_test_flags[1013] : testing flags (-msse)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-msse2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse2'
+CCompilerOpt.feature_test[1466] : testing feature 'SSE2' with flags (-msse -msse2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'SSE' with flags (-msse -msse2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-msse3)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse3'
+CCompilerOpt.feature_test[1466] : testing feature 'SSE3' with flags (-msse -msse2 -msse3)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -Werror'
+CCompilerOpt.__init__[1710] : check requested dispatch-able features
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mssse3)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mssse3'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-msse4.1)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse4.1'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mpopcnt)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mpopcnt'
+CCompilerOpt.feature_test[1466] : testing feature 'POPCNT' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-msse4.2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse4.2'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mf16c)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mf16c'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx2'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX2' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mavx2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mavx2 -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mfma)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mfma'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512f)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512f'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512F' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'SSSE3' with flags (-msse -msse2 -msse3 -mssse3)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'SSE42' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512cd)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512cd'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512CD' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'SSE41' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'F16C' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -Werror'
+CCompilerOpt.feature_test[1466] : testing feature 'FMA3' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512vl -mavx512bw -mavx512dq)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512vl -mavx512bw -mavx512dq'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512_SKX' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512ifma -mavx512vbmi)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512ifma -mavx512vbmi'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512_CNL' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -mavx512ifma -mavx512vbmi)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -mavx512ifma -mavx512vbmi -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512vnni)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512vnni'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512_CLX' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -mavx512vnni)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -mavx512vnni -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512vbmi2 -mavx512bitalg -mavx512vpopcntdq)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512vbmi2 -mavx512bitalg -mavx512vpopcntdq'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512_ICL' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -mavx512vnni -mavx512ifma -mavx512vbmi -mavx512vbmi2 -mavx512bitalg -mavx512vpopcntdq)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -mavx512vnni -mavx512ifma -mavx512vbmi -mavx512vbmi2 -mavx512bitalg -mavx512vpopcntdq -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx512er -mavx512pf)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx512er -mavx512pf'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512_KNL' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512er -mavx512pf)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512er -mavx512pf -Werror'
+CCompilerOpt.cc_test_flags[1013] : testing flags (-mavx5124fmaps -mavx5124vnniw -mavx512vpopcntdq)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-mavx5124fmaps -mavx5124vnniw -mavx512vpopcntdq'
+CCompilerOpt.feature_test[1466] : testing feature 'AVX512_KNM' with flags (-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512er -mavx512pf -mavx5124fmaps -mavx5124vnniw -mavx512vpopcntdq)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512er -mavx512pf -mavx5124fmaps -mavx5124vnniw -mavx512vpopcntdq -Werror'
+CCompilerOpt.__init__[1722] : skip features (SSE SSE2 SSE3) since its part of baseline
+CCompilerOpt.__init__[1726] : initialize targets groups
+CCompilerOpt.__init__[1728] : parse target group simd_test
+CCompilerOpt._parse_target_tokens[1939] : skip targets (VSX2 FMA4 ASIMD NEON VSX VSX3 XOP) not part of baseline or dispatch-able features
+CCompilerOpt._parse_policy_not_keepbase[2051] : skip baseline features (SSE2)
+CCompilerOpt.generate_dispatch_header[2272] : generate CPU dispatch header: (build/src.linux-x86_64-3.10/numpy/distutils/include/npy_cpu_dispatch_config.h)
+CCompilerOpt.generate_dispatch_header[2281] : dispatch header dir build/src.linux-x86_64-3.10/numpy/distutils/include does not exist, creating it
+CCompilerOpt.feature_extra_checks[1546] : Testing extra checks for feature 'AVX512F' (AVX512F_REDUCE)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -Werror'
+CCompilerOpt.feature_extra_checks[1546] : Testing extra checks for feature 'AVX512_SKX' (AVX512BW_MASK AVX512DQ_MASK)
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -Werror'
+C compiler: gcc -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3 -mssse3 -msse4.1 -mpopcnt -msse4.2 -mavx -mf16c -mfma -mavx2 -mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq -Werror'
+customize UnixCCompiler
+customize UnixCCompiler using build_ext
+building 'skfmm.cfmm' extension
+compiling C++ sources
+C compiler: g++ -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+creating build/temp.linux-x86_64-cpython-310/skfmm
+compile options: '-Iskfmm -I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/core/include -Ibuild/src.linux-x86_64-3.10/numpy/distutils/include -I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3'
+g++: skfmm/fmm.cpp
+g++: skfmm/heap.cpp
+g++: skfmm/base_marcher.cpp
+g++: skfmm/distance_marcher.cpp
+g++: skfmm/travel_time_marcher.cpp
+g++: skfmm/extension_velocity_marcher.cpp
+g++ -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -shared -Wl,--allow-shlib-undefined -Wl,-rpath,/home/amin/miniforge3/envs/test/lib -Wl,-rpath-link,/home/amin/miniforge3/envs/test/lib -L/home/amin/miniforge3/envs/test/lib -Wl,--allow-shlib-undefined -Wl,-rpath,/home/amin/miniforge3/envs/test/lib -Wl,-rpath-link,/home/amin/miniforge3/envs/test/lib -L/home/amin/miniforge3/envs/test/lib build/temp.linux-x86_64-cpython-310/skfmm/fmm.o build/temp.linux-x86_64-cpython-310/skfmm/heap.o build/temp.linux-x86_64-cpython-310/skfmm/base_marcher.o build/temp.linux-x86_64-cpython-310/skfmm/distance_marcher.o build/temp.linux-x86_64-cpython-310/skfmm/travel_time_marcher.o build/temp.linux-x86_64-cpython-310/skfmm/extension_velocity_marcher.o -o build/lib.linux-x86_64-cpython-310/skfmm/cfmm.cpython-310-x86_64-linux-gnu.so
+building 'skfmm.pheap' extension
+compiling C++ sources
+C compiler: g++ -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC -O2 -isystem /home/amin/miniforge3/envs/test/include -fPIC
+
+compile options: '-I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/core/include -Ibuild/src.linux-x86_64-3.10/numpy/distutils/include -I/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/include -I/home/amin/miniforge3/envs/test/include/python3.10 -c'
+extra options: '-msse -msse2 -msse3'
+g++: skfmm/pheap.cpp
+g++: skfmm/heap.cpp
+g++ -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -pthread -B /home/amin/miniforge3/envs/test/compiler_compat -shared -Wl,--allow-shlib-undefined -Wl,-rpath,/home/amin/miniforge3/envs/test/lib -Wl,-rpath-link,/home/amin/miniforge3/envs/test/lib -L/home/amin/miniforge3/envs/test/lib -Wl,--allow-shlib-undefined -Wl,-rpath,/home/amin/miniforge3/envs/test/lib -Wl,-rpath-link,/home/amin/miniforge3/envs/test/lib -L/home/amin/miniforge3/envs/test/lib build/temp.linux-x86_64-cpython-310/skfmm/pheap.o build/temp.linux-x86_64-cpython-310/skfmm/heap.o -o build/lib.linux-x86_64-cpython-310/skfmm/pheap.cpython-310-x86_64-linux-gnu.so
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64
+creating build/bdist.linux-x86_64/wheel
+creating build/bdist.linux-x86_64/wheel/skfmm
+copying build/lib.linux-x86_64-cpython-310/skfmm/setup.py -> build/bdist.linux-x86_64/wheel/skfmm
+copying build/lib.linux-x86_64-cpython-310/skfmm/pfmm.py -> build/bdist.linux-x86_64/wheel/skfmm
+copying build/lib.linux-x86_64-cpython-310/skfmm/pheap.cpython-310-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/skfmm
+copying build/lib.linux-x86_64-cpython-310/skfmm/cfmm.cpython-310-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/skfmm
+copying build/lib.linux-x86_64-cpython-310/skfmm/__init__.py -> build/bdist.linux-x86_64/wheel/skfmm
+copying build/lib.linux-x86_64-cpython-310/skfmm/heap.py -> build/bdist.linux-x86_64/wheel/skfmm
+running install_egg_info
+running egg_info
+writing scikit_fmm.egg-info/PKG-INFO
+writing dependency_links to scikit_fmm.egg-info/dependency_links.txt
+writing requirements to scikit_fmm.egg-info/requires.txt
+writing top-level names to scikit_fmm.egg-info/top_level.txt
+reading manifest file 'scikit_fmm.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+warning: no files found matching 'README.txt'
+adding license file 'LICENSE.txt'
+writing manifest file 'scikit_fmm.egg-info/SOURCES.txt'
+Copying scikit_fmm.egg-info to build/bdist.linux-x86_64/wheel/scikit_fmm-2023.4.2-py3.10.egg-info
+running install_scripts
+running install_clib
+customize UnixCCompiler
+creating build/bdist.linux-x86_64/wheel/scikit_fmm-2023.4.2.dist-info/WHEEL
+creating '/tmp/.tmpRaNLGF/built-wheels-v0/pypi/scikit-fmm/2023.4.2/FIHUmh9C-Q5BJoCTY5lcU/.tmpT4flvA/tmpm4dlayja/scikit_fmm-2023.4.2-cp310-cp310-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'skfmm/__init__.py'
+adding 'skfmm/cfmm.cpython-310-x86_64-linux-gnu.so'
+adding 'skfmm/heap.py'
+adding 'skfmm/pfmm.py'
+adding 'skfmm/pheap.cpython-310-x86_64-linux-gnu.so'
+adding 'skfmm/setup.py'
+adding 'scikit_fmm-2023.4.2.dist-info/LICENSE.txt'
+adding 'scikit_fmm-2023.4.2.dist-info/METADATA'
+adding 'scikit_fmm-2023.4.2.dist-info/WHEEL'
+adding 'scikit_fmm-2023.4.2.dist-info/top_level.txt'
+adding 'scikit_fmm-2023.4.2.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+scikit_fmm-2023.4.2-cp310-cp310-linux_x86_64.whl
+
+########### EXT COMPILER OPTIMIZATION ###########
+Platform      : 
+  Architecture: x64
+  Compiler    : gcc
+
+CPU baseline  : 
+  Requested   : 'min'
+  Enabled     : SSE SSE2 SSE3
+  Flags       : -msse -msse2 -msse3
+  Extra checks: none
+
+CPU dispatch  : 
+  Requested   : 'max -xop -fma4'
+  Enabled     : SSSE3 SSE41 POPCNT SSE42 AVX F16C FMA3 AVX2 AVX512F AVX512CD AVX512_KNL AVX512_KNM AVX512_SKX AVX512_CLX AVX512_CNL AVX512_ICL
+  Generated   : none
+CCompilerOpt.cache_flush[809] : write cache to path -> /tmp/.tmpRaNLGF/built-wheels-v0/pypi/scikit-fmm/2023.4.2/FIHUmh9C-Q5BJoCTY5lcU/scikit-fmm-2023.4.2.tar.gz/build/temp.linux-x86_64-cpython-310/ccompiler_opt_cache_ext.py
+--- stderr:
+/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/setuptools/dist.py:530: UserWarning: Normalizing '2023.04.02' to '2023.4.2'
+  warnings.warn(tmpl.format(**locals()))
+In file included from /tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/core/include/numpy/ndarraytypes.h:1969,
+                 from /tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/core/include/numpy/ndarrayobject.h:12,
+                 from /tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/core/include/numpy/noprefix.h:9,
+                 from skfmm/fmm.cpp:5:
+/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:17:2: warning: #warning "Using deprecated NumPy API, disable it with " "#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-Wcpp]
+   17 | #warning "Using deprecated NumPy API, disable it with " \
+      |  ^~~~~~~
+In file included from skfmm/base_marcher.cpp:6:
+In member function ‘int baseMarcher::_getN(int, int, int, int)’,
+    inlined from ‘void baseMarcher::solve()’ at skfmm/base_marcher.cpp:201:33:
+skfmm/base_marcher.h:77:25: warning: ‘coord’ may be used uninitialized [-Wmaybe-uninitialized]
+   77 |     int newc = coord[dim]+dir;
+      |                ~~~~~~~~~^
+skfmm/base_marcher.h: In member function ‘void baseMarcher::solve()’:
+skfmm/base_marcher.h:75:9: note: ‘coord’ declared here
+   75 |     int coord[MaximumDimension];
+      |         ^~~~~
+skfmm/travel_time_marcher.cpp: In member function ‘virtual double travelTimeMarcher::updatePointOrderTwo(int, std::set<int>)’:
+skfmm/travel_time_marcher.cpp:87:25: warning: comparison of integer expressions of different signedness: ‘std::set<int>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+   87 |     if(avoid_dim.size() == dim_) return std::numeric_limits<double>::infinity(); //end of the recursion, use inf so that it is discarded selecting the minimum
+      |        ~~~~~~~~~~~~~~~~~^~~~~~~
+/tmp/.tmpRaNLGF/.tmpmJYppq/.venv/lib/python3.10/site-packages/setuptools/command/egg_info.py:643: SetuptoolsDeprecationWarning: Custom 'build_py' does not implement 'get_data_files_without_manifest'.
+Please extend command classes from setuptools instead of distutils.
+  warnings.warn(
+---
+```
+
+- Platform: Ubuntu 22.02
+- `uv` version: 0.1.16
+- Python version: 3.10.12
+- `pip install scikit-fmm` works fine on a fresh virtualenv.
+
+
+---
+
+_Renamed from "Can't install `scikit-fmm`, possibly due to custom" to "Can't install `scikit-fmm`, possibly due to custom build process (involving C deps)" by @ma-sadeghi on 2024-03-10 08:52_
+
+---
+
+_Renamed from "Can't install `scikit-fmm`, possibly due to custom build process (involving C deps)" to "Can't install `scikit-fmm`, possibly due to custom build process (C deps)" by @ma-sadeghi on 2024-03-10 08:52_
+
+---
+
+_Comment by @charliermarsh on 2024-03-10 12:28_
+
+This is fixed on main but not yet released, thank you!
+
+---
+
+_Closed by @charliermarsh on 2024-03-10 12:28_
+
+---
+
+_Comment by @charliermarsh on 2024-03-10 12:29_
+
+Ref: https://github.com/astral-sh/uv/pull/2314
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-10 12:29_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-10 12:29_
+
+---
+
+_Comment by @ma-sadeghi on 2024-03-10 14:59_
+
+Thanks for the quick reply! Quick question: is there an easy way to update uv from source? Like rye's `rye self update --rev`.
+
+---
+
+_Comment by @ma-sadeghi on 2024-03-10 23:17_
+
+> Thanks for the quick reply! Quick question: is there an easy way to update uv from source? Like rye's `rye self update --rev`.
+
+Just found it, for reference:
+
+```shell
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.17/uv-installer.sh | sh
+```
+
+(From [releases page](https://github.com/astral-sh/uv/releases/tag/0.1.17))
+
+---

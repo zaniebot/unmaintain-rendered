@@ -1,0 +1,143 @@
+---
+number: 16128
+title: Update Swatinem/rust-cache action to v2.8.2
+type: pull_request
+state: closed
+author: renovate[bot]
+labels:
+  - internal
+assignees: []
+base: main
+head: renovate/swatinem-rust-cache-2.x
+created_at: 2025-10-06T00:50:11Z
+updated_at: 2025-12-03T14:10:47Z
+url: https://github.com/astral-sh/uv/pull/16128
+synced_at: 2026-01-10T01:26:17Z
+---
+
+# Update Swatinem/rust-cache action to v2.8.2
+
+---
+
+_Pull request opened by @renovate[bot] on 2025-10-06 00:50_
+
+This PR contains the following updates:
+
+| Package | Type | Update | Change |
+|---|---|---|---|
+| [Swatinem/rust-cache](https://redirect.github.com/Swatinem/rust-cache) | action | patch | `v2.8.0` -> `v2.8.2` |
+
+---
+
+### Release Notes
+
+<details>
+<summary>Swatinem/rust-cache (Swatinem/rust-cache)</summary>
+
+### [`v2.8.2`](https://redirect.github.com/Swatinem/rust-cache/releases/tag/v2.8.2)
+
+[Compare Source](https://redirect.github.com/Swatinem/rust-cache/compare/v2.8.1...v2.8.2)
+
+##### What's Changed
+
+- ci: address lint findings, add zizmor workflow by [@&#8203;woodruffw](https://redirect.github.com/woodruffw) in [#&#8203;262](https://redirect.github.com/Swatinem/rust-cache/pull/262)
+- feat: Implement ability to disable adding job ID + rust environment hashes to cache names by [@&#8203;Ryan-Brice](https://redirect.github.com/Ryan-Brice) in [#&#8203;279](https://redirect.github.com/Swatinem/rust-cache/pull/279)
+- Don't overwrite env for cargo-metadata call by [@&#8203;MaeIsBad](https://redirect.github.com/MaeIsBad) in [#&#8203;285](https://redirect.github.com/Swatinem/rust-cache/pull/285)
+
+##### New Contributors
+
+- [@&#8203;woodruffw](https://redirect.github.com/woodruffw) made their first contribution in [#&#8203;262](https://redirect.github.com/Swatinem/rust-cache/pull/262)
+- [@&#8203;Ryan-Brice](https://redirect.github.com/Ryan-Brice) made their first contribution in [#&#8203;279](https://redirect.github.com/Swatinem/rust-cache/pull/279)
+- [@&#8203;MaeIsBad](https://redirect.github.com/MaeIsBad) made their first contribution in [#&#8203;285](https://redirect.github.com/Swatinem/rust-cache/pull/285)
+
+**Full Changelog**: <https://github.com/Swatinem/rust-cache/compare/v2.8.1...v2.8.2>
+
+### [`v2.8.1`](https://redirect.github.com/Swatinem/rust-cache/releases/tag/v2.8.1)
+
+[Compare Source](https://redirect.github.com/Swatinem/rust-cache/compare/v2.8.0...v2.8.1)
+
+##### What's Changed
+
+- Set empty `CARGO_ENCODED_RUSTFLAGS` in workspace metadata retrieval by [@&#8203;ark0f](https://redirect.github.com/ark0f) in [#&#8203;249](https://redirect.github.com/Swatinem/rust-cache/pull/249)
+- chore(deps): update dependencies by [@&#8203;reneleonhardt](https://redirect.github.com/reneleonhardt) in [#&#8203;251](https://redirect.github.com/Swatinem/rust-cache/pull/251)
+- chore: fix dependabot groups by [@&#8203;reneleonhardt](https://redirect.github.com/reneleonhardt) in [#&#8203;253](https://redirect.github.com/Swatinem/rust-cache/pull/253)
+- Bump the prd-patch group with 2 updates by [@&#8203;dependabot](https://redirect.github.com/dependabot)\[bot] in [#&#8203;254](https://redirect.github.com/Swatinem/rust-cache/pull/254)
+- chore(dependabot): regenerate and commit dist/ by [@&#8203;reneleonhardt](https://redirect.github.com/reneleonhardt) in [#&#8203;257](https://redirect.github.com/Swatinem/rust-cache/pull/257)
+- Bump [@&#8203;types/node](https://redirect.github.com/types/node) from 22.16.3 to 24.2.1 in the dev-major group by [@&#8203;dependabot](https://redirect.github.com/dependabot)\[bot] in [#&#8203;255](https://redirect.github.com/Swatinem/rust-cache/pull/255)
+- Bump typescript from 5.8.3 to 5.9.2 in the dev-minor group by [@&#8203;dependabot](https://redirect.github.com/dependabot)\[bot] in [#&#8203;256](https://redirect.github.com/Swatinem/rust-cache/pull/256)
+- Bump actions/setup-node from 4 to 5 in the actions group by [@&#8203;dependabot](https://redirect.github.com/dependabot)\[bot] in [#&#8203;259](https://redirect.github.com/Swatinem/rust-cache/pull/259)
+- Update README.md by [@&#8203;Propfend](https://redirect.github.com/Propfend) in [#&#8203;234](https://redirect.github.com/Swatinem/rust-cache/pull/234)
+- Bump [@&#8203;types/node](https://redirect.github.com/types/node) from 24.2.1 to 24.3.0 in the dev-minor group by [@&#8203;dependabot](https://redirect.github.com/dependabot)\[bot] in [#&#8203;258](https://redirect.github.com/Swatinem/rust-cache/pull/258)
+
+##### New Contributors
+
+- [@&#8203;ark0f](https://redirect.github.com/ark0f) made their first contribution in [#&#8203;249](https://redirect.github.com/Swatinem/rust-cache/pull/249)
+- [@&#8203;reneleonhardt](https://redirect.github.com/reneleonhardt) made their first contribution in [#&#8203;251](https://redirect.github.com/Swatinem/rust-cache/pull/251)
+- [@&#8203;dependabot](https://redirect.github.com/dependabot)\[bot] made their first contribution in [#&#8203;254](https://redirect.github.com/Swatinem/rust-cache/pull/254)
+- [@&#8203;Propfend](https://redirect.github.com/Propfend) made their first contribution in [#&#8203;234](https://redirect.github.com/Swatinem/rust-cache/pull/234)
+
+**Full Changelog**: <https://github.com/Swatinem/rust-cache/compare/v2...v2.8.1>
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - Between 12:00 AM and 03:59 AM, only on Monday ( * 0-3 * * 1 ) (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+🔕 **Ignore**: Close this PR and you won't be reminded about this update again.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/uv).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0MS4xMzEuOSIsInVwZGF0ZWRJblZlciI6IjQyLjE5LjkiLCJ0YXJnZXRCcmFuY2giOiJtYWluIiwibGFiZWxzIjpbImludGVybmFsIl19-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2025-10-06 00:50_
+
+---
+
+_Renamed from "Update Swatinem/rust-cache action to v2.8.1" to "Update Swatinem/rust-cache action to v2.8.2" by @renovate[bot] on 2025-11-26 12:50_
+
+---
+
+_Renamed from "Update Swatinem/rust-cache action to v2.8.2" to "Update Swatinem/rust-cache action to v2.8.1" by @renovate[bot] on 2025-12-02 18:30_
+
+---
+
+_@woodruffw approved on 2025-12-02 19:31_
+
+---
+
+_Comment by @woodruffw on 2025-12-02 19:32_
+
+The `2.8.2 -> 2.8.1` change in this PR is a good sign the cooldown is working 🙂 
+
+---
+
+_Renamed from "Update Swatinem/rust-cache action to v2.8.1" to "Update Swatinem/rust-cache action to v2.8.2" by @renovate[bot] on 2025-12-03 12:38_
+
+---
+
+_Merged by @konstin on 2025-12-03 14:10_
+
+---
+
+_Closed by @konstin on 2025-12-03 14:10_
+
+---
+
+_Branch deleted on 2025-12-03 14:10_
+
+---

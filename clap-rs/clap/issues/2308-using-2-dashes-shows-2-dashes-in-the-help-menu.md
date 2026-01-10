@@ -1,0 +1,61 @@
+---
+number: 2308
+title: "Using >2 dashes shows 2 dashes in the help menu."
+type: issue
+state: closed
+author: g-w1
+labels:
+  - C-bug
+  - A-parsing
+assignees: []
+created_at: 2021-01-22T19:30:26Z
+updated_at: 2021-02-06T16:50:46Z
+url: https://github.com/clap-rs/clap/issues/2308
+synced_at: 2026-01-10T01:27:15Z
+---
+
+# Using >2 dashes shows 2 dashes in the help menu.
+
+---
+
+_Issue opened by @g-w1 on 2021-01-22 19:30_
+
+### Make sure you completed the following tasks
+
+### Code
+
+This can be seen with cargo. Just run `cargo -----`, 
+
+### Actual Behavior Summary
+
+it will say,
+`error: Found argument '--' which wasn't expected, or isn't valid in this context`,
+2 dashes, even with more than 2 dashes in the command. I am using cargo since it is readily available and uses clap.
+
+### Expected Behavior Summary
+
+`error: Found argument '-----' which wasn't expected, or isn't valid in this context`,
+
+
+
+---
+
+_Label `T: bug` added by @g-w1 on 2021-01-22 19:30_
+
+---
+
+_Referenced in [clap-rs/clap#2297](../../clap-rs/clap/pulls/2297.md) on 2021-01-23 07:24_
+
+---
+
+_Label `C: parsing` added by @pksunkara on 2021-01-23 15:49_
+
+---
+
+_Referenced in [clap-rs/clap#2329](../../clap-rs/clap/pulls/2329.md) on 2021-02-06 11:30_
+
+---
+
+_Closed by @pksunkara on 2021-02-06 16:50_
+
+---

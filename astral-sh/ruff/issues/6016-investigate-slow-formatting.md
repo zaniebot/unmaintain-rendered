@@ -1,0 +1,151 @@
+---
+number: 6016
+title: Investigate slow formatting
+type: issue
+state: closed
+author: konstin
+labels:
+  - performance
+  - formatter
+assignees: []
+created_at: 2023-07-23T13:06:25Z
+updated_at: 2023-09-08T08:18:37Z
+url: https://github.com/astral-sh/ruff/issues/6016
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Investigate slow formatting
+
+---
+
+_Issue opened by @konstin on 2023-07-23 13:06_
+
+Some files are much slower to format than others, i've posted the top 20 below (for context: i can format 294k files in 290s on my 8 threads laptop, so roughly an average of 8ms per file, the real median is likely a good bit lower). The exact timings and order are inaccurate since we they come from the ecosystem check which runs in parallel, but no files should be that slow, especially since the files aren't that large. We need to format these files with a profiler attached (see CONTRIBUTING.md for instructions), find the bottleneck and optimize the relevant function.
+
+```
+$ cat target/formatter-ecosystem-errors.txt | grep "Slow formatting" | sd "Slow formatting .*/checkouts/(.*): Formatting the file took (.*)" '$2 $1' | sort -h -r | head -n 20
+2157ms angr:angr/angr/procedures/definitions/win32_fwpuclnt.py
+1430ms angr:angr/angr/procedures/definitions/win32_rpcrt4.py
+1052ms kevoreilly:CAPEv2/tests/utils_pretty_print_funcs_data.py
+965ms angr:angr/angr/procedures/definitions/win32_propsys.py
+614ms angr:angr/angr/procedures/definitions/win32_dnsapi.py
+553ms angr:angr/angr/procedures/definitions/win32_crypt32.py
+531ms angr:angr/angr/procedures/definitions/win32_kernel32.py
+491ms sympy:sympy/sympy/physics/quantum/tests/test_spin.py
+446ms debian-calibre:calibre/src/calibre/ebooks/unihandecode/jacodepoints.py
+435ms debian-calibre:calibre/src/calibre/ebooks/unihandecode/zhcodepoints.py
+435ms debian-calibre:calibre/src/calibre/ebooks/unihandecode/krcodepoints.py
+431ms pwndbg:pwndbg/pwndbg/lib/functions.py
+378ms angr:angr/angr/procedures/definitions/win32_icu.py
+368ms angr:angr/angr/procedures/definitions/win32_oleaut32.py
+365ms angr:angr/angr/procedures/definitions/win32_wldap32.py
+353ms angr:angr/angr/procedures/definitions/win32_advapi32.py
+339ms kovidgoyal:calibre/src/calibre/ebooks/unihandecode/vncodepoints.py
+335ms kovidgoyal:calibre/src/calibre/ebooks/unihandecode/jacodepoints.py
+324ms angr:angr/angr/procedures/definitions/win32_user32.py
+322ms kovidgoyal:calibre/src/calibre/ebooks/unihandecode/krcodepoints.py
+```
+
+| Path                                                                          | Source file size   | Formatted file size  |
+|-------------------------------------------------------------------------------|-------------------:|---------------------:|
+| `angr:angr/angr/procedures/definitions/win32_fwpuclnt.py`                     | 			    4.1M |                  35M |
+| `angr:angr/angr/procedures/definitions/win32_rpcrt4.py`                       | 	            2.0M |                 8.5M |
+| `kevoreilly:CAPEv2/tests/utils_pretty_print_funcs_data.py`                    |               8.9M |                 11M  |
+| `angr:angr/angr/procedures/definitions/win32_propsys.py`                      |               1.2M |                 5.4M |
+| `angr:angr/angr/procedures/definitions/win32_dnsapi.py` 	                    |              833KB |                 3.2M |
+| `angr:angr/angr/procedures/definitions/win32_crypt32.py` 	                    |               794K |                 4.0M |
+| `angr:angr/angr/procedures/definitions/win32_kernel32.py` 	                |               727K |                 1.3M |
+| `sympy:sympy/sympy/physics/quantum/tests/test_spin.py` 	                    |               337K |                 453K |
+| `debian-calibre:calibre/src/calibre/ebooks/unihandecode/jacodepoints.py` 	    |               397K |                1010K |
+| `debian-calibre:calibre/src/calibre/ebooks/unihandecode/zhcodepoints.py`      |               397K |                1010K |
+| `debian-calibre:calibre/src/calibre/ebooks/unihandecode/krcodepoints.py`      |               397K |                1010K |
+| `pwndbg:pwndbg/pwndbg/lib/functions.py`                                       |               ???? |                 ???? |
+| `angr:angr/angr/procedures/definitions/win32_icu.py`                          |               641K |                 1.5M |
+| `angr:angr/angr/procedures/definitions/win32_oleaut32.py`                     |               566K |                 2.2M |
+| `angr:angr/angr/procedures/definitions/win32_wldap32.py`                      |               496K |                 1.1M |
+| `angr:angr/angr/procedures/definitions/win32_advapi32.py`                     |               556K |                 1.2M |
+| `kovidgoyal:calibre/src/calibre/ebooks/unihandecode/vncodepoints.py`          |               397K |                1010K |
+| `kovidgoyal:calibre/src/calibre/ebooks/unihandecode/jacodepoints.py`          |               397K |                1010K |
+| `angr:angr/angr/procedures/definitions/win32_user32.py`                       |               397K |                 726K |
+| `kovidgoyal:calibre/src/calibre/ebooks/unihandecode/krcodepoints.py`          |               397K |                1010K |
+
+
+
+
+
+
+
+
+
+```
+
+
+---
+
+_Label `performance` added by @konstin on 2023-07-23 13:06_
+
+---
+
+_Label `formatter` added by @konstin on 2023-07-23 13:06_
+
+---
+
+_Comment by @MichaReiser on 2023-07-25 17:38_
+
+We may need to take the line count after formatting. `angr:angr/angr/procedures/definitions/win32_fwpuclnt.py` has 334'645 after formatting... 35% of the time is spent inside the parser (after lexer refactor), another 30% is spent inside printing (yeah, printing 35mb takes a while). [Profile](https://share.firefox.dev/3rEWUYN)
+
+The same is probably true for most other files in the `angr` repository (`win32_rpcrt4` has 129'402 lines after formatting) but also seems true for other files (`utils_pretty_print_funcs_data` has 216'887 after formatting). It is probably still worth to investigate file by file to make sure there are no *real* slow files.
+
+
+
+---
+
+_Comment by @konstin on 2023-07-25 20:27_
+
+good point, do you want to edit the OP with counts or should i change the script to sort differently? we could also use a file size filter  or a millisecond per kilobyte formatted score.
+
+---
+
+_Comment by @MichaReiser on 2023-07-28 17:51_
+
+> good point, do you want to edit the OP with counts or should i change the script to sort differently? we could also use a file size filter or a millisecond per kilobyte formatted score.
+
+Sorry for the late reply. I think including the file size would be a good metric. Ideally, we would use the file size after formatting because it makes the file easier to compare. But that's probably somewhat hard. 
+
+Edit: I started updating a few
+
+---
+
+_Comment by @MichaReiser on 2023-07-29 07:43_
+
+I updated the table with the original and formatted file size. I'm not too concerned about the many MB files. But we may want to take a look why some of the <= 4MB file take so long to format.
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-07-31 16:25_
+
+---
+
+_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:25_
+
+---
+
+_Removed from milestone `Formatter: Beta` by @MichaReiser on 2023-08-22 14:34_
+
+---
+
+_Comment by @MichaReiser on 2023-09-08 08:04_
+
+@konstin I remember that you changed the diffing algorithm. Do you know if this is still a problem or if we can close the issue?
+
+---
+
+_Comment by @konstin on 2023-09-08 08:18_
+
+Let's close this. A pass over the slowest files would be nice but not pressing given the current performance on the test projects
+
+---
+
+_Closed by @konstin on 2023-09-08 08:18_
+
+---

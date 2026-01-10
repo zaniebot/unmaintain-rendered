@@ -1,0 +1,249 @@
+---
+number: 13528
+title: "`ruff analyze graph` does not understand submodule imports"
+type: issue
+state: open
+author: minmax
+labels:
+  - bug
+  - analyze
+assignees: []
+created_at: 2024-09-26T15:02:17Z
+updated_at: 2024-10-25T16:36:07Z
+url: https://github.com/astral-sh/ruff/issues/13528
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# `ruff analyze graph` does not understand submodule imports
+
+---
+
+_Issue opened by @minmax on 2024-09-26 15:02_
+
+ruff 0.6.8
+
+i see something like this:
+
+```json
+{
+"src/view.py": [
+    "src/models/User.py",
+  ],
+"src/code.py": [
+    "src/models/user.py",
+  ],
+}
+```
+
+content of `src/models/__init__.py`:
+```python
+from models.user import User
+
+__all__ = ['User']
+```
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 15:13_
+
+Are you able to put together a minimal reproduction, like a set of files I can run `ruff` over to reproduce? Happy to help.
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-09-26 15:13_
+
+---
+
+_Comment by @minmax on 2024-09-26 15:43_
+
+I was sure it wouldn't work, but fortunately it was easily reproduced.
+
+`uvx ruff analyze graph .` on https://github.com/minmax/ruff-analyze-tree
+```
+  "src/ruff_analyze_tree/colors.py": [
+    "src/ruff_analyze_tree/models/User.py"
+  ],
+  "src/ruff_analyze_tree/models/__init__.py": [
+    "src/ruff_analyze_tree/models/user.py"
+  ],
+```
+
+---
+
+_Comment by @MichaReiser on 2024-09-26 15:58_
+
+Could you explain what result you would expect or why the actual result is incorrect?
+
+---
+
+_Comment by @minmax on 2024-09-26 16:01_
+
+The repo don't contains `User.py`, only `user.py`, so "src/ruff_analyze_tree/models/User.py" - is invalid.
+
+
+---
+
+_Renamed from "Sometimes `ruff analyze graph` output dependencies in invalid case" to "Sometimes `ruff analyze graph` output dependencies in invalid upper/lower case" by @minmax on 2024-09-26 16:06_
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 16:25_
+
+Maybe the resolver is case insensitive? I mean, that's arguably correct on case-insensitive filesystems which are common.
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 16:25_
+
+I can look into it!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-26 16:25_
+
+---
+
+_Comment by @minmax on 2024-09-26 16:28_
+
+> Maybe the resolver is case insensitive?
+
+no, im on mac (so case sensitive) and `user.py` was manually created 30 min ago.
+
+My guess is that it's a Camel case import broke something `from models.user import User`.
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 16:31_
+
+(Just to clarify, it may not matter what filesystem _you're_ on.)
+
+---
+
+_Comment by @minmax on 2024-09-26 16:31_
+
+oh my god, "By default, Mac OS uses a case-insensitive file system", im not sure now.
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 16:32_
+
+Let's proceed under the assumption that there's a bug here, I will debug.
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 17:02_
+
+I do think the issue here is that `ruff-analyze-tree/src/ruff_analyze_tree/models/User.py` exists from the perspective of the filesystem. \cc @AlexWaygood for insight on whether it's intended in the resolver.
+
+---
+
+_Comment by @MichaReiser on 2024-09-26 18:11_
+
+That makes sense. What's the reason for querying the module resolver with User instead of user?
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 18:25_
+
+Because the import is `from models import User`. That could mean that there's a file at `models/User.py`, so we look for that first. But `User` is re-exported from `models/__init__.py`.
+
+---
+
+_Comment by @charliermarsh on 2024-09-26 18:26_
+
+(It's incorrect to resolve `from models import User` to `models/user.py`; it should map to `models/__init__.py`. So it's at least incorrect from the perspective of mapping to Python's semantics.)
+
+---
+
+_Comment by @MichaReiser on 2024-09-27 07:17_
+
+That's correct, but I think that's an issue in the analyze graph because it first tries to resolve `models.User` before testing for `models`
+
+https://github.com/astral-sh/ruff/blob/3018303c8759b3e96d075c62eeb8b8ef24b4d0c3/crates/ruff_graph/src/resolver.rs#L27-L34
+
+Red Knot does the resolution in the opposite order: 
+
+1. First resolve `models` 
+2. Then resolve `models.user` by looking up `User` in `models`
+
+---
+
+_Comment by @charliermarsh on 2024-09-27 13:01_
+
+I don't know if I agree... but it depends on how we define the API surface? Like, on the face of it, it's incorrect that the module resolver returns `models/User.py` given `modules.User` -- that's not the correct file for that symbol!
+
+As a different example: imagine that `models/User.py` exists, but `models/user.py` does not, and we try to resolve `import models.user`. I think today that would resolve to `models/User.py`? That seems wrong and has nothing to do with member vs. module imports.
+
+
+---
+
+_Comment by @MichaReiser on 2024-09-27 13:12_
+
+The input of the module resolver isn't the name of a symbol. It's a module path. You have to use red knot's type checker if you want resolution by symbol.
+
+---
+
+_Comment by @charliermarsh on 2024-09-27 13:17_
+
+What is a "module path"? Can you explain in terms of the second example I listed?
+
+---
+
+_Comment by @MichaReiser on 2024-09-27 13:28_
+
+A module path is a name of a module. E.g. `models` or `models.user` 
+
+However, the module `models.user` is not the same as the symbol `models.user` 
+
+* Module `models.user`: `models` is a package (namespace or normal). `user` can resolve to either a `user.py` or `user/__init__.py`
+* Symbol `models.user`: Import the module `models`, then resolve the symbol `user` in its global scope, import the submodule if no such symbol is defined
+
+From the python spec:
+
+![image](https://github.com/user-attachments/assets/2a6b2d1d-506a-4b29-b875-6987cae37922)
+
+
+The module resolver only implements resolving the module name `models.user` to a file. It doesn't implement the logic for resolving the symbol `user` in the scope of `models`.
+
+For now, what you could do is to use Ruff's existing semantic model to determine if the symbol `User` exists in `models` and, if so, don't resolve `models.User`
+
+@AlexWaygood Is my understanding correct that red knot's inference for `from import` misses the automatic sub-module fallback?
+
+---
+
+_Comment by @AlexWaygood on 2024-09-27 14:13_
+
+> @AlexWaygood Is my understanding correct that red knot's inference for `from import` misses the automatic sub-module fallback?
+
+Yeah, I _think_ that's a known limitation of the red-knot semantic model right now. There's a test case with a TODO for it IIRC. I can look at doing the todo next week!
+
+---
+
+_Label `needs-mre` removed by @charliermarsh on 2024-09-28 12:31_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-09-28 12:31_
+
+---
+
+_Label `analyze` added by @charliermarsh on 2024-09-28 12:31_
+
+---
+
+_Comment by @AlexWaygood on 2024-09-29 15:07_
+
+The relevant TODOs in red-knot are this comment and these currently-skipped tests. I think we'd fix this in the red-knot semantic model rather than the red-knot module resolver, however, so you might need to implement an independent fix in `ruff_graph` @charliermarsh
+
+https://github.com/astral-sh/ruff/blob/bee498d6359dd7ce9aa8bff685ca821ab1bbfe31/crates/red_knot_python_semantic/src/types/infer.rs#L1416-L1424
+
+https://github.com/astral-sh/ruff/blob/bee498d6359dd7ce9aa8bff685ca821ab1bbfe31/crates/red_knot_python_semantic/src/types/infer.rs#L2986-L3015
+
+
+
+---
+
+_Renamed from "Sometimes `ruff analyze graph` output dependencies in invalid upper/lower case" to "`ruff analyze graph` does not understand submodule imports" by @AlexWaygood on 2024-10-25 16:36_
+
+---

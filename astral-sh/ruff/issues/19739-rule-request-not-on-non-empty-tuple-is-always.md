@@ -1,0 +1,61 @@
+---
+number: 19739
+title: "Rule request: `not` on non-empty tuple is always `False`"
+type: issue
+state: open
+author: tamir-bahar
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-08-04T10:41:23Z
+updated_at: 2025-08-05T07:48:59Z
+url: https://github.com/astral-sh/ruff/issues/19739
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# Rule request: `not` on non-empty tuple is always `False`
+
+---
+
+_Issue opened by @tamir-bahar on 2025-08-04 10:41_
+
+### Summary
+
+I ran into the following in my code:
+
+```python
+return not (a or b or c,)
+```
+
+Due to the `,` before the closing parens, the expression was a non-empty tuple and therefore always returned `False`.
+
+Since we have the `not` there, I doubt there will be many false-positives for that (honestly, I can't think of any).
+
+Thanks!
+
+---
+
+_Comment by @ntBre on 2025-08-04 21:05_
+
+I could have sworn we had a rule for this, but the two I found only apply in certain contexts, which is probably what I was thinking of:
+- [if-tuple (F634)](https://docs.astral.sh/ruff/rules/if-tuple/#if-tuple-f634)
+- [assert-tuple (F631)](https://docs.astral.sh/ruff/rules/assert-tuple/#assert-tuple-f631)
+
+I guess along this theme we could call the rule something like `negated-tuple`, but these all seem like special cases of a hypothetical `tuple-in-boolean-context` rule.
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-04 21:05_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-08-04 21:05_
+
+---
+
+_Comment by @MichaReiser on 2025-08-05 07:48_
+
+or even a rule that detects values that are always truthy or falsy values in boolean context
+
+---

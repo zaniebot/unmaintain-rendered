@@ -1,0 +1,152 @@
+---
+number: 3920
+title: Support flags with values in native completions
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - A-completion
+  - E-help-wanted
+  - E-easy
+  - ":money_with_wings: $20"
+assignees: []
+created_at: 2022-07-13T14:18:15Z
+updated_at: 2024-08-12T18:22:14Z
+url: https://github.com/clap-rs/clap/issues/3920
+synced_at: 2026-01-10T01:27:49Z
+---
+
+# Support flags with values in native completions
+
+---
+
+_Issue opened by @epage on 2022-07-13 14:18_
+
+See #3166 for more context
+
+- [code](https://github.com/clap-rs/clap/blob/master/clap_complete/src/dynamic)
+- [tests](https://github.com/clap-rs/clap/blob/master/clap_complete/tests/testsuite/dynamic.rs)
+
+Tasks
+- [x] #5539 
+- [x] #5576
+- [ ] Deal with `COMP_WORDBREAKS`
+
+---
+
+_Label `C-enhancement` added by @epage on 2022-07-13 14:18_
+
+---
+
+_Label `A-completion` added by @epage on 2022-07-13 14:18_
+
+---
+
+_Label `E-easy` added by @epage on 2022-07-13 14:18_
+
+---
+
+_Referenced in [clap-rs/clap#3921](../../clap-rs/clap/issues/3921.md) on 2022-07-13 14:19_
+
+---
+
+_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2022-07-13 14:20_
+
+---
+
+_Label `:money_with_wings: $20` added by @epage on 2022-09-13 14:36_
+
+---
+
+_Label `E-help-wanted` added by @epage on 2022-09-20 14:29_
+
+---
+
+_Comment by @epage on 2024-05-22 15:23_
+
+We currently support
+- `--foo=bar`, see https://github.com/clap-rs/clap/blob/4aefa3c1c7b8b9f60cb74bacea6924be3a516aa9/clap_complete/src/dynamic/completer.rs#L106-L124
+- `bar`, see https://github.com/clap-rs/clap/blob/4aefa3c1c7b8b9f60cb74bacea6924be3a516aa9/clap_complete/src/dynamic/completer.rs#L150-L155
+
+We need to also support
+- `-f=bar`
+- `-f bar`
+- `--foo bar`
+- `-fbar`
+
+Relevant code in the main parser
+https://github.com/clap-rs/clap/blob/4aefa3c1c7b8b9f60cb74bacea6924be3a516aa9/clap_builder/src/parser/parser.rs#L179
+https://github.com/clap-rs/clap/blob/4aefa3c1c7b8b9f60cb74bacea6924be3a516aa9/clap_builder/src/parser/parser.rs#L939-L957
+
+See also
+- https://docs.rs/clap_lex/latest/clap_lex/struct.ShortFlags.html
+
+---
+
+_Referenced in [clap-rs/clap#5498](../../clap-rs/clap/issues/5498.md) on 2024-05-22 22:58_
+
+---
+
+_Comment by @HKalbasi on 2024-05-22 23:04_
+
+I would like to take this.
+
+---
+
+_Comment by @epage on 2024-05-23 00:41_
+
+Shan is going to be taking this.
+
+---
+
+_Referenced in [clap-rs/clap#5533](../../clap-rs/clap/pulls/5533.md) on 2024-06-14 08:22_
+
+---
+
+_Referenced in [clap-rs/clap#5538](../../clap-rs/clap/pulls/5538.md) on 2024-06-19 04:37_
+
+---
+
+_Referenced in [clap-rs/clap#5539](../../clap-rs/clap/pulls/5539.md) on 2024-06-19 08:55_
+
+---
+
+_Referenced in [clap-rs/clap#3951](../../clap-rs/clap/issues/3951.md) on 2024-07-06 07:20_
+
+---
+
+_Referenced in [clap-rs/clap#5576](../../clap-rs/clap/pulls/5576.md) on 2024-07-09 12:08_
+
+---
+
+_Comment by @shannmu on 2024-08-12 07:22_
+
+There is an use case for cargo completions in bash:
+```
+cargo build --target "x86[TAB]
+```
+using manual script, it will be completed as
+```
+cargo build --target "x86_64-unknown-linux-gnu"
+```
+
+Using  dynamic completion of clap_complete for case that `dynamic --format "js[TAB]`(What we wanted is `dynamic --format "json"`), the `raw_args` will be treated as `RawArgs { items: ["dynamic", "--format", "\"js"] }`, so it couldn't generate completion because of the quoting.
+
+This is a shell-specific issue, i will try more to identify whether other shells have this problem.
+
+---
+
+_Comment by @shannmu on 2024-08-12 07:53_
+
+Also in zsh, the `raw_args` will be treated as RawArgs { items: ["dynamic", "--format", "\"js"] }
+
+---
+
+_Comment by @epage on 2024-08-12 18:21_
+
+So if I'm understanding correctly, the shell is passing to us partial quoting which is messing up completions.
+
+Let's open a separate issue for tracking and resolving that.
+
+---

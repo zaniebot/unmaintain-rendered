@@ -1,0 +1,66 @@
+---
+number: 12738
+title: "False positive: `args` in a numpy-style docstring is treated as a section header"
+type: issue
+state: closed
+author: bzoracler
+labels: []
+assignees: []
+created_at: 2024-08-08T04:18:37Z
+updated_at: 2024-08-08T06:07:51Z
+url: https://github.com/astral-sh/ruff/issues/12738
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# False positive: `args` in a numpy-style docstring is treated as a section header
+
+---
+
+_Issue opened by @bzoracler on 2024-08-08 04:18_
+
+Possibly related to https://github.com/astral-sh/ruff/issues/9426
+
+I'm trying to write a numpy-style docstring for a `TypedDict`, however it's triggering `D405`, `D407`, and `D411` because it thinks that one of the key-value pairs is a section header (see [ruff playground](https://play.ruff.rs/d5c9b0b3-b72b-420c-80eb-6e55fb59d180)):
+
+```python
+from typing import TypedDict
+
+class CommandLineSettings(TypedDict):
+    """
+    Settings to the command line program
+
+    Items
+    -----
+    args
+        CLI arguments
+    """
+
+    args: list[str]
+```
+
+`Args` is not a recognised section header in numpydoc, which only specifies [`Parameters`](https://numpydoc.readthedocs.io/en/latest/format.html#parameters), so I think this is a false positive.
+
+I've tested this with `pydocstyle`, which also produces the same false positives, but it's no longer maintained, so I'm posting the issue here.
+
+---
+
+I'm aware that `Items` is not a recognised section header, but numpydoc doesn't have a style guide for `TypedDict`s, and none of the existing recognised headers (`Attributes`, `Parameters`) are suitable substitutes IMO. Anyway, ruff isn't producing any false positives for the section `Items`, so I don't have any issues with ruff's behaviour of this section - just the `args` entry underneath the header.
+
+
+---
+
+_Comment by @MichaReiser on 2024-08-08 06:04_
+
+Can you try setting the `pydocstyle.convention` setting to `numpy` [playground](https://play.ruff.rs/a9b6fa54-ad9a-4089-83ca-e176dc2dc7d2). I'm not quiet sure what convention is used when the value is `null` (default) but the error goes away in the playground when explicitly setting numpy.
+
+---
+
+_Comment by @bzoracler on 2024-08-08 06:07_
+
+Oh, thank you! That fixed it.
+
+---
+
+_Closed by @bzoracler on 2024-08-08 06:07_
+
+---

@@ -1,0 +1,169 @@
+---
+number: 1737
+title: Performance with large git repos
+type: issue
+state: open
+author: sbidoul
+labels:
+  - performance
+assignees: []
+created_at: 2024-02-20T07:21:17Z
+updated_at: 2025-10-13T07:55:14Z
+url: https://github.com/astral-sh/uv/issues/1737
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# Performance with large git repos
+
+---
+
+_Issue opened by @sbidoul on 2024-02-20 07:21_
+
+Hi,
+
+I found a situation where uv is significantly slower than pip: installing from a large git repo.
+
+Reproducer: `uv -v pip install "odoo @ git+https://github.com/odoo/odoo@17.0"` (warning: this requires ~6GB disk space and a ~4GB download).
+
+After the download (observed by monitoring network activity), there seems to be a pause of several minutes where it is unclear what uv is doing, even with `-v` or RUST_LOG=trace. 
+
+---
+
+_Label `performance` added by @konstin on 2024-02-20 11:29_
+
+---
+
+_Comment by @charliermarsh on 2024-02-20 14:56_
+
+Thanks!
+
+---
+
+_Comment by @charliermarsh on 2024-02-20 15:02_
+
+@zanieb - This may be solved by changing the default to use the Git CLI.
+
+---
+
+_Comment by @serozhenka on 2024-02-22 21:07_
+
+I also experience a strange pause for around 7 seconds (out of 17 for the overall install) when trying to install a private git package via a git tag and not a commit ref. As @sbidoul mentioned nothing indicates what's going on even when enabling additional verbosity.
+
+---
+
+_Comment by @zanieb on 2024-02-22 21:25_
+
+@serozhenka is this on the latest version?
+
+---
+
+_Comment by @serozhenka on 2024-02-22 21:30_
+
+@zanieb it was 0.1.6 at the time of writing, but I have just checked on 0.1.8 and it's the same. Installation time dropped down by 3s on average, but that lag still exists.
+
+upd. my bad on that, missed a single log statement, that's actually the repo subdirectory fetch itself that takes 8s. But overall it's still 1-2s slower that pip with cold cache.
+
+---
+
+_Comment by @sbidoul on 2024-02-23 13:59_
+
+From my part, I have noticed a solid improvement with the switch to using the git CLI.
+
+In pip we use `git clone --filter=blob:none` to improve performance with large repos, but the pip git clones are transient (we only keep the resulting wheel). 
+
+So I think (I've not mesured rigorously) that with a cold cache, uv is slower than pip with large git repos, but when the git db cache is pre-populated, subsequent operations will be faster.
+
+
+
+---
+
+_Referenced in [scverse/scverse-tutorials#60](../../scverse/scverse-tutorials/issues/60.md) on 2025-03-17 21:08_
+
+---
+
+_Comment by @flying-sheep on 2025-03-18 13:56_
+
+> but when the git db cache is pre-populated, subsequent operations will be faster.
+
+which doesn‘t apply here, right? we just care about a repo’s
+1. working directory contents (i.e. all the files)
+2. git history metadata (in case `setuptools_scm` or so wants to know how many commits it has been since the last tag)
+
+both of these are being downloaded with `--filter=blob:none`, then we build, then we throw the repo away and don’t do any subsequent operations on it.
+
+So uv should definitely do that, unless I’m missing something.
+
+---
+
+_Comment by @charliermarsh on 2025-03-18 13:58_
+
+Yeah, we tried it here: https://github.com/astral-sh/uv/pull/3950. It just hasn't been done.
+
+---
+
+_Referenced in [astral-sh/uv#3287](../../astral-sh/uv/issues/3287.md) on 2025-06-06 12:22_
+
+---
+
+_Comment by @flying-sheep on 2025-06-06 12:25_
+
+I think what we could e.g. do is treat each repo as database of sorts:
+1. if 
+   1. … we haven’t seen the repo before, clone the git repo into the cache using `--filter=blob:none` and the requested ref
+   2. … the repo is in the cache and the ref is a tag or branch or unknown commit hash, fetch the requested ref into that repo
+2. create a work tree from that repo and ref and use that to build stuff
+
+or something similar.
+
+that would help with retaining info as opposed to re-cloning.
+
+---
+
+_Comment by @charliermarsh on 2025-06-06 12:58_
+
+I think that's roughly what we do already? We maintain a Git database. The way it works is that we have a single clone of each repo, and when we need to use a commit, we fetch it into the Git database then create a _local_ clone of that ref to build from. (But I don't believe it's blobless.)
+
+
+---
+
+_Comment by @flying-sheep on 2025-06-06 13:44_
+
+I see, then with a warm cache, subsequent VCS installs of the same repo should be fast-ish already (only new commits will be fetched on top of what was there last time), but we can still improve that initial clone to speed up the cold cache case by making the initial clone blobless. (I think creating a work tree instead of a local clone doesn’t make a huge difference, but could be a tiny bit faster and take less space)
+
+I think the only use case that would be slower would be to
+1. install a package from VCS
+2. then install a package from an older commit of that same VCS
+
+because the way you currently doing it, all old commits are already fetched, so this would be an almost entirely local operation
+
+---
+
+_Comment by @zanieb on 2025-06-06 14:02_
+
+We've tried to make the initial clone cheaper, e.g., 
+
+- https://github.com/astral-sh/uv/pull/3950
+- https://github.com/astral-sh/uv/pull/8190
+
+If you want to dig into that, feel free! It seems hard.
+
+---
+
+_Comment by @flying-sheep on 2025-10-13 07:55_
+
+Hm, OK, so let’s talk about this. First some Git lingo that was new to me; [partial clones make use of the “promisor remote”](https://git-scm.com/docs/partial-clone):
+
+> A remote that can later provide the missing objects is called a promisor remote, as it promises to send the objects when requested. […]
+> 
+> Use of partial clone requires that the user be online and the `origin` remote or other promisor remotes be available for on-demand fetching of missing objects
+
+in #8190, you say things don’t work and (if I understand correctly), you suspect that’s because basically
+1. you’re creating a partial clone (1) of some repo
+2. you locally clone (2) that partial clone (making the `origin`/promisor remote of clone 2 point to clone 1)
+3. trying to access some object in clone 2 will cause the command to abort since clone 2 has the same objects as clone 1 and Git expects the promisor remote to have all the things
+
+Did I get that right?
+
+I don’t know when and why you create a clone of a clone, but depending on that, there are multiple ways to fix things, the most obvious probably being that maybe you should just set the `origin` of the clone’s clone to the actual remote origin
+
+---

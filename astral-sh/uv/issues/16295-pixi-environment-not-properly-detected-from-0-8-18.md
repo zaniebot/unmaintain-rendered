@@ -1,0 +1,299 @@
+---
+number: 16295
+title: pixi environment not properly detected from 0.8.18
+type: issue
+state: closed
+author: atonderski
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-14T13:27:18Z
+updated_at: 2025-11-10T04:16:19Z
+url: https://github.com/astral-sh/uv/issues/16295
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# pixi environment not properly detected from 0.8.18
+
+---
+
+_Issue opened by @atonderski on 2025-10-14 13:27_
+
+### Summary
+
+Not sure if this is a bug or intentional but it definitely broke my workflow so I'm reporting it here.
+
+```
+$ pixi run uv pip install --upgrade --system uv==0.8.18
+Using Python 3.12.0 environment at: .pixi/envs/default
+Resolved 1 package in 69ms
+Prepared 1 package in 586ms
+Uninstalled 1 package in 0.15ms
+Installed 1 package in 1ms
+ - uv==0.8.12
+ + uv==0.8.18
+$ uv pip install tqdm
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+```
+but when i downgrade, it works as before, and as I expect it should work
+```
+$ pixi run uv pip install --upgrade --system uv==0.8.17
+Using Python 3.12.0 environment at: .pixi/envs/default
+Resolved 1 package in 73ms
+Prepared 1 package in 576ms
+Uninstalled 1 package in 0.16ms
+Installed 1 package in 1ms
+ - uv==0.8.18
+ + uv==0.8.17
+$ uv pip install tqdm
+Using Python 3.12.0 environment at: .pixi/envs/default
+Resolved 1 package in 0.91ms
+Installed 1 package in 2ms
+ + tqdm==4.67.1
+```
+
+This is reproducible in a clean environment (using pixi 0.48.2)
+```
+pixi init
+pixi add python=3.12
+pixi add uv=0.8.18  # or any later, tested with 0.9.2 also
+pixi run uv pip install tqdm  # will complain about env
+pixi add uv=0.8.17
+pixi run uv pip install tqdm  # will work
+```
+
+### Platform
+
+Linux 6.12.10-76061203-generic x86_64 GNU/Linux
+
+### Version
+
+>=0.8.18
+
+### Python version
+
+Python 3.12.0
+
+---
+
+_Label `bug` added by @atonderski on 2025-10-14 13:27_
+
+---
+
+_Comment by @zanieb on 2025-10-14 21:14_
+
+The verbose logs are
+
+
+```
+❯ pixi init
+✔ Created /private/tmp/example/pixi.toml
+❯ pixi add python=3.12
+✔ Added python=3.12
+❯ pixi add uv=0.8.18
+✔ Added uv=0.8.18
+❯ pixi run uv pip install tqdm
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+❯ pixi run uv pip install tqdm -v
+DEBUG uv 0.8.18
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.12.12-macos-aarch64-none` at `/private/tmp/example/.pixi/envs/default/bin/python3` (conda prefix)
+DEBUG Ignoring Python interpreter at `/private/tmp/example/.pixi/envs/default/bin/python3`: system interpreter not explicitly requested
+DEBUG Searching for managed installations at `/Users/zb/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.14.0-macos-aarch64-none`
+DEBUG Ignoring Python interpreter at `/Users/zb/.local/share/uv/python/cpython-3.14.0-macos-aarch64-none/bin/python3.14`: system interpreter not explicitly requested
+DEBUG Found managed installation `cpython-3.14.0+freethreaded-macos-aarch64-none`
+DEBUG Ignoring Python interpreter at `/Users/zb/.local/share/uv/python/cpython-3.14.0+freethreaded-macos-aarch64-none/bin/python3.14t`: system interpreter not explicitly requested
+DEBUG Found managed installation `cpython-3.14.0rc3-macos-aarch64-none`
+DEBUG Ignoring Python interpreter at `/Users/zb/.local/share/uv/python/cpython-3.14.0rc3-macos-aarch64-none/bin/python3.14`: system interpreter not explicitly requested
+DEBUG Found managed installation `cpython-3.13.8-macos-aarch64-none`
+DEBUG Ignoring Python interpreter at `/Users/zb/.local/share/uv/python/cpython-3.13.8-macos-aarch64-none/bin/python3.13`: system interpreter not explicitly requested
+DEBUG Found `cpython-3.12.12-macos-aarch64-none` at `/private/tmp/example/.pixi/envs/default/bin/python` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `/private/tmp/example/.pixi/envs/default/bin/python`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/private/tmp/example/.pixi/envs/default/bin/python3`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/private/tmp/example/.pixi/envs/default/bin/python3.12`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/Users/zb/.local/bin/python3.14t`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/Users/zb/.local/bin/python3.14`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/opt/homebrew/bin/python3`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/opt/homebrew/bin/python3.11`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/opt/homebrew/bin/python3.12`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/opt/homebrew/bin/python3.13`: system interpreter not explicitly requested
+DEBUG Ignoring Python interpreter at `/usr/bin/python3`: system interpreter not explicitly requested
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+```
+
+The key being
+
+```
+DEBUG Found `cpython-3.12.12-macos-aarch64-none` at `/private/tmp/example/.pixi/envs/default/bin/python3` (conda prefix)
+DEBUG Ignoring Python interpreter at `/private/tmp/example/.pixi/envs/default/bin/python3`: system interpreter not explicitly requested
+```
+
+which is likely caused by https://github.com/astral-sh/uv/pull/15679
+
+---
+
+_Comment by @zanieb on 2025-10-14 21:16_
+
+I think this is actually correct, in that you are writing the "default" environment which requires the `--system` flag — the logic for determining that the environment was the default was just wrong before.
+
+---
+
+_Comment by @noamgot on 2025-10-16 09:24_
+
+Just encountered this issue on my side, glad to see that someone else opened an issue :)
+@zanieb so the verdict is to use the `--system` to install in the relevant pixi (conda) environment?
+My use case is similar to this pixi example: https://github.com/prefix-dev/pixi/blob/main/examples/docker/pyproject.toml
+
+(it's somewhat outdated, but the idea is that I want to install a locally built package in a production environment using `up pip install`)
+
+---
+
+_Comment by @zanieb on 2025-10-16 13:14_
+
+Yeah, I think so. If you create and activate a non-default environment with Pixi or Conda, that opt-in is no longer required.
+
+---
+
+_Comment by @zanieb on 2025-10-16 13:22_
+
+cc @tdejager 
+
+---
+
+_Label `bug` removed by @zanieb on 2025-10-16 13:22_
+
+---
+
+_Label `question` added by @zanieb on 2025-10-16 13:22_
+
+---
+
+_Comment by @tdejager on 2025-10-17 15:36_
+
+I think that marking the interpreter found at:
+
+```
+DEBUG Found `cpython-3.12.12-macos-aarch64-none` at `/private/tmp/example/.pixi/envs/default/bin/python` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `/private/tmp/example/.pixi/envs/default/bin/python`: system interpreter not explicitly requested
+```
+As a system intepreter, could be incorrect. 
+
+To explain: like `uv` we install a version of python into what we call a prefix/environment, similar to a `virtualenv`. This environment is then activated on a `pixi run`, similar as to running an activation script in a virtual-env. Its just integrated into the command directly in pixi.
+
+The `default` environment is basically the default that a user usually runs on, kind of like running `uv venv default`. So I wouldn't expect it to differ from any enviroment that can be created in pixi.
+
+The question for me is that, whether or not passing in `--system` is correct depending on what is implied with a `--system` install. If this implies a global installation, then I think this a bug. If this implies a non-standalone version of python, then this may be correct. From first glance it seems incorrect though.
+
+We can try fixing this in `uv` if this makes sense :)
+
+---
+
+_Comment by @zanieb on 2025-10-17 15:51_
+
+Do you feel that the `default` environment in Pixi differs from the `base` environment in Conda?
+
+The intent is that you should not be able to install into unisolated environments, e.g., one that is not explicitly activated or selected, without the `--system` flag. The flag is sort of poorly named, but that's the concept underlying it.
+
+There are some issues linked in https://github.com/astral-sh/uv/pull/7691 too for more context.
+
+---
+
+_Comment by @tdejager on 2025-10-20 12:50_
+
+I feel that it does yeah, the `default` environment is per project and the `base` is across projects and thus your system. I think that would qualify the `base` environment as unisolated and the pixi environment as isolated. There is not a whole lot of difference to a virtual-env and a pixi-conda environment in that sense.
+
+That said, looking at the linked issues, I feel that running `uv pip list` or whatever should actually prefer the uv activated venv over the `base` one. So maybe the logic needs to be rethought a bit?
+
+---
+
+_Comment by @zanieb on 2025-10-20 13:45_
+
+Oh, actually I didn't see that the pixi environment was scoped to the project. Sorry about that.
+
+The logic is definitely wrong then.
+
+```
+❯ pixi run bash -c "env | grep CONDA"
+CONDA_PREFIX=/private/tmp/example/.pixi/envs/default
+CONDA_SHLVL=1
+CONDA_DEFAULT_ENV=example
+```
+
+The problem is that your behavior here differs from Conda and breaks our heuristic. Specifically, the `CONDA_PREFIX` directory name differs from the `CONDA_DEFAULT_ENV` name.
+
+I'm not quite sure how to repair that in a way that remains compatible with Conda. We could just special case the `default` path, but that's kind of weird.
+
+You can see the whole heuristic at https://github.com/astral-sh/uv/blob/fa53a62f0b0ba264947452c42d82747c407cc8f5/crates/uv-python/src/virtualenv.rs#L80-L127
+
+---
+
+_Label `question` removed by @zanieb on 2025-10-20 13:45_
+
+---
+
+_Label `bug` added by @zanieb on 2025-10-20 13:45_
+
+---
+
+_Comment by @tdejager on 2025-10-20 14:48_
+
+There should be `$CONDA_PREFIX/conda-meta/pixi` file that we can use to determine if its a pixi environment :)
+
+---
+
+_Comment by @zanieb on 2025-10-20 14:50_
+
+Cool that's helpful. Does Pixi ever have a Conda-style global environment?
+
+---
+
+_Comment by @tdejager on 2025-10-20 14:51_
+
+Not yet, you can kind of activate from a different place on your system but thats it. We'll also never have a base environment because that's a design decision we wanted to deviate from when compared to conda, i.e. it has all the downsides of a system environment.
+
+---
+
+_Comment by @zanieb on 2025-10-20 14:55_
+
+Wonderful, thanks! I'll fix this then (unless you want to contribute and get to it first!)
+
+---
+
+_Comment by @atonderski on 2025-10-20 15:06_
+
+thanks guys for getting on this so quickly and happy to see you decided to fix it!
+
+---
+
+_Assigned to @zanieb by @zanieb on 2025-10-20 16:23_
+
+---
+
+_Comment by @tdejager on 2025-10-20 17:15_
+
+If I have the time to squeeze it in this week I will :) thanks everything!
+
+---
+
+_Comment by @chrisburr on 2025-10-27 08:48_
+
+I've just ran into this in the context of a custom installer that is generated using [`constructor`](https://github.com/conda/constructor/).
+
+Rather than having something pixi specific, I wonder if a better huristic for the conda base environment would be the presence of a `envs` directory in the environment's folder?
+
+---
+
+_Comment by @tdejager on 2025-10-27 10:19_
+
+Good point because you can make non-global conda/micromaba environments as well. But they do move across projects more-or-less.
+
+---
+
+_Referenced in [astral-sh/uv#16585](../../astral-sh/uv/pulls/16585.md) on 2025-11-04 06:54_
+
+---
+
+_Closed by @zanieb on 2025-11-10 04:16_
+
+---

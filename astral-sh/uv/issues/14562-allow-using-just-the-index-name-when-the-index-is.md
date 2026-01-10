@@ -1,0 +1,51 @@
+---
+number: 14562
+title: Allow using just the index name when the index is already defined in the pyproject.toml
+type: issue
+state: closed
+author: ollz272
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-07-11T10:14:24Z
+updated_at: 2025-07-11T12:40:20Z
+url: https://github.com/astral-sh/uv/issues/14562
+synced_at: 2026-01-10T01:25:46Z
+---
+
+# Allow using just the index name when the index is already defined in the pyproject.toml
+
+---
+
+_Issue opened by @ollz272 on 2025-07-11 10:14_
+
+### Summary
+
+When adding a package form a custom index, we have to do the following:
+
+`uv add my_package --index custom_index=https://my_index.com/...`
+
+When adding another package from that source, it would be nice if as a shorthand we could just do:
+`uv add my_package_2 --index custom_index`
+
+and uv gets the url from the pyproject.toml
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @ollz272 on 2025-07-11 10:14_
+
+---
+
+_Comment by @zanieb on 2025-07-11 12:40_
+
+Definitely something we want, see https://github.com/astral-sh/uv/issues/13974
+
+---
+
+_Closed by @zanieb on 2025-07-11 12:40_
+
+---

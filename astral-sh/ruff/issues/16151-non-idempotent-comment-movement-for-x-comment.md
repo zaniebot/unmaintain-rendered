@@ -1,0 +1,225 @@
+---
+number: 16151
+title: "Non-idempotent comment movement for ((x) # comment here ...) with parens and 3+ lines"
+type: issue
+state: closed
+author: huonw
+labels:
+  - bug
+  - formatter
+  - great writeup
+assignees: []
+created_at: 2025-02-14T02:36:25Z
+updated_at: 2025-02-18T07:43:52Z
+url: https://github.com/astral-sh/ruff/issues/16151
+synced_at: 2026-01-10T01:22:57Z
+---
+
+# Non-idempotent comment movement for ((x) # comment here ...) with parens and 3+ lines
+
+---
+
+_Issue opened by @huonw on 2025-02-14 02:36_
+
+### Description
+
+## Context
+
+We have some code along the lines of:
+
+```python
+result = (
+   (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+   .foo()
+   .bar()
+)
+```
+
+Switching from black to `ruff format` results in the comment moving:
+
+- in a non-idempotent way, requiring two `ruff format` invocations
+- to a 'strange' location
+
+## Reproducer
+
+Formatting this code requires multiple invocations of `ruff format` to be "stable"/reach a fixed point:
+
+1. Input:
+
+    ```python
+    (
+        (x)  # a
+        .y()
+        .z()
+    )
+    ```
+    
+2. Output of formatting 1 (change: comment is shifted to next line):
+
+    ```python
+    (
+        (x)
+          # a
+        .y()
+        .z()
+    )
+    ```
+    
+3. Output of formatting 2 (change: comment is unindented):
+
+    ```python
+    (
+        (x)
+        # a
+        .y()
+        .z()
+    )
+    ```
+
+Playground links:
+- Step 1 -> 2: https://play.ruff.rs/515f65e6-80ee-43b0-9131-8130dcde20a3
+- Step 2 -> 3: https://play.ruff.rs/fda5a46d-519e-498c-866c-9f49133277f9
+
+
+## Expected behaviour
+
+`ruff format` should be idempotent: the output of formatting should not have any changes if formatted again. 
+
+That is, the first format call (step 1 -> 2) should give the final result with the comment in its final position (unindented), and the second (step 2 -> 3) should not change the code.
+
+Alternatively, the formatting for this circumstance changed to sidestep the issue. It's seems weird to me that this comment is being wrapped. It moving the comment to the next line also problems if the comment is a `# type: ...` or `# noqa` pragma.
+
+See also "Ablations".
+
+## Ablations
+
+This stops reproducing with these variations of the Input (1):
+
+1. Only one extra line after the comment (no change: comment remains where it is)
+
+    ```python
+    (
+        (x)  # a
+        .y()
+    )
+    ```
+
+2. No parens around `x` (becomes `x.y().z()  # a`)
+
+    ```python
+    (
+        x  # a
+        .y()
+        .z()
+    )
+    ```
+
+3. Comment on a different line (no change):
+
+    ```python
+    (
+        (x)
+        .y()  # a
+        .z()
+    )
+    ```
+    
+## Metadata
+
+Ruff version: 0.9.6
+
+Settings (default play.ruff.rs ones):
+
+<details>
+
+```json
+{
+  "preview": false,
+  "builtins": [],
+  "target-version": "py312",
+  "line-length": 88,
+  "indent-width": 4,
+  "lint": {
+    "allowed-confusables": [],
+    "dummy-variable-rgx": "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$",
+    "extend-select": [],
+    "extend-fixable": [],
+    "external": [],
+    "ignore": [],
+    "select": [
+      "ALL"
+    ]
+  },
+  "format": {
+    "indent-style": "space",
+    "quote-style": "double"
+  }
+}
+```
+
+</details>
+
+Search keywords: idempotent, idempotency, reformat, repeated invocations, fixed point, stable
+
+---
+
+Thanks for ruff!
+
+---
+
+_Label `bug` added by @dylwil3 on 2025-02-14 03:56_
+
+---
+
+_Label `formatter` added by @dylwil3 on 2025-02-14 03:56_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-02-14 07:26_
+
+---
+
+_Label `great writeup` added by @MichaReiser on 2025-02-14 19:12_
+
+---
+
+_Comment by @MichaReiser on 2025-02-14 19:12_
+
+Thanks for this great write up! I hope to get time to look into this next week.
+
+---
+
+_Comment by @MichaReiser on 2025-02-16 15:23_
+
+In case you're blocked by this. You can work around this bug if you move the `type[ignore]` into the parenthesized range
+
+```py
+result = (
+    (
+        await query_the_thing(mypy_doesnt_understand)  # type: ignore[x]
+    )
+    .foo()
+    .bar()
+)
+```
+
+It definetely is less elegant than the fixed formatting:
+
+```py
+result = (
+    (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+    .foo()
+    .bar()
+)
+
+```
+
+---
+
+_Referenced in [astral-sh/ruff#16187](../../astral-sh/ruff/pulls/16187.md) on 2025-02-16 15:26_
+
+---
+
+_Closed by @MichaReiser on 2025-02-18 07:43_
+
+---

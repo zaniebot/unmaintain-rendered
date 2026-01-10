@@ -1,0 +1,173 @@
+---
+number: 5713
+title: Reduce CI time
+type: issue
+state: open
+author: zanieb
+labels:
+  - testing
+  - tracking
+assignees: []
+created_at: 2024-08-01T20:41:49Z
+updated_at: 2024-08-23T03:00:05Z
+url: https://github.com/astral-sh/uv/issues/5713
+synced_at: 2026-01-10T01:23:51Z
+---
+
+# Reduce CI time
+
+---
+
+_Issue opened by @zanieb on 2024-08-01 20:41_
+
+Running tests in CI is now >8 minutes (and was previously <1 minute). We've done a lot to optimize this previously, e.g.:
+
+- https://github.com/astral-sh/uv/pull/889
+- https://github.com/astral-sh/uv/pull/3044
+- https://github.com/astral-sh/uv/pull/875
+- https://github.com/astral-sh/uv/pull/887
+- #3508 
+- https://github.com/astral-sh/uv/pull/1830
+- #1832 
+- #2933 
+- ... more examples coming
+
+But, CI time is always growing as we add more features and coverage. This is a tracking issue to improve the situation and discuss sources of slowness.
+
+See also:
+
+- https://github.com/astral-sh/uv/issues/5711
+- #878 
+- https://github.com/astral-sh/uv/pull/2628#issuecomment-2017694750
+
+---
+
+_Label `testing` added by @zanieb on 2024-08-01 20:41_
+
+---
+
+_Label `tracking` added by @zanieb on 2024-08-01 20:41_
+
+---
+
+_Comment by @zanieb on 2024-08-01 22:11_
+
+Would it be absurd to introduce "CI" time regression checks in CI like the CodSpeed benches? Unfortunately the GitHub Runner performance is super noisy so it might not work.
+
+---
+
+_Comment by @helderco on 2024-08-01 22:16_
+
+Wonder if [Dagger](https://dagger.io) could help here 🙂 
+
+---
+
+_Comment by @samypr100 on 2024-08-01 22:29_
+
+Arguably self-hosted runners could possibly help here too, but the maintenance/security/cost burden is likely too large
+
+---
+
+_Comment by @zanieb on 2024-08-01 22:31_
+
+I strongly considered self-hosted runners, but it seemed painful to orchestrate Windows runners in particular.
+
+---
+
+_Referenced in [astral-sh/uv#5714](../../astral-sh/uv/pulls/5714.md) on 2024-08-01 23:06_
+
+---
+
+_Referenced in [astral-sh/uv#5715](../../astral-sh/uv/pulls/5715.md) on 2024-08-01 23:11_
+
+---
+
+_Referenced in [astral-sh/uv#5717](../../astral-sh/uv/pulls/5717.md) on 2024-08-01 23:38_
+
+---
+
+_Comment by @zanieb on 2024-08-02 01:03_
+
+I also very much want to look into something like https://github.com/astral-sh/uv/pull/609 again to cache our network traffic — I think that'd help a lot.
+
+---
+
+_Comment by @samypr100 on 2024-08-02 01:57_
+
+> I also very much want to look into something like #609 again to cache our network traffic — I think that'd help a lot.
+
+At least for python, maybe worth using something like https://github.com/hauntsaninja/nginx_pypi_cache and saving a copy of the cache as a github cache and reloading it. I actually use it locally a lot to speed up tests. Not sure how it would perform in CI.
+
+---
+
+_Comment by @charliermarsh on 2024-08-02 02:00_
+
+That strikes me as a good idea...
+
+---
+
+_Comment by @zanieb on 2024-08-02 02:13_
+
+Ah that might be easier than using mitmproxy or rolling our own proxy in Rust. Thanks for the link!
+
+edit: I created a published image at https://github.com/astral-sh/nginx_pypi_cache/pkgs/container/nginx_pypi_cache we can use in our jobs if someone wants to trial it in Ubuntu (or locally even, to start)
+
+---
+
+_Referenced in [astral-sh/uv#5726](../../astral-sh/uv/pulls/5726.md) on 2024-08-02 13:35_
+
+---
+
+_Comment by @zanieb on 2024-08-07 20:07_
+
+Some progress with:
+
+- #5874 
+- #5883 
+- #5873 
+
+---
+
+_Comment by @zanieb on 2024-08-07 20:08_
+
+Linux is acceptably fast now. We're at the limit for macOS machine size without going to alternative runner providers. There are larger Windows runners, maybe I should test one (#5890). Cost may be a problem at some point, alternative runner providers may be cheaper (often saying things like a 2x cost reduction).
+
+---
+
+_Referenced in [astral-sh/uv#5890](../../astral-sh/uv/pulls/5890.md) on 2024-08-07 20:11_
+
+---
+
+_Referenced in [astral-sh/uv#5891](../../astral-sh/uv/pulls/5891.md) on 2024-08-07 20:46_
+
+---
+
+_Referenced in [astral-sh/uv#5892](../../astral-sh/uv/pulls/5892.md) on 2024-08-07 20:46_
+
+---
+
+_Comment by @ChannyClaus on 2024-08-09 04:12_
+
+have we considered using https://bazel.build/? (correct me if i'm wrong but `cargo test` doesn't seem to skip the tests when none of their dependencies changed)
+
+admittedly adding bazel would significantly increase the complexity though 🙀 
+
+---
+
+_Comment by @eth3lbert on 2024-08-09 07:43_
+
+Yes, I've heard a lot about complaints regarding bazel's complexity.
+
+---
+
+_Comment by @ChannyClaus on 2024-08-09 19:28_
+
+> Yes, I've heard a lot about complaints regarding bazel's complexity.
+
+this is definitely true - i've seen it improving the CI time drastically at the same time though so maybe something to consider down the line if there's no other option...
+
+---
+
+_Referenced in [astral-sh/uv#6680](../../astral-sh/uv/pulls/6680.md) on 2024-09-05 00:32_
+
+---

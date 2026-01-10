@@ -1,0 +1,198 @@
+---
+number: 6049
+title: "`overrides_with` has no effect when used before and after a subcommand"
+type: issue
+state: open
+author: konstin
+labels:
+  - C-bug
+  - A-parsing
+  - S-waiting-on-design
+assignees: []
+created_at: 2025-06-27T10:11:49Z
+updated_at: 2025-06-30T18:21:03Z
+url: https://github.com/clap-rs/clap/issues/6049
+synced_at: 2026-01-10T01:28:21Z
+---
+
+# `overrides_with` has no effect when used before and after a subcommand
+
+---
+
+_Issue opened by @konstin on 2025-06-27 10:11_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.86.0 (05f9846f8 2025-03-31)
+
+### Clap Version
+
+4.5.40
+
+### Minimal reproducible code
+
+```rust
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(global = true, long, overrides_with("no_offline"))]
+    offline: bool,
+
+    #[arg(global = true, long, overrides_with("offline"), hide = true)]
+    no_offline: bool,
+
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    #[command(name = "self")]
+    Self_ {
+        #[command(subcommand)]
+        command: SelfCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum SelfCommands {
+    Version,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!("offline: {}, no_offline: {}", cli.offline, cli.no_offline);
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+$ cargo run -- self version --offline --no-offline
+offline: false, no_offline: true
+$ cargo run -- self --offline version --no-offline
+offline: true, no_offline: true
+```
+
+### Actual Behaviour
+
+`offline` and `no_offline` can be true at the same time.
+
+### Expected Behaviour
+
+`offline` and `no_offline` can _never_ be true at the same time.
+
+### Additional Context
+
+This has been reported as a panic hitting unreachable state in uv: https://github.com/astral-sh/uv/pull/14299
+
+### Debug Output
+
+https://gist.github.com/konstin/014df491615245091431e0fcde6bb379
+
+---
+
+_Label `C-bug` added by @konstin on 2025-06-27 10:11_
+
+---
+
+_Referenced in [astral-sh/uv#14299](../../astral-sh/uv/pulls/14299.md) on 2025-06-27 10:12_
+
+---
+
+_Comment by @gesslerpd on 2025-06-27 11:21_
+
+Thanks @konstin for filing this, I had not gotten around to it yesterday but did write a failing test that can be added to `tests/builder/global_args.rs`
+
+```rust
+#[test]
+fn global_overrides_with() {
+    let cmd = Command::new("test")
+        .arg(
+            Arg::new("flag")
+                .long("flag")
+                .action(ArgAction::SetTrue)
+                .global(true)
+                .overrides_with("no-flag"),
+        )
+        .arg(
+            Arg::new("no-flag")
+                .long("no-flag")
+                .action(ArgAction::SetTrue)
+                .global(true)
+                .overrides_with("flag"),
+        )
+        .subcommand(Command::new("sub"));
+
+    let m = cmd
+        .clone()
+        .try_get_matches_from(["test", "--no-flag", "--flag", "sub"])
+        .unwrap();
+    let sub_m = m.subcommand_matches("sub").unwrap();
+    assert!(*m.get_one::<bool>("flag").unwrap());
+    assert!(!*m.get_one::<bool>("no-flag").unwrap());
+    assert!(*sub_m.get_one::<bool>("flag").unwrap());
+    assert!(!*sub_m.get_one::<bool>("no-flag").unwrap());
+
+    let m = cmd
+        .clone()
+        .try_get_matches_from(["test", "--no-flag", "sub", "--flag"])
+        .unwrap();
+    let sub_m = m.subcommand_matches("sub").unwrap();
+    assert!(*m.get_one::<bool>("flag").unwrap());
+    assert!(!*m.get_one::<bool>("no-flag").unwrap()); // this will fail
+    assert!(*sub_m.get_one::<bool>("flag").unwrap());
+    assert!(!*sub_m.get_one::<bool>("no-flag").unwrap()); // this will also fail
+}
+```
+
+---
+
+_Referenced in [clap-rs/clap#5977](../../clap-rs/clap/issues/5977.md) on 2025-06-27 15:15_
+
+---
+
+_Comment by @epage on 2025-06-27 15:16_
+
+In general, we don't do global validation.
+
+See also :
+- #5020
+- #1546
+- #1204
+- #5977
+
+For parts of this, design discussion starts around https://github.com/clap-rs/clap/issues/1546#issuecomment-1198809765 
+
+---
+
+_Label `A-parsing` added by @epage on 2025-06-27 15:16_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2025-06-27 15:16_
+
+---
+
+_Comment by @konstin on 2025-06-30 07:40_
+
+Are there any suggested workarounds that avoid contradictory state?
+
+---
+
+_Referenced in [astral-sh/uv#14368](../../astral-sh/uv/pulls/14368.md) on 2025-06-30 07:53_
+
+---
+
+_Comment by @epage on 2025-06-30 18:21_
+
+At this time, there isn't one.
+
+---

@@ -1,0 +1,167 @@
+---
+number: 10473
+title: Incorrect dependency resolution with old version of pandas and Python 3.10
+type: issue
+state: open
+author: zoof
+labels:
+  - question
+assignees: []
+created_at: 2025-01-10T16:59:42Z
+updated_at: 2025-10-01T15:28:35Z
+url: https://github.com/astral-sh/uv/issues/10473
+synced_at: 2026-01-10T01:24:54Z
+---
+
+# Incorrect dependency resolution with old version of pandas and Python 3.10
+
+---
+
+_Issue opened by @zoof on 2025-01-10 16:59_
+
+With a new environment, using Python 3.10, `uv add pandas==1.5.3 numpy matplotlib scikit-learn openpyxl` results in a version of `numpy` that is incompatible with `pandas` 1.5.3.  I have not check if this problem holds for other versions of Python.
+
+```
+cat .python-version
+3.10
+```
+```
+cat pyproject.toml 
+[project]
+name = "test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "matplotlib>=3.10.0",
+    "numpy>=2.2.1",
+    "openpyxl>=3.1.5",
+    "pandas==1.5.3",
+    "scikit-learn>=1.6.1",
+]
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-10 17:11_
+
+I don't know that there's anything we can do about this, because I don't think this incompatibility is encoded in the package metadata in any way? At least, as far as I can tell.
+
+---
+
+_Label `question` added by @charliermarsh on 2025-01-10 17:12_
+
+---
+
+_Comment by @notatallshaw on 2025-01-10 18:30_
+
+Yeah, there is no information from the dependency metadata that could tell you this, it's up to the user to add `numpy<2` as a requirement or constraint.
+
+Non-user solutions would either be for some standard, or functionality from PyPI, that easily allows projects to go to older releases and update their metadata.
+
+Or for a resolver, like uv, to start hard coding well known or high profile incompatabilities into uv, e.g. if `pandas<2.2.2` then add constraint `numpy<2` unless the user explicitly overrides it. But I feel that would be an endless whack-a-mole.
+
+---
+
+_Comment by @mlbiche on 2025-10-01 12:10_
+
+I have just encountered the same issue and indeed, imho, it's a problem on `uv` side.
+
+It's pretty straightforward to reproduce. Let's say you have this _uv script_:
+
+```py
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "numpy==1.22.4",
+#     "pandas==2.0.*",
+# ]
+# ///
+
+print("Test")
+```
+
+Running `uv run main.py` leads to a dependency conflict between `pandas` and `numpy`:
+
+```
+  × No solution found when resolving script dependencies:
+  ╰─▶ Because pandas>=2.0.0,<=2.0.3 depends on numpy>=1.23.2 and only the following versions of pandas are available:
+          pandas<2.0.dev0
+          pandas>=2.0.0
+      we can conclude that pandas==2.0.* depends on numpy>=1.23.2.
+      And because you require numpy==1.22.4 and pandas==2.0.*, we can conclude that your requirements are unsatisfiable.
+
+      hint: `pandas` was requested with a pre-release marker (e.g., pandas>=2.0.dev0,<2.0.0), but pre-releases weren't enabled (try: `--prerelease=allow`)
+```
+
+While, if you check [`pandas` requirements](https://github.com/pandas-dev/pandas/blob/v2.0.3/pyproject.toml), it states:
+
+```toml
+dependencies = [
+  "numpy>=1.20.3; python_version<'3.10'",
+  "numpy>=1.21.0; python_version>='3.10'",
+  "numpy>=1.23.2; python_version>='3.11'",
+]
+```
+
+So, for Python 3.9, it should match `numpy>=1.20.3` which matches my _uv script_ requirement (being `numpy==1.22.4`).
+
+And indeed, installing these two packages with the classic `venv` and `pip` install works perfectly:
+
+```sh
+$ python -m venv .venv
+[...]
+
+$ . .venv/bin/activate
+[...]
+
+$ pip install numpy==1.22
+Collecting numpy==1.22.4
+  Using cached numpy-1.22.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.8 MB)
+Installing collected packages: numpy
+Successfully installed numpy-1.22.4
+
+[notice] A new release of pip is available: 23.0.1 -> 25.2
+[notice] To update, run: pip install --upgrade pip
+
+$ pip install "pandas==2.0.*"
+Collecting pandas==2.0.*
+  Using cached pandas-2.0.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.4 MB)
+Collecting pytz>=2020.1
+  Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+Collecting tzdata>=2022.1
+  Using cached tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+Requirement already satisfied: numpy>=1.20.3 in ./.venv/lib/python3.9/site-packages (from pandas==2.0.*) (1.22.4)
+Collecting python-dateutil>=2.8.2
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Collecting six>=1.5
+  Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, tzdata, six, python-dateutil, pandas
+Successfully installed pandas-2.0.3 python-dateutil-2.9.0.post0 pytz-2025.2 six-1.17.0 tzdata-2025.2
+
+[notice] A new release of pip is available: 23.0.1 -> 25.2
+[notice] To update, run: pip install --upgrade pip
+```
+
+---
+
+_Comment by @charliermarsh on 2025-10-01 13:49_
+
+That script works fine for me:
+
+```
+❯ uv run --python 3.9 --script foo.py
+Installed 6 packages in 110ms
+Test
+```
+
+My guess is that you're running with some other Python version? You might want to pin to `requires-python = "==3.9.*"` since your script isn't actually resolvable on later Python versions.
+
+---
+
+_Comment by @mlbiche on 2025-10-01 15:28_
+
+Yew! Thanks for your feedback, I was expecting `uv` to use Python 3.9 but of course it uses the current version as it satisfies the `requires-python`. Indeed, it's better to pin the version then!
+
+---

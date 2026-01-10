@@ -1,0 +1,70 @@
+---
+number: 13143
+title: "docstring-missing-returns (`DOC201`) reports on pytest fixtures"
+type: issue
+state: open
+author: tjkuson
+labels:
+  - docstring
+  - needs-decision
+assignees: []
+created_at: 2024-08-28T21:21:57Z
+updated_at: 2024-09-02T07:33:10Z
+url: https://github.com/astral-sh/ruff/issues/13143
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# docstring-missing-returns (`DOC201`) reports on pytest fixtures
+
+---
+
+_Issue opened by @tjkuson on 2024-08-28 21:21_
+
+Running `ruff check --select DOC201 --preview --isolated` (Ruff version 0.6.2) on
+
+```python
+import pytest
+
+
+@pytest.fixture
+def foo() -> int:
+    """A very helpful docstring."""
+    return 1
+```
+
+reports a docstring-missing-returns (DOC201) diagnostic.
+
+The expected behaviour is that the return value of a function decorated with `pytest.fixture` is not expected to be documented, as such objects are not expected to be called by the user.
+
+Search terms: DOC201, docstring-missing-returns, pydoclint, pytest, fixture
+
+
+---
+
+_Label `docstring` added by @AlexWaygood on 2024-08-29 09:32_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-29 09:35_
+
+I don't know about this. I agree that it doesn't really make sense to enforce the usual set of docstring rules on, well, any test functions. But I'm not sure that I like the idea of special-casing specific third-party libraries for this kind of rule (even very popular libraries like pytest). My usual approach is just to set `per-file-ignores` in my Ruff config so that all docstring-related rules are ignored for my test files.
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2024-08-29 09:35_
+
+---
+
+_Comment by @tjkuson on 2024-08-31 17:18_
+
+That's a fair point. Ignoring the rule would be a solution, though there are some functions in test files over which I would still want to run `pydoclint` checks (for example, complex mocks and utility functions).
+
+---
+
+_Comment by @MichaReiser on 2024-09-02 07:33_
+
+> That's a fair point. Ignoring the rule would be a solution, though there are some functions in test files over which I would still want to run pydoclint checks (for example, complex mocks and utility functions).
+
+It sounds difficult for an automated tool to decide for which functions `pydoclint` should run if only some functions should be checked. I guess my recommendation would be to move these utility functions to a different directory that still gets checked. 
+
+---

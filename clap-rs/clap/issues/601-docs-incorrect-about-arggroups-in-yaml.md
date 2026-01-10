@@ -1,0 +1,104 @@
+---
+number: 601
+title: Docs incorrect about ArgGroups in YAML
+type: issue
+state: closed
+author: laishulu
+labels:
+  - A-docs
+assignees: []
+created_at: 2016-07-25T06:05:36Z
+updated_at: 2018-08-02T03:29:52Z
+url: https://github.com/clap-rs/clap/issues/601
+synced_at: 2026-01-10T01:26:33Z
+---
+
+# Docs incorrect about ArgGroups in YAML
+
+---
+
+_Issue opened by @laishulu on 2016-07-25 06:05_
+
+with the following yaml file, when I invoke `myapp` without any arguments, it just passes.
+But according to the spec, at least one of `base` and `delta` should be presented.
+Also, I don't find anything about the arg group when I invoke `myapp help`
+
+``` yaml
+name: myapp
+version: 0.1
+about: myapp
+global_settings:
+    - ColoredHelp
+args:
+    - base:
+        long: base
+        value_name: BASE
+        help: Base
+        takes_value: true
+        display_order: 2
+    - delta:
+        long: delta
+        value_name: DELTA
+        help: delta
+        takes_value: true
+        display_order: 3
+arg_groups:
+    - test:
+        args:
+            - base
+            - delta
+        required: true
+```
+
+
+---
+
+_Comment by @laishulu on 2016-07-25 06:12_
+
+Oh, I found if use `goups` instead of `arg_groups`, then it works.
+but the document and examples (https://github.com/kbknapp/clap-rs/blob/master/examples/17_yaml.yml#L87)  should be updated.
+
+
+---
+
+_Comment by @kbknapp on 2016-07-26 00:06_
+
+Ah thank you for pointing this out! This was a change between v1 to v2.
+
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-07-26 00:07_
+
+---
+
+_Label `C: docs` added by @kbknapp on 2016-07-26 00:07_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-07-26 00:07_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-07-26 00:07_
+
+---
+
+_Renamed from "arg_groups in yml file does not work" to "Docs incorrect about ArgGroups in YAML" by @kbknapp on 2016-07-26 00:07_
+
+---
+
+_Referenced in [clap-rs/clap#603](../../clap-rs/clap/pulls/603.md) on 2016-07-26 00:17_
+
+---
+
+_Comment by @kbknapp on 2016-07-26 00:17_
+
+#603 fixes this
+
+
+---
+
+_Closed by @homu on 2016-07-26 01:34_
+
+---

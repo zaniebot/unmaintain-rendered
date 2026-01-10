@@ -1,0 +1,125 @@
+---
+number: 5753
+title: "[feature-request] Detect invalid unquoted imports"
+type: issue
+state: open
+author: smackesey
+labels:
+  - rule
+  - accepted
+assignees: []
+created_at: 2023-07-14T01:22:40Z
+updated_at: 2023-07-14T03:01:33Z
+url: https://github.com/astral-sh/ruff/issues/5753
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# [feature-request] Detect invalid unquoted imports
+
+---
+
+_Issue opened by @smackesey on 2023-07-14 01:22_
+
+The following code crashes at runtime:
+
+```
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from threading import Thread
+
+def foo(t: Thread):
+    return t
+```
+
+The issue is that `Thread` is not defined at runtime, since it's only imported in a `TYPE_CHECKING` block. But `ruff` does not detect any error.
+
+If this module included `from __future__ import annotations`, then it would be OK because "Thread" would be interpreted as a string-- but the module doesn't include that, so it should be possible to detect that this is illegal.
+
+Further, I think in Python 3.13 string annotations, derived from `from __future__ import annotations` or otherwise, will go away in favor of wrapping annotations in a function for deferred evaluation. See [here](https://lukasz.langa.pl/61df599c-d9d8-4938-868b-36b67fdb4448/) and [PEP 649](https://peps.python.org/pep-0649/) for the dirty details.
+
+
+---
+
+_Comment by @charliermarsh on 2023-07-14 01:29_
+
+We can definitely detect that, we already capture this in our semantic model.
+
+Meanwhile this, I believe, is fine:
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from threading import Thread
+
+def foo():
+    t: Thread = 1
+    return t
+
+foo()
+```
+
+---
+
+_Comment by @smackesey on 2023-07-14 01:32_
+
+Great!
+
+Yes, ^^ is fine because Python never evaluates local variable annotations-- the annotation for a local variable is _always_ a string, regardless of `from __future__ import annotations`.
+
+---
+
+_Comment by @smackesey on 2023-07-14 01:41_
+
+Btw IMO there should be autofix that converts it to a quoted string-- so my request here is similar to #5559.
+
+---
+
+_Comment by @charliermarsh on 2023-07-14 02:08_
+
+Unfortunately I've become intimately familiar with all the rules around annotation semantics :joy:
+
+---
+
+_Comment by @charliermarsh on 2023-07-14 02:22_
+
+Do you think this should just be caught by [F821](https://beta.ruff.rs/docs/rules/undefined-name/), with a custom suggestion and autofix to quote it? Or a separate rule?
+
+---
+
+_Comment by @smackesey on 2023-07-14 02:24_
+
+Certainly sense to me to catch under an existing undefined anme rule, but I guess ultimately it depends on how much you are trying to mirror exact behavior of the rules you ported from other linters.
+
+---
+
+_Comment by @charliermarsh on 2023-07-14 02:27_
+
+May be easier to just implement this as the TC200 rules from [flake8-type-checking](https://github.com/snok/flake8-type-checking).
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-07-14 02:36_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-07-14 02:37_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-07-14 02:37_
+
+---
+
+_Comment by @charliermarsh on 2023-07-14 02:41_
+
+This is a bit different than the request in https://github.com/astral-sh/ruff/issues/5559, which is to automatically quote any annotations that _can_ be quoted (and are only used in typing contexts), right?
+
+---
+
+_Comment by @smackesey on 2023-07-14 03:01_
+
+Yeah it's definitely different, they just both involve adding quotes to annotations.
+
+---

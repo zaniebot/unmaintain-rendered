@@ -1,0 +1,54 @@
+---
+number: 11318
+title: "[Rule request] [`pydocstyle`] no-blank-line-after-last-section"
+type: issue
+state: open
+author: MatthijsBurgh
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-05-07T08:28:16Z
+updated_at: 2025-05-10T13:06:07Z
+url: https://github.com/astral-sh/ruff/issues/11318
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# [Rule request] [`pydocstyle`] no-blank-line-after-last-section
+
+---
+
+_Issue opened by @MatthijsBurgh on 2024-05-07 08:28_
+
+I would like to request the a rule, which is the opposite of D413, [`blank-line-after-last-section`](https://docs.astral.sh/ruff/rules/blank-line-after-last-section/). This rule should remove all the blank lines after the docstring section.
+
+As I think this is the standard for `Google` and `pep257`.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-05-10 05:47_
+
+---
+
+_Label `needs-decision` added by @dhruvmanila on 2024-05-10 05:47_
+
+---
+
+_Comment by @oscargus on 2025-05-09 10:46_
+
+For what it is worth, numpydoc enforces no empty line with GL03:
+
+```
+    "GL03": "Double line break found; please use only one blank line to "
+    "separate sections or paragraphs, and do not leave blank lines "
+    "at the end of docstrings",
+```
+
+---
+
+_Comment by @oscargus on 2025-05-10 13:06_
+
+This is also mentioned in #9451 (although not the main issue there).
+
+
+---

@@ -1,0 +1,138 @@
+---
+number: 1835
+title: Environment variable fallback is in fact not a fallback but an additional source for values
+type: issue
+state: closed
+author: CreepySkeleton
+labels:
+  - C-bug
+  - M-breaking-change
+assignees: []
+created_at: 2020-04-16T15:10:44Z
+updated_at: 2020-04-22T09:19:31Z
+url: https://github.com/clap-rs/clap/issues/1835
+synced_at: 2026-01-10T01:27:08Z
+---
+
+# Environment variable fallback is in fact not a fallback but an additional source for values
+
+---
+
+_Issue opened by @CreepySkeleton on 2020-04-16 15:10_
+
+### Make sure you completed the following tasks
+
+- [x] Searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] Searched the closes issues
+
+### Code
+
+```rust
+use clap::{App, Arg};
+
+fn main() {
+    std::env::set_var("ENV_VAR", "val_env");
+    
+    let m = App::new("app")
+        .arg(
+            Arg::with_name("test")
+                .env("ENV_VAR") 
+                .min_values(0)
+        )
+        .get_matches_from(&["test", "val1", "val2"]);
+    
+    let values =  m.values_of("test").unwrap().collect::<Vec<_>>();
+    assert_eq!(values, &["val1", "val2", "val_env"]);
+}
+```
+
+### Steps to reproduce the issue
+
+cargo run
+
+### Version
+
+* **Rust**: 1.42
+* **Clap**: 2.33 and master
+
+### Actual Behavior Summary
+
+It passes, effectively appending the value from environment to command line values.
+
+### Expected Behavior Summary
+
+It should panic, because the args from the command line must **override** environment variable.
+
+### Additional context
+
+In fact, we don't even need multiple values, *this also miraculously passes*:
+```rust
+use clap::{App, Arg};
+
+fn main() {
+    std::env::set_var("ENV_VAR", "val_env");
+    
+    let m = App::new("app")
+        .arg(
+            Arg::with_name("test")
+                .env("ENV_VAR")
+        )
+        .get_matches_from(&["test", "val1"]);
+        
+    
+    // note: this should return only ONE value because
+    // we didn't specify that it takes multiple values
+    let values = m.values_of("test").unwrap().collect::<Vec<_>>();
+    assert_eq!(values, &["val1", "val_env"]);
+}
+```
+
+---
+
+_Label `T: bug` added by @CreepySkeleton on 2020-04-16 15:10_
+
+---
+
+_Label `C: args` added by @CreepySkeleton on 2020-04-16 15:11_
+
+---
+
+_Label `C: environment variable` added by @CreepySkeleton on 2020-04-16 15:11_
+
+---
+
+_Label `E: breaking change` added by @CreepySkeleton on 2020-04-16 15:11_
+
+---
+
+_Label `P2: need to have` added by @CreepySkeleton on 2020-04-16 15:11_
+
+---
+
+_Label `W: 2.x` added by @CreepySkeleton on 2020-04-16 15:11_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-04-16 15:11_
+
+---
+
+_Added to milestone `3.0` by @CreepySkeleton on 2020-04-16 15:12_
+
+---
+
+_Referenced in [clap-rs/clap#1850](../../clap-rs/clap/pulls/1850.md) on 2020-04-22 08:37_
+
+---
+
+_Closed by @bors[bot] on 2020-04-22 09:19_
+
+---
+
+_Closed by @bors[bot] on 2020-04-22 09:19_
+
+---
+
+_Referenced in [kentik/ksynth#4](../../kentik/ksynth/pulls/4.md) on 2022-10-21 00:28_
+
+---

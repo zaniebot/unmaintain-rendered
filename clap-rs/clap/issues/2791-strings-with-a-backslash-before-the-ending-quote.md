@@ -1,0 +1,240 @@
+---
+number: 2791
+title: Strings with a backslash before the ending quote results in a quote being included in the final arg value
+type: issue
+state: closed
+author: avborup
+labels:
+  - C-bug
+assignees: []
+created_at: 2021-09-26T08:04:23Z
+updated_at: 2025-12-17T09:03:58Z
+url: https://github.com/clap-rs/clap/issues/2791
+synced_at: 2026-01-10T01:27:26Z
+---
+
+# Strings with a backslash before the ending quote results in a quote being included in the final arg value
+
+---
+
+_Issue opened by @avborup on 2021-09-26 08:04_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.54.0 (a178d0322 2021-07-26)
+
+### Clap Version
+
+2.33.3
+
+### Minimal reproducible code
+
+```rust
+use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(r"Minimum Working Example for \'")
+        .arg(Arg::with_name("PATH").required(true))
+        .get_matches();
+
+    println!("{}", matches.value_of("PATH").unwrap());
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- '.\foo bar\baz\'
+```
+
+### Actual Behaviour
+
+The following is printed:
+```
+.\foo bar\baz"
+```
+Notice the trailing `"` - there was not even a direct `"` in the original input.
+
+### Expected Behaviour
+
+Either of the two:
+1. The straight content of the string should be returned: `.\foo bar\baz\`.
+2. If the trailing `'` is meant to be escaped by `\`, a parse error saying no end `'` was found.
+
+### Additional Context
+
+This is on Windows and is particularly an issue with paths. Assume you have the following directory tree:
+```
+.
+└── foo bar
+    └── baz
+```
+If you autocomplete in PowerShell, the path will be `'.\foo bar\baz\'` (including the quotes because of the space).
+
+I saw the discussion at #2654, but I'm not sure it's the same issue.
+
+### Debug Output
+
+```
+$ cargo run -- '.\foo bar\baz\'
+    Blocking waiting for file lock on build directory
+   Compiling clap v2.33.3
+   Compiling clap-mwe-backslash-quote v0.1.0 (C:\Users\Adrian\coding\testing\clap-mwe-backslash-quote)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.57s
+     Running `target\debug\clap-mwe-backslash-quote.exe ".\foo bar\baz\""`      
+DEBUG:clap:Parser::propagate_settings: self=Minimum Working Example for \', g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '".\\foo bar\\baz\""' ([46, 92, 102, 111, 111, 32, 98, 97, 114, 92, 98, 97, 122, 34])
+DEBUG:clap:Parser::is_new_arg:".\\foo bar\\baz\"":NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=".\\foo bar\\baz\""
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::get_matches_with: Positional counter...1
+DEBUG:clap:Parser::get_matches_with: Low index multiples...false
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::add_val_to_arg; arg=PATH, val=".\\foo bar\\baz\""
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...".\\foo bar\\baz\""      
+DEBUG:clap:Parser::groups_for_arg: name=PATH
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=PATH
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=PATH
+DEBUG:clap:Parser::groups_for_arg: name=PATH
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some("PATH");
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:PATH: doesn't have conditional defaults    
+DEBUG:clap:Parser::add_defaults:iter:PATH: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:PATH;
+DEBUG:clap:Parser::groups_for_arg: name=PATH
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_required: required=["PATH"];
+DEBUG:clap:Validator::validate_required:iter:PATH:
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:PATH: vals=[
+    ".\\foo bar\\baz\"",
+]
+DEBUG:clap:Validator::validate_arg_num_vals:PATH
+DEBUG:clap:Validator::validate_arg_num_occurs: a=PATH;
+DEBUG:clap:Validator::validate_arg_values: arg="PATH"
+DEBUG:clap:Validator::validate_arg_requires:PATH;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=["PATH"], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=["PATH"]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=clap-mwe-backslash-quote.exe <PATH>  
+DEBUG:clap:ArgMatcher::get_global_values: global_arg_vec=[]
+.\foo bar\baz"
+```
+
+---
+
+_Label `T: bug` added by @avborup on 2021-09-26 08:04_
+
+---
+
+_Comment by @pksunkara on 2021-09-26 11:54_
+
+What does rust's `env::arg_os` print?
+
+---
+
+_Comment by @avborup on 2021-09-26 17:12_
+
+```rs
+dbg!(env::args_os());
+```
+prints
+```
+[src\main.rs:5] env::args_os() = ArgsOs {
+    inner: [
+        "target\\debug\\clap-mwe-backslash-quote.exe",
+        ".\\foo bar\\baz\"",
+    ],
+}
+```
+In clean form, that would indeed be `.\foo bar\baz"`.
+
+---
+
+_Comment by @pksunkara on 2021-09-26 18:30_
+
+Yup, So it looks like some kind of rust or most probably a shell issue. We can't do anything on our side.
+
+---
+
+_Closed by @pksunkara on 2021-09-26 18:30_
+
+---
+
+_Comment by @epage on 2021-09-27 13:16_
+
+Unsure how relevant this is but Rust 1.56 came with this compatibility note:
+
+> [Update to new argument parsing rules on Windows.](https://github.com/rust-lang/rust/pull/87580) This adjusts Rust's standard library to match the behavior of the standard libraries for C/C++. The rules have changed slightly over time, and this PR brings us to the latest set of rules (changed in 2008).
+
+---
+
+_Comment by @pksunkara on 2021-09-27 15:09_
+
+I am interested in what happens when you try 1.56 instead of 1.54.
+
+---
+
+_Comment by @avborup on 2021-09-27 15:55_
+
+I just tried on rust version `1.56.0-beta.3 (deef86610 2021-09-17)`:
+```powershell
+$ rustc -V
+rustc 1.56.0-beta.3 (deef86610 2021-09-17)
+
+$ cargo run -- '.\foo bar\baz\'
+   Compiling clap v2.33.3
+   Compiling clap-mwe-backslash-quote v0.1.0 (C:\Users\Adrian\coding\testing\clap-mwe-backslash-quote)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.45s
+     Running `target\debug\clap-mwe-backslash-quote.exe ".\foo bar\baz\""`       
+[src\main.rs:5] env::args_os() = ArgsOs {
+    inner: [
+        "target\\debug\\clap-mwe-backslash-quote.exe",
+        ".\\foo bar\\baz\"",
+    ],
+}
+.\foo bar\baz"
+```
+Doesn't seem to have changed anything.
+
+---
+
+_Referenced in [Yamato-Security/hayabusa#1166](../../Yamato-Security/hayabusa/issues/1166.md) on 2023-08-24 16:18_
+
+---
+
+_Comment by @timptner on 2025-12-17 09:03_
+
+For anyone following: https://github.com/rust-lang/rust/issues/72653
+
+---

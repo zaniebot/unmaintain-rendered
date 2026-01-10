@@ -1,0 +1,419 @@
+---
+number: 11090
+title: uv considers that the same URLs are different from each other, and also uses old commits to collect dependencies.
+type: issue
+state: closed
+author: Wintreist
+labels:
+  - documentation
+assignees: []
+created_at: 2025-01-30T10:21:20Z
+updated_at: 2025-01-31T18:11:05Z
+url: https://github.com/astral-sh/uv/issues/11090
+synced_at: 2026-01-10T01:25:01Z
+---
+
+# uv considers that the same URLs are different from each other, and also uses old commits to collect dependencies.
+
+---
+
+_Issue opened by @Wintreist on 2025-01-30 10:21_
+
+### Summary
+
+I don't store libraries as separate repositories, but as folders inside a single repository.
+Now some folders are modules, I'm transferring them one at a time into the library structure, each separately commit
+Some libraries depend on other libraries in this repository.
+I transferred one module to the library structure, i.e. I used the following command:
+`uv init --lib --no-pin-python --no-readme --author-from=none --name=...`
+Sent new changes to the repository
+Commit: **cd99dba**, Commit before: **3f0f6d0**
+In a separate test area, I install a new library after each change to check that everything is working as intended:
+`uv add git+ssh://git@my_repository.git@branch_name#subdirectory=new_lib`
+After that, uv updates the information from the repository and tries to add the library.
+Logs:
+```
+PS D:\test\test> uv add git+ssh://git@my_repository.git@branch_name#subdirectory=new_lib
+ Updated ssh://git@my_repository.git (cd99dba1a)
+Resolved 14 packages in 548ms
+  × Failed to download and build `new_lib @ git+ssh://git@my_repository.git@3f0f6d0b9f7cd6e03a5bd57fe60246bd357413ec#subdirectory=new_lib`
+  ╰─▶ C:\Users\wintreist\AppData\Local\uv\cache\git-v0\checkouts\e551289a4868813a\3f0f6d0b9\new_lib does not appear to be a Python project, as neither
+      `pyproject.toml` nor `setup.py` are present in the directory
+  help: `new_lib` was included because `test` (v0.1.0) depends on `new_lib`
+```
+So uv updated to the latest commit, but used the old one.
+If I try to execute this command with an argument **-U** then another problem arises:
+```
+PS D:\test\test> uv add git+ssh://git@my_repository.git@branch_name#subdirectory=new_lib -U
+ Updated ssh://git@my_repository.git (cd99dba1a)
+error: Requirements contain conflicting URLs for package `old_lib_1` in all marker environments:
+- git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_1
+- git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_1
+```
+Full logs:
+```
+PS D:\test\test> uv add git+ssh://git@my_repository.git@branch_name#subdirectory=new_lib -U -v
+DEBUG uv 0.5.25 (9c07c3fc5 2025-01-28)
+DEBUG Found project root: `D:\test\test`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `>=3.12` from `requires-python` metadata
+DEBUG Searching for Python >=3.12 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\wintreist\AppData\Roaming\uv\python`
+DEBUG Found `cpython-3.12.2-windows-x86_64-none` at `E:\ROBO\Python312\python.exe` (search path)
+Using CPython 3.12.2 interpreter at: E:\ROBO\Python312\python.exe
+Creating virtual environment at: .venv
+DEBUG Using base executable for virtual environment: E:\ROBO\Python312\python.exe
+DEBUG Using request timeout of 30s
+DEBUG Fetching source distribution from Git: ssh://git@my_repository.git
+DEBUG Acquired lock for `ssh://my_repository`
+DEBUG Updating Git source `ssh://git@my_repository.git`
+DEBUG Performing a Git fetch for: ssh://git@my_repository.git
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\e551289a4868813a`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\5a0831952b6ef937\cd99dba1a62dd8bd`
+DEBUG Found static `pyproject.toml` for: git+ssh://git@my_repository.git@branch_name#subdirectory=new_lib
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\5a0831952b6ef937\cd99dba1a62dd8bd\.lock`
+DEBUG Caching credentials for: ssh://git@my_repository.git
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to `--upgrade`
+DEBUG Found static `pyproject.toml` for: test @ file:///D:/test/test
+DEBUG No workspace root found, using project root
+DEBUG Fetching source distribution from Git: ssh://git@my_repository.git
+DEBUG Acquired lock for `ssh://my_repository`
+DEBUG Using existing Git source `ssh://git@my_repository.git`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\e551289a4868813a`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\c5374e4184011fbd\cd99dba1a62dd8bd`
+DEBUG Found static `pyproject.toml` for: old_lib_1 @ git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_1    
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\c5374e4184011fbd\cd99dba1a62dd8bd\.lock`
+DEBUG Fetching source distribution from Git: ssh://git@my_repository.git
+DEBUG Acquired lock for `ssh://my_repository`
+DEBUG Using existing Git source `ssh://git@my_repository.git`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\e551289a4868813a`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\bc5bb25f2e856b19\cd99dba1a62dd8bd`
+DEBUG Found static `pyproject.toml` for: old_lib_2 @ git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_2
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\bc5bb25f2e856b19\cd99dba1a62dd8bd\.lock`
+DEBUG Fetching source distribution from Git: ssh://git@my_repository.git
+DEBUG Acquired lock for `ssh://my_repository`
+DEBUG Using existing Git source `ssh://git@my_repository.git`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\e551289a4868813a`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\5984696cade30c2b\cd99dba1a62dd8bd`
+DEBUG Found static `pyproject.toml` for: old_lib_3 @ git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_3
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\5984696cade30c2b\cd99dba1a62dd8bd\.lock`
+DEBUG Fetching source distribution from Git: ssh://git@my_repository.git
+DEBUG Acquired lock for `ssh://my_repository`
+DEBUG Using existing Git source `ssh://git@my_repository.git`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\e551289a4868813a`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\d8cb38c12b40742e\cd99dba1a62dd8bd`
+DEBUG Found static `pyproject.toml` for: old_lib_4 @ git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_4
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\d8cb38c12b40742e\cd99dba1a62dd8bd\.lock`
+DEBUG Solving with installed Python version: 3.12.2
+DEBUG Solving with target Python version: >=3.12
+DEBUG Adding direct dependency: test*
+DEBUG Searching for a compatible version of test @ file:///D:/test/test (*)
+DEBUG Adding direct dependency: old_lib_1*
+DEBUG Adding direct dependency: old_lib_2*
+DEBUG Adding direct dependency: new_lib*
+DEBUG Adding direct dependency: old_lib_3*
+DEBUG Adding direct dependency: old_lib_4*
+DEBUG Searching for a compatible version of old_lib_1 @ git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_1 
+(*)
+DEBUG Searching for a compatible version of old_lib_2 @ git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_2 (*)
+DEBUG Adding transitive dependency for old_lib_2==0.1.0: pyside6>=6.8.1.1
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\pyside6.lock`
+DEBUG Found stale response for: https://pypi.org/simple/pyside6/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pyside6/
+DEBUG Found not-modified response for: https://pypi.org/simple/pyside6/
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\pyside6.lock`
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+error: Requirements contain conflicting URLs for package `old_lib_1` in all marker environments:
+- git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_1
+- git+ssh://git@my_repository.git@branch_name#subdirectory=old_lib_1
+```
+One of the old libraries depends on the other, which is also installed in the test area. The links to this library are identical, but for some reason uv does not install it. The same thing happens if I use the `uv sync -U` command, but it doesn't happen if you use `uv sync`.
+In the latter case, uv installs the libraries correctly.
+
+In general, I see 2 problems. 
+
+1. uv uses an old commit that doesn't have pyproject.toml yet, although it sees the new commit.
+2. uv considers an identical url as different
+
+### Platform
+
+Windows 10 x86_64
+
+### Version
+
+uv-help 0.5.25 (9c07c3fc5 2025-01-28)
+
+### Python version
+
+Python 3.12.2
+
+---
+
+_Label `bug` added by @Wintreist on 2025-01-30 10:21_
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 14:14_
+
+Can you please put together a minimal reproduction that I can run myself? It's a lot of work to try and reproduce this on our end, and we may not even be able to reproduce the bug in the end. Ideally, a Git repo or series of Git repos with commands that we can run to emulate the exact bug you're seeing.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-01-30 14:14_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-01-30 14:14_
+
+---
+
+_Comment by @Wintreist on 2025-01-30 16:56_
+
+@charliermarsh, for the first described case, I created an MRE:
+https://github.com/Wintreist/uv_bug_mre
+Pay attention to the TO-LIBS-1 branch. I have created "modules" in the main branch. In the TO-LIBS-1 branch, with the first commit, I "transferred" the test_lib_1 module to the library.
+At this time, in a completely different project, I added this library to the dependencies:
+```
+PS D:\test\test> uv add git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_1
+ Updated ssh://git@github.com/Wintreist/uv_bug_mre.git (762344c)
+Resolved 2 packages in 10ms
+   Built test @ file:///D:/test/test
+Prepared 2 packages in 714ms
+Uninstalled 1 package in 0.93ms
+░░░░░░░░░░░░░░░░░░░░ [0/2] Installing wheels...
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 2 packages in 13ms
+ + qa-test-lib-1==0.1.0 (from git+ssh://git@github.com/Wintreist/uv_bug_mre.git@762344c6622139696516eb3a625840b6fbfbaed4#subdirectory=test_lib_1)
+ ~ test==0.1.0 (from file:///D:/test/test)
+```
+Then, with the next commit, I transferred test_lib_2 module to the library
+And again, after the commit, I tried to add a new library as a dependency in a separate project.
+```
+PS D:\test\test> uv add git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_2
+ Updated ssh://git@github.com/Wintreist/uv_bug_mre.git (bd59dcf)
+Resolved 3 packages in 131ms
+  × Failed to download and build `qa-test-lib-2 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@762344c6622139696516eb3a625840b6fbfbaed4#subdirectory=test_lib_2`
+  ╰─▶ C:\Users\wintreist\AppData\Local\uv\cache\git-v0\checkouts\0d1d6fe40afa9bcf\762344c\test_lib_2 does not appear to be a Python project, as neither
+      `pyproject.toml` nor `setup.py` are present in the directory
+  help: `qa-test-lib-2` was included because `test` (v0.1.0) depends on `qa-test-lib-2`
+```
+Full Logs:
+```
+PS D:\test\test> uv add git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_2 -v
+DEBUG uv 0.5.25 (9c07c3fc5 2025-01-28)
+DEBUG Found project root: `D:\test\test`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `>=3.12` from `requires-python` metadata
+DEBUG The virtual environment's Python version satisfies `>=3.12`
+DEBUG Using request timeout of 30s
+DEBUG Attempting GitHub fast path for: https://api.github.com/repos/Wintreist/uv_bug_mre/commits/TO-LIBS-1
+DEBUG Fetching source distribution from Git: ssh://git@github.com/Wintreist/uv_bug_mre.git
+DEBUG Acquired lock for `ssh://github.com/wintreist/uv_bug_mre`
+DEBUG Using existing Git source `ssh://git@github.com/Wintreist/uv_bug_mre.git`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\0d1d6fe40afa9bcf`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\525f0f7a65d1ff2f\bd59dcfd13ddba5a`
+DEBUG Found static `pyproject.toml` for: git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_2
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\525f0f7a65d1ff2f\bd59dcfd13ddba5a\.lock`
+DEBUG Caching credentials for: ssh://git@github.com/Wintreist/uv_bug_mre.git
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test @ file:///D:/test/test
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched requirements for: `test==0.1.0`
+  Requested: {Requirement { name: PackageName("qa-test-lib-1"), extras: [], groups: [], marker: true, source: Git { repository: Url { scheme: "ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: None, path: "/Wintreist/uv_bug_mre.git", query: None, fragment: None }, reference: BranchOrTag("TO-LIBS-1"), precise: None, subdirectory: Some("test_lib_1"), url: VerbatimUrl { url: Url { scheme: "git+ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: None, path: "/Wintreist/uv_bug_mre.git@TO-LIBS-1", query: None, fragment: Some("subdirectory=test_lib_1") }, given: None } }, origin: None }, Requirement { name: PackageName("qa-test-lib-2"), extras: [], groups: [], marker: true, source: Git { repository: Url { scheme: "ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: None, path: "/Wintreist/uv_bug_mre.git", query: None, fragment: None }, reference: BranchOrTag("TO-LIBS-1"), precise: None, subdirectory: Some("test_lib_2"), url: VerbatimUrl { url: Url { scheme: "git+ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: 
+None, path: "/Wintreist/uv_bug_mre.git@TO-LIBS-1", query: None, fragment: Some("subdirectory=test_lib_2") }, given: None } }, origin: None }}
+  Existing: {Requirement { name: PackageName("qa-test-lib-1"), extras: [], groups: [], marker: true, source: Git { repository: Url { scheme: "ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: None, path: "/Wintreist/uv_bug_mre.git", query: None, fragment: None }, reference: BranchOrTag("TO-LIBS-1"), precise: None, subdirectory: Some("test_lib_1"), url: VerbatimUrl { url: Url { scheme: "git+ssh", cannot_be_a_base: false, username: "git", password: None, host: Some(Domain("github.com")), port: None, path: "/Wintreist/uv_bug_mre.git@TO-LIBS-1", query: None, fragment: Some("subdirectory=test_lib_1") }, given: None } }, origin: None }}
+DEBUG Inserting Git reference into resolver: `RepositoryReference { url: RepositoryUrl(Url { scheme: "ssh", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("github.com")), port: None, path: "/wintreist/uv_bug_mre", query: None, fragment: None }), reference: BranchOrTag("TO-LIBS-1") }` at `762344c6622139696516eb3a625840b6fbfbaed4`
+DEBUG Fetching source distribution from Git: ssh://git@github.com/Wintreist/uv_bug_mre.git
+DEBUG Acquired lock for `ssh://github.com/wintreist/uv_bug_mre`
+DEBUG Using existing Git source `ssh://git@github.com/Wintreist/uv_bug_mre.git`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\0d1d6fe40afa9bcf`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\7345fc5006ad2ff4\762344c662213969`
+DEBUG Found static `pyproject.toml` for: qa-test-lib-1 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_1
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\7345fc5006ad2ff4\762344c662213969\.lock`
+DEBUG Solving with installed Python version: 3.12.2
+DEBUG Solving with target Python version: >=3.12
+DEBUG Adding direct dependency: test*
+DEBUG Searching for a compatible version of test @ file:///D:/test/test (*)
+DEBUG Adding direct dependency: qa-test-lib-1*
+DEBUG Adding direct dependency: qa-test-lib-2*
+DEBUG Searching for a compatible version of qa-test-lib-1 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_1 (*)
+DEBUG Searching for a compatible version of qa-test-lib-2 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@TO-LIBS-1#subdirectory=test_lib_2 (*)
+DEBUG Adding transitive dependency for qa-test-lib-2==0.1.0: qa-test-lib-1*
+DEBUG Tried 3 versions: qa-test-lib-1 1, qa-test-lib-2 1, test 1
+DEBUG all marker environments resolution took 0.001s
+Resolved 3 packages in 126ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement installed, but not fresh: test==0.1.0 (from file:///D:/test/test)
+DEBUG Identified uncached distribution: test @ file:///D:/test/test
+DEBUG Requirement already installed: qa-test-lib-1==0.1.0 (from git+ssh://git@github.com/Wintreist/uv_bug_mre.git@762344c6622139696516eb3a625840b6fbfbaed4#subdirectory=test_lib_1)
+DEBUG Identified uncached distribution: qa-test-lib-2 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@762344c6622139696516eb3a625840b6fbfbaed4#subdirectory=test_lib_2      
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\editable\d068b7cc3ac2e5cc`
+DEBUG Fetching source distribution from Git: ssh://git@github.com/Wintreist/uv_bug_mre.git
+DEBUG Acquired lock for `ssh://github.com/wintreist/uv_bug_mre`
+DEBUG Building: test @ file:///D:/test/test
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: E:\ROBO\Python312\python.exe
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.2
+DEBUG Solving with target Python version: >=3.12.2
+DEBUG Adding direct dependency: hatchling*
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\hatchling.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/hatchling/
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\hatchling.lock`
+DEBUG Searching for a compatible version of hatchling (*)
+DEBUG Selecting: hatchling==1.27.0 [compatible] (hatchling-1.27.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\hatchling\hatchling-1.27.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\hatchling\hatchling-1.27.0-py3-none-any.lock`
+DEBUG Adding transitive dependency for hatchling==1.27.0: packaging>=24.2
+DEBUG Adding transitive dependency for hatchling==1.27.0: pathspec>=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.27.0: pluggy>=1.0.0
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\packaging.lock`
+DEBUG Adding transitive dependency for hatchling==1.27.0: trove-classifiers*
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\pathspec.lock`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\pluggy.lock`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\trove-classifiers.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/pathspec/
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\pathspec.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\packaging.lock`
+DEBUG Searching for a compatible version of packaging (>=24.2)
+DEBUG Selecting: packaging==24.2 [compatible] (packaging-24.2-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\pluggy.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/trove-classifiers/
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\simple-v15\pypi\trove-classifiers.lock`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\pathspec\pathspec-0.12.1-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\pluggy\pluggy-1.5.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\packaging\packaging-24.2-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\trove-classifiers\trove_classifiers-2025.1.15.22-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\pathspec\pathspec-0.12.1-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\pluggy\pluggy-1.5.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\packaging\packaging-24.2-py3-none-any.lock`
+DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/2b/c5/6422dbc59954389b20b2aba85b737ab4a552e357e7ea14b52f40312e7c84/trove_classifiers-2025.1.15.22-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\wheels-v3\pypi\trove-classifiers\trove_classifiers-2025.1.15.22-py3-none-any.lock`
+DEBUG Selecting: pluggy==1.5.0 [compatible] (pluggy-1.5.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of trove-classifiers (*)
+DEBUG Selecting: trove-classifiers==2025.1.15.22 [compatible] (trove_classifiers-2025.1.15.22-py3-none-any.whl)
+DEBUG Tried 5 versions: hatchling 1, packaging 1, pathspec 1, pluggy 1, trove-classifiers 1
+DEBUG marker environment resolution took 0.019s
+DEBUG Installing in packaging==24.2, pathspec==0.12.1, pluggy==1.5.0, hatchling==1.27.0, trove-classifiers==2025.1.15.22 in C:\Users\wintreist\AppData\Local\uv\cache\builds-v0\.tmpmNo8s3
+DEBUG Requirement already cached: packaging==24.2
+DEBUG Requirement already cached: pathspec==0.12.1
+DEBUG Requirement already cached: pluggy==1.5.0
+DEBUG Requirement already cached: hatchling==1.27.0
+DEBUG Requirement already cached: trove-classifiers==2025.1.15.22
+DEBUG Installing build requirements: packaging==24.2, pathspec==0.12.1, pluggy==1.5.0, hatchling==1.27.0, trove-classifiers==2025.1.15.22
+DEBUG Using existing Git source `ssh://git@github.com/Wintreist/uv_bug_mre.git`
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `hatchling.build.get_requires_for_build_editable()`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\git-v0\locks\0d1d6fe40afa9bcf`
+DEBUG Acquired lock for `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\fda9feb1384bd656\762344c662213969`
+DEBUG Building: qa-test-lib-2 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@762344c6622139696516eb3a625840b6fbfbaed4#subdirectory=test_lib_2
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\git\fda9feb1384bd656\762344c662213969\.lock`
+DEBUG Released lock at `C:\Users\wintreist\AppData\Local\uv\cache\sdists-v6\editable\d068b7cc3ac2e5cc\.lock`
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  × Failed to download and build `qa-test-lib-2 @ git+ssh://git@github.com/Wintreist/uv_bug_mre.git@762344c6622139696516eb3a625840b6fbfbaed4#subdirectory=test_lib_2`
+  ╰─▶ C:\Users\wintreist\AppData\Local\uv\cache\git-v0\checkouts\0d1d6fe40afa9bcf\762344c\test_lib_2 does not appear to be a Python project, as neither
+      `pyproject.toml` nor `setup.py` are present in the directory
+  help: `qa-test-lib-2` was included because `test` (v0.1.0) depends on `qa-test-lib-2`
+```
+I think the problem is in the cache, because if you run the same command with the **-U** flag, the problem is solved and the library is installed.
+I think that my MRE will not be able to be copied directly as a ready-made version. Consistency is important here.
+For now, I will continue to try to repeat the second case.
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 17:39_
+
+Thanks for creating an MRE. I will take a look today.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-30 19:43_
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 20:58_
+
+I see. Let me explain what's happening...
+
+If you have a dependency like this:
+
+```toml
+dependencies = ["anyio @ git+https://github.com/agronholm/anyio@main"]
+```
+
+And then you run `uv lock`, we write a specific commit to the lockfile (`uv.lock`) that represents the commit on `main` at the time of locking.
+
+When you later run `uv lock` again, you actually don't want to bump the commit, unless the user passes `--upgrade`. Otherwise, it'd be like arbitrarily bumping a package version without `--upgrade`. In other words, we "retain" the current commit that's associated with `main`, unless the user passes `--upgrade`.
+
+So in your case, I assume the dependency on `subdirectory=test_lib_1` was already in `uv.lock` when you ran `uv add` to add `subdirectory=test_lib_2`? uv would then reuse the same commit on the repo, to avoid arbitrarily bumping the version. Passing `--upgrade` gets around this behavior.
+
+This may actually be the correct behavior. If you want to bump to a later commit, passing `--upgrade` is a reasonable requirement.
+
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 21:25_
+
+I'll add something about this to the docs, and use this issue to track it.
+
+---
+
+_Label `needs-mre` removed by @charliermarsh on 2025-01-30 21:36_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2025-01-30 21:36_
+
+---
+
+_Referenced in [astral-sh/uv#11125](../../astral-sh/uv/pulls/11125.md) on 2025-01-31 03:35_
+
+---
+
+_Comment by @Wintreist on 2025-01-31 07:04_
+
+@charliermarsh, thank you for your problem detection. 
+Unfortunately, yesterday I was still unable to repeat the MRE for the second case.
+On the same MRE as for the first case, the second case was not reproduced. Everything was installed correctly
+But on my own project I found an interesting clue in the direction of detecting the problem.
+if I do this:
+```
+uv add git+ssh://git@my_repo.git@branch_name#subdirectory=test_lib_1 - OK
+PS D:\test\test> uv add git+ssh://git@my_repo.git@branch_name#subdirectory=test_lib_2
+ Updated ssh://git@my_repo.git (62351d26a)
+error: Requirements contain conflicting URLs for package `qa-test-lib-1` in all marker environments:
+- git+ssh://git@my_repo.git@branch_name#subdirectory=test_lib_1
+- git+ssh://git@my_repo.git@branch_name#subdirectory=test_lib_1
+```
+(test_lib_1 is dependency for test_lib_2)
+But if I do it differently:
+`PS D:\test\test> uv add git+ssh://git@my_repo.git#subdirectory=test_lib_2 --branch branch_name`
+test_lib_2 will be installed
+
+---
+
+_Closed by @zanieb on 2025-01-31 18:11_
+
+---

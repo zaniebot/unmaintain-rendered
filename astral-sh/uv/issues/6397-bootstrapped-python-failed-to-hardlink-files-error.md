@@ -1,0 +1,216 @@
+---
+number: 6397
+title: "Bootstrapped Python `Failed to hardlink files;` Error "
+type: issue
+state: closed
+author: beratcmn
+labels:
+  - question
+assignees: []
+created_at: 2024-08-22T00:56:57Z
+updated_at: 2024-09-29T15:02:10Z
+url: https://github.com/astral-sh/uv/issues/6397
+synced_at: 2026-01-10T01:24:00Z
+---
+
+# Bootstrapped Python `Failed to hardlink files;` Error 
+
+---
+
+_Issue opened by @beratcmn on 2024-08-22 00:56_
+
+Here is the full flow that leads to this warning:
+
+```bash
+[03:54:11] berat /e/Projects/python/uv_test>uv init
+Initialized project `uv-test`
+[03:54:12] berat /e/Projects/python/uv_test>uv add fastapi
+Using Python 3.10.14
+Creating virtualenv at: .venv
+Resolved 11 packages in 46ms
+   Built uv-test @ file:///E:/Projects/Python/uv_test
+Prepared 11 packages in 1.16s
+░░░░░░░░░░░░░░░░░░░░ [0/11] Installing wheels...                                                                                                                                                                                            warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 11 packages in 112ms
+ + annotated-types==0.7.0
+ + anyio==4.4.0
+ + exceptiongroup==1.2.2
+ + fastapi==0.112.1
+ + idna==3.7
+ + pydantic==2.8.2
+ + pydantic-core==2.20.1
+ + sniffio==1.3.1
+ + starlette==0.38.2
+ + typing-extensions==4.12.2
+ + uv-test==0.1.0 (from file:///E:/Projects/Python/uv_test)
+[03:54:18] berat /e/Projects/python/uv_test>
+```
+
+System: Windows 11 Pro
+Python Version: Python 3.10.14 Installed via UV 
+UV Version: uv 0.3.1 (be17d132a 2024-08-21)
+
+I removed Python 3.10.11 that was installed through official website in order to bootstrap the Python, but it gave this warning with major performance loss after installing the Python from the cli. 
+
+---
+
+_Renamed from "Bootstrapped `Python Failed to hardlink files;` Error " to "Bootstrapped Python `Failed to hardlink files;` Error " by @beratcmn on 2024-08-22 00:57_
+
+---
+
+_Comment by @charliermarsh on 2024-08-22 00:58_
+
+The Python itself shouldn't be relevant here -- this is about the relationship between the cache directory and the drive you're installing on. I'm guessing your cache is not on `file:///E:`? You can use `--cache-dir` or `UV_CACHE_DIR` to set a different cache directory on `file:///E:`.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-08-22 00:58_
+
+---
+
+_Comment by @zanieb on 2024-08-22 03:51_
+
+This is briefly discussed at https://docs.astral.sh/uv/concepts/cache/#cache-directory — let me know if think the documentation needs more.
+
+---
+
+_Comment by @beratcmn on 2024-08-22 05:26_
+
+Thank you both @charliermarsh and @zanieb! Setting the env variable `UV_CACHE_DIR = "E:\uv\cache"` worked!
+
+Here are the terminal outputs:
+
+```bash
+[08:21:02] berat /e/Projects/python/uv_test>uv --help
+An extremely fast Python package manager.
+
+Usage: uv.exe [OPTIONS] <COMMAND>
+
+Commands:
+  run      Run a command or script
+  init     Create a new project
+  add      Add dependencies to the project
+  remove   Remove dependencies from the project
+  sync     Update the project's environment
+  lock     Update the project's lockfile
+  tree     Display the project's dependency tree
+  tool     Run and install commands provided by Python packages
+  python   Manage Python versions and installations
+  pip      Manage Python packages with a pip-compatible interface
+  venv     Create a virtual environment
+  cache    Manage uv's cache
+  self     Manage the uv executable
+  version  Display uv's version
+  help     Display documentation for a command
+
+Cache options:
+  -n, --no-cache               Avoid reading from or writing to the cache,
+                               instead using a temporary directory for the
+                               duration of the operation [env: UV_NO_CACHE=]
+      --cache-dir <CACHE_DIR>  Path to the cache directory [env:
+                               UV_CACHE_DIR=E:\uv\cache]
+
+Python options:
+      --python-preference <PYTHON_PREFERENCE>
+          Whether to prefer uv-managed or system Python installations [possible
+          values: only-managed, managed, system, only-system]
+      --no-python-downloads
+          Disable automatic downloads of Python
+
+Global options:
+  -q, --quiet
+          Do not print any output
+  -v, --verbose...
+          Use verbose output
+      --color <COLOR_CHOICE>
+          Control colors in output [default: auto] [possible values: auto,
+          always, never]
+      --native-tls
+          Whether to load TLS certificates from the platform's native
+          certificate store [env: UV_NATIVE_TLS=]
+      --offline
+          Disable network access
+      --no-progress
+          Hide all progress outputs
+      --config-file <CONFIG_FILE>
+          The path to a `uv.toml` file to use for configuration [env:
+          UV_CONFIG_FILE=]
+      --no-config
+          Avoid discovering configuration files (`pyproject.toml`, `uv.toml`)
+          [env: UV_NO_CONFIG=]
+  -h, --help
+          Display the concise help for this command
+  -V, --version
+          Display the uv version
+
+Use `uv help` for more details.
+[08:21:10] berat /e/Projects/python/uv_test>uv init
+Initialized project `uv-test`
+[08:21:26] berat /e/Projects/python/uv_test>uv add requests
+Using Python 3.10.14
+Creating virtualenv at: .venv
+Resolved 6 packages in 240ms
+   Built uv-test @ file:///E:/Projects/Python/uv_test
+Prepared 6 packages in 1.98s
+Installed 6 packages in 61ms
+ + certifi==2024.7.4
+ + charset-normalizer==3.3.2
+ + idna==3.7
+ + requests==2.32.3
+ + urllib3==2.2.2
+ + uv-test==0.1.0 (from file:///E:/Projects/Python/uv_test)
+[08:21:33] berat /e/Projects/python/uv_test>
+
+```
+
+---
+
+_Comment by @T-256 on 2024-08-22 12:10_
+
+> let me know if think the documentation needs more.
+
+I think it `%LOCALAPPDATA%\uv\cache` could be more familiar for Windows user instead of `{FOLDERID_LocalAppData}`.
+
+---
+
+_Referenced in [astral-sh/uv#6433](../../astral-sh/uv/pulls/6433.md) on 2024-08-22 13:28_
+
+---
+
+_Closed by @charliermarsh on 2024-08-23 18:01_
+
+---
+
+_Referenced in [astral-sh/uv#6613](../../astral-sh/uv/issues/6613.md) on 2024-08-25 18:21_
+
+---
+
+_Comment by @tejinderss on 2024-09-04 11:07_
+
+Hi, I am having same issues on a linux file system, and my target is a virtualenv and .cache is set to same file path as well. Is there a way to debug this further?
+
+---
+
+_Comment by @rafaeljcd on 2024-09-28 06:33_
+
+Hello
+
+on windows 11 there is dev drive https://learn.microsoft.com/en-us/windows/dev-drive/#storing-package-cache-on-dev-drive
+
+It would be great if the user have updated their pip cache directory, uv would be able to detect it too
+
+> Pip cache (Python): Create a pip cache directory in your Dev Drive, for example `D:\packages\pip`, then set a global environment variable PIP_CACHE_DIR to that path, for example `setx /M PIP_CACHE_DIR D:\packages\pip`. If you have already restored pip packages and Wheels on your machine, move the contents of `%LocalAppData%\pip\Cache` to this directory. Learn more in the pip docs: [pip caching](https://pip.pypa.io/en/stable/topics/caching/) and see StackOverflow to [Change directory of pip cache on Linux?](https://stackoverflow.com/questions/64180511/pip-change-directory-of-pip-cache-on-linux).
+
+---
+
+_Comment by @zanieb on 2024-09-29 15:02_
+
+We can't read pip environment variable, their cache is quite different from ours.
+
+---
+
+_Referenced in [astral-sh/uv#9500](../../astral-sh/uv/issues/9500.md) on 2024-11-28 12:42_
+
+---

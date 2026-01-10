@@ -1,0 +1,196 @@
+---
+number: 9500
+title: "Warning `Failed to hardlink files`, cache on same drive"
+type: issue
+state: closed
+author: rafguns
+labels:
+  - question
+assignees: []
+created_at: 2024-11-28T12:42:39Z
+updated_at: 2024-11-30T20:23:39Z
+url: https://github.com/astral-sh/uv/issues/9500
+synced_at: 2026-01-10T01:24:41Z
+---
+
+# Warning `Failed to hardlink files`, cache on same drive
+
+---
+
+_Issue opened by @rafguns on 2024-11-28 12:42_
+
+This issue is similar to #6397 and #6613 but in those issues, the reason is that the project dir and cache dir are on separate drives. I get this error, however, when both are on the same drive.
+
+I follow these steps:
+
+```
+❯ pwd
+
+Path
+----
+C:\Users\rafguns
+
+❯ uv init test
+Initialized project `test` at `C:\Users\rafguns\test`
+
+❯ cd test
+
+❯ uv add requests
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 6 packages in 18ms
+░░░░░░░░░░░░░░░░░░░░ [0/5] Installing wheels...
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 5 packages in 11ms
+ + certifi==2024.8.30
+ + charset-normalizer==3.4.0
+ + idna==3.10
+ + requests==2.32.3
+ + urllib3==2.2.3
+
+❯ uv cache dir
+C:\Users\rafguns\AppData\Local\uv\cache
+
+❯ uv version
+uv 0.5.3 (56d362208 2024-11-19)
+```
+
+Windows 11 (Version 10.0.22631 Build 22631).
+
+
+
+
+---
+
+_Comment by @rafguns on 2024-11-28 12:47_
+
+Here's the full output if I add the `-v` flag:
+
+```
+❯ uv add -v requests
+DEBUG uv 0.5.3 (56d362208 2024-11-19)
+DEBUG Found project root: `C:\Users\rafguns\test`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `C:\Users\rafguns\test\.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Searching for Python 3.13 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\rafguns\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.13.0-windows-x86_64-none`
+DEBUG Found `cpython-3.13.0-windows-x86_64-none` at `C:\Users\rafguns\AppData\Roaming\uv\python\cpython-3.13.0-windows-x86_64-none\python.exe` (managed installations)
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test @ file:///C:/Users/rafguns/test
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: >=3.13
+DEBUG Adding direct dependency: test*
+DEBUG Searching for a compatible version of test @ file:///C:/Users/rafguns/test (*)
+DEBUG Adding transitive dependency for test==0.1.0: requests*
+DEBUG Found fresh response for: https://pypi.org/simple/requests/
+DEBUG Searching for a compatible version of requests (*)
+DEBUG Selecting: requests==2.32.3 [compatible] (requests-2.32.3-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for requests==2.32.3: certifi>=2017.4.17
+DEBUG Adding transitive dependency for requests==2.32.3: charset-normalizer>=2, <4
+DEBUG Adding transitive dependency for requests==2.32.3: idna>=2.5, <4
+DEBUG Adding transitive dependency for requests==2.32.3: urllib3>=1.21.1, <3
+DEBUG Found fresh response for: https://pypi.org/simple/certifi/
+DEBUG Searching for a compatible version of certifi (>=2017.4.17)
+DEBUG Found fresh response for: https://pypi.org/simple/idna/
+DEBUG Selecting: certifi==2024.8.30 [compatible] (certifi-2024.8.30-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/urllib3/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/12/90/3c9ff0512038035f59d279fddeb79f5f1eccd8859f06d6163c58798b9487/certifi-2024.8.30-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://pypi.org/simple/charset-normalizer/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of charset-normalizer (>=2, <4)
+DEBUG Selecting: charset-normalizer==3.4.0 [compatible] (charset_normalizer-3.4.0-cp313-cp313-macosx_10_13_universal2.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f3/89/68a4c86f1a0002810a27f12e9a7b22feb198c59b2f05231349fbce5c06f4/charset_normalizer-3.4.0-cp313-cp313-macosx_10_13_universal2.whl.metadata
+DEBUG Searching for a compatible version of idna (>=2.5, <4)
+DEBUG Selecting: idna==3.10 [compatible] (idna-3.10-py3-none-any.whl)
+DEBUG Searching for a compatible version of urllib3 (>=1.21.1, <3)
+DEBUG Selecting: urllib3==2.2.3 [compatible] (urllib3-2.2.3-py3-none-any.whl)
+DEBUG Tried 6 versions: certifi 1, charset-normalizer 1, idna 1, requests 1, test 1, urllib3 1
+DEBUG all marker environments resolution took 0.004s
+Resolved 6 packages in 20ms
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test @ file:///C:/Users/rafguns/test
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched `requires-dist` for: `test==0.1.0`
+  Expected: {Requirement { name: PackageName("requests"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "2.32.3" }]), index: None, conflict: None }, origin: None }}
+  Actual: {Requirement { name: PackageName("requests"), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: >=3.13
+DEBUG Adding direct dependency: test*
+DEBUG Searching for a compatible version of test @ file:///C:/Users/rafguns/test (*)
+DEBUG Adding transitive dependency for test==0.1.0: requests>=2.32.3
+DEBUG Searching for a compatible version of requests (>=2.32.3)
+DEBUG Selecting: requests==2.32.3 [preference] (requests-2.32.3-py3-none-any.whl)
+DEBUG Adding transitive dependency for requests==2.32.3: certifi>=2017.4.17
+DEBUG Adding transitive dependency for requests==2.32.3: charset-normalizer>=2, <4
+DEBUG Adding transitive dependency for requests==2.32.3: idna>=2.5, <4
+DEBUG Adding transitive dependency for requests==2.32.3: urllib3>=1.21.1, <3
+DEBUG Searching for a compatible version of certifi (>=2017.4.17)
+DEBUG Selecting: certifi==2024.8.30 [preference] (certifi-2024.8.30-py3-none-any.whl)
+DEBUG Searching for a compatible version of charset-normalizer (>=2, <4)
+DEBUG Selecting: charset-normalizer==3.4.0 [preference] (charset_normalizer-3.4.0-cp313-cp313-macosx_10_13_universal2.whl)
+DEBUG Searching for a compatible version of idna (>=2.5, <4)
+DEBUG Selecting: idna==3.10 [preference] (idna-3.10-py3-none-any.whl)
+DEBUG Searching for a compatible version of urllib3 (>=1.21.1, <3)
+DEBUG Selecting: urllib3==2.2.3 [preference] (urllib3-2.2.3-py3-none-any.whl)
+DEBUG Tried 6 versions: certifi 1, charset-normalizer 1, idna 1, requests 1, test 1, urllib3 1
+DEBUG all marker environments resolution took 0.001s
+DEBUG Using request timeout of 30s
+DEBUG Requirement already cached: requests==2.32.3
+DEBUG Requirement already cached: certifi==2024.8.30
+DEBUG Requirement already cached: charset-normalizer==3.4.0
+DEBUG Requirement already cached: idna==3.10
+DEBUG Requirement already cached: urllib3==2.2.3
+DEBUG Failed to hardlink `C:\Users\rafguns\test\.venv\Lib\site-packages\certifi\cacert.pem` to `C:\Users\rafguns\AppData\Local\uv\cache\archive-v0\8bjo3xzeXCERSnaZ0obOd\certifi\cacert.pem`, attempting to copy files as a fallback
+DEBUG Failed to hardlink `C:\Users\rafguns\test\.venv\Lib\site-packages\idna\codec.py` to `C:\Users\rafguns\AppData\Local\uv\cache\archive-v0\6JcC9a_MqCNvwNN8VlmGK\idna\codec.py`, attempting to copy files as a fallback
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 5 packages in 11ms
+ + certifi==2024.8.30
+ + charset-normalizer==3.4.0
+ + idna==3.10
+ + requests==2.32.3
+ + urllib3==2.2.3
+```
+
+---
+
+_Comment by @charliermarsh on 2024-11-29 16:35_
+
+I think there could be a variety of reasons that hardlinks are failing here. We don't do anything special; we just call the standard library's `fs::hardlink` method. So if it's failing, it's likely outside of our control. The message you're seeing there is just a hint / warning.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-29 16:35_
+
+---
+
+_Comment by @rafguns on 2024-11-30 20:07_
+
+Thanks. You're right, I cannot make these hardlinks through Powershell either. It's a bit unclear what exactly is causing this, but it's not related to uv.
+
+---
+
+_Closed by @rafguns on 2024-11-30 20:07_
+
+---
+
+_Comment by @rafguns on 2024-11-30 20:23_
+
+OK, I think I figured it out. As I said, it's not uv-related but I'll describe it here, in case anyone else encounters this.
+
+The error message in Powershell was weird: "The cloud operation cannot be performed on a file with incompatible hardlinks". What do you mean "cloud operation"? This is just in a regular directory.
+
+Long story short: turns out that if I have a hardlink in some OneDrive-managed folder (e.g. in a uv venv), it's impossible to also hardlink in a regular folder. After getting rid of the OneDrive venv, this works.
+
+---

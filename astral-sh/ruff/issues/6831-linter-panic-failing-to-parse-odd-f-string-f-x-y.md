@@ -1,0 +1,151 @@
+---
+number: 6831
+title: "[Linter panic] failing to parse odd f-string `f\"{x, y=}\"`"
+type: issue
+state: closed
+author: Zac-HD
+labels:
+  - bug
+  - parser
+assignees: []
+created_at: 2023-08-23T23:23:00Z
+updated_at: 2023-09-29T02:55:41Z
+url: https://github.com/astral-sh/ruff/issues/6831
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# [Linter panic] failing to parse odd f-string `f"{x, y=}"`
+
+---
+
+_Issue opened by @Zac-HD on 2023-08-23 23:23_
+
+```python
+x = 1
+y = 2
+z = f"{x, y=}"  # This is a weird but valid f-string, which crashes ruff
+print(z)
+```
+```
+% python repro.py
+x, y=(1, 2)
+
+% ruff --version
+ruff 0.0.285
+
+% ruff --isolated repro.py 
+warning: Linting panicked repro.py: 
+
+panicked at 'byte index 18446744073709551615 is out of bounds of `x, y=`', crates/ruff_python_parser/src/string.rs:321:30
+Backtrace:    0: _rust_eh_personality
+   1: _main
+   2: _rust_eh_personality
+   3: _rust_eh_personality
+   4: _rust_eh_personality
+   5: _rust_eh_personality
+   6: __rjem_je_witnesses_cleanup
+   7: _main
+   8: __rjem_je_witnesses_cleanup
+   9: _main
+  10: _main
+  11: _main
+  12: _main
+  13: _main
+  14: _main
+  15: _main
+  16: _main
+  17: _main
+  18: _main
+  19: _main
+  20: _main
+  21: __mh_execute_header
+  22: __mh_execute_header
+  23: _main
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-23 23:50_
+
+---
+
+_Comment by @charliermarsh on 2023-08-23 23:50_
+
+Thanks!
+
+---
+
+_Label `parser` added by @zanieb on 2023-08-24 00:27_
+
+---
+
+_Comment by @dhruvmanila on 2023-08-24 02:57_
+
+I spent a few minutes in debugging and the problem is two fold:
+1. The expression in the mentioned example is a tuple _without_ parentheses
+2. We add implicit parentheses to the expression before parsing it
+	https://github.com/astral-sh/ruff/blob/205d2348560671d07939a59c8ab89eecc7992421/crates/ruff_python_parser/src/string.rs#L550
+3. We subtract 1 here which I think is because of these implicit parentheses (@MichaReiser correct me if I'm wrong here)
+	https://github.com/astral-sh/ruff/blob/205d2348560671d07939a59c8ab89eecc7992421/crates/ruff_python_parser/src/string.rs#L320-L322
+
+Now, considering the extraction of leading and trailing values in (3), for `f"{x, y=}"`, the start location for parsing is 2 (`{`), but we add an implicit parentheses which means the parser sees this as `(x, y)` and this means the parsed node also starts at 2 which leads to (2 - 2 - 1). 
+
+If we add the parentheses ourselves i.e., `f"{(x, y)=}"` the parser sees as `((x, y))` and the parsed node starts from the second character which leads to (3 - 2 - 1).
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-08-24 02:59_
+
+---
+
+_Comment by @dhruvmanila on 2023-08-24 03:15_
+
+This might require re-working the way `DebugText` is extracted because when using something like `f"{   x, y  =   }"`, the expression is `(   x, y  )` which eats up the whitespaces. We can't really use `saturating_sub` because then it eats up the `=` sign.
+
+We'll have to extract the whitespace surrounding the expression and not consider them part of the parsed expression. But, this might not be necessary when the new 3.12 f-string parser is complete because we won't be re-parsing the expression from string, we'd do that from the tokens.
+
+---
+
+_Comment by @davidszotten on 2023-08-28 12:46_
+
+how far away is the new parser? are we ok to just wait? if not maybe we can try to just strip leading whitespace and not add parentheses?
+
+---
+
+_Comment by @dhruvmanila on 2023-09-02 03:53_
+
+Hey, sorry for not replying soon, I somehow missed this in the notifications. You can track the parser progress at https://github.com/astral-sh/ruff/pull/7041 and that fixes this issue. I think we're ok to wait as otherwise the fix would become redundant.
+
+---
+
+_Referenced in [astral-sh/ruff#7041](../../astral-sh/ruff/pulls/7041.md) on 2023-09-02 03:53_
+
+---
+
+_Referenced in [astral-sh/ruff#7049](../../astral-sh/ruff/issues/7049.md) on 2023-09-02 03:55_
+
+---
+
+_Comment by @qarmin on 2023-09-24 08:11_
+
+Even after merging #7041, I have multiple crashes with different rules
+```
+panicked at 'attempt to subtract with overflow', crates/ruff_python_parser/src/string.rs:321:43
+```
+B020
+```
+def log_zero_test_():
+    print(f'{train_loss, train_acc=}')
+```
+
+---
+
+_Comment by @dhruvmanila on 2023-09-24 11:42_
+
+Hey, it's not yet merged in `main`, it's only merged in the `dhruv/pep-701` branch. Once #7376 is merged, then it'll be fixed. I've verified that your example doesn't panic on the `dhruv/pep-701` branch.
+
+---
+
+_Closed by @dhruvmanila on 2023-09-29 02:55_
+
+---

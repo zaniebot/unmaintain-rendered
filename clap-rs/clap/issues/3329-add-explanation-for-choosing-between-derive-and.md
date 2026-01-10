@@ -1,0 +1,83 @@
+---
+number: 3329
+title: Add explanation for choosing between Derive and Builder APIs
+type: issue
+state: closed
+author: allan2
+labels:
+  - C-enhancement
+  - A-docs
+  - E-medium
+assignees: []
+created_at: 2022-01-22T23:16:18Z
+updated_at: 2022-01-24T14:29:57Z
+url: https://github.com/clap-rs/clap/issues/3329
+synced_at: 2026-01-10T01:27:39Z
+---
+
+# Add explanation for choosing between Derive and Builder APIs
+
+---
+
+_Issue opened by @allan2 on 2022-01-22 23:16_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+It's clear from the README and the Rust docs that there are two APIs.
+
+What's unclear is which to choose, or whether it matters.
+
+I remember when v3 was still in RC, there was an explanation that Builder is more performant and advanced. However, it is unclear whether that's still the case.
+
+
+### Describe the solution you'd like
+
+Add an explanation for the differences between the two APIs and why a dev would choose one or the other. If there is no difference, explain why there are two APIs.
+
+---
+
+_Label `C-enhancement` added by @allan2 on 2022-01-22 23:16_
+
+---
+
+_Label `A-docs` added by @epage on 2022-01-23 01:27_
+
+---
+
+_Label `E-medium` added by @epage on 2022-01-23 01:27_
+
+---
+
+_Comment by @epage on 2022-01-23 01:28_
+
+Good idea!
+
+One question will be where to put it., where are people likely to look to help steer them one way of the other.
+
+---
+
+_Comment by @allan2 on 2022-01-23 19:51_
+
+What do you think about a new short page for section 2?
+Builder API and Derive API links moved to subheadings.
+
+2. Getting Started <-- a new short page explaining how to choose between the two APIs
+    - Builder API
+    - Derive API
+
+---
+
+_Closed by @epage on 2022-01-24 14:29_
+
+---
+
+_Comment by @epage on 2022-01-24 14:29_
+
+Might be good to add a Getting Started at some point but went ahead and put it under `About` for now.  Just felt weird writing such a short page to then link out to the "real" content.
+
+---

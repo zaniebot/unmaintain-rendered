@@ -1,0 +1,230 @@
+---
+number: 12680
+title: "`uv pip sync` weird functionality"
+type: issue
+state: closed
+author: gtkacz
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-04T19:14:02Z
+updated_at: 2025-04-04T19:26:09Z
+url: https://github.com/astral-sh/uv/issues/12680
+synced_at: 2026-01-10T01:25:23Z
+---
+
+# `uv pip sync` weird functionality
+
+---
+
+_Issue opened by @gtkacz on 2025-04-04 19:14_
+
+### Summary
+
+The example below happened to me. I have a `requirements.txt` file with the content below:
+
+```
+boto3~=1.35
+datasets~=3.2
+django_extensions~=3.2
+djangorestframework~=3.15
+drf_spectacular~=0.28
+loguru~=0.7
+python-dotenv~=1.1
+python-levenshtein~=0.26
+sentence_transformers~=4.0
+spacy~=3.8
+transformers~=4.50
+
+huggingface_hub[hf_transfer]~=0.26.5
+https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.8.0/en_core_web_lg-3.8.0-py3-none-any.whl
+
+--extra-index-url https://download.pytorch.org/whl/cu124
+torch~=2.5.1
+```
+
+If I run `uv pip sync --dry-run requirements.txt` the output is:
+
+```
+Resolved 21 packages in 1.49s
+Would download 4 packages
+Would uninstall 124 packages
+Would install 4 packages
+ - aiohappyeyeballs==2.6.1
+ - aiohttp==3.11.14
+ - aiosignal==1.3.2
+ - annotated-types==0.7.0
+ - asgiref==3.8.1
+ - attrs==25.3.0
+ - blis==1.2.0
+ - botocore==1.37.15
+ - catalogue==2.0.10
+ - certifi==2022.12.7
+ - charset-normalizer==2.1.1
+ - click==8.1.8
+ - cloudpathlib==0.21.0
+ - confection==0.1.5
+ - cymem==2.0.11
+ - dill==0.3.8
+ - django==5.1.7
+ - filelock==3.13.1
+ - frozenlist==1.5.0
+ - fsspec==2024.6.1
+ - hf-transfer==0.1.9
+ - idna==3.4
+ - inflection==0.5.1
+ - jinja2==3.1.4
+ - jmespath==1.0.1
+ - joblib==1.4.2
+ - jsonschema==4.23.0
+ - jsonschema-specifications==2024.10.1
+ - langcodes==3.5.0
+ - language-data==1.3.0
+ - levenshtein==0.27.1
+ - marisa-trie==1.2.1
+ - markdown-it-py==3.0.0
+ - markupsafe==2.1.5
+ - mdurl==0.1.2
+ - mpmath==1.3.0
+ - multidict==6.2.0
+ - multiprocess==0.70.16
+ - murmurhash==1.0.12
+ - networkx==3.3
+ - numpy==2.1.2
+ - nvidia-cublas-cu12==12.4.5.8
+ - nvidia-cuda-cupti-cu12==12.4.127
+ - nvidia-cuda-nvrtc-cu12==12.4.127
+ - nvidia-cuda-runtime-cu12==12.4.127
+ - nvidia-cudnn-cu12==9.1.0.70
+ - nvidia-cufft-cu12==11.2.1.3
+ - nvidia-curand-cu12==10.3.5.147
+ - nvidia-cusolver-cu12==11.6.1.9
+ - nvidia-cusparse-cu12==12.3.1.170
+ - nvidia-nccl-cu12==2.21.5
+ - nvidia-nvjitlink-cu12==12.4.127
+ - nvidia-nvtx-cu12==12.4.127
+ - packaging==24.1
+ - pandas==2.2.3
+ - pillow==11.0.0
+ - preshed==3.0.9
+ - propcache==0.3.0
+ - pyarrow==19.0.1
+ - pydantic==2.10.6
+ - pydantic-core==2.27.2
+ - pygments==2.19.1
+ - pyperclip==1.9.0
+ - python-dateutil==2.9.0.post0
+ - python-dotenv==1.0.1
+ + python-dotenv==1.1.0
+ - pytz==2025.1
+ - pyyaml==6.0.2
+ - rapidfuzz==3.12.2
+ - referencing==0.36.2
+ - regex==2024.11.6
+ - requests==2.32.3
+ - rich==13.9.4
+ - rpds-py==0.23.1
+ - s3transfer==0.11.4
+ - safetensors==0.5.3
+ - scikit-learn==1.6.1
+ - scipy==1.15.2
+ - sentence-transformers==3.4.1
+ + sentence-transformers==4.0.2
+ - setuptools==70.2.0
+ - shellingham==1.5.4
+ - six==1.17.0
+ - smart-open==7.1.0
+ - spacy-legacy==3.0.12
+ - spacy-loggers==1.0.5
+ - sqlparse==0.5.3
+ - srsly==2.5.1
+ - sympy==1.13.1
+ - thinc==8.3.4
+ - threadpoolctl==3.6.0
+ - tokenizers==0.21.1
+ - tqdm==4.66.5
+ - transformers==4.49.0
+ + transformers==4.50.3
+ - triton==3.1.0
+ - typer==0.15.2
+ - typing-extensions==4.12.2
+ - tzdata==2025.1
+ - uritemplate==4.1.1
+ - urllib3==1.26.13
+ - wasabi==1.1.3
+ - weasel==0.4.1
+ - wrapt==1.17.2
+ - xxhash==3.5.0
+ - yarl==1.18.3
+```
+
+It is uninstalling dependencies that are required (e.g. `django`) and not installing newer versions? This broke my venv. Running a regular `uv pip install -r requirements.txt` fixed it, so it's likely not a widespread `uv` issue.
+
+If I run a `uv pip tree` after fixing it, it correctly shows `django` as a dependency. You'll see that a lot of the dependencies listed are also being removed by `uv pip sync`.
+
+```
+django-extensions v3.2.3
+└── django v5.2
+    ├── asgiref v3.8.1
+    └── sqlparse v0.5.3
+drf-spectacular v0.28.0
+├── django v5.2 (*)
+├── djangorestframework v3.15.2
+│   └── django v5.2 (*)
+├── inflection v0.5.1
+├── jsonschema v4.23.0
+│   ├── attrs v25.3.0
+│   ├── jsonschema-specifications v2024.10.1
+│   │   └── referencing v0.36.2
+│   │       ├── attrs v25.3.0
+│   │       ├── rpds-py v0.24.0
+│   │       └── typing-extensions v4.12.2
+│   ├── referencing v0.36.2 (*)
+│   └── rpds-py v0.24.0
+├── pyyaml v6.0.2
+└── uritemplate v4.1.1
+```
+
+### Platform
+
+Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.8 (c1ef48276 2025-03-18)
+
+### Python version
+
+Python 3.12.7
+
+---
+
+_Label `bug` added by @gtkacz on 2025-04-04 19:14_
+
+---
+
+_Comment by @charliermarsh on 2025-04-04 19:20_
+
+Take a look at https://github.com/astral-sh/uv/issues/12644:
+
+> This is intentional. `uv pip sync` installs _exactly_ the dependencies in the input file -- it does not look at transitive dependencies (and removes anything extraneous). Typically, you'd run `uv pip compile`, then `uv pip sync` on the generated file.
+
+---
+
+_Comment by @gtkacz on 2025-04-04 19:26_
+
+@charliermarsh that's exactly it, thank you! I second the added `--help` stuff though 👍 
+
+---
+
+_Closed by @gtkacz on 2025-04-04 19:26_
+
+---
+
+_Referenced in [astral-sh/uv#12683](../../astral-sh/uv/pulls/12683.md) on 2025-04-04 23:17_
+
+---
+
+_Referenced in [astral-sh/uv#14507](../../astral-sh/uv/issues/14507.md) on 2025-07-08 14:12_
+
+---

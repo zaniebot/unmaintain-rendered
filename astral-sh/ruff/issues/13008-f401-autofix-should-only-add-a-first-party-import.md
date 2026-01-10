@@ -1,0 +1,63 @@
+---
+number: 13008
+title: "F401 autofix should only add a first-party import to `__all__` if the import is from the *same package*"
+type: issue
+state: open
+author: AlexWaygood
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2024-08-20T13:06:27Z
+updated_at: 2024-08-20T13:06:27Z
+url: https://github.com/astral-sh/ruff/issues/13008
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# F401 autofix should only add a first-party import to `__all__` if the import is from the *same package*
+
+---
+
+_Issue opened by @AlexWaygood on 2024-08-20 13:06_
+
+Consider the following directory structure:
+
+- `repo_root`
+  - `package.py` (empty)
+  - `package2`
+    - `__init__.py`
+
+Where the contents of `repo_root/package2/__init__.py` are:
+
+```py
+import package
+__all__ = []
+```
+
+If you run `ruff check package2 --select=F401 --fix --preview --unsafe-fixes`, it will apply this fix:
+
+```diff
+import package
+-__all__ = []
++__all__ = ["package"]
+```
+
+It makes sense for the autofix to add first-party imports to `__all__` if the import is from the same package (or a subpackage of that package). But it doesn't really make sense for the autofix to do that if the import is from an entirely separate first-party package in the same repository.
+
+This bug is most obvious when it comes to the autofix, but it's also present even if you don't run Ruff with `--fix`, since the help message says:
+
+```
+F401 `package` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
+```
+
+It probably shouldn't really suggest adding it to `__all__` or using a redundant alias if it's an import from a different package.
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-08-20 13:06_
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-08-20 13:06_
+
+---

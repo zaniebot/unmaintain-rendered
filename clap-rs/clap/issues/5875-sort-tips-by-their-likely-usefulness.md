@@ -1,0 +1,73 @@
+---
+number: 5875
+title: Sort tips by their likely usefulness
+type: issue
+state: open
+author: nazar-pc
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2025-01-09T02:34:19Z
+updated_at: 2025-01-09T15:22:05Z
+url: https://github.com/clap-rs/clap/issues/5875
+synced_at: 2026-01-10T01:28:18Z
+---
+
+# Sort tips by their likely usefulness
+
+---
+
+_Issue opened by @nazar-pc on 2025-01-09 02:34_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.18
+
+### Describe your use case
+
+When user uses incorrect CLI options, clap tries to generate a helpful error message:
+```
+Usage: subspace-farmer cluster --nats-server <NATS_SERVERS> cache <DISK_CACHES|--tmp <TMP>|--cache-group <CACHE_GROUP>|--service-instances <SERVICE_INSTANCES>|ADDITIONAL_COMPONENTS>
+  tip: to pass '--cache-groups' as a value, use '-- --cache-groups'
+  tip: a similar argument exists: '--cache-group'
+error: unexpected argument '--cache-groups' found
+```
+
+The issue here is that "tip: to pass '--abc' as a value, use '-- --abc'" is rarely a desired outcome in my experience.
+
+What is more helpful is the next tip after that indicating a minor typo.
+
+### Describe the solution you'd like
+
+Sort tips with those that are more likely to happen first, in above example suggest to use similarly named CLI option before value argument.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @nazar-pc on 2025-01-09 02:34_
+
+---
+
+_Comment by @epage on 2025-01-09 15:20_
+
+Do you have minimal reproduction steps for getting that error message?  Our tests are showing those error messages in the reverse order and I can't see how that order would happen when inspecting the code.
+
+---
+
+_Comment by @nazar-pc on 2025-01-09 15:22_
+
+Not a minimal reproduction yet, but the full app is here: https://github.com/autonomys/subspace/tree/mainnet-2024-dec-09/crates/subspace-farmer
+
+---

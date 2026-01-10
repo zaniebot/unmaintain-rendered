@@ -1,0 +1,104 @@
+---
+number: 4380
+title: "`uv toolchain list` throws error and fails to display list because Python 2 is on the PATH"
+type: issue
+state: closed
+author: notatallshaw-gts
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-06-18T13:36:34Z
+updated_at: 2024-06-18T14:53:01Z
+url: https://github.com/astral-sh/uv/issues/4380
+synced_at: 2026-01-10T01:23:37Z
+---
+
+# `uv toolchain list` throws error and fails to display list because Python 2 is on the PATH
+
+---
+
+_Issue opened by @notatallshaw-gts on 2024-06-18 13:36_
+
+```
+$ uv -V
+uv 0.2.12
+
+$ python -V
+Python 3.11.2
+
+$ /usr/bin/python -V
+Python 2.7.15
+
+$ uv toolchain list
+warning: `uv toolchain list` is experimental and may change without warning.
+error: Can't use Python at `/usr/bin/python`
+  Caused by: Python executable does not support `-I` flag. Please use Python 3.8 or newer.
+```
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-06-18 13:49_
+
+---
+
+_Label `preview` added by @zanieb on 2024-06-18 13:50_
+
+---
+
+_Comment by @zanieb on 2024-06-18 13:50_
+
+Thanks. We should be skipping those.
+
+---
+
+_Label `bug` added by @zanieb on 2024-06-18 13:50_
+
+---
+
+_Referenced in [astral-sh/uv#4382](../../astral-sh/uv/pulls/4382.md) on 2024-06-18 14:14_
+
+---
+
+_Comment by @zanieb on 2024-06-18 14:14_
+
+This should be resolved by https://github.com/astral-sh/uv/pull/4382 if you're willing to give it a try.
+
+---
+
+_Comment by @notatallshaw-gts on 2024-06-18 14:31_
+
+Confirmed, no longer throws an error:
+
+```
+cargo run -- toolchain list
+   ...
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 37.30s
+     Running `target/debug/uv toolchain list`
+warning: `uv toolchain list` is experimental and may change without warning.
+cpython-3.12.3-linux-x86_64-musl        <download available>
+cpython-3.12.3-linux-x86_64-gnu /home/STRIKETECH/dshaw/.local/share/uv/toolchains/cpython-3.12.3-linux-x86_64-gnu/install/bin/python3
+cpython-3.11.9-linux-x86_64-musl        <download available>
+cpython-3.11.9-linux-x86_64-gnu /home/STRIKETECH/dshaw/.local/share/uv/toolchains/cpython-3.11.9-linux-x86_64-gnu/install/bin/python3
+cpython-3.11.2-linux-x86_64-gnu /usr/local/bin/python3
+cpython-3.11.2-linux-x86_64-gnu /home/STRIKETECH/dshaw/miniforge3/envs/backoffice/bin/python3
+cpython-3.11.2-linux-x86_64-gnu /home/STRIKETECH/dshaw/miniforge3/envs/backoffice/bin/python
+cpython-3.10.14-linux-x86_64-musl       <download available>
+cpython-3.10.14-linux-x86_64-gnu        /home/STRIKETECH/dshaw/.local/share/uv/toolchains/cpython-3.10.14-linux-x86_64-gnu/install/bin/python3
+cpython-3.9.19-linux-x86_64-musl        <download available>
+cpython-3.9.19-linux-x86_64-gnu /home/STRIKETECH/dshaw/.local/share/uv/toolchains/cpython-3.9.19-linux-x86_64-gnu/install/bin/python3
+cpython-3.8.19-linux-x86_64-musl        <download available>
+cpython-3.8.19-linux-x86_64-gnu /home/STRIKETECH/dshaw/.local/share/uv/toolchains/cpython-3.8.19-linux-x86_64-gnu/install/bin/python3
+cpython-3.7.9-linux-x86_64-musl <download available>
+cpython-3.7.2-linux-x86_64-gnu  /usr/bin/python3
+```
+
+---
+
+_Closed by @zanieb on 2024-06-18 14:53_
+
+---
+
+_Closed by @zanieb on 2024-06-18 14:53_
+
+---

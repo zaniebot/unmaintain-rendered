@@ -1,0 +1,136 @@
+---
+number: 10732
+title: "RET504 \"false positive\" when using variables for typing"
+type: issue
+state: closed
+author: autinerd
+labels:
+  - bug
+assignees: []
+created_at: 2024-04-02T04:19:53Z
+updated_at: 2024-04-02T20:18:07Z
+url: https://github.com/astral-sh/ruff/issues/10732
+synced_at: 2026-01-10T01:22:50Z
+---
+
+# RET504 "false positive" when using variables for typing
+
+---
+
+_Issue opened by @autinerd on 2024-04-02 04:19_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hello together,
+
+When introducing the RET rules to Home Assistant I currently have this case (simplified):
+
+```python
+def fun(a: dict[str, Any]) -> list[dict[str, Any]:
+    services: list[dict[str, Any]]
+    if "services" in a:
+        services = a["services"]
+        return services
+    ... # services is further assigned and used
+```
+
+where RET504 is flagging, but when fixed mypy is complaining because of the Any type. The current options are 1. use `cast`, 2. declare the type again or 3. add a `# noqa`.
+
+It would be cool that when a type declaration of the variable is found, that this assignment followed by a return would not get flagged.
+
+
+---
+
+_Comment by @diceroll123 on 2024-04-02 04:45_
+
+You may want to have `a` be a `TypedDict`, something like
+
+```py
+from typing import TypedDict, NotRequired, Any
+
+class A_Type(TypedDict):
+    services: NotRequired[list[dict[str, Any]]]
+
+def fun(a: A_Type) -> list[dict[str, Any]]:
+    services: list[dict[str, Any]]
+    if "services" in a:
+        return a["services"]
+    # services being assigned other ways
+    services = []
+    return services
+```
+
+---
+
+_Comment by @autinerd on 2024-04-02 14:34_
+
+In my case it is too versatile to have a TypedDict. https://github.com/home-assistant/core/pull/114528/files
+
+https://github.com/home-assistant/core/pull/114528/files#diff-da81d27b5f83f07ead4bcbb0f29527511a2d7985acbe1cae45636e28202857ccR63-R74
+
+`hass.data` is a dict which contains all kinds of different stuff for each integration/platform etc. in Home Assistant. There is currently work done to improve the typing topic, but until then we need these type annotations.
+
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-02 14:55_
+
+---
+
+_Comment by @charliermarsh on 2024-04-02 16:36_
+
+I'm curious if you could do:
+
+```python
+services: list[dict[str, Any]] = a["services"]
+return services
+```
+
+That might be easier to "detect" / allow.
+
+
+---
+
+_Comment by @autinerd on 2024-04-02 18:42_
+
+> I'm curious if you could do:
+> 
+> ```python
+> services: list[dict[str, Any]] = a["services"]
+> return services
+> ```
+> 
+> That might be easier to "detect" / allow.
+
+This is already working without issue, but then you have to annotate the variable multiple times.
+
+---
+
+_Comment by @charliermarsh on 2024-04-02 18:43_
+
+Oh, hah, I didn't realize that. I think we can support the variant from your first post.
+
+---
+
+_Referenced in [astral-sh/ruff#10741](../../astral-sh/ruff/pulls/10741.md) on 2024-04-02 19:50_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-02 19:50_
+
+---
+
+_Closed by @charliermarsh on 2024-04-02 20:18_
+
+---

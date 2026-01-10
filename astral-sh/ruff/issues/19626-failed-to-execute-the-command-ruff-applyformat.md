@@ -1,0 +1,311 @@
+---
+number: 19626
+title: "Failed to execute the command 'ruff.applyFormat'."
+type: issue
+state: closed
+author: dlefcoe
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-07-29T21:21:31Z
+updated_at: 2025-09-17T07:19:20Z
+url: https://github.com/astral-sh/ruff/issues/19626
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# Failed to execute the command 'ruff.applyFormat'.
+
+---
+
+_Issue opened by @dlefcoe on 2025-07-29 21:21_
+
+### Summary
+
+CTRL+shift+P
+
+`Ruff: Format document`
+
+Then get the popup error in vscode.
+
+<img width="1476" height="1154" alt="Image" src="https://github.com/user-attachments/assets/65ad7337-07e5-44ec-a721-414ba96f0a4c" />
+
+### Version
+
+Version 2025.24.0,     The extension ships with ruff==0.12.0.
+
+---
+
+_Comment by @ntBre on 2025-07-29 22:26_
+
+Thanks for the report!
+
+Can you check if the same issue happens in the CLI? Or possibly attach some of the logs mentioned in the ruff-vscode [troubleshooting](https://github.com/astral-sh/ruff-vscode?tab=readme-ov-file#troubleshooting) section?
+
+I'm not seeing anything obvious in the screenshot that could cause the error, but I could be missing something.
+
+---
+
+_Label `needs-mre` added by @ntBre on 2025-07-29 22:26_
+
+---
+
+_Comment by @dlefcoe on 2025-07-30 17:14_
+
+i see this error message:
+
+
+```
+2025-07-29 21:24:06.766630300  INFO Registering workspace: g:\My Drive\darren\02_programming\python
+[Error - 9:24:07 PM] Stopping server timed out
+2025-07-29 21:24:10.140568400  INFO Configuration file watcher successfully registered
+[Error - 9:24:10 PM] Server process exited with code 1.
+
+```
+
+
+---
+
+_Comment by @ntBre on 2025-07-30 19:22_
+
+I'm not sure that's enough information, at least for me. You can try collecting `trace`-level logs with the `ruff.logLevel` setting, as mentioned in the troubleshooting section, or maybe this will ring some bells for @dhruvmanila when he's back next week.
+
+---
+
+_Comment by @dlefcoe on 2025-07-30 19:31_
+
+It works on other projects (on the same PC), but not that specific project. 
+And it works on a different PC pointing to the same (Google Drive) folder.
+
+Have you come across this, partially working issue, before ?
+
+
+
+---
+
+_Comment by @ntBre on 2025-07-30 19:41_
+
+No, I haven't run into that before. Could you try running the ruff CLI on that project, as I suggested earlier? That might help to disentangle whether this is an internal Ruff issue, an issue with Ruff's LSP server, or something in VS Code or the project itself.
+
+From this description, it's not sounding like a Ruff issue to me, but I could be wrong.
+
+---
+
+_Comment by @dlefcoe on 2025-07-31 18:51_
+
+this is using the `Ruff: Show client logs` :
+
+
+```
+2025-07-29 21:24:01.996 [info] Name: Ruff
+2025-07-29 21:24:01.996 [info] Module: ruff
+2025-07-29 21:24:01.996 [info] Python extension loading
+2025-07-29 21:24:01.996 [info] Waiting for interpreter from python extension.
+2025-07-29 21:24:02.039 [info] Python extension loaded
+2025-07-29 21:24:02.099 [info] Using interpreter: c:\Users\admin\AppData\Local\Programs\Python\Python312\python.exe
+2025-07-29 21:24:02.400 [info] Workspace settings for g:\My Drive\darren\02_programming\python: {
+    "nativeServer": "auto",
+    "cwd": "g:\\My Drive\\darren\\02_programming\\python",
+    "workspace": "file:///g%3A/My%20Drive/darren/02_programming/python",
+    "path": [],
+    "ignoreStandardLibrary": true,
+    "interpreter": [
+        "c:\\Users\\admin\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+    ],
+    "configuration": null,
+    "importStrategy": "fromEnvironment",
+    "codeAction": {
+        "fixViolation": {
+            "enable": true
+        },
+        "disableRuleComment": {
+            "enable": true
+        }
+    },
+    "lint": {
+        "enable": true,
+        "run": "onType",
+        "args": [],
+        "preview": null,
+        "select": null,
+        "extendSelect": null,
+        "ignore": null
+    },
+    "format": {
+        "args": [],
+        "preview": null
+    },
+    "enable": true,
+    "organizeImports": true,
+    "fixAll": true,
+    "showNotifications": "off",
+    "exclude": null,
+    "lineLength": null,
+    "configurationPreference": "editorFirst",
+    "showSyntaxErrors": true,
+    "logLevel": null,
+    "logFile": null
+}
+2025-07-29 21:24:02.411 [info] Global settings: {
+    "nativeServer": "auto",
+    "cwd": "C:\\Users\\admin\\AppData\\Local\\Programs\\Microsoft VS Code",
+    "workspace": "C:\\Users\\admin\\AppData\\Local\\Programs\\Microsoft VS Code",
+    "path": [],
+    "ignoreStandardLibrary": true,
+    "interpreter": [],
+    "configuration": null,
+    "importStrategy": "fromEnvironment",
+    "codeAction": {
+        "fixViolation": {
+            "enable": true
+        },
+        "disableRuleComment": {
+            "enable": true
+        }
+    },
+    "lint": {
+        "enable": true,
+        "run": "onType",
+        "args": []
+    },
+    "format": {
+        "args": []
+    },
+    "enable": true,
+    "organizeImports": true,
+    "fixAll": true,
+    "showNotifications": "off",
+    "configurationPreference": "editorFirst",
+    "showSyntaxErrors": true
+}
+2025-07-29 21:24:02.698 [info] Falling back to bundled executable: c:\Users\admin\.vscode\extensions\charliermarsh.ruff-2025.24.0-win32-x64\bundled\libs\bin\ruff.exe
+2025-07-29 21:24:02.961 [info] Resolved 'ruff.nativeServer: auto' to use the native server
+2025-07-29 21:24:02.966 [info] Found Ruff 0.12.0 at c:\Users\admin\.vscode\extensions\charliermarsh.ruff-2025.24.0-win32-x64\bundled\libs\bin\ruff.exe
+2025-07-29 21:24:02.966 [info] Server run command: c:\Users\admin\.vscode\extensions\charliermarsh.ruff-2025.24.0-win32-x64\bundled\libs\bin\ruff.exe server
+2025-07-29 21:24:02.968 [info] Server: Start requested.
+2025-07-29 21:24:05.297 [info] Server: Stop requested
+```
+
+---
+
+_Comment by @dlefcoe on 2025-07-31 19:44_
+
+After extensive testing, by systematically opening folders i found the offending folder.
+
+it is a folder that was testing virtual environments (`test_venv_folder`).
+the sub folders are:
+
+- Include
+- Lib
+- my_code
+- Scripts     <--- this is the specific folder that causes the Ruff error.
+
+
+but very specifically, the `Scripts` subfolder which contains the following files:
+
+- activate
+- activate.bat
+- Activate.ps1
+- deactivate.bat
+- easy_install.exe
+- easy_install-3.9.exe
+- pip.exe
+- pip3.9.exe
+- pip3.exe
+- python.exe
+- pythonw.exe
+
+The odd thing is that this is a legacy folder that has not been touched for a few years, so how would the error have come about from this ?
+
+
+
+
+
+---
+
+_Comment by @ntBre on 2025-07-31 20:00_
+
+Thanks for the additional information! I may need to defer to @MichaReiser or @dhruvmanila, who know a lot more about our LSP than I do.
+
+I think it could still be helpful if you could adjust your `ruff.logLevel` to `debug` or `trace`. I'm not sure there will be anything more helpful in those logs, but at least we'll get a lot more information compared to the `info` logs.
+
+But Micha or Dhruv might have some ideas regardless.
+
+---
+
+_Comment by @MichaReiser on 2025-07-31 20:04_
+
+Hmm, yeah not sure what's happening. The logs suggest that the server exits abnormally but it's a bit weird that it doesn't print any error message (which it normally should).
+
+Can you try running ruff from the CLI (e.g. `uvx ruff check)` in the root folder or that problematic folder?
+
+---
+
+_Comment by @dlefcoe on 2025-07-31 20:17_
+
+yes,  this is the error message:
+
+```
+(test_venv_folder) PS C:\Users\admin\Desktop\test_venv_folder\Scripts>  uvx ruff check
+uvx : The term 'uvx' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or  
+if a path was included, verify that the path is correct and try again.
+At line:1 char:2
++  uvx ruff check
++  ~~~
+    + CategoryInfo          : ObjectNotFound: (uvx:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+```
+
+---
+
+_Comment by @ntBre on 2025-07-31 20:19_
+
+Unfortunately that's not a Ruff error. It looks like your system doesn't recognize `uvx` as a command. Maybe you can invoke this Ruff executable directly:
+
+```
+c:\Users\admin\.vscode\extensions\charliermarsh.ruff-2025.24.0-win32-x64\bundled\libs\bin\ruff.exe
+```
+
+As in
+
+```shell
+c:\Users\admin\.vscode\extensions\charliermarsh.ruff-2025.24.0-win32-x64\bundled\libs\bin\ruff.exe check
+```
+
+---
+
+_Comment by @dlefcoe on 2025-07-31 20:20_
+
+i get this:
+```
+
+(test_venv_folder) PS C:\Users\admin\Desktop\test_venv_folder\Scripts> c:\Users\admin\.vscode\extensions\charliermarsh.ruff-2025.24.0-win32-x64\bundled\libs\bin\ruff.exe check
+warning: No Python files found under the given path(s)
+All checks passed!
+```
+
+
+---
+
+_Comment by @MichaReiser on 2025-08-04 08:24_
+
+> O Registering workspace: g:\My Drive\darren\02_programming\python
+> [Error - 9:24:07 PM] Stopping server timed out
+
+I'm sorry. I don't think I've ever seen these logs before. 
+
+Can you try increasing the log level to `debug` (see instructioons [here](https://github.com/astral-sh/ruff-vscode#troubleshooting)) and share the entire content in `Output` -> `Ruff Language Server` (drop down right next to `Filter)` with us.
+
+
+
+---
+
+_Comment by @MichaReiser on 2025-09-17 07:19_
+
+Closing as we don't have an MRE
+
+---
+
+_Closed by @MichaReiser on 2025-09-17 07:19_
+
+---

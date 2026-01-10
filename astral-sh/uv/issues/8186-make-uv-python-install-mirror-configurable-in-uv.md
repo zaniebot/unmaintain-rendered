@@ -1,0 +1,68 @@
+---
+number: 8186
+title: Make UV_PYTHON_INSTALL_MIRROR configurable in uv.toml
+type: issue
+state: closed
+author: Vynce
+labels:
+  - good first issue
+  - configuration
+assignees: []
+created_at: 2024-10-14T19:41:30Z
+updated_at: 2024-11-13T16:08:57Z
+url: https://github.com/astral-sh/uv/issues/8186
+synced_at: 2026-01-10T01:24:25Z
+---
+
+# Make UV_PYTHON_INSTALL_MIRROR configurable in uv.toml
+
+---
+
+_Issue opened by @Vynce on 2024-10-14 19:41_
+
+Please consider making `UV_PYTHON_INSTALL_MIRROR` and `UV_PYPY_INSTALL_MIRROR` configurable in the user-scoped `uv.toml` config file. I think this is a separate use case from the similar `pyproject.toml` request in #8166.
+
+Related:
+#8015
+#8068
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-10-14 20:06_
+
+---
+
+_Label `configuration` added by @zanieb on 2024-10-14 20:06_
+
+---
+
+_Comment by @zanieb on 2024-10-14 20:07_
+
+I have no problem with supporting this!
+
+---
+
+_Comment by @paveldikov on 2024-10-15 09:53_
+
+I mentioned this [somewhere else](https://github.com/astral-sh/uv/issues/6970#issuecomment-2393096766), but this would be a good one for enterprises who may want to adopt `uv python install` (and derivative functionality that may happen in future e.g. #6970) in a way that complies with internal security policy/tooling.
+
+---
+
+_Comment by @benjs on 2024-10-16 08:04_
+
+With my issue #8166 I did not mean to specify it in exactly pyproject.toml, I am also fine if it can be specified somewhere else with the code :) 
+So I also would support this !
+
+---
+
+_Referenced in [astral-sh/uv#8695](../../astral-sh/uv/pulls/8695.md) on 2024-10-30 11:31_
+
+---
+
+_Closed by @zanieb on 2024-11-13 16:08_
+
+---
+
+_Closed by @zanieb on 2024-11-13 16:08_
+
+---

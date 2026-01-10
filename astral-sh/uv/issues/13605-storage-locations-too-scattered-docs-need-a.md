@@ -1,0 +1,80 @@
+---
+number: 13605
+title: Storage locations too scattered. Docs need a dedicated section explaining this. 
+type: issue
+state: closed
+author: w-hc
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-22T22:41:11Z
+updated_at: 2025-09-14T14:19:58Z
+url: https://github.com/astral-sh/uv/issues/13605
+synced_at: 2026-01-10T01:25:35Z
+---
+
+# Storage locations too scattered. Docs need a dedicated section explaining this. 
+
+---
+
+_Issue opened by @w-hc on 2025-05-22 22:41_
+
+### Summary
+
+Hi I use an NFS setup and optimizing storage allocation vs speed is a priority.  
+
+UV uses quite a few directories that can grow large over time. `UV_CACHE_DIR`, `UV_PYTHON_CACHE_DIR`, etc and how they interact with `UV_LINK_MODE`. 
+
+A suggestion is to dedicate a page in the docs to describe the storage strategy and all locations and all the environment variables we need to set. Right now the docs explain things piecemeal. 
+
+With the current docs, I can do this by browsing https://docs.astral.sh/uv/configuration/environment/ but I believe a dedicated doc page is helpful for users to understand UV's caching strategy and having the peace of mind that they aren't missing anything. 
+
+
+
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @w-hc on 2025-05-22 22:41_
+
+---
+
+_Renamed from "Storage locations too scattered" to "Storage locations too scattered. Docs need a dedicated section explaining this. " by @w-hc on 2025-05-22 22:49_
+
+---
+
+_Comment by @konstin on 2025-05-23 08:13_
+
+uv overall prioritizes speed over disk usage. It writes uses the cache a lot, but it's also fine if you remove the cache (e.g., `uv cache prune`).
+
+uv uses the XDG specification as basis for deciding where files go: Cache for everything transient, `~/.local/share` for permanent data such as Python interpreters and scripts, config home for the user-level `uv.toml`, the bin home for launchers. The one special trick uv pulls is that installations into a venv are hardlinked (that's the link mode) from the cache. This allows fast installation, while the cache can still be removed without breaking venvs.
+
+---
+
+_Comment by @w-hc on 2025-05-23 15:03_
+
+thanks @konstin for the help. I really like UV. Just saying that the docs can use a page to focus on storage. 
+
+related to https://github.com/astral-sh/uv/issues/11360
+
+
+---
+
+_Comment by @charliermarsh on 2025-05-24 12:23_
+
+I'm going to merge with #11360, thanks!
+
+---
+
+_Closed by @charliermarsh on 2025-05-24 12:23_
+
+---
+
+_Comment by @zanieb on 2025-09-14 14:19_
+
+I drafted a page for this at #13976, but haven't had a chance to finish it.
+
+---

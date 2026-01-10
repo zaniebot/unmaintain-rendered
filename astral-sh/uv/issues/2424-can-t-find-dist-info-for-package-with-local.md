@@ -1,0 +1,102 @@
+---
+number: 2424
+title: "Can't find .dist-info for package with local version string"
+type: issue
+state: closed
+author: jasonprado
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-13T20:26:32Z
+updated_at: 2024-03-15T20:12:29Z
+url: https://github.com/astral-sh/uv/issues/2424
+synced_at: 2026-01-10T01:23:17Z
+---
+
+# Can't find .dist-info for package with local version string
+
+---
+
+_Issue opened by @jasonprado on 2024-03-13 20:26_
+
+My requirements.txt has this:
+```
+my-package==2024.3.13+0873c15
+```
+
+When I `uv pip install -r requirements.txt`:
+
+```
+error: Failed to download: my-package==2024.3.13+0873c15
+  Caused by: No .dist-info directory found
+```
+
+If I expand the whl, I see this dir:
+
+```
+my_package-2024.3.13_0873c15.dist-info
+```
+
+The `+` is being converted to a `_`. I suspect that is why they dist-info can't be found. There is kind of a [mess of Python version strings](https://discuss.python.org/t/escaping-versions-for-wheel-sdist-and-dist-info-names/5605/22) where `+` is a legal part of a version string denoting a local version, but it isn't allowed in the name of the `.dist-info` dir.
+
+Running version `0.1.18` in a docker Linux shell.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-13 20:28_
+
+---
+
+_Comment by @jasonprado on 2024-03-13 21:58_
+
+One thing I notice is that pip is not considering the package version in looking for the `.dist-info: https://github.com/pypa/pip/blob/36823099a9cdd83261fdbc8c1d2a24fa2eea72ca/src/pip/_internal/utils/wheel.py#L60
+
+But uv is: https://github.com/astral-sh/uv/blob/91597317920f8c253c8ddb84846719db92f128a4/crates/install-wheel-rs/src/metadata.rs#L69
+
+Perhaps a solution for uv is asserting that there is only one `.dist-info` present and that its path starts with the canonical name of the package, like pip.
+
+---
+
+_Comment by @charliermarsh on 2024-03-14 01:08_
+
+I'll take a look!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-14 01:08_
+
+---
+
+_Comment by @charliermarsh on 2024-03-14 01:17_
+
+My read of the spec is that it should still retain the `+`... I can't see why not? The `+` isn't removed during version normalization as in https://packaging.python.org/en/latest/specifications/version-specifiers/#version-specifiers-normalization. But we should make our processing more lax.
+
+---
+
+_Referenced in [astral-sh/uv#2441](../../astral-sh/uv/pulls/2441.md) on 2024-03-14 01:39_
+
+---
+
+_Comment by @charliermarsh on 2024-03-14 01:40_
+
+Are you able to share how you're building your wheel? E.g. which tool?
+
+---
+
+_Closed by @charliermarsh on 2024-03-14 13:04_
+
+---
+
+_Comment by @jasonprado on 2024-03-15 19:20_
+
+Thanks for submitting a fix. I'll try it out ASAP.
+
+I thought I found some documentation saying that the prefix to `.dist-info` only allowed `_-.` and not `+` but I can't find that source now. We are using bazel with the `aspect_rules_py` package.
+
+---
+
+_Comment by @jasonprado on 2024-03-15 20:12_
+
+0.1.21 works in our environment at flyzipline.com. Thanks! I'll start looking at migrating over to uv soon.
+
+---

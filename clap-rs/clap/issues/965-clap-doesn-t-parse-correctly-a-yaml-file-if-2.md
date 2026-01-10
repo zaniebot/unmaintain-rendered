@@ -1,0 +1,264 @@
+---
+number: 965
+title: "Clap doesn't parse correctly a YAML file if 2 spaces are used (for indent) instead of 4."
+type: issue
+state: closed
+author: Booteille
+labels: []
+assignees: []
+created_at: 2017-05-21T15:27:33Z
+updated_at: 2018-08-02T03:30:07Z
+url: https://github.com/clap-rs/clap/issues/965
+synced_at: 2026-01-10T01:26:39Z
+---
+
+# Clap doesn't parse correctly a YAML file if 2 spaces are used (for indent) instead of 4.
+
+---
+
+_Issue opened by @Booteille on 2017-05-21 15:27_
+
+### Rust Version
+
+* 1.17.0 (56124baa9 2017-04-24)
+
+### Affected Version of clap
+
+* 2.24.2
+
+### Expected Behavior Summary
+
+Clap should correctly handle YAML files where indents are made by 2 spaces instead of 4.
+
+### Actual Behavior Summary
+
+Clap actually returns wrong output in this use case.
+
+### Steps to Reproduce the issue
+
+Try to indent your file with 2 spaces instead of 4 and you should get a wrong result
+
+### Sample Code or Link to Sample Code
+
+Here is the code i've written to test it:
+
+```yaml
+name: Test
+version: "v0.1.0"
+author: Booteille
+about: Test
+subcommands:
+  - server:
+    about: server related commands
+```
+
+And the resulted output of `cargo run -- -h`:
+
+```console
+Test v0.1.0
+Booteille
+Test
+
+USAGE:
+    blynkcli [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    about    
+    help     Prints this message or the help of the given subcommand(s)
+```
+
+Also, the output of `cargo run -- server`:
+
+```console
+error: Found argument 'server' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    blynkcli [SUBCOMMAND]
+
+For more information try --help
+```
+
+### Debug output
+
+```console
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=about
+DEBUG:clap:Parser::propogate_settings: self=Test, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=about, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=about, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"server"' ([115, 101, 114, 118, 101, 114])
+DEBUG:clap:Parser::is_new_arg: arg="server", Needs Val of=NotFound
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg="server"
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::get_matches_with: Positional counter...1
+DEBUG:clap:Parser::get_matches_with: Low index multiples...false
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=blynkcli [SUBCOMMAND]
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:is_a_tty: stderr=true
+```
+
+
+---
+
+_Comment by @kbknapp on 2017-05-29 20:56_
+
+Thanks for taking the time to report this! This should get fixed "for free" upon the move to using `serde` which is an active work in progress 😄 
+
+---
+
+_Label `C: yaml parser` added by @kbknapp on 2017-05-29 20:56_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2017-05-29 20:56_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-05-29 20:56_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2017-05-29 20:56_
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2017-08-22 04:17_
+
+---
+
+_Added to milestone `serde` by @kbknapp on 2018-02-02 02:04_
+
+---
+
+_Removed from milestone `serde` by @kbknapp on 2018-02-02 02:04_
+
+---
+
+_Added to milestone `v3-alpha1` by @kbknapp on 2018-02-02 02:04_
+
+---
+
+_Comment by @hoodie on 2018-05-28 11:13_
+
+**TL;DR:** no bug, can be closed
+
+1. I don't think a serde-yaml switch would fix this, since this appears to be a parser related problem and serde-yaml also only uses yaml-rust
+2. this yaml example is quite ambiguous and other yaml parses (both included in ruby) interpret it in the same way
+
+my comparison script:
+
+```ruby
+#!/usr/bin/env ruby
+require "yaml"
+require 'psych'
+require "pp"
+
+puts $FILENAME
+
+content11 =  "%YAML 1.1\n---\n#{ File.read $FILENAME}"
+
+puts content11
+pp YAML.load content11
+pp Psych.load content11
+
+content12 =  "%YAML 1.2\n---\n#{ File.read $FILENAME}"
+
+begin
+    pp YAML.load content12
+rescue Psych::SyntaxError
+    puts "syntax Error"
+    puts $!
+end
+
+begin
+    pp Psych.load content12
+rescue Psych::SyntaxError
+    puts "syntax Error"
+    puts $!
+end
+```
+your example + differently indented alternatives:
+
+```yaml
+name: Test
+version: "v0.1.0"
+author: Booteille
+about: Test
+subcommands:
+  - server:
+    about: server related commands
+subcommands2:
+  - server:
+      about: server related commands
+subcommands3:
+ - server:
+    about: server related commands
+```
+
+and it's output:
+
+```
+{"name"=>"Test",
+ "version"=>"v0.1.0",
+ "author"=>"Booteille",
+ "about"=>"Test",
+ "subcommands"=>[{"server"=>nil, "about"=>"server related commands"}],
+ "subcommands2"=>[{"server"=>{"about"=>"server related commands"}}],
+ "subcommands3"=>[{"server"=>{"about"=>"server related commands"}}]}
+{"name"=>"Test",
+ "version"=>"v0.1.0",
+ "author"=>"Booteille",
+ "about"=>"Test",
+ "subcommands"=>[{"server"=>nil, "about"=>"server related commands"}],
+ "subcommands2"=>[{"server"=>{"about"=>"server related commands"}}],
+ "subcommands3"=>[{"server"=>{"about"=>"server related commands"}}]}
+...
+```
+
+so I would argue that is is just an issue of yaml being yaml, you are just not supposed to put the child object of `server` in the same column. I'd advice to just close this as wont-fix
+
+---
+
+_Referenced in [chyh1990/yaml-rust#101](../../chyh1990/yaml-rust/issues/101.md) on 2018-06-22 11:40_
+
+---
+
+_Closed by @kbknapp on 2018-07-22 02:27_
+
+---

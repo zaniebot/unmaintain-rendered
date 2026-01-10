@@ -1,0 +1,87 @@
+---
+number: 794
+title: "ANN001 is fired when argument already set (`mypy` not complain in such case)."
+type: issue
+state: closed
+author: actionless
+labels:
+  - configuration
+assignees: []
+created_at: 2022-11-17T18:02:58Z
+updated_at: 2022-11-17T23:33:56Z
+url: https://github.com/astral-sh/ruff/issues/794
+synced_at: 2026-01-10T01:22:38Z
+---
+
+# ANN001 is fired when argument already set (`mypy` not complain in such case).
+
+---
+
+_Issue opened by @actionless on 2022-11-17 18:02_
+
+```python
+def function(param=False) -> int:
+    if param:
+        return 1
+    return 0
+```
+
+```console
+$ ruff test_ruff.py
+Found 1 error(s).
+test_ruff.py:1:14: ANN001 Missing type annotation for function argument `param`
+
+$ mypy test_ruff.py
+Success: no issues found in 1 source file
+```
+
+---
+
+_Renamed from "ANN001 is fired when parameter already set (`mypy` not complain in such case)." to "ANN001 is fired when argument already set (`mypy` not complain in such case)." by @actionless on 2022-11-17 18:03_
+
+---
+
+_Comment by @edgarrmondragon on 2022-11-17 18:12_
+
+FWIW `mypy` does catch the missing annotation in strict mode:
+
+```console
+$ mypy checkANN001.py --strict
+checkANN001.py:1: error: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+Found 1 error in 1 file (checked 1 source file)
+```
+
+---
+
+_Comment by @actionless on 2022-11-17 19:04_
+
+thanks for clarifying
+
+i wonder, if it would make sense having such option as a separate check? (in a similar way how self or cls annotation checks were extracted out)
+
+---
+
+_Comment by @charliermarsh on 2022-11-17 19:12_
+
+It could make sense to turn this into a configuration setting, like `allow_star_arg_any` and `mypy_init_return`.
+
+---
+
+_Label `configuration` added by @charliermarsh on 2022-11-17 19:12_
+
+---
+
+_Comment by @actionless on 2022-11-17 23:33_
+
+closing because it unlikely to be implemented in mypy:
+https://stackoverflow.com/a/64500210/1850190
+
+---
+
+_Closed by @actionless on 2022-11-17 23:33_
+
+---
+
+_Referenced in [astral-sh/ruff#5958](../../astral-sh/ruff/issues/5958.md) on 2023-07-21 21:59_
+
+---

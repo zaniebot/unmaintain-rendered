@@ -1,0 +1,136 @@
+---
+number: 13286
+title: Add zip support for uv run
+type: issue
+state: open
+author: mraesener-aubex
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-04T19:35:57Z
+updated_at: 2025-05-04T19:40:48Z
+url: https://github.com/astral-sh/uv/issues/13286
+synced_at: 2026-01-10T01:25:31Z
+---
+
+# Add zip support for uv run
+
+---
+
+_Issue opened by @mraesener-aubex on 2025-05-04 19:35_
+
+### Summary
+
+I've implemented a little tool which kind of just wraps around `uv run` by providing two commands "zip" and "run" with defaults and some options. so you can just do `pytron zip` within a folder and you'll get a `robot.zip` file and then anywhere else you can just `pytron run` the robot.zip again.
+
+
+this is more or less cloned functionality from rcc.exe which was closed source recently and I think it could be a great feature for uv.
+
+I'm not sure if I'm seasoned enough in Rust yet that I'd give a PR a try - but first I'd like to maybe start a discussion and ask what you guys think about this and if you'd be willing to continue somewhere along those lines.
+
+https://github.com/aubex/pytron
+
+disclaimer: this has nothing to do with "pytron" available on pypi, I just liked the name and didn't bother to check if it's already taken.
+
+### Example
+
+### `pytron zip` - Package Your Project
+```bash
+pytron zip [directory] -o [output.zip] [--ignore-patterns]
+```
+
+### `pytron run` - Execute Python Code
+```bash
+pytron run [UV_ARGS] [ZIPFILE/SCRIPT] [SCRIPT_ARGS]
+```
+
+as an after thought I realized that I didn't check yet how `uv run` handles arguments which are meant to be passed to the invoked script - so this would probably change the syntax here and maybe I implemented something unnecessary.
+
+since I already have this implemented I can also just paste the help texts to maybe make the idea super clear (hopefully):
+
+```bash
+pytron -h
+Usage: pytron <COMMAND>
+
+Commands:
+  zip   Zip files in a directory into robot.zip respecting .gitignore
+  run   Run a script - either directly or from a zip archive
+  help  Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+```
+
+```bash
+pytron zip -h
+Zip files in a directory into robot.zip respecting .gitignore
+
+Usage: pytron zip [OPTIONS] [DIRECTORY]
+
+Arguments:
+  [DIRECTORY]  Directory to zip [default: .]
+
+Options:
+  -o, --output <OUTPUT>
+          Output zip filename [default: robot.zip]
+  -i, --ignore-patterns <IGNORE_PATTERNS>
+          Additional patterns to ignore (besides .gitignore) These are treated as gitignore patterns Default patterns include ".git" directory Pass an empty string to override all default excludes
+  -h, --help
+          Print help
+```
+
+```bash
+pytron run -h
+Run a script - either directly or from a zip archive
+
+Arguments are separated using a double-dash (--) or by specifying a script/zipfile path:
+  - Arguments before -- or before the zipfile path are passed to uv run
+  - Arguments after -- or after the zipfile path are passed to the script
+
+Special flags:
+  -h/--help: Show this help message (pytron's help)
+  -hh/--uv-run-help: Show uv's help message
+
+Usage: pytron run [UV_ARGS] [ZIPFILE] [SCRIPT] [SCRIPT_ARGS]...
+
+Arguments:
+  [ZIPFILE]
+          Path to the zip file or script
+          If a zip file (.zip), will extract and run the specified script from it
+          If a Python file (.py), will run it directly using uv
+
+          [default: robot.zip]
+
+  [SCRIPT]
+          Script to run from the zip (if zipfile is a zip archive)
+          If running a script directly, this is optional
+
+          [default: main.py]
+
+  [UV_ARGS]...
+          Arguments passed to the uv run command
+          These appear before the -- separator or before the zipfile path
+          Examples:
+            --with-pip
+            --system-site-packages
+            -v (verbose)
+
+  [SCRIPT_ARGS]...
+          Arguments passed to your Python script
+          These appear after the -- separator or after the zipfile path
+          Examples:
+            --verbose
+            --config=config.json
+            -o output.txt
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+---
+
+_Label `enhancement` added by @mraesener-aubex on 2025-05-04 19:35_
+
+---

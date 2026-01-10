@@ -1,0 +1,150 @@
+---
+number: 6002
+title: "derive: Read metadata from the fields of the `Cargo.toml` and embeds those to the long version"
+type: issue
+state: open
+author: sorairolake
+labels:
+  - C-enhancement
+  - A-help
+  - A-derive
+  - S-waiting-on-design
+assignees: []
+created_at: 2025-05-12T19:53:50Z
+updated_at: 2025-05-21T16:01:42Z
+url: https://github.com/clap-rs/clap/issues/6002
+synced_at: 2026-01-10T01:28:20Z
+---
+
+# derive: Read metadata from the fields of the `Cargo.toml` and embeds those to the long version
+
+---
+
+_Issue opened by @sorairolake on 2025-05-12 19:53_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.38
+
+### Describe your use case
+
+The version flag for some commands prints more information than just the version.
+
+`ls --version`:
+
+```text
+ls (GNU coreutils) 9.7
+Copyright (C) 2025 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Richard M. Stallman and David MacKenzie.
+```
+
+`pandoc --version`:
+
+```text
+pandoc 3.1.12.1
+Features: +server +lua
+Scripting engine: Lua 5.4
+User data directory: $XDG_DATA_HOME/pandoc
+Copyright (C) 2006-2023 John MacFarlane. Web: https://pandoc.org
+This is free software; see the source for copying conditions. There is no
+warranty, not even for merchantability or fitness for a particular purpose.
+```
+
+I think the following fields of the `Cargo.toml` file can be used to embed metadata to the long version:
+
+- [`homepage`](https://doc.rust-lang.org/cargo/reference/manifest.html#the-homepage-field)
+- [`repository`](https://doc.rust-lang.org/cargo/reference/manifest.html#the-repository-field)
+- [`license`](https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields)
+
+### Describe the solution you'd like
+
+`Cargo.toml`:
+
+```toml
+[package]
+name = "demo"
+version = "0.1.0"
+homepage = "https://demo.org/"
+repository = "https://github.com/ghost/demo"
+license = "Apache-2.0 OR MIT"
+```
+
+Snippet:
+
+```rust
+use clap::Parser;
+
+#[derive(Debug, Parser)]
+#[command(version, long_version)]
+struct Opt {
+    /// Name to print.
+    name: String,
+}
+
+fn main() {
+    let opt = Opt::parse();
+    println!("{}", opt.name);
+}
+```
+
+`demo -V`:
+
+```text
+demo 0.1.0
+```
+
+`demo --version`:
+
+```text
+demo 0.1.0
+Home page: https://demo.org/
+Repository: https://github.com/ghost/demo
+License: Apache-2.0 OR MIT
+```
+
+- When the `long_version` attribute is not present: follow the `version` attribute.
+- When the `long_version` attribute is present with a value: use the specified value instead.
+- When the field is undefined: skip that field.
+
+### Alternatives, if applicable
+
+Define a string with the same content as above, and pass it as a parameter to the `long_version` method.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @sorairolake on 2025-05-12 19:53_
+
+---
+
+_Label `A-help` added by @epage on 2025-05-21 15:56_
+
+---
+
+_Label `A-derive` added by @epage on 2025-05-21 15:56_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2025-05-21 15:59_
+
+---
+
+_Comment by @epage on 2025-05-21 16:01_
+
+For myself, I feel like there will be too much of a gap for what we can generate for `long_version` compared to what people people who set `long_version` will want that this would be better left up to users, with crates like `shadow-rs` and `vergen`.  Looks like someone has even created a helper for `vergen`, [`clap-vergen`](https://crates.io/crates/clap-vergen).
+
+I will leave this open for now to help it have more visibility for any additional feedback from the community on whether and how this should be handled.
+
+---

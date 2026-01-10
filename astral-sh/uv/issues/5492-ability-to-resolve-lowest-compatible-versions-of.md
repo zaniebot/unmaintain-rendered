@@ -1,0 +1,117 @@
+---
+number: 5492
+title: Ability to resolve lowest compatible versions of specific packages only
+type: issue
+state: open
+author: connortann
+labels:
+  - needs-design
+assignees: []
+created_at: 2024-07-26T20:06:43Z
+updated_at: 2024-09-26T19:30:48Z
+url: https://github.com/astral-sh/uv/issues/5492
+synced_at: 2026-01-10T01:23:49Z
+---
+
+# Ability to resolve lowest compatible versions of specific packages only
+
+---
+
+_Issue opened by @connortann on 2024-07-26 20:06_
+
+First, thank you for the amazing package! We're migrating to it over at the `shap` repo and seeing wonderful speedups.
+
+My question is about how best to test for compatibility with the lowest supported versions "important" dependencies, whilst using the highest versions of all "dev" dependencies. I have tried a few ways so far, but each has a few issues.
+
+## Proposal
+
+It would be fantastic to be able to install the old versions of **just the subset of libraries for which value broad compatibility**, excluding things like dev dependencies. Something like:
+
+```bash
+uv pip install --resolution=lowest-subset "numpy,pandas,tensorflow` .[test]
+```
+
+## Context: a typical scenario
+
+Taking [shap](https://github.com/shap/shap) as an example, we have about 10 optional dependencies for which we'd like to test against older versions. These are the major scientific python libraries: numpy, pandas, tensorflow, pytorch, xgboost, et cetera. We think it's quite likely that users will have their own constraints for these packages, so we'd like to support a wide range and avoid overly restrictive pins.
+
+We also have a number of other dependencies like pytest, setuptools & ipython, for which we only really need to use the latest version. These are mostly "dev" dependencies.
+
+In our case, both of these two types of dependencies are included in the "test" extra. We can install them on ci with: `uv pip install --system .[test]`
+
+## Our objective
+
+We'd like to be able to test against the oldest supported numpy, pandas, tensorflow and pytorch.
+
+Ideally we would minimise the number of new dependency pins that we introduce. For example, we might want to test against 2-year-old numpy, but as it happens the package might still work with 4-year-old numpy and we wouldn't want to prevent a user from using that version.
+
+## Options explored so far
+
+### 1. resolution=lowest-direct
+
+I tried the `--resolution=lowest-direct` flag to test older versions of numpy and tensorflow. However, this also resolves the lowest versions of all the "dev" dependencies like pytest. To mitigate this, we could:
+1. Add lower version constraints for every single dev dependency. These would then have to be maintained manually; AFAIK there is no automated solution like dependabot to update the lower pins according to something like SPEC 0. This seems unwise as we don't really care about the lowest working pytest: we only need the latest version on CI.
+2. Add exact pins for every dev dependency. Again, this is not ideal as they will have to be manually maintained and bumped for every release. It's likely that many of these pins would become outdated over time without a maintainer carefully keeping them under review.
+
+### 2. exclude-newer
+
+I also tried the `--exclude-newer` flag from #2088, which could be used to automatically determine the lowest versions that should be supported according to SPEC 0. However, this prevents us from using the latest dev dependencies. In our case, our build fails as we use recent features from `setuptools-scm` that weren't around two years ago.
+
+### 3. Explicit constraint in install command
+
+Finally, I also tried adding some constraints into the `uv pip install` command directly, like: `uv pip install --system numpy==1.24.0 '.[test]'`. This seems to be the best solution so far, but it doesn't use the lower bounds in our pyproject.toml config and so is a little duplicative.
+
+[Edited for clarity]
+
+---
+
+_Referenced in [shap/shap#3770](../../shap/shap/pulls/3770.md) on 2024-07-26 20:45_
+
+---
+
+_Comment by @charliermarsh on 2024-07-27 12:22_
+
+This seems like a reasonable use-case (though not yet sure how best to resolve it). One other option is that you could add a constraints file to set lower-bounds on your development dependencies... You could even take the output of the "standard" resolution to seed those constraints.
+
+---
+
+_Label `needs-design` added by @charliermarsh on 2024-07-27 12:22_
+
+---
+
+_Referenced in [shap/shap#3854](../../shap/shap/pulls/3854.md) on 2024-09-09 18:00_
+
+---
+
+_Comment by @antonymilne on 2024-09-26 19:30_
+
+Just to add another data point and explain my use case: I'm looking for exactly the same thing on Vizro. We use hatch for project management, and I have an environment `lower-bounds`. This includes both dev dependencies and some of our core dependencies with manually specified lower bounds:
+
+```
+[envs.default]
+dependencies = ["pytest"] # and others
+
+[envs.lower-bounds]
+# inherits dev dependencies from default environment and then manually specify lower bounds
+# for some core dependencies
+extra-dependencies = ["pydantic==1.10.13", "dash==2.17.1"]
+```
+
+What I'd like to do is this:
+```
+[envs.lower-bounds]
+env-vars = {UV_RESOLUTION = "lowest-direct"}
+```
+... but unfortunately this means specifying a lower bound for all our dev dependencies. So ideally there would be some way to specify `lowest-direct` for just a subset of the dependencies.
+
+Also just wanted to echo a huge thank you for the amazing work on uv. It's sped up our development process massively!
+
+---
+
+_Referenced in [astral-sh/uv#8585](../../astral-sh/uv/issues/8585.md) on 2024-10-28 20:46_
+
+---
+
+_Referenced in [nsidc/earthaccess#876](../../nsidc/earthaccess/pulls/876.md) on 2024-11-08 19:50_
+
+---

@@ -1,0 +1,56 @@
+---
+number: 8236
+title: "`.tar.gz` build fails due to `tool.uv.sources`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-10-16T00:47:33Z
+updated_at: 2024-10-16T00:53:20Z
+url: https://github.com/astral-sh/uv/issues/8236
+synced_at: 2026-01-10T01:24:25Z
+---
+
+# `.tar.gz` build fails due to `tool.uv.sources`
+
+---
+
+_Issue opened by @charliermarsh on 2024-10-16 00:47_
+
+Yup, I am fighting that behaviour right now in the Airflow repo: https://github.com/apache/airflow/pull/43056
+
+When I tried to bump uv to `0.4.22` our build from sdist started failing with the following.
+```
+error: Failed to build: `apache-airflow @ file:///dist/apache_airflow-3.0.0.dev0.tar.gz`
+  Caused by: Failed to parse entry for: `local-providers`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+```
+
+It works if I run `uv pip install --no-sources` but I feel for `uv pip install` should have similar behavior as other tools and maybe explicitly have flags to install things from `[uv.tool.sources]`
+
+_Originally posted by @kaxil in https://github.com/astral-sh/uv/issues/7147#issuecomment-2415361121_
+            
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-10-16 00:47_
+
+---
+
+_Referenced in [astral-sh/uv#8235](../../astral-sh/uv/pulls/8235.md) on 2024-10-16 00:47_
+
+---
+
+_Closed by @charliermarsh on 2024-10-16 00:53_
+
+---
+
+_Closed by @charliermarsh on 2024-10-16 00:53_
+
+---
+
+_Referenced in [apache/airflow#43121](../../apache/airflow/pulls/43121.md) on 2024-10-17 14:56_
+
+---

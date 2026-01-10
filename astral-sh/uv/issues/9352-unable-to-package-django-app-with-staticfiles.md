@@ -1,0 +1,115 @@
+---
+number: 9352
+title: Unable to package django app with staticfiles
+type: issue
+state: closed
+author: Mapiarz
+labels:
+  - question
+assignees: []
+created_at: 2024-11-22T10:16:01Z
+updated_at: 2024-11-26T08:44:39Z
+url: https://github.com/astral-sh/uv/issues/9352
+synced_at: 2026-01-10T01:24:39Z
+---
+
+# Unable to package django app with staticfiles
+
+---
+
+_Issue opened by @Mapiarz on 2024-11-22 10:16_
+
+Hi. I have a django app and I cannot build a docker image with django's staticfiles artifact.
+
+Here's my dockerfile (this is just the first stage of my image, in the second stage I copy the environment)
+```dockerfile
+FROM python:3.11-slim-bookworm AS builder
+
+COPY --from=ghcr.io/astral-sh/uv:0.5 /uv /bin/
+
+
+WORKDIR /myapp
+
+# Copy app source code
+...
+
+# Create the virtual environment with myapp in it
+RUN uv sync --frozen --no-dev --no-cache --compile-bytecode --no-editable
+
+# Activate the environment - we will need it for commands below
+ENV PATH="/myapp/.venv/bin:$PATH"
+
+# Install static files
+RUN COLLECT_STATIC=True python manage.py collectstatic
+
+# Add the static files to .venv
+RUN uv sync --frozen --no-dev --no-cache --compile-bytecode --no-editable
+```
+This is a pretty simple set up. Copy the app source code, run `uv sync` to install all the dependencies. Once that's done, I can start up my django app and collect the static files. The files are placed in the source folder. Then, I run `uv sync` again so that the staticfiles are copied to virtual environment. The problem is they are not.
+
+```
+#16 [builder  8/10] RUN uv sync --frozen --no-dev --no-cache --compile-bytecode --no-editable
+#16 0.257 Using CPython 3.11.10 interpreter at: /usr/local/bin/python3
+#16 0.257 Creating virtual environment at: .venv
+#16 3.969 Prepared 141 packages in 3.69s
+#16 4.107 Installed 141 packages in 138ms
+#16 5.654 Bytecode compiled 6109 files in 1.54s
+...
+#16 DONE 6.2s
+
+#17 [builder  9/10] RUN COLLECT_STATIC=True python manage.py collectstatic
+#17 1.869 177 static files copied to '/myapp/myapp/staticfiles', 497 post-processed.
+#17 DONE 2.4s
+
+#18 [builder 10/10] RUN uv sync --frozen --no-dev --no-cache --compile-bytecode --no-editable
+#18 0.216 Audited 141 packages in 0.52ms
+#18 DONE 0.2s
+```
+
+Here's also the relevant part in pyproject.toml
+
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+only-include = ["myapp", "manage.py"]
+artifacts = ["myapp/staticfiles"]
+```
+
+I'm completely lost on what's going on for 2 primary reasons:
+1. In my local dev env, I can follow this procedure and it works: uv sync, collect static files, uv sync again and the app is packaged correctly with the static files.
+2. I can add `RUN rm -rf .venv` to my dockerfile before the second invocation of `uv sync` and the static files will be then collected correctly.
+
+Please advise.
+
+---
+
+_Comment by @charliermarsh on 2024-11-22 13:57_
+
+Thanks for the issue. I think I wouldn't expect this to work either locally or in CI, because we won't re-build / re-install your project after the static files are generated. By default, we only re-build / re-install local projects if the `pyproject.toml`, `setup.py`, or `setup.cfg` files change -- it's similar to https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata, but this is about extra content and not dynamic metadata per se.
+
+I think you probably want `--reinstall-package {project_name}` in the second command.
+
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-22 13:57_
+
+---
+
+_Comment by @Mapiarz on 2024-11-26 08:44_
+
+@charliermarsh Thanks. That nudged me in the right direction. In fact, I utilized `--no-install-project` to first build the environment but not the app itself. Then I generate my artifacts and then I redo the sync and my app is installed into the environment for the first time, together with all the artifacts. No need for `--reinstall-package`.
+
+That approach is much better because now I don't have to get all the dependencies every time the source code of my app changes.
+
+---
+
+_Closed by @Mapiarz on 2024-11-26 08:44_
+
+---

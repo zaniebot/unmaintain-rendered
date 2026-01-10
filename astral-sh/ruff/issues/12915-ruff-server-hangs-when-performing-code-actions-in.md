@@ -1,0 +1,138 @@
+---
+number: 12915
+title: "`ruff server` hangs when performing \"code actions\" in Helix"
+type: issue
+state: closed
+author: schlich
+labels: []
+assignees: []
+created_at: 2024-08-16T03:56:28Z
+updated_at: 2024-08-16T15:54:57Z
+url: https://github.com/astral-sh/ruff/issues/12915
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# `ruff server` hangs when performing "code actions" in Helix
+
+---
+
+_Issue opened by @schlich on 2024-08-16 03:56_
+
+
+Might be related to [Issue #416](https://github.com/astral-sh/ruff-lsp/issues/416) in `ruff-lsp`, particularly @ssmsossah's comment [here](https://github.com/astral-sh/ruff-lsp/issues/416#issuecomment-2143850769) that the same thing is happening in NeoVim.
+
+Running `ruff server` in Helix. Health checks with `hx --health python` all pass.
+
+Helix 24.7
+ruff 0.6.0
+`protocol error: InternalError: failed to deserialize diagnostic data: missing field 'range'`
+
+```toml
+[[language]]
+name = "python"
+formatter = { command = "ruff", args = ["format", "-"]}
+language-servers = ["ruff", "pyright", "pylsp"]
+
+[language-server.pyright.config.python.analysis]
+typeCheckingMode = "basic"
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+```
+
+
+
+---
+
+_Comment by @schlich on 2024-08-16 04:02_
+
+Welp, looks like I just rubber-ducked my way out of this one.  dunno how that misconfig slipped in but changing `args = ["server"]` to `config = { settings = { args = ["server"] } }` as suggested in the helix docs fixed the issue... closing.
+
+---
+
+_Closed by @schlich on 2024-08-16 04:02_
+
+---
+
+_Comment by @dhruvmanila on 2024-08-16 04:08_
+
+I'm a bit confused here. What was the exact change? The `args = ["server"]` should be correct unless Helix changed something. Can you provide the docs reference for this?
+
+---
+
+_Comment by @schlich on 2024-08-16 06:05_
+
+@dhruvmanila  it's [here](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations#python---ruff)
+
+```
+[language-server.ruff]
+command = "ruff"
+config = { settings = { args = ["server"] } }
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-08-16 09:06_
+
+That's weird because their [documentation](https://docs.helix-editor.com/languages.html#language-server-configuration) mentions the use of `args`:
+
+> `args` | A list of arguments to pass to the language server binary
+
+while, the `config` key is actually the initialization options which is different.
+
+I'll need to try this out.
+
+
+---
+
+_Comment by @dhruvmanila on 2024-08-16 09:10_
+
+I'm getting code actions:
+
+<img width="1727" alt="Screenshot 2024-08-16 at 14 39 26" src="https://github.com/user-attachments/assets/d3680df5-9fb4-44a3-9492-d369e5e61094">
+
+Using the following config:
+```toml
+[[language]]
+name = "python"
+language-servers = ["ruff", "pyright"]
+
+[language-server.pyright]
+command = "pyright-langserver"
+args = ["--stdio"]
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+```
+
+
+---
+
+_Comment by @schlich on 2024-08-16 15:17_
+
+that is weird.  if you think it's worth further reproducing the issue on my end, just let me know @dhruvmanila.  Maybe there are logs I can pull? The related issues make me skeptical it's a Helix-specific problem
+
+---
+
+_Comment by @dhruvmanila on 2024-08-16 15:38_
+
+Is the config that you provided in the PR description complete? If not, could you provide the remaining parts? I'm curious whether you're using `python-lsp-ruff` (plugin to `pylsp`).
+
+It might also be worth discussing this with the Helix team. Is it `args` or `config`? Because, we're using `args` in our setup guide :)
+
+---
+
+_Comment by @schlich on 2024-08-16 15:54_
+
+Yes, that was the complete config for the python language.  I tried it with various combinations of pylsp, pyright, and pylyzer.  definitely was not including python-lsp-ruff even though i have used it in the past, I was assuming hopefully correctly that `ruff server` was a full replacement. 
+
+I just confirmed the error is persisting when i revert the change, right now i'm just running ruff and pylyzer
+
+> we're using args in our setup guide
+
+ah, so that's how i ended up there!
+
+
+---

@@ -1,0 +1,126 @@
+---
+number: 10936
+title: uv pip install TA-Lib filename.whl Issue
+type: issue
+state: closed
+author: SisypheGeek
+labels:
+  - question
+assignees: []
+created_at: 2025-01-24T14:57:17Z
+updated_at: 2025-01-24T17:21:15Z
+url: https://github.com/astral-sh/uv/issues/10936
+synced_at: 2026-01-10T01:24:59Z
+---
+
+# uv pip install TA-Lib filename.whl Issue
+
+---
+
+_Issue opened by @SisypheGeek on 2025-01-24 14:57_
+
+### Summary
+
+Hi, 
+
+I am facing an issue while trying to use uv to install TA-lib library using a wheel file. The command I am running  is uv pip install ta-lib@./ta_lib-0.6.0-cp310-cp310-win_amd64.whl, the wheel file is in my folder and i am running python 3.10.14.
+
+The error I get is 
+Resolved 3 packages in 64ms
+error: Failed to determine installation plan
+  Caused by: A path dependency is incompatible with the current platform: ta_lib-0.6.0-cp310-cp310-win_amd64.whl
+
+Did someone succeed in installing ta-lib with wheel file or knows how to make it work?
+Thanks
+
+### Platform
+
+Windows 11 wsl
+
+### Version
+
+uv 0.5.14
+
+### Python version
+
+python 3.10.14.
+
+---
+
+_Label `bug` added by @SisypheGeek on 2025-01-24 14:57_
+
+---
+
+_Comment by @charliermarsh on 2025-01-24 15:00_
+
+Can you include the `--verbose` logs? Can you also try again with `uv sync --python 3.10` explicitly, to ensure you're using Python 3.10?
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-01-24 15:00_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-01-24 15:00_
+
+---
+
+_Comment by @konstin on 2025-01-24 15:21_
+
+`win_amd64` can't be used in WSL, only in windows itself
+
+---
+
+_Comment by @SisypheGeek on 2025-01-24 15:37_
+
+> Can you include the `--verbose` logs? Can you also try again with `uv sync --python 3.10` explicitly, to ensure you're using Python 3.10?
+Thanks for the reply. I got 
+
+DEBUG uv 0.5.14
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.10.14-linux-x86_64-gnu` at `/home/######/pyproj/######/services/technical-indicators/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.10.14 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: ta-lib @ file:///home/######/pyproj/#########/services/technical-indicators/ta_lib-0.4.29-cp310-cp310-win_amd64.whl
+DEBUG Using request timeout of 30s
+DEBUG Released lock at `/home/#####/pyproj/#######/services/technical-indicators/.venv/.lock`
+error: Distribution not found at: file:///home/######/pyproj/#######/services/technical-indicators/ta_lib-0.4.29-cp310-cp310-win_amd64.whl
+
+
+---
+
+_Comment by @SisypheGeek on 2025-01-24 15:38_
+
+> `win_amd64` can't be used in WSL, only in windows itself
+
+Thanks for the reply.
+
+Does it mean I should follow the linux method to install the library?
+
+---
+
+_Comment by @charliermarsh on 2025-01-24 15:40_
+
+Yeah
+
+---
+
+_Label `needs-mre` removed by @konstin on 2025-01-24 15:41_
+
+---
+
+_Label `question` added by @konstin on 2025-01-24 15:41_
+
+---
+
+_Comment by @SisypheGeek on 2025-01-24 15:45_
+
+> Yeah
+
+thanks for the help. I will try it.
+
+---
+
+_Closed by @charliermarsh on 2025-01-24 17:21_
+
+---

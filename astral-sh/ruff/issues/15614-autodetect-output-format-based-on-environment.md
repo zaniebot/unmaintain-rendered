@@ -1,0 +1,47 @@
+---
+number: 15614
+title: Autodetect output format based on environment variables.
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - cli
+assignees: []
+created_at: 2025-01-20T11:18:52Z
+updated_at: 2025-01-22T19:31:01Z
+url: https://github.com/astral-sh/ruff/issues/15614
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Autodetect output format based on environment variables.
+
+---
+
+_Issue opened by @MichaReiser on 2025-01-20 11:18_
+
+> a thought: instead of needing to set [RUFF_OUTPUT_FORMAT: github](https://docs.astral.sh/ruff/configuration/#full-command-line-interface) in GitHub Actions, ruff could check the [env var GitHub itself sets](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables) and use the correct output format:
+>
+> > GITHUB_ACTIONS: Always set to true when GitHub Actions is running the workflow. You can use this variable to differentiate when tests are being run locally or by GitHub Actions.
+>
+> similarly, [GitLab sets GITLAB_CI](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html). Azure isn't so clearcut, maybe [TF_BUILD](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml)
+
+
+Originally posted on discord ([link](https://discord.com/channels/1039017663004942429/1070132471699607623/1330847379817238604))
+
+---
+
+_Label `cli` added by @MichaReiser on 2025-01-20 11:19_
+
+---
+
+_Comment by @Avasam on 2025-01-20 17:44_
+
+As long as it can still be overridden, having a smart dynamic default sounds like a nice improvement.
+
+---
+
+_Comment by @kaddkaka on 2025-01-22 19:31_
+
+This has a risk of being surprising. Make sure it's discoverable and documented.
+
+---

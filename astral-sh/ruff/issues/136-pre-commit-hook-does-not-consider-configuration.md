@@ -1,0 +1,64 @@
+---
+number: 136
+title: pre-commit hook does not consider configuration in pyproject.toml.
+type: issue
+state: closed
+author: amirnaeimi
+labels:
+  - bug
+assignees: []
+created_at: 2022-09-09T21:51:43Z
+updated_at: 2022-09-21T13:49:19Z
+url: https://github.com/astral-sh/ruff/issues/136
+synced_at: 2026-01-10T01:22:37Z
+---
+
+# pre-commit hook does not consider configuration in pyproject.toml.
+
+---
+
+_Issue opened by @amirnaeimi on 2022-09-09 21:51_
+
+I have tested pre-commit hook and it works fine but when I tried to implement a new configuration in ```pyproject.toml```, I realized it does not consider the configuration. 
+```
+[tool.ruff]
+line-length = 200
+ignore = ['E501', 'F841']
+```
+I still get the error E501 even though I have ignored it.
+![Screenshot from 2022-09-09 23-50-25](https://user-images.githubusercontent.com/56680993/189450730-1d9d7f60-6cae-40c6-8c7a-24028ccd7c88.png)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-09-10 14:11_
+
+---
+
+_Comment by @charliermarsh on 2022-09-10 17:07_
+
+Thanks! Are there pyproject files in any of the subdirectories that are being linted?
+
+---
+
+_Comment by @amirnaeimi on 2022-09-10 18:29_
+
+Nope :) it's in root project!
+
+---
+
+_Comment by @charliermarsh on 2022-09-20 13:11_
+
+I think this may have been solved by some of the recent fixes to pathing. Please let me know if you continue to see it.
+
+---
+
+_Closed by @charliermarsh on 2022-09-20 13:11_
+
+---
+
+_Comment by @amirnaeimi on 2022-09-21 13:49_
+
+@charliermarsh thanks for the fix :100: 
+
+---

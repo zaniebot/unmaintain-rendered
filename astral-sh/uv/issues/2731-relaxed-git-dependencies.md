@@ -1,0 +1,42 @@
+---
+number: 2731
+title: Relaxed git dependencies
+type: issue
+state: open
+author: mjclarke94
+labels:
+  - needs-decision
+assignees: []
+created_at: 2024-03-30T11:55:20Z
+updated_at: 2024-05-16T13:23:00Z
+url: https://github.com/astral-sh/uv/issues/2731
+synced_at: 2026-01-10T01:23:21Z
+---
+
+# Relaxed git dependencies
+
+---
+
+_Issue opened by @mjclarke94 on 2024-03-30 11:55_
+
+We have a project structure where we have a `core` library, and then a number of projects which depend on this core library, and install it as a git dependency pinned either to `main` or a feature branch.
+
+We currently use `poetry` (as we develop on mac and deploy to linux, and Pytorch to contend with...), but a pain point with this workflow is that any update to the branch will break the lock file as the commit SHA changes. As a default behaviour, this makes a lot of sense, but it means any time you update main, you either need to rerun dependency resolution or manually change the commit SHA in the lock file, both of which are a pain.
+
+It would be nice to have an option to relax git dependencies in `overrides.txt`, effectively saying "I know that the commit SHA is wrong, but I expected this, so carry on as you were".
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-04-01 14:42_
+
+---
+
+_Comment by @benmosher on 2024-05-16 13:22_
+
+I am running into a similar issue and wondering why the commit hash is updated every time the lockfile is regenerated. 
+
+If the commit is still reachable from the branch tip, why isn't the lockfile's commit still considered a valid locked version?
+
+Not unlike how a `package~=1.0` can release v1.1 but my lockfile can still stay at `1.0` until I'm ready to upgrade.
+
+---

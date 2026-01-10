@@ -1,0 +1,68 @@
+---
+number: 12829
+title: Allow the lock file to be based on solely one platform
+type: issue
+state: closed
+author: JerBouma
+labels:
+  - question
+assignees: []
+created_at: 2025-04-11T08:55:38Z
+updated_at: 2025-04-11T08:58:49Z
+url: https://github.com/astral-sh/uv/issues/12829
+synced_at: 2026-01-10T01:25:25Z
+---
+
+# Allow the lock file to be based on solely one platform
+
+---
+
+_Issue opened by @JerBouma on 2025-04-11 08:55_
+
+### Summary
+
+Currently, within my company we are using `poetry` but it has never worked as well as we wanted it to do given that the lockfile registers versions for _all_ platforms. While the registration is not a problem by itself, using internal package feeds (Azure Artifacts) can be a culprit to that approach. Given that everything is Linux based, this feed does not include any Windows-specific packages. However, some packages we place in the lockfile can require Windows-packages _for the Windows build_ of that specific library. This results in failures when trying to install the dependencies on Linux terminal where it tries to download the .whl of the Windows-related package but can't find it and thus fails. It won't do anything with the .whl, it just downloads it.
+
+See below an example that is looking for `pywin32` while working entirely on Linux:
+
+![Image](https://github.com/user-attachments/assets/56aac315-9f04-4153-884a-524b7b1d4cfc)
+
+Poetry offers a solution: https://python-poetry.org/docs/dependency-specification/#using-environment-markers but this does not take into account that a library could simply not exist in an internal package feed. I've seen the same implementation in `uv` but unfortunately this will also fail as long as packages from different platforms exist in the lockfile: https://github.com/astral-sh/uv/issues/6758#issuecomment-2315679258
+
+I read that the uv lockfile is "_is a universal or cross-platform lockfile that captures the packages that would be installed across all possible Python markers such as operating system, architecture, and Python version._" (https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile)
+
+I would like the option it not to be. 
+
+### Example
+
+Something like `uv lock --platforms linux`.
+
+---
+
+_Label `enhancement` added by @JerBouma on 2025-04-11 08:55_
+
+---
+
+_Comment by @konstin on 2025-04-11 08:56_
+
+You can set `tool.uv.environments` to limit the resolution to specific target(s) (https://docs.astral.sh/uv/concepts/projects/config/#limited-resolution-environments).
+
+---
+
+_Label `enhancement` removed by @konstin on 2025-04-11 08:56_
+
+---
+
+_Label `question` added by @konstin on 2025-04-11 08:56_
+
+---
+
+_Comment by @JerBouma on 2025-04-11 08:58_
+
+That's perfect, thank you. Issue resolved!
+
+---
+
+_Closed by @JerBouma on 2025-04-11 08:58_
+
+---

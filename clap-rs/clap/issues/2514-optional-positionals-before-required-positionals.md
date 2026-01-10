@@ -1,0 +1,114 @@
+---
+number: 2514
+title: Optional positionals before required positionals
+type: issue
+state: closed
+author: ljrk0
+labels: []
+assignees: []
+created_at: 2021-06-01T14:23:52Z
+updated_at: 2021-06-03T19:36:30Z
+url: https://github.com/clap-rs/clap/issues/2514
+synced_at: 2026-01-10T01:27:20Z
+---
+
+# Optional positionals before required positionals
+
+---
+
+_Issue opened by @ljrk0 on 2021-06-01 14:23_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+In brief, I'm trying to replicate https://pubs.opengroup.org/onlinepubs/9699919799/utilities/find.html.  The syntax is quite simple:
+
+    find [-H|-L] path... [operand_expression...]
+
+1. A positional flag `-H` or `-L` (they can override each other, so `find -H -L -H -H` is equivalent to `find -H`)
+2. After that, at least one path which all don't start with a hyphen `-` (in theory, one would also need to check whether the argument is a `!` or a `(`, and if so, collect all following into the third argument, `operand_expression`)
+3. Finally, optionally, `operand_expression` tokens.  They aren't supposed to be parsed by clap, but should be returned in a `Vec<&str>` or the like.  They start as soon as the parser finds an argument that starts with `-` (optional: or is a `!` or `(`).
+
+It's *crucial* that `-H` and `-L` are given *before* the path (but yet, are optional).
+
+
+### Describe the solution you'd like
+
+I'd like to define `-H` and `-L` as positionals using `.index(1)` (maybe as a group?), but not making them required. Currently I get:
+
+> Found positional argument which is not required with a lower index than a required positional argument.
+
+Further, I'd like to use `TrailingVarArg` which collect everything after the `path` arg into `operand_expressions`.  
+
+> When using a positional argument with .multiple(true) that is *not the last* positional argument, the last positional argument (i.e the one with the highest index) *must* have .required(true) or .last(true) set.
+
+In theory, this grammar is unambiguous, since `path` is set to `allow_hyphen_values(false)`, thus it should be clear where `operand_expression` should start, even w/o setting `.last(true)`
+
+I found issues like https://github.com/clap-rs/clap/issues/1538 but they don't seem to be completely analogous to the one described.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+A theoretical implementation of parts of the above described would be:
+
+```
+extern crate clap;
+
+use clap::{App, Arg, AppSettings};
+
+fn main() {
+    let m = App::new("find")
+        .arg(
+            Arg::new("follow-link")
+                .short('H')
+                .index(1)
+        )
+        .arg(
+            Arg::new("path")
+                .multiple(true)
+                .required(true)
+                .index(2)
+        )
+        .arg(
+            Arg::new("operand_expression")
+                .multiple(true)
+                .index(3)
+        )
+        .setting(AppSettings::TrailingVarArg)
+        .get_matches_from(vec!["find", "-H", "path1", "path2", "-some_expr"]);
+
+    let trail: Vec<&str> = m.values_of("operand_expression").unwrap().collect();
+    for oe in &trail {
+        eprintln!("oe: {:?}", oe);
+    }
+}
+```
+
+---
+
+_Label `T: new feature` added by @ljrk0 on 2021-06-01 14:23_
+
+---
+
+_Comment by @pksunkara on 2021-06-03 19:36_
+
+> It's crucial that -H and -L are given before the path (but yet, are optional).
+
+Why is that? That is the issue with your CLI design.
+
+---
+
+_Closed by @pksunkara on 2021-06-03 19:36_
+
+---
+
+_Locked by @clap-rs on 2021-06-03 19:36_
+
+---

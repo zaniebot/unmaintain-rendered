@@ -1,0 +1,57 @@
+---
+number: 5514
+title: uv self update does not update
+type: issue
+state: open
+author: CruzanCaramele
+labels:
+  - external
+  - releases
+assignees: []
+created_at: 2024-07-28T13:12:48Z
+updated_at: 2024-08-23T14:14:19Z
+url: https://github.com/astral-sh/uv/issues/5514
+synced_at: 2026-01-10T01:23:49Z
+---
+
+# uv self update does not update
+
+---
+
+_Issue opened by @CruzanCaramele on 2024-07-28 13:12_
+
+
+
+* uv self update command on MAC OS get stuck:
+`uv self update
+info: Checking for updates...`
+
+* uv version
+uv 0.2.26 (fe403576c 2024-07-17)
+
+
+---
+
+_Label `upstream` added by @charliermarsh on 2024-07-29 00:18_
+
+---
+
+_Comment by @chrisrodrigue on 2024-07-30 10:07_
+
+Not related directly to the parent issue, but something I noticed.
+
+On Windows, uv won’t update itself if it was manually installed (for example, to `C:/uv/uv.exe`) rather than installed with the PowerShell script.
+
+It would be nice if uv didn’t have this limitation since a lot of companies don’t allow script execution.
+
+---
+
+_Comment by @charliermarsh on 2024-07-30 12:28_
+
+(Yeah, `self update` requires that you initially installed uv through the blessed installer path.)
+
+---
+
+_Label `release` added by @zanieb on 2024-08-23 14:14_
+
+---

@@ -1,0 +1,75 @@
+---
+number: 1743
+title: Forbid args to conflict with themselves
+type: issue
+state: closed
+author: matthiaskrgr
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2020-03-13T10:41:08Z
+updated_at: 2020-04-10T02:00:15Z
+url: https://github.com/clap-rs/clap/issues/1743
+synced_at: 2026-01-10T01:27:04Z
+---
+
+# Forbid args to conflict with themselves
+
+---
+
+_Issue opened by @matthiaskrgr on 2020-03-13 10:41_
+
+I just found something like this in my code
+`Arg::with_name("a").conflicts_with("a")`
+This makes it impossible to use `a` because it will always cause an error.
+I wonder if we could have some kind of warning put out if an arg conflicts with itself (preferably at buildtime, but I'm not sure if this can be done yet).
+
+clap 2.33.0
+
+---
+
+_Label `T: new feature` added by @matthiaskrgr on 2020-03-13 10:41_
+
+---
+
+_Label `T: new feature` removed by @pksunkara on 2020-03-13 11:53_
+
+---
+
+_Label `C: errors` added by @pksunkara on 2020-03-13 11:53_
+
+---
+
+_Referenced in [clap-rs/clap#1644](../../clap-rs/clap/issues/1644.md) on 2020-03-13 13:44_
+
+---
+
+_Comment by @CreepySkeleton on 2020-03-13 13:45_
+
+It's impossible to issue warnings depending on certain conditions, but we can panic in this case.
+
+---
+
+_Renamed from "warn if arg conflicts with itself" to "Forbid args to conflict with themselves" by @CreepySkeleton on 2020-03-13 16:11_
+
+---
+
+_Label `C: asserts` added by @pksunkara on 2020-04-09 08:27_
+
+---
+
+_Label `C: errors` removed by @pksunkara on 2020-04-09 08:27_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-04-09 08:27_
+
+---
+
+_Label `T: enhancement` added by @pksunkara on 2020-04-09 14:36_
+
+---
+
+_Closed by @bors[bot] on 2020-04-10 02:00_
+
+---

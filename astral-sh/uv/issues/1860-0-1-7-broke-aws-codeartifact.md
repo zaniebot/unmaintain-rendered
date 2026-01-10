@@ -1,0 +1,63 @@
+---
+number: 1860
+title: 0.1.7 broke AWS CodeArtifact
+type: issue
+state: closed
+author: bra-fsn
+labels:
+  - bug
+  - registry
+assignees: []
+created_at: 2024-02-22T09:40:24Z
+updated_at: 2024-02-22T20:31:52Z
+url: https://github.com/astral-sh/uv/issues/1860
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# 0.1.7 broke AWS CodeArtifact
+
+---
+
+_Issue opened by @bra-fsn on 2024-02-22 09:40_
+
+I use AWS CodeArtifact to store/get local Python packages.
+After getting a token for it and specifying the URL with uv's `--extra-index-url`, I can install those packages with `uv pip install $pkg_name --extra-index-url "$URL"` with uv version `0.1.6`, but I get the following error using `0.1.7`:
+```
+uv pip install $pkg_name --extra-index-url "$URL"
+error: Failed to download: $pkg_name==1.2.5
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://XXX-packages-XXX.d.codeartifact.us-west-2.amazonaws.com/pypi/python/simple/$pkg_name/1.2.5/$pkg_name-1.2.5-py3-none-any.whl#sha256=f168c68d34f2404c9d9289406a9e340ede6224888baceba18dfb980912fe73ae)
+```
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-02-22 15:02_
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-22 15:02_
+
+---
+
+_Comment by @zanieb on 2024-02-22 15:18_
+
+I can confirm this is a regression from 0.1.6 to 0.1.7, thanks for the report!
+
+---
+
+_Label `registry` added by @zanieb on 2024-02-22 15:18_
+
+---
+
+_Referenced in [astral-sh/uv#1874](../../astral-sh/uv/pulls/1874.md) on 2024-02-22 15:38_
+
+---
+
+_Closed by @zanieb on 2024-02-22 17:56_
+
+---
+
+_Comment by @zanieb on 2024-02-22 20:31_
+
+This should be resolved in v0.1.8
+
+---

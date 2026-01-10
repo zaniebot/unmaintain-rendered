@@ -1,0 +1,60 @@
+---
+number: 4946
+title: v0.0.271 pipeline failing on homebrew
+type: issue
+state: closed
+author: ColemanDunn
+labels:
+  - release
+assignees: []
+created_at: 2023-06-07T23:21:42Z
+updated_at: 2023-06-14T22:18:33Z
+url: https://github.com/astral-sh/ruff/issues/4946
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# v0.0.271 pipeline failing on homebrew
+
+---
+
+_Issue opened by @ColemanDunn on 2023-06-07 23:21_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Not sure if this belongs here but [the pipeline is failing](https://github.com/Homebrew/homebrew-core/pull/133013) thus my brew and pre-commit versions are out of sync (select = ["ALL"] user here). I have since uninstalled homebrew and installed using pipx. just FYI
+
+---
+
+_Comment by @zanieb on 2023-06-08 02:51_
+
+It looks like this is because they need to upgrade to the latest version of Rust still https://github.com/Homebrew/homebrew-core/pull/132584
+
+---
+
+_Label `release` added by @charliermarsh on 2023-06-08 03:40_
+
+---
+
+_Comment by @chenrui333 on 2023-06-14 12:51_
+
+ruff 0.0.272 release is in progress now, https://github.com/Homebrew/homebrew-core/pull/133013
+
+---
+
+_Comment by @charliermarsh on 2023-06-14 13:18_
+
+Thank you so much @chenrui333.
+
+---
+
+_Closed by @charliermarsh on 2023-06-14 22:18_
+
+---

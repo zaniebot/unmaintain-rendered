@@ -1,0 +1,89 @@
+---
+number: 4604
+title: "Can't parse two bools at the same time"
+type: issue
+state: closed
+author: ghost
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-01-04T09:20:37Z
+updated_at: 2023-01-31T22:11:18Z
+url: https://github.com/clap-rs/clap/issues/4604
+synced_at: 2026-01-10T01:27:58Z
+---
+
+# Can't parse two bools at the same time
+
+---
+
+_Issue opened by @ghost on 2023-01-04 09:20_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.66.0 (69f9c33d7 2022-12-12) (built from a source tarball)
+
+### Clap Version
+
+4.0.32
+
+### Minimal reproducible code
+
+```rust
+#[arg(default_value_t = false, short, long)]
+append: bool,
+#[arg(default_value_t = false, short, long)]
+r#continue: bool,
+```
+
+### Steps to reproduce the bug with the above code
+
+cargo run --offline
+MYBINARY -a 1 -c 1
+
+### Actual Behaviour
+
+While parsing the arguments "-a 1 -c 1": Found argument '1' which wasn't expected, or isn't valid in this context. But only "-a 1" or only "-c 1" works.
+
+### Expected Behaviour
+
+Parse both bools correctly.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @ghost on 2023-01-04 09:20_
+
+---
+
+_Comment by @epage on 2023-01-04 19:22_
+
+Please include a full reproduction case as it is unclear if interactions with other parts of your program or CLI definition are causing some of the behavior you are seeing.
+
+Part of what you are seeing is that [`bool` implies a flag](https://docs.rs/clap/latest/clap/_derive/index.html#arg-types), so you need to add `#[arg(action = clap::builder::ArgAction::Set)]` to override that.
+
+The part that is unclear is why its accepting `1` as an argument when you just use `-a 1`.  My best guess is you have a positional argument not shown in the example code.
+
+---
+
+_Comment by @epage on 2023-01-31 22:11_
+
+Without further details, there is nothing more we can help with.  I'm closing this out.  We can always re-open this later, start a Discussion, or open a new issue.
+
+---
+
+_Closed by @epage on 2023-01-31 22:11_
+
+---

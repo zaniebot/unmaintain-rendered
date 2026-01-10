@@ -1,0 +1,80 @@
+---
+number: 2064
+title: Compile time verification of default value
+type: issue
+state: closed
+author: diegobernardes
+labels:
+  - A-validators
+  - A-derive
+assignees: []
+created_at: 2020-08-13T17:46:15Z
+updated_at: 2021-10-06T13:55:00Z
+url: https://github.com/clap-rs/clap/issues/2064
+synced_at: 2026-01-10T01:27:12Z
+---
+
+# Compile time verification of default value
+
+---
+
+_Issue opened by @diegobernardes on 2020-08-13 17:46_
+
+### Describe your use case
+It would be nice to validate at compile time the `default_value`.
+
+This snippet would generate a compilation error.
+```rust
+#[clap(short, long, default_value = "-123")]
+value: u64,
+```
+
+### Additional context
+https://github.com/clap-rs/clap/discussions/2063
+
+
+---
+
+_Label `T: new feature` added by @diegobernardes on 2020-08-13 17:46_
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2020-08-14 09:26_
+
+---
+
+_Label `C: validators` added by @pksunkara on 2020-08-14 09:26_
+
+---
+
+_Label `P3: want to have` added by @pksunkara on 2020-08-14 09:26_
+
+---
+
+_Comment by @CreepySkeleton on 2020-08-17 21:15_
+
+Sounds like a lot of effort for minimal benefit. And this is feasible only for the very limited set of builtin types, there's no way to do the checking of user-driven types.
+
+---
+
+_Comment by @epage on 2021-10-04 18:01_
+
+We now have `default_value_t`, making the snippet
+```rust
+#[clap(short, long, default_value_t = -123)]
+value: u64,
+```
+
+Unfortunately, we aren't enforcing that this errors, because we immediately `to_string` it.
+
+Going to look at fixing this for `default_value_t`
+
+---
+
+_Referenced in [clap-rs/clap#2805](../../clap-rs/clap/pulls/2805.md) on 2021-10-04 18:04_
+
+---
+
+_Closed by @epage on 2021-10-06 13:55_
+
+---

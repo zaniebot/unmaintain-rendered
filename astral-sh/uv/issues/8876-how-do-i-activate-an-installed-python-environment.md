@@ -1,0 +1,140 @@
+---
+number: 8876
+title: How Do I activate an installed Python Environment?
+type: issue
+state: open
+author: baagod
+labels:
+  - question
+assignees: []
+created_at: 2024-11-07T03:40:11Z
+updated_at: 2025-03-29T13:07:39Z
+url: https://github.com/astral-sh/uv/issues/8876
+synced_at: 2026-01-10T01:24:33Z
+---
+
+# How Do I activate an installed Python Environment?
+
+---
+
+_Issue opened by @baagod on 2024-11-07 03:40_
+
+How can I activate a specific Python environment without creating a virtual environment? For example, I use: `uv python list`.
+
+It shows that I have installed two versions of Python:
+
+- `..\cpython-3.12.7-windows-x86_64-none\python.exe`
+- `..\cpython-3.8.20-windows-x86_64-none\python.exe`
+
+Now I want to perform operations directly on the 3.12 environment, what should I do? If I execute directly: `uv pip list`, it will prompt me: 
+
+``error: No virtual environment or system Python installation found; run `uv venv` to create an environment``
+
+But using `uv venv` will create an independent virtual environment. What if I don't want to create a virtual environment?
+
+---
+
+_Comment by @charliermarsh on 2024-11-07 03:55_
+
+If you install Python with uv, we intentionally don't support manipulating those managed Python installations -- we require you to create a virtual environment. You can probably do `uv pip list --python  ..\cpython-3.12.7-windows-x86_64-none\python.exe`, but it's not recommended.
+
+If you're using some other Python installation, you can use `uv pip install --system` to opt-in to manipulating the system environment.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-07 03:55_
+
+---
+
+_Comment by @baagod on 2024-11-07 04:51_
+
+I tried to use `uv pip install --python "cpython-3.12.7-windows-x86_64-none" pyside6`, and it prompted me:
+
+`This Python installation is managed by uv and should not be modified`
+
+That is, this directory is not allowed to be modified. But if I want a continuously integrated Python environment, what should I do?
+For example, if I use `uv venv 312`, it will create a Python virtual environment of `312`, then can I use the `uv` command to activate this environment?
+
+Now I want to install to this directory, I must use `uv pip install --python "../312" pyside6`.
+I have to navigate to the specified Python virtual directory first, but I want something like this:
+
+```bash
+$ uv venv --active "../python/312" # Activate a Python virtual environment instead of creating one
+$ Administrator in python/312/Scripts via 🐍 v3.12.7 (312)
+# Now all commands are executed in the python/312 environment, and then I can easily use all uv commands, for example:
+uv pip list
+uv install pyside6
+pyside6-rcc rec.qrc -o res.py
+...
+```
+
+In this way, although I am not in the `python/312` directory now, I can use the functions of the `312` virtual environment because I don't need `pyside6` in my working directory.
+
+---
+
+_Comment by @baagod on 2024-11-07 06:13_
+
+I understand. I can indeed enter the `python/313` directory and activate the virtual environment by executing `activate`.
+
+However, if I want a Python environment for continuous integration, I have to create a new independent virtual environment instead of using the installed one.
+
+Now `uv` does not allow you to modify the Python environment it installs, but it is also not possible to use it to create a python environment that is not managed by it. As long as you use `uv install python`, this environment cannot be modified.
+
+For convenience, I should not download a `system Python environment` separately. I want `uv` to help me download it, but I also want this environment to be modifiable and accept continuous integration.
+
+Similar commands:
+
+```bash
+# Specify system to install this python in the system directory, which is not subject to uv,
+# Can be modified by commands such as `uv pip install`.
+uv install --system python 3.12
+# or uv install python 3.12 --modifiable
+```
+
+Then I can specify the installation directory:
+
+```bash
+uv venv --active 3.8 --system # Activate 3.8 system directory environment
+uv venv --active 3.12 --system # Activate 3.12 system directory environment
+# or  installed with the `--modifiable` option
+# uv venv active 3.8
+# uv venv active 3.12
+```
+
+The above Python environment can be modified by commands such as `uv pip install`.
+
+Otherwise, if I want a continuous integration Python environment, using `uv`, I need to create a separate virtual environment. If so, if I use 3.8, 8.12, I will install two more virtual environments for continuous integration.
+
+---
+
+_Comment by @charliermarsh on 2024-11-07 13:32_
+
+I'm having some trouble following. Are you referring to a continuous integration pipeline, like on GitHub Actions? Or continuous development on your local machine? I'd suggest using a virtual environment in both cases.
+
+---
+
+_Comment by @baagod on 2024-11-08 01:34_
+
+It can be said that it is a global Python environment, which is separate from the virtual environment of the workspace. However, some packages of this global environment may be used frequently, and for quick testing, they are directly installed in the global environment.
+
+If I use 2 different Python versions, both of which are managed by `uv`, then in order to make such a global environment, I need to create 2 new virtual environments.
+
+The result is that I originally only wanted two Python environments, but now I can only have four. But I used `uv` to download Python, which is equivalent to I already have a Python environment? Why do I have to create it again?
+
+Of course, if `uv` does not want to and does not allow the Python environment it manages to be modified. Then `uv` already allows the modification of the `system Python environment` (Python version not downloaded through `uv`), right? And the system Python environment can also be managed by `uv`, right?
+
+Then why not add a function that allows downloading the `system Python environment`? Because obviously I hope that all Python versions can be managed and installed with uv. But in order to modify the installed Python version, I now have to download a separate `python environment` and use `uv` to manage it?
+
+Can't it be more convenient? Just allow me to download the `system Python environment`, which I don't want `uv` to constrain.
+
+---
+
+_Comment by @damarvin on 2025-03-29 13:07_
+
+Hi @baagod,
+are you aware of https://docs.python.org/3/library/venv.html and the mentioned there [PEP 405](https://peps.python.org/pep-0405/)?
+I mean also in CI testing `venv` should be used, and can be re-used across several projects or test runs.
+What would be the advantage of changing the (uv managed or not) _system_ python(s)—in a hard to reproduce way?
+The only situation I see you might want to skip using `venv` is, when you are testing in a throw-away environment, like every time re-created in Docker.
+
+---

@@ -1,0 +1,165 @@
+---
+number: 15310
+title: UV can not fall back to compatible PySide6 installation
+type: issue
+state: open
+author: aduhan
+labels:
+  - question
+assignees: []
+created_at: 2025-08-15T14:14:04Z
+updated_at: 2025-08-15T15:46:04Z
+url: https://github.com/astral-sh/uv/issues/15310
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# UV can not fall back to compatible PySide6 installation
+
+---
+
+_Issue opened by @aduhan on 2025-08-15 14:14_
+
+### Summary
+
+When I do "uv add PySide6", I get this:
+```
+Resolved 9 packages in 12ms
+error: Distribution `pyside6==6.9.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_36_aarch64`), but `pyside6` (v6.9.1) only has wheels for the following platforms: `manylinux_2_28_x86_64`, `manylinux_2_39_aarch64`, `macosx_12_0_universal2`, `win_amd64`, `win_arm64`; consider adding your platform to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
+```
+
+I then add the following to pyproject.toml:
+```
+[tool.uv]
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'manylinux_2_36_aarch64'"
+]
+```
+When I do "uv add PySide6" again, I get this:
+```
+  × No solution found when resolving dependencies for split (markers: platform_machine == 'manylinux_2_36_aarch64' and sys_platform == 'linux'):
+  ╰─▶ Because all versions of pyside6 have no `platform_machine == 'manylinux_2_36_aarch64' and sys_platform == 'linux'`-compatible wheels and your project depends on pyside6, we can
+      conclude that your project's requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `pyside6` in the requested range (e.g., 6.0.0a1.dev1606913934), but pre-releases weren't enabled (try: `--prerelease=allow`)
+
+      hint: The resolution failed for an environment that is not the current one, consider limiting the environments with `tool.uv.environments`.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+### Platform
+
+Raspberry PI OS 12, manylinux_2_36_aarch64
+
+### Version
+
+0.8.11
+
+### Python version
+
+3.12.11
+
+---
+
+_Label `bug` added by @aduhan on 2025-08-15 14:14_
+
+---
+
+_Comment by @zanieb on 2025-08-15 14:16_
+
+It sounds like they don't provide any wheels for `manylinux_2_36_aarch64`. What do you expect us to install?
+
+---
+
+_Label `bug` removed by @zanieb on 2025-08-15 14:17_
+
+---
+
+_Label `question` added by @zanieb on 2025-08-15 14:17_
+
+---
+
+_Comment by @aduhan on 2025-08-15 14:25_
+
+When using pip, it automatically detects and installs a compatible version, which is PySide6 6.8.0.2
+
+---
+
+_Comment by @zanieb on 2025-08-15 14:39_
+
+Thanks! https://inspector.pypi.io/project/pyside6/6.8.0.2/ does indeed provide `PySide6-6.8.0.2-cp39-abi3-manylinux_2_31_aarch64.whl`. You set your required environment to `2_36` though, which doesn't consider _older_ wheels. Want to try `2_31` instead?
+
+---
+
+_Comment by @aduhan on 2025-08-15 14:44_
+
+I just tried with `2_31`, but unfortunately it also does not work:
+`No solution found when resolving dependencies for split (markers: platform_machine == 'manylinux_2_31_aarch64' and sys_platform == 'linux'):`
+
+---
+
+_Comment by @zanieb on 2025-08-15 14:52_
+
+Can you share the full message please?
+
+---
+
+_Comment by @charliermarsh on 2025-08-15 14:56_
+
+I don't think `platform_machine == 'manylinux_2_36_aarch64'` will work. The output on that machine will just be something like:
+```
+>>> platform.machine()
+'aarch64'
+```
+
+---
+
+_Comment by @charliermarsh on 2025-08-15 14:57_
+
+I think the error is "correct", in that you're on ARM, but their ARM wheel requires glibc 2.39 or later, and you're on 2.36.
+
+---
+
+_Comment by @aduhan on 2025-08-15 15:02_
+
+@zanieb Sure:
+  × No solution found when resolving dependencies for split (markers: python_full_version >= '3.14' and platform_machine == 'manylinux_2_31_aarch64' and sys_platform
+  │ == 'linux'):
+  ╰─▶ Because all versions of pyside6 have no `platform_machine == 'manylinux_2_31_aarch64' and sys_platform == 'linux'`-compatible wheels and your project depends on
+      pyside6, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `pyside6` in the requested range (e.g., 6.0.0a1.dev1606913934), but pre-releases weren't enabled (try:
+      `--prerelease=allow`)
+
+      hint: While the active Python version is 3.12, the resolution failed for other Python versions supported by your project. Consider limiting your project's
+      supported Python versions using `requires-python`.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+
+
+@charliermarsh Yes correct. I am on 2.36, and PySide6 6.8.0.2 requires glibc 2.36, while the newest version requires 2.39 as you pointed out, but uv does not seem to install it.
+I also tried 'aarch64' for the platform_machine flag, so basically:
+[tool.uv]
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'aarch64'"
+]
+
+
+but then I get this:
+error: Distribution `pyside6==6.9.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_36_aarch64`), but `pyside6` (v6.9.1) only has wheels for the following platforms: `manylinux_2_28_x86_64`, `manylinux_2_39_aarch64`, `macosx_12_0_universal2`, `win_amd64`, `win_arm64`; consider adding your platform to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
+
+---
+
+_Comment by @charliermarsh on 2025-08-15 15:26_
+
+Right, I think this is basically unsupported, because you can only narrow resolution with environment markers, and there are no markers for glibc versions.
+
+---
+
+_Comment by @aduhan on 2025-08-15 15:46_
+
+I see. Thank you. Would be great to support those markers or some other solution (like pip?), due to Qt (with its python bindings PySide6) being such a huge framework worlwide.
+
+---

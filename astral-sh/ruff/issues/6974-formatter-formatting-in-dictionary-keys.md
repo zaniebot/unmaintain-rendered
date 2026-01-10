@@ -1,0 +1,109 @@
+---
+number: 6974
+title: "Formatter: `%` formatting in dictionary keys"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+assignees: []
+created_at: 2023-08-29T12:23:04Z
+updated_at: 2023-09-02T08:23:14Z
+url: https://github.com/astral-sh/ruff/issues/6974
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# Formatter: `%` formatting in dictionary keys
+
+---
+
+_Issue opened by @MichaReiser on 2023-08-29 12:23_
+
+Black breaks dictionary entries after the `%` even if the key otherwise would fit:
+
+```python
+
+obj = (
+    self.__class__._default_manager.filter(**filter_args)
+    .filter(
+        **{
+            "_order__%s"
+            % op: self.__class__._default_manager.values("_order").filter(
+                **{self._meta.pk.name: self.pk}
+            )
+        }
+    )
+    .order_by(order)[:1]
+    .get()
+)
+
+
+def test():
+    if True:
+        qs = GeoColumn.objects.filter(
+            **{
+                "%s__in"
+                % GeoColumn.table_name_col(): ["gis_neighborhood", "gis_household"]
+            }
+        )
+```
+
+IMO, this is very difficult to parse and probably just a fallout of their implementation that inserts line breaks after the highest priority operator, which happens to be the `%` in these cases. 
+
+Ruff tries to keep the key on its own line and instead breaks the value:
+
+```python
+obj = (
+    self.__class__._default_manager.filter(**filter_args)
+    .filter(
+        **{
+            "_order__%s" % op: self.__class__._default_manager.values("_order").filter(
+                **{self._meta.pk.name: self.pk}
+            )
+        }
+    )
+    .order_by(order)[:1]
+    .get()
+)
+
+
+def test():
+    if True:
+        qs = GeoColumn.objects.filter(
+            **{
+                "%s__in" % GeoColumn.table_name_col(): [
+                    "gis_neighborhood",
+                    "gis_household",
+                ]
+            }
+        )
+
+```
+
+IMO, this is more readable. 
+
+#6069 
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-08-29 12:23_
+
+---
+
+_Comment by @MichaReiser on 2023-08-29 12:24_
+
+Closing because Ruff's formatting is more readable and implementing Black's behavior requires special casing.
+
+---
+
+_Closed by @MichaReiser on 2023-08-29 12:24_
+
+---
+
+_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-08-29 12:26_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-09-02 08:23_
+
+---

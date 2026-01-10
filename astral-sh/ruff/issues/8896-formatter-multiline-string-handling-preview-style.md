@@ -1,0 +1,106 @@
+---
+number: 8896
+title: "Formatter: `multiline_string_handling` preview style"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+  - preview
+assignees: []
+created_at: 2023-11-29T02:46:50Z
+updated_at: 2024-01-10T11:47:36Z
+url: https://github.com/astral-sh/ruff/issues/8896
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# Formatter: `multiline_string_handling` preview style
+
+---
+
+_Issue opened by @MichaReiser on 2023-11-29 02:46_
+
+Implement Black's [`multiline_string_handling`](https://github.com/psf/black/pull/1879) as a preview style. 
+
+Ruff already implements (as part of stable) the new style when calling functions on a multiline string:
+
+```python
+MULTILINE = """
+foobar
+""".replace(
+    "\n", ""
+)
+```
+
+Get's formatted to
+
+```python
+MULTILINE = """
+foobar
+""".replace("\n", "")
+```
+
+However, Ruff doesn't yet implement the new style when passing a multiline string in a function call:
+
+```python
+textwrap.dedent(
+    """\
+    This is a
+    multiline string
+"""
+)
+```
+
+Gets formatted to:
+
+```python
+textwrap.dedent("""\
+    This is a
+    multiline string
+""")
+```
+
+
+> **Note**: It's not yet decided if this style will make it into Black's 2024 stable style
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-11-29 02:46_
+
+---
+
+_Label `preview` added by @MichaReiser on 2023-11-29 02:46_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-11-29 02:46_
+
+---
+
+_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 02:46_
+
+---
+
+_Renamed from "Formatter: `multiline_string_handling` preview style. Ruff stable implements this partially, and we generally received positive feedback." to "Formatter: `multiline_string_handling` preview style" by @MichaReiser on 2023-11-29 02:47_
+
+---
+
+_Removed from milestone `Formatter: Stable` by @MichaReiser on 2023-12-21 23:48_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-12-22 06:15_
+
+---
+
+_Closed by @MichaReiser on 2024-01-10 11:47_
+
+---
+
+_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
+
+---
+
+_Referenced in [psf/black#4501](../../psf/black/issues/4501.md) on 2024-10-23 13:50_
+
+---

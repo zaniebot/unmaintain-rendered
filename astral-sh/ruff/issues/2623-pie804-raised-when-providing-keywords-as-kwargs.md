@@ -1,0 +1,71 @@
+---
+number: 2623
+title: PIE804 raised when providing keywords as kwargs
+type: issue
+state: closed
+author: 153957
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-07T11:53:45Z
+updated_at: 2023-02-07T16:25:12Z
+url: https://github.com/astral-sh/ruff/issues/2623
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# PIE804 raised when providing keywords as kwargs
+
+---
+
+_Issue opened by @153957 on 2023-02-07 11:53_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+The following code raises PIE804:
+```
+def abc(**kwargs):
+    xyz(kwargs.get('for', 1))
+
+abc(**{'for': 3})
+```
+
+But since `for` is a Python keyword it is not allowed to provide it directly as a keyword:
+```
+abs(for=3)
+```
+
+There are some 'clear' exceptions for PIE804, should these be handled by ruff or should I manually ignore these cases?
+
+`ruff 0.0.243`
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-07 15:42_
+
+---
+
+_Comment by @charliermarsh on 2023-02-07 15:42_
+
+Yeah I think we should verify that all keys are valid identifiers.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-02-07 16:10_
+
+---
+
+_Referenced in [astral-sh/ruff#2628](../../astral-sh/ruff/pulls/2628.md) on 2023-02-07 16:25_
+
+---
+
+_Closed by @charliermarsh on 2023-02-07 16:25_
+
+---

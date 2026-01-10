@@ -1,0 +1,65 @@
+---
+number: 618
+title: Multi level help subcommand has misleading usage string
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-bug
+assignees: []
+created_at: 2016-08-20T19:22:02Z
+updated_at: 2020-04-12T10:09:28Z
+url: https://github.com/clap-rs/clap/issues/618
+synced_at: 2026-01-10T01:26:33Z
+---
+
+# Multi level help subcommand has misleading usage string
+
+---
+
+_Issue opened by @kbknapp on 2016-08-20 19:22_
+
+See https://github.com/rust-lang-nursery/rustup.rs/issues/632
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-08-20 19:22_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2016-08-20 19:22_
+
+---
+
+_Label `C: subcommands` added by @kbknapp on 2016-08-20 19:22_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-08-20 19:22_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-08-20 19:22_
+
+---
+
+_Label `C: usage strings` added by @kbknapp on 2016-08-20 19:22_
+
+---
+
+_Added to milestone `2.10.1` by @kbknapp on 2016-08-20 22:14_
+
+---
+
+_Closed by @homu on 2016-08-20 22:28_
+
+---
+
+_Label `C: usage strings` added by @pksunkara on 2020-04-12 10:09_
+
+---
+
+_Label `C: usage string parser` removed by @pksunkara on 2020-04-12 10:09_
+
+---

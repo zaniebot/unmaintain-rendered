@@ -1,0 +1,195 @@
+---
+number: 3095
+title: "Consider `execv` for `uv run` on Unix"
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-04-17T16:20:17Z
+updated_at: 2025-09-17T13:12:54Z
+url: https://github.com/astral-sh/uv/issues/3095
+synced_at: 2026-01-10T01:23:24Z
+---
+
+# Consider `execv` for `uv run` on Unix
+
+---
+
+_Issue opened by @zanieb on 2024-04-17 16:20_
+
+See https://github.com/astral-sh/uv/pull/3074#issuecomment-2060847595
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-04-17 16:20_
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-04-17 16:20_
+
+---
+
+_Comment by @bluss on 2024-04-21 14:04_
+
+Edit: The below concern has found other solutions since then, and is not really relevant.
+
+For the https://github.com/bluss/pyproject-local-kernel usecase (sorry if this is boring), spawn vs exec would make a difference on Linux in terms of how a jupyter notebook is kernel is launched.
+
+jupyter lab launches my python script -> launches uv run -> launches ipykernel.
+
+My script already handles forwarding posix signals to the child (first arrow). If you use exec, the second arrow disappears and posix signals are forwarded to the ipykernel which is useful, in fact the ipykernel doesn't want to start correctly if it doesn't have that signal path. I think exec is generally what you'd want to do. I didn't run into this with rye run, because it uses exec on Linux.
+
+I could configure my kernel [with interrupt_mode=message](https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernel-specs) (instead of default signal) to make this issue disappear, but maybe that shouldn't be needed. (Edit, no interrupt_mode=message is only fully supported on Linux, not on Windows, so this is not a great option).
+
+---
+
+_Referenced in [bluss/pyproject-local-kernel#13](../../bluss/pyproject-local-kernel/issues/13.md) on 2024-07-21 11:54_
+
+---
+
+_Comment by @bluss on 2024-07-21 13:55_
+
+Is this still possible, how does the ephemeral venv cleanup work? Is it using a scope based cleanup. I'll file another issue that's related to ipykernel, and maybe we'll find a good solution.
+
+---
+
+_Referenced in [astral-sh/uv#5257](../../astral-sh/uv/issues/5257.md) on 2024-07-21 14:01_
+
+---
+
+_Comment by @zanieb on 2024-07-21 14:55_
+
+It is not clear how we'd clean up the ephemeral environment, that's a good question.
+
+---
+
+_Comment by @charliermarsh on 2024-07-21 15:05_
+
+It runs on Drop.
+
+---
+
+_Comment by @bluss on 2024-07-24 18:50_
+
+The pyproject-local-kernel usecase seems to work perfectly on Linux now after the #5257 fix I think :star_struck:. Probably should carry over to windows too. Thanks for the help with this :slightly_smiling_face:
+
+uv run --with ipykernel is perfect for the notebook use case, it's very smooth.
+
+---
+
+_Comment by @charliermarsh on 2024-07-24 18:56_
+
+Awesome. I did test on my Windows machine and it worked as expected for me, so hopefully good there too...
+
+---
+
+_Referenced in [astral-sh/uv#6738](../../astral-sh/uv/pulls/6738.md) on 2024-09-03 17:36_
+
+---
+
+_Comment by @zanieb on 2024-10-04 21:29_
+
+When you `execv` is nothing dropped until the process exits? I'm quite naive as to how that is handled. cc @BurntSushi 
+
+---
+
+_Comment by @BurntSushi on 2024-10-07 12:43_
+
+Basically, you can think of `execv` (and related functions) as like a `std::process::exit`. It can be inserted anywhere in your program, and it will unceremoniously stop executing the current program. Destructors are not guaranteed to run.
+
+So to make this work here, we'd probably want to bubble some instruction to "run this `exec` command" to `main` in a way that everything else goes out of scope and gets dropped. Otherwise, you'll not just have things like an ephemeral environment hanging around, but all the various allocations and file descriptors won't get dropped either (they will eventually by the OS once the replacing process terminates, AIUI).
+
+Also, we are very likely already using `exec`. I think what is meant here is that we do not want to _fork_ before an exec. Or stated at a higher level, we want to replace the current process with the thing we want to run.
+
+---
+
+_Comment by @zanieb on 2024-10-07 12:51_
+
+Hm.. thanks for the details.
+
+I think that supports my concern that we have resources e.g., the ephemeral environment, that can't be removed until the spawned process finishes which makes it hard to entirely cede control?
+
+---
+
+_Comment by @BurntSushi on 2024-10-07 13:19_
+
+Oh I see, yes, hmmm. That is a conundrum. I am reminded of a trick where you can unlink a file but keep an open file descriptor to it, which at least on Unix, will keep the file around until the descriptor is closed. But, 1) I'm not sure how to make that scale to an entire directory tree and 2) I'm not sure if that concept works on Windows. Failing some trick like that, I'd guess the only way to do this is to introduce some kind of garbage collection? Not sure.
+
+---
+
+_Comment by @charliermarsh on 2024-10-08 21:53_
+
+Yeah I think the general form of the problem here is that `execv` won't run Drop, but it we Drop things before deferring to `execv`, we'll remove things we need like temporary directories.
+
+---
+
+_Comment by @zanieb on 2024-10-08 21:56_
+
+This feels like a pretty significant blocker for switching to `execv` – I think we might need to prioritize passing signals to the child in a robust manner?
+
+---
+
+_Comment by @charliermarsh on 2024-10-08 21:59_
+
+Yeah, agreed.
+
+---
+
+_Unassigned @zanieb by @zanieb on 2025-02-18 15:20_
+
+---
+
+_Comment by @zanieb on 2025-02-18 15:21_
+
+Signal handling was improved https://github.com/astral-sh/uv/pull/11009
+
+I think the `Drop` question remains a blocker. I'll leave this open for future consideration though.
+
+---
+
+_Referenced in [astral-sh/uv#11886](../../astral-sh/uv/issues/11886.md) on 2025-03-02 01:09_
+
+---
+
+_Referenced in [astral-sh/uv#12658](../../astral-sh/uv/issues/12658.md) on 2025-04-03 19:10_
+
+---
+
+_Comment by @zanieb on 2025-04-21 15:38_
+
+More signal handling changes in https://github.com/astral-sh/uv/pull/13017
+
+---
+
+_Referenced in [astral-sh/uv#12830](../../astral-sh/uv/issues/12830.md) on 2025-04-21 15:38_
+
+---
+
+_Referenced in [astral-sh/uv#13017](../../astral-sh/uv/pulls/13017.md) on 2025-04-21 15:49_
+
+---
+
+_Referenced in [astral-sh/uv#14123](../../astral-sh/uv/issues/14123.md) on 2025-06-18 02:53_
+
+---
+
+_Comment by @tapetersen on 2025-09-17 13:12_
+
+While signal propagation to the child correctly solves many problems one issue it still creates is that it blocks systemd's ready-notification in default configuration as it ignores messages from any other process than the root process.
+That can be worked around by also using `NotifyAccess=all` see  https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html#NotifyAccess= 
+
+That also has it's downsides though.
+
+Mostly adding as another usecase/reason where child process isn't really the same.
+
+I still don't have a good Idea how handling cleanup in the general case of using exec instead of spawn would work but for the systemd-case it of course has it's own way of providing ethemereal or persistant directories for services which ideally would be used here as well (passed through env-vars as `$RUNTIMEDIR` and `$CACHEDIR` for those that would be relevant here).
+
+In those cases something that can just set up the environment needed  somewhere specific and not care itself about would be useful but I'm not sure if it's useful enought that uv should include it.
+
+---
+
+_Referenced in [astral-sh/uv#16249](../../astral-sh/uv/pulls/16249.md) on 2025-10-12 13:05_
+
+---

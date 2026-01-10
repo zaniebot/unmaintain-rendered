@@ -1,0 +1,173 @@
+---
+number: 14473
+title: "Flaking test `red_knot::file_watching directory_renamed`"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - testing
+  - ty
+assignees: []
+created_at: 2024-11-20T02:21:00Z
+updated_at: 2024-12-03T07:22:43Z
+url: https://github.com/astral-sh/ruff/issues/14473
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# Flaking test `red_knot::file_watching directory_renamed`
+
+---
+
+_Issue opened by @zanieb on 2024-11-20 02:21_
+
+```
+--- STDOUT:              red_knot::file_watching directory_renamed ---
+
+running 1 test
+test directory_renamed ... FAILED
+
+failures:
+
+failures:
+    directory_renamed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 23 filtered out; finished in 0.23s
+
+
+--- STDERR:              red_knot::file_watching directory_renamed ---
+thread 'directory_renamed' panicked at crates/red_knot/tests/file_watching.rs:646:5:
+assertion failed: resolve_module(case.db().upcast(),
+        &ModuleName::new_static("sub.a").unwrap()).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+e.g. https://github.com/astral-sh/ruff/actions/runs/11925007919/attempts/1
+
+---
+
+_Label `ci` added by @zanieb on 2024-11-20 02:21_
+
+---
+
+_Label `ci` removed by @MichaReiser on 2024-11-20 07:16_
+
+---
+
+_Label `testing` added by @MichaReiser on 2024-11-20 07:16_
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 07:19_
+
+Thanks. I think that was now the first time that it flaked and maybe it's related to the depot runner change. I don't plan on investing time unless it flakes more often (because it's very time intensive and mostly impossible to reproduce locally)
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-11-20 11:12_
+
+---
+
+_Comment by @sharkdp on 2024-11-21 18:55_
+
+Also happened here:
+* https://github.com/astral-sh/ruff/actions/runs/11959330641/job/33340901595?pr=14357
+* https://github.com/astral-sh/ruff/actions/runs/11968243934/job/33366788713?pr=14357
+* https://github.com/astral-sh/ruff/actions/runs/11968243934/job/33367106490?pr=14357
+
+---
+
+_Comment by @zanieb on 2024-11-21 19:57_
+
+Sort of obvious, but you can reproduce the same error by removing the `rename` call
+
+```
+--- STDERR:              red_knot::file_watching directory_renamed ---
+thread 'directory_renamed' panicked at crates/red_knot/tests/file_watching.rs:646:5:
+assertion failed: resolve_module(case.db().upcast(),
+        &ModuleName::new_static("sub.a").unwrap()).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+   Canceling due to test failure
+------------
+     Summary [   0.181s] 1 test run: 0 passed, 1 failed, 3609 skipped
+        FAIL [   0.181s] red_knot::file_watching directory_renamed
+error: test run failed
+❯ gd
+diff --git a/crates/red_knot/tests/file_watching.rs b/crates/red_knot/tests/file_watching.rs
+index 5c2880e0b..236d64b8d 100644
+--- a/crates/red_knot/tests/file_watching.rs
++++ b/crates/red_knot/tests/file_watching.rs
+@@ -635,8 +635,8 @@ fn directory_renamed() -> anyhow::Result<()> {
+     let foo_baz = case.workspace_path("foo/baz");
+ 
+     std::fs::create_dir(case.workspace_path("foo").as_std_path())?;
+-    std::fs::rename(sub_path.as_std_path(), foo_baz.as_std_path())
+-        .with_context(|| "Failed to move the sub directory")?;
++    // std::fs::rename(sub_path.as_std_path(), foo_baz.as_std_path())
++    //     .with_context(|| "Failed to move the sub directory")?;
+ 
+     let changes = case.stop_watch();
+```
+
+or by removing the `stop_watch` call
+
+```
+--- STDERR:              red_knot::file_watching directory_renamed ---
+thread 'directory_renamed' panicked at crates/red_knot/tests/file_watching.rs:646:5:
+assertion failed: resolve_module(case.db().upcast(),
+        &ModuleName::new_static("sub.a").unwrap()).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+   Canceling due to test failure
+------------
+     Summary [   0.162s] 1 test run: 0 passed, 1 failed, 3609 skipped
+        FAIL [   0.162s] red_knot::file_watching directory_renamed
+error: test run failed
+❯ gd
+diff --git a/crates/red_knot/tests/file_watching.rs b/crates/red_knot/tests/file_watching.rs
+index 5c2880e0b..12eb698c0 100644
+--- a/crates/red_knot/tests/file_watching.rs
++++ b/crates/red_knot/tests/file_watching.rs
+@@ -638,9 +638,9 @@ fn directory_renamed() -> anyhow::Result<()> {
+     std::fs::rename(sub_path.as_std_path(), foo_baz.as_std_path())
+         .with_context(|| "Failed to move the sub directory")?;
+ 
+-    let changes = case.stop_watch();
++    // let changes = case.stop_watch();
+ 
+-    case.apply_changes(changes);
++    // case.apply_changes(changes);
+ 
+     // `import sub.a` should no longer resolve
+     assert!(resolve_module(
+ ```
+ 
+ So one of these two things could be failing (or something in the assertion like `resolve_module`). It seems dubious that the rename is not working as intended, so it's probably one of the other two? I'm not familiar with the process, so I can't guess why but it sounds like getting more information on failure in CI is a good next step.
+ 
+I'd highly recommend setting up `test-log` and setting `RUST_LOG` so you can get some logs. I did this locally to see if there's more context and there's quite a bit of output.
+ 
+ 
+
+---
+
+_Referenced in [astral-sh/ruff#14533](../../astral-sh/ruff/pulls/14533.md) on 2024-11-22 16:38_
+
+---
+
+_Comment by @MichaReiser on 2024-11-22 16:39_
+
+I enabled extra logging in https://github.com/astral-sh/ruff/pull/14533. Please let me know if you see the flake in a future run.
+
+---
+
+_Referenced in [astral-sh/ruff#14543](../../astral-sh/ruff/pulls/14543.md) on 2024-11-22 21:45_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2024-11-23 09:19_
+
+---
+
+_Closed by @MichaReiser on 2024-12-03 07:22_
+
+---

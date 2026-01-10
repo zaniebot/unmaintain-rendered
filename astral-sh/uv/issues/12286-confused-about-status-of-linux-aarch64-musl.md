@@ -1,0 +1,68 @@
+---
+number: 12286
+title: Confused about status of linux-aarch64-musl
+type: issue
+state: closed
+author: nbelakovski
+labels:
+  - question
+assignees: []
+created_at: 2025-03-18T15:08:49Z
+updated_at: 2025-03-18T15:15:37Z
+url: https://github.com/astral-sh/uv/issues/12286
+synced_at: 2026-01-10T01:25:17Z
+---
+
+# Confused about status of linux-aarch64-musl
+
+---
+
+_Issue opened by @nbelakovski on 2025-03-18 15:08_
+
+### Question
+
+Please forgive me if I'm misunderstanding something, but according to #6890 there should now be builds for linux-aarch64-musl, but the following command on my M2 macbook gives no results:
+
+`docker run --rm -it ghcr.io/astral-sh/uv:0.6.7-alpine uv python list --all-versions`
+
+If I run it with `--all-platforms`  and grep for musl I only see x86_64 in the list. Is there something else I need to do to be able to use uv to install python on aarch64-musl?
+
+
+
+### Platform
+
+macOS 14 arm
+
+### Version
+
+0.6.7
+
+---
+
+_Label `question` added by @nbelakovski on 2025-03-18 15:08_
+
+---
+
+_Comment by @charliermarsh on 2025-03-18 15:12_
+
+I think https://github.com/astral-sh/uv/pull/12121 only added distributions x86, not ARM.
+
+---
+
+_Comment by @nbelakovski on 2025-03-18 15:13_
+
+It seems I may have answered my own question, it looks like python-build-standalone does not yet support aarch64-musl: https://github.com/astral-sh/python-build-standalone/issues/87
+
+In that case I think #6890 was mistakenly closed and needs to be reopened :(
+
+---
+
+_Comment by @zanieb on 2025-03-18 15:15_
+
+Sorry about that! Re-opened the issue.
+
+---
+
+_Closed by @zanieb on 2025-03-18 15:15_
+
+---

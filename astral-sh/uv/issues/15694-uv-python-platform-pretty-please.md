@@ -1,0 +1,149 @@
+---
+number: 15694
+title: UV_PYTHON_PLATFORM pretty please?
+type: issue
+state: open
+author: hynek
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-09-05T07:51:00Z
+updated_at: 2025-11-09T16:51:52Z
+url: https://github.com/astral-sh/uv/issues/15694
+synced_at: 2026-01-10T01:25:58Z
+---
+
+# UV_PYTHON_PLATFORM pretty please?
+
+---
+
+_Issue opened by @hynek on 2025-09-05 07:51_
+
+### Summary
+
+As a long-time sufferer of working on a Rosetta system, I'm delighted about `--python-platform`!
+
+The way I'd like it to use is setting it once in a directory (e.g., using Direnv) and forget about it: `export UV_PYTHON_PLATFORM x86_64-apple-darwin`
+
+But currently I have to pass it to every instance of `uv sync` or more importantly `uv run` (I know there's caveats to this statement, but I really like to be able to just `uv run` when coming into a directory with no regard for previous activity).
+
+This would ensure that I never can get accidentally in the state of creating a venv for the wrong platform.
+
+### Example
+
+Today 🌧️:
+
+```
+uv sync --python-platform=x86_64-apple-darwin
+uv run --python-platform=x86_64-apple-darwin pytest
+```
+
+A better tomorrow ☀️:
+
+```
+export UV_PYTHON_PLATFORM=x86_64-apple-darwin
+uv sync
+uv run pytest
+```
+
+---
+
+_Label `enhancement` added by @hynek on 2025-09-05 07:51_
+
+---
+
+_Comment by @konstin on 2025-09-05 09:33_
+
+Does it work it you instead chose an x86_64/arm64 Python interpreter in that directory? uv sync and runs based on the existing Python interpreter, so this should be more convenient.
+
+I'm not saying we shouldn't add that env var, I'm instead looking for something that makes working under rosetta feel more native than toggling `python-platform`, which was built for cross-platform venv creation rather than systems with transparent emulation.
+
+---
+
+_Comment by @hynek on 2025-09-05 10:18_
+
+> Does it work it you instead chose an x86_64/arm64 Python interpreter in that directory?
+
+Unless you mean uv's interpreters, that is what I'm doing now but it's a bit hairy.
+
+I used to set `UV_PYTHON=python3.13-intel64` but that's not something that is supported: #7684
+
+I've been told there's better support for platforms coming – which I supposed this is part of it?
+
+---
+
+FWIW, my current approach is an `just` recipe like this:
+
+```just
+install:
+    #!/usr/local/bin/bash
+    set -euo pipefail
+
+    eval "$(sed -nE 's/(PY=.*)/\1/p' Dockerfile)"
+    uv sync --python="$PY-intel64"
+
+    if [ "$(.venv/bin/python -c 'import platform; print(platform.machine())')" != "x86_64" ]; then
+        echo -e 'venv not amd64!';
+        exit 1;
+    fi
+```
+
+which so far has proven to be robust enough. But requires the detour to determine the Python version (which is my main annoyance) and `uv run` doesn't work unless it ran first.
+
+---
+
+_Comment by @zanieb on 2025-09-05 13:53_
+
+Can't you do `UV_PYTHON=3.13-x86_64`?
+
+---
+
+_Comment by @charliermarsh on 2025-09-06 02:44_
+
+(Cross-linking https://github.com/astral-sh/uv/pull/15308)
+
+---
+
+_Comment by @hynek on 2025-09-06 07:03_
+
+> Can't you do `UV_PYTHON=3.13-x86_64`?
+
+This is new to me and it works!
+
+But while it's better than my current solution, I would really like to not have to extract the Python version myself which is exactly what `UV_PYTHON_PLATFORM` would achieve for me, unless I'm missing something?
+
+---
+
+_Comment by @zanieb on 2025-11-09 04:09_
+
+We should also support `UV_PYTHON=x86_64` now.
+
+`UV_PYTHON_PLATFORM` is more nuanced, it won't affect interpreter selection, just override tags during resolution.
+
+---
+
+_Comment by @hynek on 2025-11-09 05:30_
+
+Ohhh, this looks great! Just to verify my observation:
+
+If I set `UV_PYTHON=x86_64` and pyproject.toml says `project.requires-python = "==3.14.*"` I will reliably and officially get `3.14-x86_64`? If so, I'm good and this can be closed.
+
+---
+
+_Comment by @zanieb on 2025-11-09 16:16_
+
+We don't merge `--python` requests with `requires-python` ranges. That's unfortunately more complicated :) Let's track that in https://github.com/astral-sh/uv/issues/16654
+
+---
+
+_Comment by @hynek on 2025-11-09 16:45_
+
+Aww, so what’s the semantics of setting `UV_PYTHON=x86_64`? “Default version on Intel”?
+
+---
+
+_Comment by @zanieb on 2025-11-09 16:47_
+
+Yeah it'll take the first version it finds and fail if it doesn't fulfill `requires-python`
+
+---

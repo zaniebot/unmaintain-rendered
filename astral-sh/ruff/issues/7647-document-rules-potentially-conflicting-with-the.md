@@ -1,0 +1,74 @@
+---
+number: 7647
+title: Document rules potentially conflicting with the formatter
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - documentation
+  - formatter
+assignees: []
+created_at: 2023-09-25T09:13:13Z
+updated_at: 2023-10-20T23:08:28Z
+url: https://github.com/astral-sh/ruff/issues/7647
+synced_at: 2026-01-10T01:22:47Z
+---
+
+# Document rules potentially conflicting with the formatter
+
+---
+
+_Issue opened by @MichaReiser on 2023-09-25 09:13_
+
+Update the documentation of lint-rules that potentially conflict with the formatter and mention that we discourage using them in combination with the formatter. 
+
+- [line-too-long](https://beta.ruff.rs/docs/rules/line-too-long/)
+- [single-line-implicit-string-concatenation](https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation/) (could be annoying when the formatter collapses implicit strings)
+
+---
+
+_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:23_
+
+---
+
+_Label `documentation` added by @MichaReiser on 2023-09-25 09:38_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-09-25 09:38_
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-25 09:39_
+
+---
+
+_Comment by @ngnpope on 2023-09-26 17:47_
+
+One to add to this list is C812 which wants trailing commas everywhere and is thus semi-incompatible with black's handling of formatting based on the presence or absence of trailing commas.
+
+---
+
+_Comment by @charliermarsh on 2023-09-26 17:48_
+
+(I think that should be COM812 in Ruff parlance.)
+
+---
+
+_Comment by @ngnpope on 2023-09-26 17:49_
+
+Yes, my mistake!
+
+---
+
+_Referenced in [astral-sh/ruff#7732](../../astral-sh/ruff/pulls/7732.md) on 2023-10-01 03:33_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-01 03:33_
+
+---
+
+_Closed by @charliermarsh on 2023-10-20 23:08_
+
+---

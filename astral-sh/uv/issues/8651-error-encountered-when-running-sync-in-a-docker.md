@@ -1,0 +1,189 @@
+---
+number: 8651
+title: "Error encountered when running sync in a Docker image with editable dependencies: path could not be normalized: ./../"
+type: issue
+state: closed
+author: haruiz
+labels:
+  - question
+assignees: []
+created_at: 2024-10-29T00:11:46Z
+updated_at: 2024-10-29T03:24:52Z
+url: https://github.com/astral-sh/uv/issues/8651
+synced_at: 2026-01-10T01:24:31Z
+---
+
+# Error encountered when running sync in a Docker image with editable dependencies: path could not be normalized: ./../
+
+---
+
+_Issue opened by @haruiz on 2024-10-29 00:11_
+
+Hello, Astral team! 
+
+I'm reaching out for assistance regarding an error I'm having.  Despite spending several hours reviewing the documentation and searching online, I haven't been able to find a solution.
+
+I'm trying to build a Docker image that installs some private packages from the GCP artifact registry. However, upon executing the sync command, I encounter the following error. 
+
+`error: Failed to parse `uv.lock` Caused by: TOML parse error at line 905, column 5
+{ name = "cloudio", editable = "../cloudio" }, path could not be normalized: /../cloudio
+`
+
+Here Is the command that I'm running within the docker image (Taken from the documentation):
+
+`RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-sources --no-editable  \
+    --keyring-provider subprocess \
+    --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple/`
+
+Here is the `pyproject.toml`file
+
+```
+[project]
+name = "gprlibpy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "validators>=0.34.0",
+    "opencv-python>=4.10.0.84",
+    "graphviz>=0.20.3",
+    "tqdm>=4.66.5",
+    "zarr>=2.18.3",
+    "cloudio",
+    "gprio",
+    "lgopy",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+gprio = { path = "../gprio", editable = true }
+lgopy = { path = "../lgopy", editable = true }
+cloudio = { path = "../cloudio", editable = true }
+```
+Here is the `Dockerfile`:
+
+```
+FROM python:3.10-slim as build
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+ARG SA_KEY_BASE64
+ENV REGION=us-central1
+ENV PROJECT_ID=<PROJECT_ID>
+ENV REPOSITORY_ID=<REPOSITORY_ID>
+ENV UV_SYSTEM_PYTHON=1
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    ffmpeg  \
+    libsm6  \
+    libxext6
+
+RUN echo $SA_KEY_BASE64 | base64 -d> /service-account.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/service-account.json
+RUN uv pip install keyring keyrings.google-artifactregistry-auth
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-sources --no-editable --no-cache \
+    --keyring-provider subprocess \
+    --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple/
+RUN rm /service-account.json
+```
+
+Thanks for your support,
+HR
+
+---
+
+_Comment by @zanieb on 2024-10-29 01:54_
+
+So.. a minimal example looks something like
+
+```
+❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ uv init example-2
+Initialized project `example-2` at `/Users/zb/workspace/uv/example-2`
+❯ cd example
+❯ uv add ../example-2
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+Resolved 2 packages in 1ms
+Audited in 0.00ms
+❯ cat pyproject.toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "example-2",
+]
+
+[tool.uv.sources]
+example-2 = { path = "../example-2" }
+❯ uv lock
+Resolved 2 packages in 1ms
+❯ cat uv.lock
+version = 1
+requires-python = ">=3.11"
+
+[[package]]
+name = "example"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "example-2" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "example-2", virtual = "../example-2" }]
+
+[[package]]
+name = "example-2"
+version = "0.1.0"
+source = { virtual = "../example-2" }
+```
+
+In this example, `uv.lock` contains a reference to `../example-2`, a project in the parent directory. This is fine, but at runtime you're putting the `uv.lock` at `/` so when we try to go to the parent directory we fail (because you cannot go past `/`).
+
+I see you've included `--no-sources`, which would disable the `../example-2` source — however, you're also using `--frozen` so we skip checking if the lockfile is up to date and use it as-is. You're also passing various other flags to `uv sync` which will not be respected because of `--frozen`.
+
+I think what you want to do is `uv lock --no-sources ...` before copying the `uv.lock` into your image?
+
+---
+
+_Label `question` added by @zanieb on 2024-10-29 01:54_
+
+---
+
+_Comment by @haruiz on 2024-10-29 02:37_
+
+Thank you; that's precisely what I'm looking for. However, when I execute the command `uv lock --no-sources`, I encounter an error stating that `<package> was not found in the package registry`. Is there a way to make a private package  editable locally while still linking to an external repository using extra-index-url?
+
+---
+
+_Comment by @haruiz on 2024-10-29 03:24_
+
+Thank you. I finally solved it by doing the following: 
+```
+RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=cache,target=/root/.cache/uv \
+    uv sync --no-sources --no-install-project \
+    --keyring-provider subprocess \
+    --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple/`
+```
+
+---
+
+_Closed by @haruiz on 2024-10-29 03:24_
+
+---

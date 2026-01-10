@@ -1,0 +1,214 @@
+---
+number: 3413
+title: "Not obvious how to provide multiple usage statements with `App::override_usage()`"
+type: issue
+state: open
+author: jpgrayson
+labels:
+  - C-bug
+  - M-breaking-change
+  - A-help
+  - S-waiting-on-design
+assignees: []
+created_at: 2022-02-07T21:21:48Z
+updated_at: 2022-11-08T04:31:20Z
+url: https://github.com/clap-rs/clap/issues/3413
+synced_at: 2026-01-10T01:27:41Z
+---
+
+# Not obvious how to provide multiple usage statements with `App::override_usage()`
+
+---
+
+_Issue opened by @jpgrayson on 2022-02-07 21:21_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.58.1 (db9d1b20b 2022-01-20)
+
+### Clap Version
+
+3.0.14
+
+### Minimal reproducible code
+
+```rust
+fn main() {
+    clap::App::new("myapp")
+        .override_usage(
+            "myapp -X [-a] [-b] <file>\n\
+             myapp -Y [-c] <file1> <file2>\n\
+             myapp -Z [-d|-e]"
+        )
+        .get_matches_from(["myapp", "-h"]);
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+Paste as `examples/min-usage.rs`.
+`cargo run --example=min-usage`
+
+### Actual Behaviour
+
+```
+myapp 
+
+USAGE:
+    myapp -X [-a] [-b] <file>
+myapp -Y [-c] <file1> <file2>
+myapp -Z [-d|-e]
+
+OPTIONS:
+    -h, --help    Print help information
+```
+
+### Expected Behaviour
+
+```
+myapp 
+
+USAGE:
+    myapp -X [-a] [-b] <file>
+    myapp -Y [-c] <file1> <file2>
+    myapp -Z [-d|-e]
+
+OPTIONS:
+    -h, --help    Print help information
+```
+
+### Additional Context
+
+This relates to issue #1068.
+
+When providing multiple usage statements on multiple lines, the help output is mis-indented.
+
+The canonical workaround is for the user to indent the lines within their usage string according to the following rules:
+- Do not indent the first usage line.
+- Indent all subsequent usage lines with four spaces.
+- The last line *must not* end with a newline.
+
+The workaround versions of the reproducing example above:
+
+```rust
+fn main() {
+    clap::App::new("myapp")
+        .override_usage(
+            "myapp -X [-a] [-b] <file>\n    \
+             myapp -Y [-c] <file1> <file2>\n    \
+             myapp -Z [-d|-e]"
+        )
+        .get_matches_from(["myapp", "-h"]);
+}
+```
+
+or
+
+```rust
+fn main() {
+    clap::App::new("myapp")
+        .override_usage("\
+    myapp -X [-a] [-b] <file>
+    myapp -Y [-c] <file1> <file2>
+    myapp -Z [-d|-e]"
+        )
+        .get_matches_from(["myapp", "-h"]);
+}
+```
+
+The above workaround works with the current `DEFAULT_TEMPLATE` and `DEFAULT_NO_ARGS_TEMPLATE`, but is sensitive to indentation changes in those default templates. Note that in the discussion for #2002, there is a stated goal to avoid making the details of the default templates an API contract. Requiring user-indented usage strings jeopardizes the flexibility to change the default templates to some degree.
+
+N.B. the workaround for this issue changed when PR #2067 was merged. Prior to that, usage strings were tab-indented. #1068 illustrates the old-style workaround. It's perhaps worth noting that users upgrading from clap 2 --> 3 may bump into this issue if they have legacy multi-line usage strings with tab indentation.
+
+## Possible Solutions
+
+### Document/standardize the workaround
+
+The least intrusive way to make multiple usage statements more obvious to users would be to document the required multi-line format (i.e. the above workaround) for custom usage strings. A couple additions to `App::override_usage()`'s docstring would be sufficient for this option.
+
+### Handle/comprehend non-indented multi-line usage strings
+
+This approach was implemented in PR #3404. The idea was to accept user-provided usage strings where lines may or may not be indented by the user, and then use a new template tag (`{usage-indented}`) to normalize the user-provided usage lines to fit into clap's default help templates.
+
+The benefits of this approach are that multi-line usage strings will Just Work(tm) both for simple newline separated usage statements as well as usage strings containing either the modern or legacy (see #1068) workarounds.
+
+The key downside of this approach is the API change of adding the `{usage-indented}` template tag.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @jpgrayson on 2022-02-07 21:21_
+
+---
+
+_Comment by @epage on 2022-02-16 19:22_
+
+This sounds contradictory to the purported change that closed #1068.  I marked #1068 as closed based on a comment in the CHANGELOG
+> `App::override_usage` no longer implies a leading `\t`, allowing multi lined usages
+
+This was copied over from before the changelog rewrite and was introduced in commit 8bd1f1a9d.  This was released in v3.0.0-beta.1 on 2020-05-03.  Looking back in the history, starting around that time, I am not finding any change to the usage code that sounds like this.
+
+Looking back through `src/output/help.rs`s history, for the entire time we used a template for default help (a87320ae8), we seem to always have the fixed number of leading spaces.  We seem to have been inserting spaces between the header and the usage statement for quite a while.
+
+Going to do some more digging into this.
+
+---
+
+_Comment by @jpgrayson on 2022-02-16 20:52_
+
+FWIW, I also had a hard time reconciling the CHANGELOG message that prompted #1068 to be closed with any specific commit(s) that addressed #1068. AFAICT, the only difference between clap 2 and clap 3 for this issue is whether tab or space is used to indent the usage. It has always been one or the other hardwired indentation in either the procedural or templated help generation; and that change from tab to space indentation came with the template feature in a87320a (PR #2067).
+
+---
+
+_Added to milestone `4.0` by @epage on 2022-06-08 16:02_
+
+---
+
+_Removed from milestone `4.0` by @epage on 2022-08-23 14:38_
+
+---
+
+_Added to milestone `5.0` by @epage on 2022-08-23 14:38_
+
+---
+
+_Comment by @epage on 2022-08-23 14:38_
+
+I feel like we are hitting a cap in the number of subtle breaking changes for 4.0 and feel this should be pushed back to 5.0.
+
+---
+
+_Referenced in [clap-rs/clap#4106](../../clap-rs/clap/pulls/4106.md) on 2022-08-23 15:26_
+
+---
+
+_Comment by @jpgrayson on 2022-08-23 15:29_
+
+PR #4106 adds documentation for how to add multiple override usage lines. Regardless of whether we may want to do something more substantial with usage overrides in clap 5, this documentation will be helpful for anyone that wants multiple usage lines in clap 3 or 4.
+
+---
+
+_Referenced in [clap-rs/clap#4191](../../clap-rs/clap/issues/4191.md) on 2022-09-07 19:11_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2022-09-28 16:20_
+
+---
+
+_Label `A-help` added by @epage on 2022-09-28 16:20_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2022-11-08 04:31_
+
+---

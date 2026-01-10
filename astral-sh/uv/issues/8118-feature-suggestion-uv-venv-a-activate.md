@@ -1,0 +1,165 @@
+---
+number: 8118
+title: "Feature suggestion: `uv venv -a/--activate`"
+type: issue
+state: closed
+author: simonw
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-10-11T03:11:02Z
+updated_at: 2024-10-11T15:22:19Z
+url: https://github.com/astral-sh/uv/issues/8118
+synced_at: 2026-01-10T01:24:24Z
+---
+
+# Feature suggestion: `uv venv -a/--activate`
+
+---
+
+_Issue opened by @simonw on 2024-10-11 03:11_
+
+I'm trying to retrain myself to use `uv run ...` instead of activating my virtual environment ([see Twitter](https://twitter.com/charliermarsh/status/1837541841727558054)) but I still find myself sometimes wishing it was quicker to create and then activate a virtual environment.
+
+So how about this?
+
+```bash
+uv venv -a
+# which is a shortcut for:
+uv venv --activate
+```
+This would have the exact same effect as running:
+```bash
+uv venv
+source .venv/bin/activate
+```
+
+---
+
+_Comment by @simonw on 2024-10-11 03:12_
+
+Current `uv venv --help`:
+
+```
+Create a virtual environment
+
+Usage: uv venv [OPTIONS] [PATH]
+
+Arguments:
+  [PATH]  The path to the virtual environment to create
+
+Options:
+      --no-project
+          Avoid discovering a project or workspace
+      --seed
+          Install seed packages (one or more of: `pip`, `setuptools`, and
+          `wheel`) into the virtual environment
+      --allow-existing
+          Preserve any existing files or directories at the target path
+      --prompt <PROMPT>
+          Provide an alternative prompt prefix for the virtual environment.
+      --system-site-packages
+          Give the virtual environment access to the system site packages
+          directory
+      --relocatable
+          Make the virtual environment relocatable
+      --index-strategy <INDEX_STRATEGY>
+          The strategy to use when resolving against multiple index URLs [env:
+          UV_INDEX_STRATEGY=] [possible values: first-index, unsafe-first-match,
+          unsafe-best-match]
+      --keyring-provider <KEYRING_PROVIDER>
+          Attempt to use `keyring` for authentication for index URLs [env:
+          UV_KEYRING_PROVIDER=] [possible values: disabled, subprocess]
+      --allow-insecure-host <ALLOW_INSECURE_HOST>
+          Allow insecure connections to a host [env: UV_INSECURE_HOST=]
+      --exclude-newer <EXCLUDE_NEWER>
+          Limit candidate packages to those that were uploaded prior to the
+          given date [env: UV_EXCLUDE_NEWER=]
+      --link-mode <LINK_MODE>
+          The method to use when installing packages from the global cache [env:
+          UV_LINK_MODE=] [possible values: clone, copy, hardlink, symlink]
+
+Python options:
+  -p, --python <PYTHON>
+          The Python interpreter to use for the virtual environment. [env:
+          UV_PYTHON=]
+      --python-preference <PYTHON_PREFERENCE>
+          Whether to prefer uv-managed or system Python installations [env:
+          UV_PYTHON_PREFERENCE=] [possible values: only-managed, managed,
+          system, only-system]
+      --no-python-downloads
+          Disable automatic downloads of Python. [env:
+          "UV_PYTHON_DOWNLOADS=never"]
+
+Index options:
+  -i, --index-url <INDEX_URL>
+          The URL of the Python package index (by default:
+          <https://pypi.org/simple>) [env: UV_INDEX_URL=]
+      --extra-index-url <EXTRA_INDEX_URL>
+          Extra URLs of package indexes to use, in addition to `--index-url`
+          [env: UV_EXTRA_INDEX_URL=]
+  -f, --find-links <FIND_LINKS>
+          Locations to search for candidate distributions, in addition to those
+          found in the registry indexes
+      --no-index
+          Ignore the registry index (e.g., PyPI), instead relying on direct URL
+          dependencies and those provided via `--find-links`
+
+Cache options:
+  -n, --no-cache               Avoid reading from or writing to the cache,
+                               instead using a temporary directory for the
+                               duration of the operation [env: UV_NO_CACHE=]
+      --cache-dir <CACHE_DIR>  Path to the cache directory [env: UV_CACHE_DIR=]
+```
+So it looks like `-a` is available as an unused shortcut.
+
+---
+
+_Comment by @simonw on 2024-10-11 03:12_
+
+Aside:
+```
+Create a virtual environment
+
+Usage: uv venv [OPTIONS] [PATH]
+
+Arguments:
+  [PATH]  The path to the virtual environment to create
+```
+The `--help` output currently implies that PATH is a required argument, but it's not - running `uv venv` alone is equivalent to `uv venv .`.
+
+---
+
+_Comment by @AlexWaygood on 2024-10-11 14:51_
+
+I believe this may be a duplicate of #8106 (sadly)
+
+---
+
+_Comment by @zanieb on 2024-10-11 15:22_
+
+Yeah this is a duplicate — unfortunately this is a limitation of shells.
+
+If we ever do https://github.com/astral-sh/uv/issues/1910 we could support this.
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-10-11 15:22_
+
+---
+
+_Closed by @zanieb on 2024-10-11 15:22_
+
+---
+
+_Referenced in [astral-sh/uv#9166](../../astral-sh/uv/issues/9166.md) on 2024-11-16 16:03_
+
+---
+
+_Referenced in [astral-sh/uv#9603](../../astral-sh/uv/issues/9603.md) on 2024-12-03 11:22_
+
+---
+
+_Referenced in [Coacher/vim-virtualenv#7](../../Coacher/vim-virtualenv/issues/7.md) on 2025-10-02 14:37_
+
+---

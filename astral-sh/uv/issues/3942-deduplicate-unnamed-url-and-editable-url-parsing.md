@@ -1,0 +1,56 @@
+---
+number: 3942
+title: Deduplicate unnamed URL and editable URL parsing
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - internal
+assignees: []
+created_at: 2024-05-31T13:40:15Z
+updated_at: 2024-05-31T21:08:02Z
+url: https://github.com/astral-sh/uv/issues/3942
+synced_at: 2026-01-10T01:23:32Z
+---
+
+# Deduplicate unnamed URL and editable URL parsing
+
+---
+
+_Issue opened by @charliermarsh on 2024-05-31 13:40_
+
+I think the requirements here are identical, but we have two totally separate paths for them (and now have some bugs for unnamed URLs that we already fixed for editables).
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-05-31 13:40_
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-05-31 13:40_
+
+---
+
+_Comment by @charliermarsh on 2024-05-31 13:40_
+
+For example: `./scripts/packages/black_editable[colorama, uvloop]` doesn't work, but `-e ./scripts/packages/black_editable[colorama, uvloop]` does.
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-31 14:57_
+
+---
+
+_Referenced in [astral-sh/uv#3946](../../astral-sh/uv/pulls/3946.md) on 2024-05-31 20:15_
+
+---
+
+_Closed by @charliermarsh on 2024-05-31 21:08_
+
+---
+
+_Closed by @charliermarsh on 2024-05-31 21:08_
+
+---

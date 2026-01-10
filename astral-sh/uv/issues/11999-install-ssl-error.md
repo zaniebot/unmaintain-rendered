@@ -1,0 +1,95 @@
+---
+number: 11999
+title: install ssl error
+type: issue
+state: closed
+author: dlgktjr
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-06T11:07:17Z
+updated_at: 2025-03-06T14:01:05Z
+url: https://github.com/astral-sh/uv/issues/11999
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# install ssl error
+
+---
+
+_Issue opened by @dlgktjr on 2025-03-06 11:07_
+
+### Summary
+
+uv add ssl
+
+```
+  × Failed to build `ssl==1.16`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File "/home/haseok/.cache/uv/builds-v0/.tmp0cRWsp/lib/python3.11/site-packages/setuptools/build_meta.py", line 334, in
+      get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/haseok/.cache/uv/builds-v0/.tmp0cRWsp/lib/python3.11/site-packages/setuptools/build_meta.py", line 304, in
+      _get_build_requires
+          self.run_setup()
+        File "/home/haseok/.cache/uv/builds-v0/.tmp0cRWsp/lib/python3.11/site-packages/setuptools/build_meta.py", line 522, in
+      run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/home/haseok/.cache/uv/builds-v0/.tmp0cRWsp/lib/python3.11/site-packages/setuptools/build_meta.py", line 320, in
+      run_setup
+          exec(code, locals())
+        File "<string>", line 33
+          print 'looking for', f
+          ^^^^^^^^^^^^^^^^^^^^^^
+      SyntaxError: Missing parentheses in call to 'print'. Did you mean print(...)?
+      hint: This usually indicates a problem with the package or the build environment.
+```
+
+uv pip install ssl
+
+same error
+
+
+I think it need to support pip3, but don't you support pip3?
+
+
+
+### Platform
+
+ubuntu 22.04
+
+### Version
+
+0.6.4
+
+### Python version
+
+python 3.11.8
+
+---
+
+_Label `bug` added by @dlgktjr on 2025-03-06 11:07_
+
+---
+
+_Comment by @idealseal on 2025-03-06 11:36_
+
+The package is for python2, but uv only supports python >=3.7
+
+---
+
+_Comment by @charliermarsh on 2025-03-06 14:01_
+
+You're probably looking for a different package? That package hasn't been updated in over 10 years.
+
+---
+
+_Closed by @charliermarsh on 2025-03-06 14:01_
+
+---

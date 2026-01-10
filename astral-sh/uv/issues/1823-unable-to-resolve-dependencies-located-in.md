@@ -1,0 +1,84 @@
+---
+number: 1823
+title: Unable to resolve dependencies located in codeartifact passed through --extra-index-url
+type: issue
+state: closed
+author: zyd14
+labels: []
+assignees: []
+created_at: 2024-02-21T18:27:22Z
+updated_at: 2024-02-21T18:31:56Z
+url: https://github.com/astral-sh/uv/issues/1823
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# Unable to resolve dependencies located in codeartifact passed through --extra-index-url
+
+---
+
+_Issue opened by @zyd14 on 2024-02-21 18:27_
+
+uv version: 0.1.6
+Platform: Mac M1 (Apple Silicone)
+
+I have a package stored in AWS CodeArtifact which I'd like to install through `uv`, but it appears uv is not able to find the dependency. The index is being added the same way we do it with `pip`. Here's the command I'm using:
+
+```
+uv --verbose pip install glow-py==1.1.2+etx --extra-index-url https://aws:`aws codeartifact get-authorization-token --domain etx --domain-owner 1234567890 --profile etxlib --query authorizationToken --output text`@etxrepo-1234567890.d.codeartifact.us-east-1.amazonaws.com/pypi/etx-pypi/simple/
+```
+
+Here's the output I get:
+```
+uv::requirements::from_source source=glow.py==1.1.2+etx
+    0.000580s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /Users/zach/Documents/empirico/projects/etxlib/.venvs/uvenv
+    0.001002s DEBUG uv_interpreter::interpreter Using cached markers for: /Users/zach/Documents/empirico/projects/etxlib/.venvs/uvenv/bin/python
+    0.001008s DEBUG uv::commands::pip_install Using Python 3.9.16 environment at /Users/zach/Documents/empirico/projects/etxlib/.venvs/uvenv/bin/python
+    0.001576s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.634527s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.9.16
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.634672s   0ms DEBUG uv_resolver::resolver Adding direct dependency: glow-py==1.1.2+etx
+   uv_resolver::resolver::choose_version package=glow-py
+     uv_resolver::resolver::package_wait package_name=glow-py
+ uv_resolver::resolver::process_request request=Versions glow-py
+   uv_client::registry_client::simple_api package=glow-py
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/zach/Library/Caches/uv/simple-v1/pypi/glow-py.rkyv
+ uv_resolver::resolver::process_request request=Prefetch glow-py ==1.1.2+etx
+          0.636172s   1ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/glow-py/
+ uv_resolver::version_map::from_metadata 
+        0.636404s   1ms DEBUG uv_resolver::resolver Searching for a compatible version of glow-py (==1.1.2+etx)
+      0.636422s   1ms DEBUG uv_resolver::resolver No compatible version found for: glow-py
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of glow-py==1.1.2+etx and you require glow-py==1.1.2+etx, we can conclude that the requirements are unsatisfiable.
+```
+It seems that perhaps it isn't using the index passed through the `--extra-index-url` flag? Interestingly, using `--index-url` seems to work, but does not satisfy my use case as the dependencies in my pyproject.toml include dependencies that should be installed through pypi and CodeArtifact, with pypi being preferred as the primary source (meaning most dependencies should be pulled directly from pypi, while only a few should be pulled from CodeArtifact).  Transitive dependencies also should be resolved from pypi.
+
+I also tried passing the extra index via the UV_EXTRA_INDEX_URL env var, with the same result.
+
+
+---
+
+_Comment by @charliermarsh on 2024-02-21 18:30_
+
+Thanks! Yeah, this is the same as https://github.com/astral-sh/uv/issues/1451 IMO. Will merge in there. Current plan is to fix it.
+
+---
+
+_Closed by @charliermarsh on 2024-02-21 18:30_
+
+---
+
+_Comment by @zyd14 on 2024-02-21 18:31_
+
+Thanks @charliermarsh  - sorry, just saw that this was a duplicate. I added a little more context on that issue.
+
+---
+
+_Comment by @charliermarsh on 2024-02-21 18:31_
+
+No prob, thank you for the clear issue.
+
+---

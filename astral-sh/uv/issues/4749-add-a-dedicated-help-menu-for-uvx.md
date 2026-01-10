@@ -1,0 +1,51 @@
+---
+number: 4749
+title: "Add a dedicated help menu for `uvx`"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - documentation
+  - cli
+assignees: []
+created_at: 2024-07-02T23:03:34Z
+updated_at: 2024-07-03T16:38:55Z
+url: https://github.com/astral-sh/uv/issues/4749
+synced_at: 2026-01-10T01:23:41Z
+---
+
+# Add a dedicated help menu for `uvx`
+
+---
+
+_Issue opened by @zanieb on 2024-07-02 23:03_
+
+Instead of displaying exact menu from `uv tool run`, we should refer to `uvx` and note that it's an alias of `uv tool run`.
+
+---
+
+_Label `documentation` added by @zanieb on 2024-07-02 23:03_
+
+---
+
+_Label `cli` added by @zanieb on 2024-07-02 23:03_
+
+---
+
+_Comment by @zanieb on 2024-07-02 23:04_
+
+I'm not entirely sure how we'll go about this yet, but perhaps a hidden `uv tool x` or `uv x` command that we invoke from `uvx` instead of `uv tool run`?
+
+---
+
+_Referenced in [astral-sh/uv#4770](../../astral-sh/uv/pulls/4770.md) on 2024-07-03 14:14_
+
+---
+
+_Closed by @zanieb on 2024-07-03 16:38_
+
+---
+
+_Closed by @zanieb on 2024-07-03 16:38_
+
+---

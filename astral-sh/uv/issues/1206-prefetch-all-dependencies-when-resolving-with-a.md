@@ -1,0 +1,62 @@
+---
+number: 1206
+title: Prefetch all dependencies when resolving with a lockfile
+type: issue
+state: closed
+author: konstin
+labels:
+  - performance
+assignees: []
+created_at: 2024-01-31T15:48:30Z
+updated_at: 2025-01-14T18:59:17Z
+url: https://github.com/astral-sh/uv/issues/1206
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Prefetch all dependencies when resolving with a lockfile
+
+---
+
+_Issue opened by @konstin on 2024-01-31 15:48_
+
+When resolve with a preexisting lockfile, we can reasonably assume that most packages and version will remain unchanged. We should prefetch all version maps (simple api requests) and requirements for all packages in the lockfile. The requirements will be a cache load most of the time since this data is immutable (for wheels on pypi).
+
+Open question: Do we need to ensure that requests blocking the solver have precedence, given the parallel request limit will often be below the number of locked dependencies?
+
+This is a similar optimization as #1204 except that we know all dependencies and versions rather than having to check the cache.
+
+---
+
+_Label `performance` added by @konstin on 2024-01-31 15:48_
+
+---
+
+_Referenced in [astral-sh/uv#1204](../../astral-sh/uv/issues/1204.md) on 2024-01-31 15:49_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-02 22:03_
+
+---
+
+_Referenced in [astral-sh/uv#1246](../../astral-sh/uv/pulls/1246.md) on 2024-02-04 19:50_
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2024-02-22 17:08_
+
+---
+
+_Referenced in [astral-sh/uv#7427](../../astral-sh/uv/pulls/7427.md) on 2024-09-23 12:40_
+
+---
+
+_Comment by @konstin on 2025-01-14 18:59_
+
+This is not applicable anymore with how we do resolutions now, other prefetching improvements should be tracked separately.
+
+---
+
+_Closed by @konstin on 2025-01-14 18:59_
+
+---

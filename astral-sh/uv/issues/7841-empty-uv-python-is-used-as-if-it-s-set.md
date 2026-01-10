@@ -1,0 +1,54 @@
+---
+number: 7841
+title: "empty UV_PYTHON is used as if it's set"
+type: issue
+state: closed
+author: bluss
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2024-10-01T13:41:32Z
+updated_at: 2024-10-04T11:32:05Z
+url: https://github.com/astral-sh/uv/issues/7841
+synced_at: 2026-01-10T01:24:20Z
+---
+
+# empty UV_PYTHON is used as if it's set
+
+---
+
+_Issue opened by @bluss on 2024-10-01 13:41_
+
+I noticed the following:
+
+```bash
+UV_PYTHON= uv init x
+# error: No interpreter found for executable name `` in virtual environments, managed installations, or system path
+```
+
+uv 0.4.17
+
+it goes back to previous uv versions including 0.2.x. The user expectation would probably be to not use the variable because it's empty, but I'm not sure how this is handled with other environment variables in uv.
+
+---
+
+_Label `bug` added by @zanieb on 2024-10-01 13:55_
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-10-01 13:55_
+
+---
+
+_Referenced in [astral-sh/uv#7878](../../astral-sh/uv/pulls/7878.md) on 2024-10-02 19:11_
+
+---
+
+_Closed by @charliermarsh on 2024-10-04 11:32_
+
+---
+
+_Closed by @charliermarsh on 2024-10-04 11:32_
+
+---

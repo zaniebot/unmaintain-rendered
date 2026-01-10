@@ -1,0 +1,112 @@
+---
+number: 1156
+title: Add support for environment detection to VSCode
+type: issue
+state: closed
+author: zanieb
+labels:
+  - enhancement
+  - wish
+assignees: []
+created_at: 2024-01-28T16:23:59Z
+updated_at: 2025-12-02T10:04:17Z
+url: https://github.com/astral-sh/uv/issues/1156
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Add support for environment detection to VSCode
+
+---
+
+_Issue opened by @zanieb on 2024-01-28 16:23_
+
+This is probably not relevant for us yet, but I want to track contributing this.
+
+e.g.
+- https://github.com/microsoft/vscode-python/pull/15765
+- https://github.com/microsoft/vscode-python/pull/22779
+
+---
+
+_Label `wish` added by @zanieb on 2024-01-28 16:23_
+
+---
+
+_Comment by @casellimarco on 2024-02-19 12:43_
+
+Actually it would be really appreciated feature, I have been already struggling with this
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-19 17:23_
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-02 22:12_
+
+I am noticing that uv's `.venv` folder is not detected by vscode.
+
+Oddly, the `.venv` folder produced by `poetry` and `pdm` do get detected and the venv is auto-activated within the integrated terminal of vscode.
+
+Edit: Seems this was a fluke. It's being found by vscode now!
+
+---
+
+_Comment by @charliermarsh on 2024-08-02 22:17_
+
+Huh, interesting. There's nothing special about our `.venv`!
+
+---
+
+_Comment by @eth3lbert on 2024-08-02 23:19_
+
+I just try it with `VSCodium` but it does auto-activated the venv.
+
+---
+
+_Comment by @ophiry on 2024-09-20 07:13_
+
+Would be very useful.
+is there any workaround for this?
+
+---
+
+_Comment by @mark-kazakov on 2024-09-25 07:43_
+
+I also had issues on `linux` with that, on my side the problem was that I installed `vscode`/`vscodium` from a `flatpak`.
+Installing from a **regular package manager** solved the issues. I just select the python interpreter from `vscode` and it detects all the installed packages in the `.venv` folder.
+However I am unable to create from vscode a `.venv` environemnt using `uv`.
+
+
+---
+
+_Comment by @merlinz01 on 2024-10-10 00:35_
+
+What might be nice is smart handling of script dependency metadata.
+
+![image](https://github.com/user-attachments/assets/e5f17bd8-4488-46c0-b392-3e1ecee03ebf)
+
+
+---
+
+_Referenced in [astral-sh/uv#11314](../../astral-sh/uv/issues/11314.md) on 2025-02-12 15:05_
+
+---
+
+_Referenced in [astral-sh/uv#12363](../../astral-sh/uv/issues/12363.md) on 2025-03-21 12:35_
+
+---
+
+_Comment by @zanieb on 2025-12-02 10:04_
+
+We added environment detection to `python-environment-tools` which is the backing source for VS Code.
+
+I think there's more to be done for PEP 723 scripts, but I consider that separate from the intent of this issue.
+
+cc @zsol 
+
+---
+
+_Closed by @zanieb on 2025-12-02 10:04_
+
+---

@@ -1,0 +1,184 @@
+---
+number: 9309
+title: "List available upgrades for tools with `uv tool list --outdated`"
+type: issue
+state: open
+author: traynier
+labels:
+  - enhancement
+  - help wanted
+assignees: []
+created_at: 2024-11-21T11:03:40Z
+updated_at: 2025-11-24T20:09:09Z
+url: https://github.com/astral-sh/uv/issues/9309
+synced_at: 2026-01-10T01:24:39Z
+---
+
+# List available upgrades for tools with `uv tool list --outdated`
+
+---
+
+_Issue opened by @traynier on 2024-11-21 11:03_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Is there no way of seeing updates for tools?
+
+I currently have ruff 0.7.3 installed.  I can successfully upgrade the tool using `uv tool upgrade ruff`, which updates it to 0.7.4, but would like to see what is available to upgrade first so that I can go and read the release notes (and put it in a script to show me when new versions are available).  I used `uv tool install ruff` rather than just running via uvx so that I can use generate-shell-completion for it (that does not work when running under uvx as starting a command with `uvx ruff ...` does not show shell completion for `ruff ...`)
+
+I am using uv 0.5.3 on Windows, with Powershell 7.4.6
+
+```
+> uv tool list
+ruff v0.7.3
+- ruff.exe
+```
+
+My uv installed version of ruff is old, but I would have expected to be able to use --outdated like on uv pip list / uv tree
+```
+> uv tool list --outdated
+error: unexpected argument '--outdated' found
+
+Usage: uv.exe tool list [OPTIONS]
+```
+
+
+
+I was looking at if there was other ways of doing this, but it appears not.  Oddly, the shell completion for powershell gives --no-upgrade as an option on `uv tool upgrade` :
+```
+> uv tool upgrade --no-upgrade--allow-insecure-host
+--all                         --index-strategy              --no-offline                  --resolution
+--allow-insecure-host         --index-url                   --no-preview                  --show-settings
+--allow-python-downloads      --isolated                    --no-progress                 --upgrade
+--binary                      --keyring-provider            --no-python-downloads         --upgrade-package
+--build                       --link-mode                   --no-reinstall                --verbose
+--build-isolation             --native-tls                  --no-sources                  --version
+--cache-dir                   --no-binary                   --no-upgrade                  -C
+--color                       --no-binary-package           --offline                     -f
+--compile-bytecode            --no-build                    --pre                         -h
+--config-file                 --no-build-isolation          --prerelease                  -i
+--config-setting              --no-build-isolation-package  --preview                     -n
+--default-index               --no-build-package            --project                     -p
+--directory                   --no-cache                    --python                      -P
+--exclude-newer               --no-color                    --python-fetch                -q
+--extra-index-url             --no-compile-bytecode         --python-preference           -U
+--find-links                  --no-config                   --quiet                       -v
+--help                        --no-index                    --reinstall                   -V
+--index                       --no-native-tls               --reinstall-package
+
+no-upgrade
+```
+
+But running it just gives an error:
+```
+> uv tool upgrade --no-upgrade ruff
+thread 'main' panicked at crates\uv-cli\src\options.rs:18:17:
+internal error: entered unreachable code: Clap should make this impossible
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+But that appears to be more an issue with the `uv generate-shell-completion powershell` as that option is not listed in the help/documentation?
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-11-21 13:50_
+
+---
+
+_Comment by @charliermarsh on 2024-11-21 13:51_
+
+I think `--outdated` makes sense to add here.
+
+I need to look at why we're panicking there -- that's strange.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-21 13:51_
+
+---
+
+_Comment by @FishAlchemist on 2024-11-21 14:00_
+
+@charliermarsh 
+In ``uv tool upgrade``, ``--upgrade`` is enabled by default. However, why not remove both ``--upgrade`` and ``--no-upgrade`` from ``uv tool upgrade``? 
+After all, it seems odd for an upgrade tool to have a flag that doesn't upgrade or to explicitly mention upgrading.
+
+---
+
+_Comment by @charliermarsh on 2024-11-21 14:02_
+
+It's a little bit of a pain. We have a common `ResolverInstallerArgs` struct for arguments that are shared across commands, and `--upgrade` is inherited from that.
+
+---
+
+_Comment by @charliermarsh on 2024-11-21 14:11_
+
+I'll fix it, it just requires some unfortunate duplication.
+
+---
+
+_Comment by @charliermarsh on 2024-11-21 14:22_
+
+Cleaned up in https://github.com/astral-sh/uv/pull/9318, but leaving this issue open since it's about `--outdated`.
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2024-11-21 14:34_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-11-21 14:34_
+
+---
+
+_Referenced in [astral-sh/uv#9636](../../astral-sh/uv/pulls/9636.md) on 2024-12-06 13:28_
+
+---
+
+_Comment by @xorander00 on 2024-12-12 04:06_
+
+Just my $0.02, but I think -n/--dry-run is a better flag for it. It's more in line with how other tools handle it, plus it can be a common flag for other sub-commands as well (e.g. install, uninstall, etc).  
+  
+Having an option to just list outdated packages would be very useful though, at least for my use-case. I have a script that uses ecosystem-specific tools for various platforms to check for and list all outdated packages. I like to see everything that can be upgraded before actually doing it, just in case it's not necessary or it might take a while and bog down resources.
+
+---
+
+_Referenced in [astral-sh/uv#10930](../../astral-sh/uv/issues/10930.md) on 2025-01-24 09:06_
+
+---
+
+_Referenced in [griptape-ai/griptape-nodes#918](../../griptape-ai/griptape-nodes/issues/918.md) on 2025-05-03 00:43_
+
+---
+
+_Comment by @Disonantemus on 2025-08-26 13:42_
+
+I also **miss this!**
+
+I have _many_ packages in my `uv tool list`, but some are _very large_ (coqui-tts, parllama, aider-chat) and I don't want to do a **blind** **upgrade** with `--all` (time consuming, slow connection, mobile), please **do this** in any way possible:
+
+~~~
+--outdated
+-n | --dry-run
+--upgradable
+--ignore <package>
+~~~
+
+Maybe, there is a package to do this?
+
+---
+
+_Comment by @soderluk on 2025-11-24 20:09_
+
+Any progress on this? I just came across the need to be able to list available updates.
+
+---

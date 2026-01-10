@@ -1,0 +1,112 @@
+---
+number: 2248
+title: "uv could operate on the venv it's installed in"
+type: issue
+state: closed
+author: dhduvall
+labels:
+  - wontfix
+assignees: []
+created_at: 2024-03-06T18:46:31Z
+updated_at: 2024-03-09T03:24:56Z
+url: https://github.com/astral-sh/uv/issues/2248
+synced_at: 2026-01-10T01:23:15Z
+---
+
+# uv could operate on the venv it's installed in
+
+---
+
+_Issue opened by @dhduvall on 2024-03-06 18:46_
+
+I wasn't able to find this request except as mentioned in https://github.com/astral-sh/uv/issues/1422#issuecomment-1949877288 — that when `uv` is installed in a venv, running it should by default operate on the venv it's installed in.
+
+This simplifies bootstrapping a little bit, as I could then simply set `UV = $(VENV)/bin/uv` in my `Makefile`. I'm currently using `--python`, but that's accepted only as a flag to the `uv pip XXX` subcommand, and not to `uv` itself, so I have to splice it in everywhere I need it. I could also set `VIRTUAL_ENV` in my `Makefile`, but somehow that feels awkward to me.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-03-06 20:20_
+
+---
+
+_Comment by @zanieb on 2024-03-07 18:02_
+
+This makes some sense, but I don't see how setting the `uv` alias is any easier than setting `VIRTUAL_ENV`? I think the latter is clearer. 
+
+In general, I would recommend against installing `uv` into virtual environments.
+
+I think changing this behavior as requested would have dangerous implications, e.g. if you `pipx install uv` it would operate on the `pipx` environment it was installed in?
+
+---
+
+_Comment by @dhduvall on 2024-03-08 18:57_
+
+> This makes some sense, but I don't see how setting the `uv` alias is any easier than setting `VIRTUAL_ENV`? I think the latter is clearer.
+
+Mostly because setting environment variables in `make` is a bit of a pain. You can't just set it on one line of a recipe, because it won't carry over to the next. I could set it globally (`export VIRTUAL_ENV=...`), and I'll probably end up with that, but globals always irritate me. Might not be rational in this case.
+
+> In general, I would recommend against installing `uv` into virtual environments.
+
+Hm. Can you elaborate? I'm doing that because I want to have a specific version of `uv` (for reproducible builds), and I don't think the install script allows for that. Though of course, the bootstrap `uv` is still whatever comes from the script. But the right place to ask for that is at `cargo-dist`, right?
+
+Should `uv` not publish a Python package at all?
+
+> I think changing this behavior as requested would have dangerous implications, e.g. if you `pipx install uv` it would operate on the `pipx` environment it was installed in?
+
+Good question. I've no idea–I'm not familiar with `pipx`.
+
+---
+
+_Comment by @zanieb on 2024-03-08 21:30_
+
+> Hm. Can you elaborate? I'm doing that because I want to have a specific version of uv (for reproducible builds), and I don't think the install script allows for that. Though of course, the bootstrap uv is still whatever comes from the script. But the right place to ask for that is at cargo-dist, right?
+
+You can download specific versions with the install script e.g.
+
+```
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.16/uv-installer.sh | sh
+```
+
+You can see examples of these in the GitHub Releases page. If you need multiple versions to exist on the system, I think we'd need something like https://github.com/astral-sh/uv/issues/2087 or the ability to name the executable.
+
+`uv` is better off being outside of the environments it's managing, it's a clearer separation since it does not require Python. It also makes it harder to accidentally delete the binary (e.g. #1327).
+
+> Should uv not publish a Python package at all?
+
+We considered this. We only publish a Python package for convenience (and it has _many_ downloads) — our users are just accustomed to installing things that way. It's definitely not our preferred method though.
+
+I think my last point around `pipx` is significant enough that we cannot support this request. Thanks for sharing your perspective and engaging with the project though!
+
+---
+
+_Comment by @dhduvall on 2024-03-09 03:04_
+
+> > Hm. Can you elaborate? I'm doing that because I want to have a specific version of uv (for reproducible builds), and I don't think the install script allows for that. Though of course, the bootstrap uv is still whatever comes from the script. But the right place to ask for that is at cargo-dist, right?
+> 
+> You can download specific versions with the install script e.g.
+> 
+> ```
+> curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.16/uv-installer.sh | sh
+> ```
+
+Got it. That's a workaround I can probably get behind.
+ 
+> `uv` is better off being outside of the environments it's managing, it's a clearer separation since it does not require Python. It also makes it harder to accidentally delete the binary (e.g. #1327).
+
+Good point.
+
+Thanks for your time and patience.
+
+---
+
+_Closed by @dhduvall on 2024-03-09 03:04_
+
+---
+
+_Label `needs-decision` removed by @zanieb on 2024-03-09 03:24_
+
+---
+
+_Label `wontfix` added by @zanieb on 2024-03-09 03:24_
+
+---

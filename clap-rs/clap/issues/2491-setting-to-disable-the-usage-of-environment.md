@@ -1,0 +1,83 @@
+---
+number: 2491
+title: Setting to disable the usage of Environment Variables
+type: issue
+state: closed
+author: hasezoey
+labels:
+  - ":money_with_wings: $5"
+assignees: []
+created_at: 2021-05-20T13:01:59Z
+updated_at: 2021-05-20T20:44:17Z
+url: https://github.com/clap-rs/clap/issues/2491
+synced_at: 2026-01-10T01:27:19Z
+---
+
+# Setting to disable the usage of Environment Variables
+
+---
+
+_Issue opened by @hasezoey on 2021-05-20 13:01_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+My use case is that i want to use my `cli.yml` file in both the binary and in tests
+
+### Describe the solution you'd like
+
+an setting / function to disable the usage of Environment Variables in something like `get_matches`, without having copies of `cli.yml`
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+Originally asked in Discussions: https://github.com/clap-rs/clap/discussions/2489
+
+---
+
+_Label `T: new feature` added by @hasezoey on 2021-05-20 13:01_
+
+---
+
+_Renamed from "Setting to disable the usage of Environment Variables for "get_matches*"" to "Setting to disable the usage of Environment Variables" by @pksunkara on 2021-05-20 13:03_
+
+---
+
+_Label `:money_with_wings: $5` added by @pksunkara on 2021-05-20 13:03_
+
+---
+
+_Referenced in [clap-rs/clap#2493](../../clap-rs/clap/pulls/2493.md) on 2021-05-20 17:10_
+
+---
+
+_Closed by @pksunkara on 2021-05-20 19:17_
+
+---
+
+_Comment by @hasezoey on 2021-05-20 20:42_
+
+@pksunkara if i saw right, then this will be in 3.x only and not backported to 2.x?
+
+PS: thanks for being so quick
+
+---
+
+_Comment by @pksunkara on 2021-05-20 20:42_
+
+Yes.
+
+---
+
+_Comment by @hasezoey on 2021-05-20 20:44_
+
+ok, thanks for this quick response
+
+---

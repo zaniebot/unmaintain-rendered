@@ -1,0 +1,40 @@
+---
+number: 5354
+title: Integrate criterion statistics and plots into CI
+type: issue
+state: closed
+author: konstin
+labels:
+  - performance
+assignees: []
+created_at: 2023-06-25T11:24:49Z
+updated_at: 2023-11-10T05:32:46Z
+url: https://github.com/astral-sh/ruff/issues/5354
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Integrate criterion statistics and plots into CI
+
+---
+
+_Issue opened by @konstin on 2023-06-25 11:24_
+
+For each PR, our CI [compares](https://github.com/astral-sh/ruff/blob/main/.github/workflows/benchmark.yaml) running criterion benchmarks on main vs. running them on the PR and posts a comment with the timing changes. Unfortunately, the github actions runner performance is rather noisy, so e.g. in [this change](https://github.com/astral-sh/ruff/pull/5340#issuecomment-1604574715) that doesn't touch the linter at all we still see large seeming changes to linter performance.
+
+[criterion](https://github.com/bheisler/criterion.rs), the benchmarking framework we use, integrates statistical methods and e.g. computes p-values that tells you whether a change is statistically significant (vs. the just noise) and it plots each run to allow for manual inspection. It would be great if we could extend CI to show more information, e.g. whether criterion considers the difference significant. I don't know if that is possible with the way github handles artifacts, but exporting the criterion plots and linking them on the PR comment would also be helpful.
+
+---
+
+_Label `performance` added by @konstin on 2023-06-25 11:24_
+
+---
+
+_Comment by @charliermarsh on 2023-11-10 05:32_
+
+I think this is less relevant now that we're on CodSpeed, but can always revisit if we migrate away.
+
+---
+
+_Closed by @charliermarsh on 2023-11-10 05:32_
+
+---

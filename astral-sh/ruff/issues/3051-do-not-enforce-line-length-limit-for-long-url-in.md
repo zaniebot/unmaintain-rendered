@@ -1,0 +1,122 @@
+---
+number: 3051
+title: Do not enforce line length limit for long URL in docstrings
+type: issue
+state: closed
+author: jfcherng
+labels:
+  - question
+assignees: []
+created_at: 2023-02-20T06:47:18Z
+updated_at: 2023-03-26T18:17:37Z
+url: https://github.com/astral-sh/ruff/issues/3051
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# Do not enforce line length limit for long URL in docstrings
+
+---
+
+_Issue opened by @jfcherng on 2023-02-20 06:47_
+
+Similar to https://github.com/charliermarsh/ruff/pull/920 but in docstring
+
+```py
+class Foo:
+    """
+    @see https://looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong.url.com
+    """
+```
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-20 18:02_
+
+For what it's worth, we do allow this:
+
+```py
+class Foo:
+    """
+    See:
+        https://looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong.url.com
+    """
+```
+
+That is: if the URL is on its own line, we don't flag it. Is that sufficient?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-20 18:02_
+
+---
+
+_Comment by @jfcherng on 2023-02-21 02:04_
+
+> For what it's worth, we do allow this:
+> 
+> ```python
+> class Foo:
+>     """
+>     See:
+>         https://looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong.url.com
+>     """
+> ```
+> 
+> That is: if the URL is on its own line, we don't flag it. Is that sufficient?
+
+Probably OK for this case but for consistency, it's a little cumbersome for a short URL.
+
+```py
+class Foo:
+    """
+    See:
+        https://short.url.com/
+    """
+```
+
+v.s.
+
+```py
+class Foo:
+    """
+    @see https://short.url.com/
+    """
+```
+
+---
+
+Okay... so there are various [common docstring formats](https://stackoverflow.com/a/24385103/4643765). Not sure how much performance impact it would be for detecting a line is ended with a URL in a multiline string... but it sounds slow.
+
+---
+
+_Referenced in [astral-sh/ruff#3625](../../astral-sh/ruff/issues/3625.md) on 2023-03-20 13:39_
+
+---
+
+_Referenced in [astral-sh/ruff#3663](../../astral-sh/ruff/pulls/3663.md) on 2023-03-22 03:29_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-22 03:31_
+
+---
+
+_Comment by @jat255 on 2023-03-24 17:55_
+
+Another issue where I've run into this when I recently started using ruff (wonderful tool, by the way!) is in RST text substitution links, something like the following:
+
+```rst
+    .. _named link on long line 1: https://qwertyyuiopasdfghjklzxcvbnm.qwertyyuiopasdfghjklzxcvbnm.org/
+    .. _named link on long line 2: https://qwertyyuiopasdfghjklzxcvbnm.com/qwertyyuiopasdfghjklzxcvbnm.html#anchor_tag_1
+```
+
+---
+
+_Closed by @charliermarsh on 2023-03-26 18:17_
+
+---
+
+_Referenced in [astral-sh/ruff#5019](../../astral-sh/ruff/issues/5019.md) on 2023-06-12 07:38_
+
+---

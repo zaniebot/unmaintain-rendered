@@ -1,0 +1,166 @@
+---
+number: 10613
+title: "`uv run --python 3.13  python` hangs and nothing happens on macOS"
+type: issue
+state: closed
+author: peterbe
+labels:
+  - question
+  - needs-mre
+assignees: []
+created_at: 2025-01-14T20:06:11Z
+updated_at: 2025-01-14T20:51:02Z
+url: https://github.com/astral-sh/uv/issues/10613
+synced_at: 2026-01-10T01:24:55Z
+---
+
+# `uv run --python 3.13  python` hangs and nothing happens on macOS
+
+---
+
+_Issue opened by @peterbe on 2025-01-14 20:06_
+
+```
+❯ uv --version
+uv 0.5.18 (Homebrew 2025-01-11)
+
+❯ uv run --python 3.13  python
+
+
+...just hangs and nothing happens...
+```
+
+I know I know, this could be a user-error but the point is that it's making it very hard to figure out how to solve this. 
+
+```
+❯ uv run --python 3.12 python
+Python 3.12.8 (main, Dec  6 2024, 19:42:06) [Clang 18.1.8 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+```
+
+...works fine. 
+
+Something's not right with 3.13, and I'm not desperate to use it, but I'd love it if there was a timeout or some way to gain insight into what it's getting hung up on. 
+
+
+---
+
+_Comment by @zanieb on 2025-01-14 20:19_
+
+What's the output of `which python`, `uv python find 3.13`, `RUST_LOG=trace uv run -v --python 3.13 python`, `uv run -v --python 3.13 which python`
+
+---
+
+_Label `question` added by @zanieb on 2025-01-14 20:19_
+
+---
+
+_Label `needs-mre` added by @zanieb on 2025-01-14 20:19_
+
+---
+
+_Comment by @peterbe on 2025-01-14 20:37_
+
+> `which python`
+
+```
+/Users/peterbe/bin/python
+```
+See https://www.peterbe.com/plog/run-standalone-python-2025 :)
+
+> `uv python find 3.13`
+
+```
+/opt/homebrew/opt/python@3.13/bin/python3.13
+```
+
+> `uv python find 3.12`
+
+```
+/Users/peterbe/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/bin/python3.12
+```
+
+> `RUST_LOG=trace uv run -v --python 3.13 python`
+
+https://gist.github.com/peterbe/b4dd64b935fe3d72194f823c9cd76a48
+
+> `uv run -v --python 3.13 which python`
+
+```
+❯ uv run -v --python 3.13 which python
+DEBUG uv 0.5.18 (Homebrew 2025-01-11)
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.13 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.12.8-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.12.7-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.12.5-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.12.0-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.10.2-macos-aarch64-none`
+DEBUG Failed to inspect Python interpreter from search path at `bin/python`
+DEBUG Skipping bad interpreter at /Users/peterbe/bin/python from search path: Querying Python at `/Users/peterbe/bin/python` failed with exit status exit status: 1
+--- stdout:
+
+--- stderr:
++ uv run --python 3.12 --with requests python -I -B -c import 'sys;' sys.path = '["/Users/peterbe/.cache/uv/.tmpaB1fSu"]' + 'sys.path;' from python.get_interpreter_info import 'main;' 'main()'
+  File "<string>", line 1
+    import
+          ^
+SyntaxError: invalid syntax
+---
+DEBUG Found `cpython-3.13.1-macos-aarch64-none` at `/opt/homebrew/bin/python3.13` (search path)
+DEBUG Using Python 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+DEBUG Running `which python`
+/Users/peterbe/bin/python
+DEBUG Command exited with code: 0
+```
+
+---
+
+_Comment by @zanieb on 2025-01-14 20:45_
+
+From https://gist.github.com/peterbe/b4dd64b935fe3d72194f823c9cd76a48 it looks like it runs fine and doesn't hang. Am I misreading?
+
+---
+
+_Comment by @zanieb on 2025-01-14 20:47_
+
+Just fyi, we do support `uv python install --preview --default` to add `python` to your `PATH`.
+
+---
+
+_Comment by @peterbe on 2025-01-14 20:48_
+
+Ha! Yeah. 
+
+```
+❯ uv run --python 3.13 python
+Python 3.13.1 (main, Dec  3 2024, 17:59:52) [Clang 16.0.0 (clang-1600.0.26.4)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
+
+That's different from about 40 minutes ago when I wrote this issue :)
+
+No idea what changed in that timespan. 
+
+It's still curious that it *did* hang without any sign of life or errors or warnings. 
+
+---
+
+_Comment by @peterbe on 2025-01-14 20:49_
+
+Close or shall we worry about that odd lack of no-feedback-hanging? ...for the sake other people coming up against the same trouble some day. 
+
+---
+
+_Comment by @zanieb on 2025-01-14 20:51_
+
+I'm a bit confused about how it _could_ hang. Let's close for now but feel free to re-open if you encounter it and can get logs or a reproduction.
+
+---
+
+_Closed by @zanieb on 2025-01-14 20:51_
+
+---

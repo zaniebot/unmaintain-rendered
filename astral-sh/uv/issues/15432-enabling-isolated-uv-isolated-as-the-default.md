@@ -1,0 +1,51 @@
+---
+number: 15432
+title: "Enabling `--isolated` \\ `UV_ISOLATED` as the default option for `uv run`, when testing different Python versions"
+type: issue
+state: open
+author: pygarap
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-21T20:13:57Z
+updated_at: 2025-08-30T19:14:51Z
+url: https://github.com/astral-sh/uv/issues/15432
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# Enabling `--isolated` \ `UV_ISOLATED` as the default option for `uv run`, when testing different Python versions
+
+---
+
+_Issue opened by @pygarap on 2025-08-21 20:13_
+
+### Summary
+
+Enabling `--isolated` \ `UV_ISOLATED` as the default option for `uv run` when used with `UV_PYTHON` or `--python` and a different Python version than the one specified in the `.python-version` file.
+
+I find it inconvenient that when I test my package on different Python versions without using `--isolated` \ `UV_ISOLATED`, it overrides my project's virtual environment with another Python version.
+
+### Example
+
+If my `.python-version` is set to Python 3.13, and I do: `uv run --python=3.12 -- pytest`, it will change my project's virtual environment to use Python 3.12 permanently, and not just for this single `uv run`.
+
+---
+
+_Label `enhancement` added by @pygarap on 2025-08-21 20:13_
+
+---
+
+_Renamed from "Enabling `--isolated` \ `UV_ISOLATED` as the default option for `uv run`" to "Enabling `--isolated` \ `UV_ISOLATED` as the default option for `uv run`, when testing different Python versions" by @pygarap on 2025-08-25 18:23_
+
+---
+
+_Comment by @LoicRiegel on 2025-08-30 19:14_
+
+Hi! I also think it's a good idea.
+
+If we do that, though, would there still be a way for users to get the current behavior (switch their venv permanently to another python version, without changing the .python-version for everyone)?
+I haven't found the opposite of "--isolated"...
+
+I think that's important to keep this, because some users might always prefer to use "uv run" with a different python version that the one in .python-version.
+
+---

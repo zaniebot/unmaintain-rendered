@@ -1,0 +1,118 @@
+---
+number: 3943
+title: "Missing test coverage for `tool.uv` behaviours"
+type: issue
+state: closed
+author: konstin
+labels:
+  - testing
+  - preview
+assignees: []
+created_at: 2024-05-31T13:43:29Z
+updated_at: 2024-08-12T23:50:46Z
+url: https://github.com/astral-sh/uv/issues/3943
+synced_at: 2026-01-10T01:23:32Z
+---
+
+# Missing test coverage for `tool.uv` behaviours
+
+---
+
+_Issue opened by @konstin on 2024-05-31 13:43_
+
+In #3904, we added support for a whole class of new `tool.uv` behaviors, but no tests for them yet. 
+
+- [x] Tests path dependencies into another workspace than the current. Consider two workspaces one disk, one workspace with packages A, B and another workspace with C, D, and path dependencies (editable or not) A -> B, B -> C, C -> D where A is the current project. We should test that B -> C correct resolves so that c -> D uses the workspace package D. https://github.com/astral-sh/uv/pull/4833
+- [x] Test that we don't read `tool.uv` information from index packages, url archives or path archives, neither `tool.uv.sources` nor `tool.uv.workspace`.
+- [x] Test that all combinations of editable and non-editable dependencies both in and across workspace work. Editable should take precedence over non-editable, e.g. if you require a package both as editable and non-editable, it becomes an editable.
+- [x] Test that `tool.uv.sources` inheritance from the workspace to the project works.
+- [x] Test that extras work with workspaces, specifically if the extra is part of another workspace package. We should check what cargo is doing here.
+- [x] https://github.com/astral-sh/uv/issues/4603
+
+---
+
+_Label `preview` added by @konstin on 2024-05-31 13:43_
+
+---
+
+_Referenced in [astral-sh/uv#3904](../../astral-sh/uv/pulls/3904.md) on 2024-05-31 13:44_
+
+---
+
+_Comment by @charliermarsh on 2024-06-06 23:28_
+
+We should also test the `requires-python` behavior for workspaces -- what happens when no project has a `requires-python`? What happens when a single project has a `requires-python`? Etc.
+
+---
+
+_Referenced in [astral-sh/uv#4119](../../astral-sh/uv/issues/4119.md) on 2024-06-06 23:50_
+
+---
+
+_Comment by @charliermarsh on 2024-06-13 02:39_
+
+See also: https://github.com/astral-sh/uv/pull/4298
+
+---
+
+_Referenced in [astral-sh/uv#4298](../../astral-sh/uv/pulls/4298.md) on 2024-06-13 02:39_
+
+---
+
+_Referenced in [astral-sh/uv#4499](../../astral-sh/uv/pulls/4499.md) on 2024-06-28 14:30_
+
+---
+
+_Referenced in [astral-sh/uv#4833](../../astral-sh/uv/pulls/4833.md) on 2024-07-07 20:22_
+
+---
+
+_Renamed from "Add missing tests for `tool.uv` behaviour" to "Missing for `tool.uv` behaviours" by @konstin on 2024-07-09 10:05_
+
+---
+
+_Renamed from "Missing for `tool.uv` behaviours" to "Missing `tool.uv` behaviours" by @konstin on 2024-07-09 10:05_
+
+---
+
+_Renamed from "Missing `tool.uv` behaviours" to "Missing test coverage for `tool.uv` behaviours" by @charliermarsh on 2024-07-30 15:40_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-30 15:41_
+
+---
+
+_Label `testing` added by @charliermarsh on 2024-07-30 15:41_
+
+---
+
+_Referenced in [astral-sh/uv#6045](../../astral-sh/uv/pulls/6045.md) on 2024-08-12 20:55_
+
+---
+
+_Referenced in [astral-sh/uv#6046](../../astral-sh/uv/pulls/6046.md) on 2024-08-12 21:45_
+
+---
+
+_Referenced in [astral-sh/uv#6047](../../astral-sh/uv/pulls/6047.md) on 2024-08-12 21:51_
+
+---
+
+_Referenced in [astral-sh/uv#6050](../../astral-sh/uv/pulls/6050.md) on 2024-08-12 23:28_
+
+---
+
+_Referenced in [astral-sh/uv#6051](../../astral-sh/uv/pulls/6051.md) on 2024-08-12 23:42_
+
+---
+
+_Comment by @charliermarsh on 2024-08-12 23:50_
+
+Did these! They surfaced a few bugs too which is great.
+
+---
+
+_Closed by @charliermarsh on 2024-08-12 23:50_
+
+---

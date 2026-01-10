@@ -1,0 +1,66 @@
+---
+number: 1194
+title: F821 UndefinedName false positive on annotated global
+type: issue
+state: closed
+author: andersk
+labels:
+  - bug
+assignees: []
+created_at: 2022-12-11T09:24:16Z
+updated_at: 2022-12-11T15:04:07Z
+url: https://github.com/astral-sh/ruff/issues/1194
+synced_at: 2026-01-10T01:22:38Z
+---
+
+# F821 UndefinedName false positive on annotated global
+
+---
+
+_Issue opened by @andersk on 2022-12-11 09:24_
+
+As of 26d3ff5a3a235cda4883f62e4cbce4096c5c9388 (#1166), Ruff gives an `F821` error here that Flake8 does not. Deleting the `n: int` annotation makes the error disappear.
+
+```python
+n: int
+
+
+def f():
+    print(n)
+
+
+def g():
+    global n
+    n = 1
+
+
+g()
+f()
+```
+
+```console
+$ flake8 test.py
+$ ruff test.py
+Found 1 error(s).
+test.py:5:11: F821 Undefined name `n`
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-12-11 14:07_
+
+---
+
+_Comment by @charliermarsh on 2022-12-11 14:11_
+
+Will fix today!
+
+---
+
+_Referenced in [astral-sh/ruff#1196](../../astral-sh/ruff/pulls/1196.md) on 2022-12-11 15:03_
+
+---
+
+_Closed by @charliermarsh on 2022-12-11 15:04_
+
+---

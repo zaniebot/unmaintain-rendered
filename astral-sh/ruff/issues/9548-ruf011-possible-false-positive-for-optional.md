@@ -1,0 +1,120 @@
+---
+number: 9548
+title: "`RUF011` possible false positive for optional unwrapping in dict comprehension"
+type: issue
+state: closed
+author: farmio
+labels:
+  - bug
+assignees: []
+created_at: 2024-01-16T08:31:26Z
+updated_at: 2024-01-16T20:02:43Z
+url: https://github.com/astral-sh/ruff/issues/9548
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# `RUF011` possible false positive for optional unwrapping in dict comprehension
+
+---
+
+_Issue opened by @farmio on 2024-01-16 08:31_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hi 👋! 
+
+I have a piece of code raising 
+```
+RUF011 Dictionary comprehension uses static key: `attr`
+```
+from `ruff check .` since the update from ruff 0.1.11 to 0.1.13.
+
+This is the piece of code in question:
+https://github.com/XKNX/xknxproject/blob/73088e13bfcd11f4dc03963bf2c8ef4776972e68/xknxproject/loader/knx_master_loader.py#L70-L75
+A short version of it:
+```py
+from xml.etree.ElementTree import Element
+translation_element: Element
+
+translations = {
+    attr: text
+    for item in translation_element.findall("{*}Translation")  # `Element.findall() -> list[Element]`
+    if (attr := item.get("AttributeName")) is not None  # unwrap since `Element.get() -> str | None`
+    and (text := item.get("Text")) is not None
+}
+```
+I would expect `attr` not to be treated as static key here since it should (depending on the xml source) be different for every iteration of the comprehension.
+
+Here is my ruff section from pyproject.toml:
+```toml
+[tool.ruff]
+target-version = "py39"
+select = [
+  "C4",  # comprehensions
+  "D",   # pydocstyle
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "I",   # isort
+  "RUF", # ruff specific
+  "T20", # print
+  "UP",  # pyupgrade
+  "W",   # pydocstyle warning
+]
+ignore = [
+  "D202",
+  "D203",
+  "D212",
+  "E501", # line too long
+]
+extend-exclude = [
+  "script",
+]
+
+[tool.ruff.isort]
+force-sort-within-sections = true
+combine-as-imports = true
+```
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-16 19:38_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-01-16 19:38_
+
+---
+
+_Comment by @charliermarsh on 2024-01-16 19:38_
+
+Thanks! Looks like a bug.
+
+---
+
+_Comment by @charliermarsh on 2024-01-16 19:55_
+
+I'll fix this today.
+
+---
+
+_Comment by @charliermarsh on 2024-01-16 20:02_
+
+Oh sorry, I can confirm that this was already fixed on `main` but hasn't been released yet: https://github.com/astral-sh/ruff/pull/9494
+
+---
+
+_Closed by @charliermarsh on 2024-01-16 20:02_
+
+---
+
+_Referenced in [XKNX/xknxproject#351](../../XKNX/xknxproject/pulls/351.md) on 2024-01-16 20:14_
+
+---

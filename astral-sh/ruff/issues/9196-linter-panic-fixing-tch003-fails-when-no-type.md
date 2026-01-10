@@ -1,0 +1,180 @@
+---
+number: 9196
+title: "[Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty"
+type: issue
+state: closed
+author: picnixz
+labels:
+  - bug
+  - linter
+assignees: []
+created_at: 2023-12-19T09:57:44Z
+updated_at: 2023-12-20T16:03:04Z
+url: https://github.com/astral-sh/ruff/issues/9196
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# [Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty
+
+---
+
+_Issue opened by @picnixz on 2023-12-19 09:57_
+
+I'm not sure that it's the place to ask since this bug appears to be caused by `[tool.ruff.lint.flake8-type-checking]`. Anyway, with the configuration
+
+```toml
+[tool.ruff]
+target-version = 'py311'
+ignore = ['all']
+select = ['TCH']
+
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+``` 
+
+invoking 
+
+```bash
+python3.11 -m ruff file.py --fix --unsafe-fixes
+``` 
+
+on
+
+```python
+from __future__ import annotations
+
+from typing import Final
+from collections.abc import Mapping
+
+Const: Final[Mapping] = {}
+```
+
+fails with
+
+```text
+panicked at /home/runner/work/ruff/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw <= end.raw
+Backtrace:    0: <unknown>
+   1: <unknown>
+   2: <unknown>
+   3: <unknown>
+   4: <unknown>
+   5: <unknown>
+   6: <unknown>
+   7: <unknown>
+   8: <unknown>
+   9: <unknown>
+  10: <unknown>
+  11: <unknown>
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: __libc_start_main
+             at /usr/src/debug/glibc-2.26-lp152.26.12.1.x86_64/csu/../csu/libc-start.c:308
+  17: <unknown>
+```
+
+But the following succeeds:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+from collections.abc import Mapping
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+Const: Final[Mapping[str, Sequence]] = {}
+```
+
+and gets reformatted as
+
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from collections.abc import Sequence
+
+Const: Final[Mapping[str, Sequence]] = {}
+```
+
+I think it's because the `TYPE_CHECKING` block does not exist yet that it's like that. However, if the block is empty and only `typing` imports exist, it also fails:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    pass
+
+Const: Final[float] = 1
+```
+
+Now, if I change
+
+```toml
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = []
+```
+
+to 
+
+```toml
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = ['typing']
+```
+
+it works as intended.
+
+### Environment
+
+```text
+Platform:              linux; (Linux-5.3.18-lp152.106-default-x86_64-with-glibc2.26)
+Python version:        3.11.6 (main, Nov 29 2023, 14:46:32) [GCC 7.5.0])
+Python implementation: CPython
+ruff version:          0.1.8
+```
+
+
+---
+
+_Renamed from "[Linter panic] Fixing TCH003 when no `TYPE_CHECKING` block exists fails and empty `exempt-modules`" to "[Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty" by @picnixz on 2023-12-19 09:58_
+
+---
+
+_Comment by @picnixz on 2023-12-19 10:00_
+
+I think it is probably related to #5331 (feel free to close it if you think it's a duplicate)
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-12-19 10:02_
+
+---
+
+_Label `linter` added by @MichaReiser on 2023-12-19 10:02_
+
+---
+
+_Referenced in [astral-sh/ruff#9197](../../astral-sh/ruff/issues/9197.md) on 2023-12-19 10:15_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-19 14:58_
+
+---
+
+_Referenced in [astral-sh/ruff#9214](../../astral-sh/ruff/pulls/9214.md) on 2023-12-20 15:49_
+
+---
+
+_Closed by @charliermarsh on 2023-12-20 16:03_
+
+---

@@ -1,0 +1,77 @@
+---
+number: 14934
+title: "[red-knot] mdtest should fail if you have a triple-backtick block that is unclosed"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - help wanted
+  - testing
+  - ty
+assignees: []
+created_at: 2024-12-12T12:25:55Z
+updated_at: 2024-12-14T05:51:22Z
+url: https://github.com/astral-sh/ruff/issues/14934
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# [red-knot] mdtest should fail if you have a triple-backtick block that is unclosed
+
+---
+
+_Issue opened by @AlexWaygood on 2024-12-12 12:25_
+
+If you have an [mdtest](https://github.com/astral-sh/ruff/tree/main/crates/red_knot_test) like this at the end of the Markdown file, it doesn't fail:
+
+````
+# bytes should be inferred as strings
+
+```py
+x = b"42"
+
+reveal_type(x)  # revealed: str
+````
+
+That's because the backticks are never closed, so mdtest doesn't even recognise this as a test snippet. I _keep on_ making this mistake locally and wondering why my tests aren't even running! It would be ideal if the framework could detect this and tell me that my test file is invalid because the backticks were never closed.
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-12-12 12:25_
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-12-12 12:25_
+
+---
+
+_Label `testing` added by @AlexWaygood on 2024-12-12 12:25_
+
+---
+
+_Comment by @sharkdp on 2024-12-12 14:25_
+
+Yes, please! Ran into this multiple times already.
+
+---
+
+_Comment by @InSyncWithFoo on 2024-12-12 14:36_
+
+This seems trivial to fix. A PR should be ready by Saturday.
+
+---
+
+_Assigned to @InSyncWithFoo by @AlexWaygood on 2024-12-12 14:37_
+
+---
+
+_Referenced in [astral-sh/ruff#14965](../../astral-sh/ruff/pulls/14965.md) on 2024-12-14 00:21_
+
+---
+
+_Closed by @carljm on 2024-12-14 05:51_
+
+---
+
+_Closed by @carljm on 2024-12-14 05:51_
+
+---

@@ -1,0 +1,142 @@
+---
+number: 7079
+title: Specifying external dependencies in pyproject.toml
+type: issue
+state: closed
+author: BlueMagma2
+labels:
+  - question
+  - great writeup
+assignees: []
+created_at: 2024-09-05T12:20:59Z
+updated_at: 2024-09-11T13:18:24Z
+url: https://github.com/astral-sh/uv/issues/7079
+synced_at: 2026-01-10T01:24:10Z
+---
+
+# Specifying external dependencies in pyproject.toml
+
+---
+
+_Issue opened by @BlueMagma2 on 2024-09-05 12:20_
+
+# Introduction
+
+There currently exists a draft proposing a way to declare external dependencies in pyproject,toml: https://peps.python.org/pep-0725/
+
+For example in some of my project I specify the following section in my pyproject.toml:
+
+```
+[external]
+dependencies = ["pkg:generic/ffmpeg"]
+```
+
+What I expect this will do is add a line in the PKG-INFO file of my build packages as specified here: https://packaging.python.org/en/latest/specifications/core-metadata/#requires-external-multiple-use
+```
+Requires-External: pkg:generic/ffmpeg
+```
+
+Currently no build system properly handle this. Since I was using poetry I made a poetry plugin that takes care of detecting this section and adding the relevant line in PKG-INFO during build: https://pypi.org/project/poetry-external-dependencies/
+
+Then when deploying my package to different system I use a script that detect the external dependency and install what's required on the host system, in the example case it would automatically install `ffmpeg` using apt or apk or other package manager the system offer. Something like the following:
+```
+import warnings
+from importlib.metadata import metadata
+
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+
+d = {dist.project_name: metadata(dist.project_name).keys() for dist in __import__('pkg_resources').working_set}
+requires_external = [metadata(key)['Requires-External'] for key, meta in d.items() if 'Requires-External' in meta]
+included_external = [req.split('/')[-1] for req in requires_external if req.startswith('pkg:generic/')]
+
+if included_external:
+    print(f"apt install -y {' '.join(included_external)}")  # noqa: T201
+else:
+    print('echo "No python \'Requires-External\' found."')  # noqa: T201
+```
+
+# The question
+
+I've started to transition my package to uv. How can I have the `Requires-External` line added to the PGK-INFO at build time ? Does uv support some form of plugin ? If not what can I do to have it work ?
+
+---
+
+_Comment by @BlueMagma2 on 2024-09-05 12:43_
+
+I just now realise that currently uv doesn't have a build backend and uses hatchling, this question might be better suited to be asked on hatchling's repository. If I find out how to solve my problem though there I'll report back here for reference
+
+---
+
+_Comment by @BlueMagma2 on 2024-09-09 16:24_
+
+In case anyone is wondering how to do this, I solve my issue using a hatchling build hook, I might turn this into a plugin if I get the time:
+
+```
+from copy import deepcopy
+
+from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+from hatchling.metadata.core import ProjectMetadata
+
+class CustomBuildHook(BuildHookInterface):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def initialize(self, version: str, build_data: dict[str, any]) -> None:
+        self._default_constructor = self.build_config.core_metadata_constructor
+
+        def metadata_constructor_extended(local_self, metadata: ProjectMetadata, extra_dependencies: tuple[str] | None = None) -> str:
+            metadata_file = self._default_constructor(metadata, extra_dependencies)
+
+            external_dependencies = None
+            if 'external-dependencies' in metadata.core.config:
+                external_dependencies = deepcopy(metadata.core.config['external-dependencies'])
+
+            elif 'external' in metadata.config and 'dependencies' in metadata.config['external']:
+                external_dependencies = deepcopy(metadata.config['external']['dependencies'])
+
+            if external_dependencies:
+                header_section = metadata_file
+                content_section = ''
+                if 'Description-Content-Type' in metadata_file:
+                    split_file = metadata_file.split('Description-Content-Type')
+                    header_section = split_file[0]
+                    content_section = split_file[1]
+                
+                print(f"  - {self.PLUGIN_NAME}")
+                for dependency in external_dependencies:
+                    print(f"    - Requires-External: {dependency}")
+                    header_section += f'Requires-External: {dependency}\n'
+                metadata_file = header_section +'Description-Content-Type' + content_section
+            
+            return metadata_file
+
+        type(self.build_config).core_metadata_constructor = metadata_constructor_extended
+```
+
+---
+
+_Comment by @zanieb on 2024-09-09 20:56_
+
+Cool thanks for following up on your issue! We're interested in a build backend (#3957) so we may tackle this eventually.
+
+cc @ofek 
+
+---
+
+_Closed by @zanieb on 2024-09-09 20:56_
+
+---
+
+_Label `question` added by @zanieb on 2024-09-09 20:56_
+
+---
+
+_Label `great writeup` added by @zanieb on 2024-09-09 20:57_
+
+---
+
+_Comment by @BlueMagma2 on 2024-09-11 13:18_
+
+For reference, I've made it into a plugin for this: https://pypi.org/project/hatch-external-dependencies/
+
+---

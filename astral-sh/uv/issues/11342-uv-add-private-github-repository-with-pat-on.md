@@ -1,0 +1,523 @@
+---
+number: 11342
+title: uv add private GitHub repository with PAT on Actions fails
+type: issue
+state: closed
+author: PhilipVinc
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-08T15:16:33Z
+updated_at: 2025-11-26T00:08:02Z
+url: https://github.com/astral-sh/uv/issues/11342
+synced_at: 2026-01-10T01:25:04Z
+---
+
+# uv add private GitHub repository with PAT on Actions fails
+
+---
+
+_Issue opened by @PhilipVinc on 2025-02-08 15:16_
+
+### Summary
+
+I'm Trying to setup a CI Workflow on GitHub Actions for a private repository that must pull another private repository. Using a Github PAT, I can make it work in pip but it fails with uv.
+
+My CI.yml file is the following
+```yml
+...
+jobs:
+   ...
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Pip install packages
+        run: |
+          # using pip here would work, but uv fails
+          uv --verbose add "git+https://x-access-token:${TOKEN}@github.com/organization/private_repo"
+          uv sync
+        env:
+          TOKEN: ${{ secrets.GH_READONLY_PAT }}
+```
+
+where `secrets.GH_READONLY_PAT` is a PAT with read only access to private repos, which I tested and works correctly.
+
+Running the action gives the following error
+```bash
+DEBUG No netrc file found
+DEBUG GitHub API request failed for: https://api.github.com/repos/NeuralQXLab/netket_pro/commits/HEAD (404 Not Found)
+DEBUG Fetching source distribution from Git: https://github.com/NeuralQXLab/netket_pro
+DEBUG Acquired lock for `[https://github.com/neuralqxlab/netket_pro`](https://github.com/neuralqxlab/netket_pro%60)
+DEBUG Updating Git source `[https://github.com/NeuralQXLab/netket_pro`](https://github.com/NeuralQXLab/netket_pro%60)
+   Updating https://github.com/NeuralQXLab/netket_pro (HEAD)
+DEBUG Attempting GitHub fast path for: https://api.github.com/repos/NeuralQXLab/netket_pro/commits/HEAD
+DEBUG Failed to check GitHub HTTP status client error (404 Not Found) for url (https://api.github.com/repos/NeuralQXLab/netket_pro/commits/HEAD)
+DEBUG Performing a Git fetch for: https://github.com/NeuralQXLab/netket_pro
+DEBUG Released lock at `/home/runner/actions-runner/_work/_temp/setup-uv-cache/git-v0/locks/d25fca3599406dfa`
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Removing `uv.lock`
+  × Failed to download and build `netket-pro @
+  │ git+[https://github.com/NeuralQXLab/netket_pro`](https://github.com/NeuralQXLab/netket_pro%60)
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into:
+  │   /home/runner/actions-runner/_work/_temp/setup-uv-cache/git-v0/db/d25fca3599406dfa
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force
+      --update-head-ok 'https://github.com/NeuralQXLab/netket_pro'
+      '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+      --- stderr
+      fatal: could not read Username for 'https://github.com/': No such device
+      or address
+```
+
+I tried the following things:
+ - Execute the command above on my machine, with the same token, it works.
+ - Create a .netrc file in a preceding step with the token inside, but it is not used/does not solve the problem.
+
+Most interestingly, by ssh-ing in the runner if the step fails, and running exactly the same command, the command success, so I have the feeling that if the session is interactive something different is triggered
+
+
+### Platform
+
+linux GitHub runner
+
+### Version
+
+0.5.29
+
+### Python version
+
+3.12
+
+---
+
+_Label `bug` added by @PhilipVinc on 2025-02-08 15:16_
+
+---
+
+_Comment by @artpelling on 2025-03-07 10:53_
+
+Facing the same issue. Seems related to #3783, #5107 and the fix in #11744 that was introduced in https://github.com/astral-sh/uv/releases/tag/0.6.4 
+
+I was facing #5107, after an upgrade to `0.6.5`, it fails with
+``` bash
+      --- stderr
+      fatal: could not read Username for 'https://{REPOURL}':
+      terminal prompts disabled
+```
+I don't mean to hijack this issue but
+- How can I add private repos that require login? 
+- How can I add a private repo with `ssh`? `uv add git+git@{URL}:{USERNAME}/{REPO}.git` gives me 
+``` bash
+ uv add git+git@{URL}:{USERNAME}/{REPO}.git
+error: Failed to parse: `git+git@{URL}:{USERNAME}/{REPO}.git`
+  Caused by: Expected path (`git+git@{URL}:{USERNAME}/{REPO}.git`) to end in a supported file extension: `.whl`, `.tar.gz`, `.zip`, `.tar.bz2`, `.tar.lz`, `.tar.lzma`, `.tar.xz`, `.tar.zst`, `.tar`, `.tbz`, `.tgz`, `.tlz`, or `.txz`
+git+git@{URL}:{USERNAME}/{REPO}.git
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+The docs are not so clear on this and I couldn't find any other issues on this.
+
+~@PhilipVinc You could try downgrading to `0.6.3`, at least there, the prompt is not disabled (you might need to use `uv sync --verbose`).~ Sorry, I wasn't reading closely, you use an older version.
+
+---
+
+_Comment by @yafanasiev on 2025-03-19 19:24_
+
+Seconding this one. Setting up CI when installing from other repositories in the same organization was surprisingly difficult. The Git client inside GitHub Actions definitely has required access to the source and package repository, but `uv` refuses to use that authentication for some reason. The only way I managed to make it work was
+
+```sh
+git config --global url.https://${{ PAT_TOKEN_HERE }}@github.com/.insteadOf https://github.com/
+```
+
+which is not so bad of a solution, but it would be great to have a proper one.
+
+---
+
+_Comment by @zanieb on 2025-03-19 22:05_
+
+Weird, I don't understand what's going on here. We can look into this.
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-04-07 18:58_
+
+---
+
+_Assigned to @jtfmumm by @Gankra on 2025-04-10 14:16_
+
+---
+
+_Comment by @jtfmumm on 2025-04-11 10:39_
+
+@PhilipVinc I've been unable to reproduce this with the latest uv. Would you mind trying again and checking if you are still encountering this problem? If you are, would you mind providing the `uv add -vv` logs?
+
+---
+
+_Unassigned @Gankra by @Gankra on 2025-04-11 14:49_
+
+---
+
+_Comment by @yunik-yirifi on 2025-04-21 09:59_
+
+Facing similar issue with uv version `0.6.14` inside docker.
+
+`fatal: could not read Username for 'https://github.com': terminal  prompts disabled`
+
+my pyproject.toml  
+```toml
+xyz = { git = "https://github.com/abc/xyz.git", rev = "3207de62c52e02a55ecf536024069fd406b0bab0" }
+```
+
+I am using `NETRC` file for storing the PAT github token.
+
+---
+
+_Comment by @TheRealBecks on 2025-05-06 07:52_
+
+I also ran into this issue with a private Gitlab server:
+```
+❯ uv sync --extra dev
+   Updating https://gitlab.example.com/nnis/nnis-client-python (HEAD)                                                                                                                                                                                                                                                                                                                                                            × Failed to download and build `nnis-client @ git+https://gitlab.example.com/nnis/nnis-client-python`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into: /home/mbeckert/.cache/uv/git-v0/db/5485a180eb2a444a
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://gitlab.example.com/nnis/nnis-client-python' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+      --- stderr
+      Schwerwiegend: could not read Username for 'https://gitlab.example.com': terminal prompts disabled
+```
+
+I added this package to the `pyproject.toml` file:
+```
+dependencies = [
+  "nnis-client@git+https://gitlab.example.com/nnis/nnis-client-python",
+]
+```
+...that's the correct syntax, isn't it?
+
+Current uv version:
+```
+❯ uv --version
+uv 0.7.2
+```
+
+@zanieb Is there a workaround like `uv pip install ...` to get the cloning working via SSH?
+
+---
+
+_Comment by @TheRealBecks on 2025-05-06 08:22_
+
+Follow up:
+
+This error message:
+```
+process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://gitlab.example.com/nnis/nnis-client-python' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+```
+
+I tried to find out what's going on here:
+```
+❯ uv venv
+Using CPython 3.13.3 interpreter at: /usr/bin/python3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate.fish
+
+❯ source .venv/bin/activate.fish
+
+❯ /usr/bin/git fetch --force --update-head-ok 'https://gitlab.example.com/nnis/nnis-client-python' '+HEAD:refs/remotes/origin/HEAD'
+(english: no git repository available) Schwerwiegend: Kein Git-Repository (oder irgendein Elternverzeichnis bis zum Einhängepunkt /)
+Stoppe bei Dateisystemgrenze (GIT_DISCOVERY_ACROSS_FILESYSTEM nicht gesetzt).
+
+❯ git init
+
+❯ /usr/bin/git fetch --force --update-head-ok 'https://gitlab.example.com/nnis/nnis-client-python' '+HEAD:refs/remotes/origin/HEAD'
+Username for 'https://gitlab.example.com': mbeckert
+Password for 'https://mbeckert@gitlab.example.com': 
+Warnung: Umleitung nach https://gitlab.example.com/nnis/nnis-client-python.git/
+remote: Enumerating objects: 2107, done.
+remote: Counting objects: 100% (525/525), done.
+remote: Compressing objects: 100% (87/87), done.
+remote: Total 2107 (delta 490), reused 444 (delta 438), pack-reused 1582
+Empfange Objekte: 100% (2107/2107), 509.73 KiB | 3.21 MiB/s, fertig.
+Löse Unterschiede auf: 100% (1220/1220), fertig.
+Von https://gitlab.example.com/nnis/nnis-client-python
+ * [neue Referenz]   HEAD       -> origin/HEAD
+ * [neues Tag]       0.1        -> 0.1
+ * [neues Tag]       0.1.2      -> 0.1.2
+ * [neues Tag]       0.2        -> 0.2
+ * [neues Tag]       1          -> 1
+ * [neues Tag]       2.0        -> 2.0
+ * [neues Tag]       2.1        -> 2.1
+```
+When creating a git repository and entering the `git fetch` command manually I got a prompt for `username` and `password`.
+
+Trying with a different directory that has been shown in the uv error message:
+```
+❯ (cd /home/mbeckert/.cache/uv/git-v0/db/5485a180eb2a444a; git status)
+Auf Branch master
+
+Noch keine Commits
+
+nichts zu committen (erstellen/kopieren Sie Dateien und benutzen
+Sie "git add" zum Versionieren)
+```
+-> a git repository 👍
+
+Another try with `--git-dir`:
+```
+❯ /usr/bin/git --git-dir=/home/mbeckert/.cache/uv/git-v0/db/5485a180eb2a444a fetch --force --update-head-ok 'https://gitlab.example.com/nnis/nnis-client-python' '+HEAD:refs/remotes/origin/HEAD'
+(english: no git directory) Schwerwiegend: Kein Git-Repository: '/home/mbeckert/.cache/uv/git-v0/db/5485a180eb2a444a'
+```
+-> no git repository?! 🤨
+
+---
+
+_Comment by @fidhal-ht on 2025-05-13 09:11_
+
+any fix for this?
+
+---
+
+_Comment by @moschroe on 2025-05-22 14:45_
+
+Ran into this issue today using `0.7.6`. Might be related to the git subprocess not being spawned with the (entire) set of environment variables.
+
+- created a custom netrc file at `/tmp/netrc` to have it be ephemeral and only in memory
+- ran `export NETRC=/tmp/netrc`, confirmed by a subsequent echo
+- Running `uv pip install -r requirements.txt --dry-run` will try to resolve deps from a private repo and will fail due to missing credentials.
+- after creating a symlink at the default location with `ln -vs /tmp/netrc ~/.netrc`, it suddenly works. Which points to `NETRC` not being set for the spawned subprocess
+
+---
+
+_Comment by @poklaassen on 2025-05-26 15:06_
+
+We use the following in our Dockerfile, in combination with netrc and Docker action:
+```
+RUN --mount=type=secret,id=GIT_AUTH_TOKEN \
+    --mount=type=secret,id=GIT_ACTOR \
+    GIT_AUTH_TOKEN=$(cat /run/secrets/GIT_AUTH_TOKEN) && \
+    GIT_ACTOR=$(cat /run/secrets/GIT_ACTOR) && \
+    echo "machine github.com login ${GIT_ACTOR} password ${GIT_AUTH_TOKEN}" > ~/.netrc && \
+    chmod 600 ~/.netrc
+
+RUN uv sync
+RUN rm ~/.netrc
+```
+Action:
+```
+- name: Build and push Docker image
+  id: push
+  uses: docker/build-push-action@v6
+  with:
+    context: .
+    push: true
+    tags: ${{ steps.meta.outputs.tags }}
+    labels: ${{ steps.meta.outputs.labels }}
+    secrets: |
+      GIT_AUTH_TOKEN=${{ secrets.pat }}
+      GIT_ACTOR=${{ secrets.username }}
+```
+
+For us, this works if the (classical) PAT has "Full control of private repositories" selected. In other cases, it complained about not having write access or the repository not existing. Fine grained tokens did not work.
+
+---
+
+_Comment by @0gust1 on 2025-05-26 16:51_
+
+We also have the same problem here.
+We have a similar setup as @poklaassen (docker build, `.netrc` file). Everything works fine locally (but relies on OS-based user's auth to github).
+We'll try his solution and report here.
+
+---
+
+_Comment by @0gust1 on 2025-05-27 08:23_
+
+In this thread, we have multiple use cases:
+1. "classic" install and build in a github action
+2. "docker build" in a github action
+
+(in our context, we do both: "classic" to run tests and "docker build" to push the deployment artifacts on our private docker registry)
+
+**classic install and build:**  
+
+using https://github.com/extractions/netrc
+
+```yaml
+      - name: Set up .netrc
+        uses: extractions/netrc@v2
+        with:
+          machine: github.com
+          username: api
+          password: ${{ secrets.GH_REPO_PAT }}
+
+      - name: Install dependencies for testing
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync --all-extras --dev
+
+      - name: Run tests
+        run: |
+          uv run pytest
+```
+
+**This works.** `GH_REPO_PAT` is a fine-grained personal access token, with `Read access to code and metadata` permission to the private repo of the dependency.
+
+(to be continued)
+
+---
+
+_Comment by @0gust1 on 2025-05-27 10:15_
+
+**"docker build" in a github action**
+
+context: the depended-on private repository is on github, and `GH_REPO_PAT` is a fine-grained personal access token, with `Read access to code and metadata` permission to the private repo of the dependency.
+
+Github action:
+```yaml
+      - name: Set up .netrc
+        uses: extractions/netrc@v2
+        with:
+          machine: github.com
+          username: api
+          password: ${{ secrets.GH_REPO_PAT }}
+
+      - name: copy netrc for docker build
+         run: |
+         cp ~/.netrc .netrc
+         echo "netrc file prepared for docker build"
+
+     # docker login, buildx, etc.
+
+      - name: Build and push Docker image
+         id: push
+         uses: docker/build-push-action@v6
+         with:
+           context: .
+           push: true
+           tags: <YOUR TAGS>
+           secret-files: netrc_pat=.netrc
+```
+
+Dockerfile:
+
+```Dockerfile
+...
+RUN --mount=type=secret,id=netrc_pat,target=/${USER}/.netrc,mode=0600,required=true \
+    uv sync --frozen --no-dev
+...
+```
+**This works too.**
+
+
+PS:
+
+@poklaassen :
+
+- Ideally you should run your `uv sync` in the same command `RUN --mount=type=secret ...`, if not, your PAT in `.netrc` will end up in a Docker layer and will be pushed to the registry. As the netrc file is plaintext, it would be easily readable in the layer on the registry (security concern). `RUN --mount=type=secret` is a special Docker command that will prevent secret persistence in the resulting layer.
+- I have the hunch the problem you report ("Fine grained tokens did not work.") may be due to the `login` value you use in your .netrc file. Try `api` ? (a PAT is already a combination of username+password)
+
+@zanieb @jtfmumm :
+
+- I'm unsure the issue relates directly to `uv` itself, but maybe more a "uv integration with CI/CD pipelines" topic, with the "private git repo installation" subtopic.
+These can be a bit hairy, and for now I don't know if what works for us could be directly transferrable to another sofware forge (like gitlab for example).
+- Maybe the original issue is a github action config problem or a problem with the runtime context of `astral-sh/setup-uv@v5`.
+
+---
+
+_Assigned to @oconnor663 by @oconnor663 on 2025-06-02 20:14_
+
+---
+
+_Comment by @oconnor663 on 2025-06-04 03:54_
+
+Looking through this and related issues, I'm aware of three generic ways to get a Personal Access Token (PAT) to `git` invocations that happen in the guts of tools like `uv`. The **first way** is `~/.netrc`. As folks have mentioned here, [`git` doesn't know about the `NETRC` env var](https://github.com/astral-sh/uv/issues/9576), and this approach interacts kind of poorly with Docker. Also no one's _thrilled_ about writing secrets to disk.
+
+The **second way** is using the `gh` command line utility, [as mentioned here](https://github.com/astral-sh/uv/issues/12368#issuecomment-2747900465). `gh` is installed by default in GitHub runners. It works by configuring itself as a "credential helper" in `~/.gitconfig`, and if it can't find a system keyring it also stores your token under `~/.config/gh` or similar. This way is the most convenient, and I recommend it if you're not sure what to do, but it only works with GitHub specifically. [Here's a working example.](https://github.com/oconnor663/private_b/blob/6bd4c82b424e06f90a2b5f5b6cb04d11616f2c65/.github/workflows/ci.yml) The relevant lines of that `.github/workflows/ci.yml` are:
+
+```yaml
+    - run: echo "${{ secrets.FOO_GITHUB_TOKEN }}" | gh auth login --with-token
+    - run: gh auth setup-git
+    - run: uv run main.py
+```
+
+The **third way** is to wrap the token in a trivial "credential helper" (`echo`) configured entirely via environment variables. This approach has the most annoying syntax, but it could be the most reliable approach if _multiple layers_ of your stack that _don't necessarily know about each other_ need to configure Git. It also keeps your token off the disk, and it might be easier to get it working with container barriers like Docker (i.e. using `--env`). [Here's a working example.](https://github.com/oconnor663/private_b/blob/78c80a06c8a3f1c2cf029b5c774c2db125ecd31f/.github/workflows/ci.yml) Here are the relevant lines:
+
+```yaml
+    - run: |
+        export "GIT_CONFIG_KEY_0=credential.https://github.com.helper"
+        export "GIT_CONFIG_VALUE_0=!echo username=git ; echo password=${{ secrets.FOO_GITHUB_TOKEN }} ; #"
+        export "GIT_CONFIG_COUNT=1"
+        uv run main.py
+```
+
+In a truly generic, "who knows what other layers above and below me are doing" scenario, you'd read `GIT_CONFIG_COUNT` from your own environment, name the other two variables accordingly (`export` lets you set variables with other variables in their names), and then increment the count. There's some very sensitive punctuation there; for a longer explanation see [the giant comment in that file](https://github.com/oconnor663/private_b/blob/78c80a06c8a3f1c2cf029b5c774c2db125ecd31f/.github/workflows/ci.yml#L17-L40).
+
+---
+
+Also in case anyone finds this thread who's working PATs for the first time, for completeness, in all of these approaches you have to start by manually adding the PAT to your CI environment using GitHub's "Secrets and Variables -> Actions" repo settings:
+
+![Image](https://github.com/user-attachments/assets/d8d4dad8-d573-4689-b0a2-0f45505d5a2e)
+
+---
+
+_Referenced in [astral-sh/uv#9576](../../astral-sh/uv/issues/9576.md) on 2025-06-04 03:55_
+
+---
+
+_Referenced in [astral-sh/uv#13850](../../astral-sh/uv/pulls/13850.md) on 2025-06-04 21:56_
+
+---
+
+_Comment by @oconnor663 on 2025-06-05 20:53_
+
+Documented in https://github.com/astral-sh/uv/pull/13850. I didn't mention the `GIT_CONFIG_COUNT` stuff as that seems too arcane, but let me know if anyone ends up using that.
+
+---
+
+_Closed by @oconnor663 on 2025-06-05 20:53_
+
+---
+
+_Comment by @emrynHofmannElephant on 2025-10-08 09:19_
+
+@oconnor663 
+> The second way is using the gh command line utility, https://github.com/astral-sh/uv/issues/12368#issuecomment-2747900465. gh is installed by default in GitHub runners. It works by configuring itself as a "credential helper" in ~/.gitconfig, and if it can't find a system keyring it also stores your token under ~/.config/gh or similar. This way is the most convenient, and I recommend it if you're not sure what to do, but it only works with GitHub specifically. [Here's a working example.](https://github.com/oconnor663/private_b/blob/6bd4c82b424e06f90a2b5f5b6cb04d11616f2c65/.github/workflows/ci.yml)
+
+I've tried adding that to mine, but I still get the 
+```
+× Failed to download and build `pkg-name @
+  │ git+https://github.com/org/dep-repo@commit-ref#subdirectory=python`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into:
+  │   /home/runner/work/_temp/setup-uv-cache/git-v0/db/...[42](https://github.com/org/base-repo/actions/runs/.../job/...#step:6:43)e6
+  ├─▶ failed to fetch commit `...[43](https://github.com/org/base-repo/actions/runs/.../job/...#step:6:44)...`
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force
+      --update-head-ok 'https://github.com/org/dep-repo'
+      '+...[46](https://github.com/org/base-repo/actions/runs/.../job/...#step:6:47)...'`
+      (exit status: 128)
+      --- stderr
+      remote: Write access to repository not granted.
+      fatal: unable to access 'https://github.com/org/dep-repo/':
+      The requested URL returned error: 403
+  help: `pkg-name` was included because `base-pkg` (v0.1.0) depends on
+        `pkg-name`
+```
+
+I made a fine-grained PAT with read access - afaik it shouldn't require write access?
+
+---
+
+_Comment by @nshobert on 2025-11-14 19:13_
+
+I get basically the same output as @emrynHofmannElephant in https://github.com/astral-sh/uv/issues/11342#issuecomment-3380614617.
+
+I have a PAT with read access that I store as an environment variable, which is a procedure that works with pip in my mamba environments.
+
+
+---
+
+_Comment by @mia-trilo on 2025-11-26 00:08_
+
+@emrynHofmannElephant I encountered the same issue and found out that the error message was misleading. In my case, I was able to fix it by updating the token access permission. It turned out that on the fine-grained token setting, you need to set what access you want to give to the repository *in addition to* selecting the All Repository option. My error went away after I granted the token content and metadata access
+
+---

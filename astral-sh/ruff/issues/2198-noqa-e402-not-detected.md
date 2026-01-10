@@ -1,0 +1,80 @@
+---
+number: 2198
+title: "`noqa: E402` not detected"
+type: issue
+state: closed
+author: spaceone
+labels:
+  - bug
+assignees: []
+created_at: 2023-01-26T16:30:10Z
+updated_at: 2023-02-11T23:29:38Z
+url: https://github.com/astral-sh/ruff/issues/2198
+synced_at: 2026-01-10T01:22:40Z
+---
+
+# `noqa: E402` not detected
+
+---
+
+_Issue opened by @spaceone on 2023-01-26 16:30_
+
+```
+print(1)
+from very_long_module\
+    import nothing  # noqa: E402,F401
+```
+doesn't detect `E402`
+
+---
+
+_Comment by @spaceone on 2023-01-26 16:41_
+
+similar (but I think another issue exists for it already):
+`F811` is not ignored.
+
+```
+def overload(f): pass
+from typing import (  # noqa: F401,F811
+    overload,
+)
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-01-26 17:17_
+
+---
+
+_Comment by @spaceone on 2023-01-27 14:46_
+
+See also #2253
+
+---
+
+_Comment by @Pierre-Sassoulas on 2023-02-06 12:01_
+
+Similar issue:
+
+This noqa is valid in flake8 but not detected by ruff:
+```python
+        is_to_run = (
+            lambda x: 1  # type: ignore[assignment,misc] # pylint: disable=unnecessary-lambda-assignment
+        )  # noqa: E731 We're going to throw all this anyway
+```    
+(While this one work for both:)
+```python
+        is_to_run = (  # noqa: E731, We're going to throw all this anyway
+            lambda x: 1  # type: ignore[assignment,misc] # pylint: disable=unnecessary-lambda-assignment
+        )
+```        
+
+---
+
+_Referenced in [astral-sh/ruff#2783](../../astral-sh/ruff/pulls/2783.md) on 2023-02-11 23:08_
+
+---
+
+_Closed by @charliermarsh on 2023-02-11 23:29_
+
+---

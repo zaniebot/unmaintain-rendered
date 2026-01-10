@@ -1,0 +1,266 @@
+---
+number: 7496
+title: uv exports incomplete requirements if using external packages
+type: issue
+state: open
+author: Mateuscvieira
+labels:
+  - needs-decision
+assignees: []
+created_at: 2024-09-18T13:06:58Z
+updated_at: 2025-08-27T15:56:18Z
+url: https://github.com/astral-sh/uv/issues/7496
+synced_at: 2026-01-10T01:24:15Z
+---
+
+# uv exports incomplete requirements if using external packages
+
+---
+
+_Issue opened by @Mateuscvieira on 2024-09-18 13:06_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+This issue is linked to #7494 but doesn't have the same solution, or any solution I have found.
+
+### The problem
+I can start my uv project with commands:
+```bash
+uv init
+uv add "ceic-api-client<=2.7" --extra-index-url https://downloads.ceicdata.com/python
+```
+Then appending the extra index to the pyproject file like so:
+```
+[tool.uv]
+extra-index-url = ["https://downloads.ceicdata.com/python"]
+```
+This creates an environment where I can freely add, remove, run, sync and lock. So, running `uv export`, I would expect a valid requirements file, but I get the following (using the no-hashes flag for legibility):
+```
+ceic-api-client==2.6.1.148
+certifi==2024.8.30
+python-dateutil==2.9.0.post0
+six==1.16.0
+urllib3==2.2.3
+```
+This, for obvious reasons, will not build.
+
+### Suggestions
+Maybe this is unwarranted advice, but from what I understand from src/commands/project/export.rs, the export command reads from the lockfile, not pyproject. Well, as mentioned in #7494, the lockfile is in fact correct when it comes to extra indexes, so it wouldn't require adding full support for adding indexes in `add` to fix this issue with `export` (I think).
+
+### Versions
+Running uv 0.4.11 in Windows 10
+
+---
+
+_Comment by @zanieb on 2024-09-18 13:12_
+
+Can you clarify what the expected behavior is? We should write the index URL into the exported file?
+
+---
+
+_Comment by @Mateuscvieira on 2024-09-18 13:18_
+
+Yes. The requirements file should have the --extra-index-url flag if one wishes to use pip install
+
+---
+
+_Comment by @zanieb on 2024-09-18 13:24_
+
+I don't think we should do this by default, but maybe we could include `--emit-index-urls`. I'm pretty hesitant, generally, because our index behavior doesn't match pip and I'm not sure we will be able to generate something that always works.
+
+---
+
+_Comment by @Mateuscvieira on 2024-09-18 13:43_
+
+Shouldn't `export` always export environments that work, though? As it stands, even using `uv pip install`, it's broken:
+```bash
+uv export > ../another_directory/requirements.txt
+cd ../another_directory
+uv venv .venv
+.venv\Scripts\activate
+uv pip install -r requirements.txt
+```
+Output:
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because ceic-api-client was not found in the package registry and you require ceic-api-client==2.6.1.148, we can conclude that your requirements are unsatisfiable.
+```
+
+The export help file currently specifies it as "Export the project's lockfile to an alternate format". IMO it's to be expected that the output should be as close a match of the lockfile as possible. The output I showed isn't, as it won't even generate a working environment using any form of index behavior, be it uv or pip, while the lockfile does.
+
+---
+
+_Comment by @zanieb on 2024-09-18 13:49_
+
+I don't think passing settings inside the `requirements.txt` file (which is not a standardized format, it's just a thing that pip does) is best practice and we will generally avoid it where we can. Additionally, the `requirements.txt` format doesn't allow specifying an index for specific packages, so even if we were to start emitting index URLs now, once we support #171 via #7481 we won't be able to generate a file that "works".
+
+I understand this isn't ideal and we may be able to make it better somehow, but it's not a simple problem.
+
+---
+
+_Comment by @Mateuscvieira on 2024-09-18 13:59_
+
+I understand the concern. Well, keeping the behavior as is, this maybe warrants a warning of some kind, either when the engine detects a package only available in a non-default index or simply when there are extra indexes in the lockfile, so this behavior is more explicit.
+Also, maybe we could make `uv export --extra-index-url` prepend the extra index into the requirements file, maybe with a warning about unsafe behavior. This makes the user explicitly opt in, and also uses a flag that is (apparently) currently not used.
+
+---
+
+_Comment by @charliermarsh on 2024-09-18 14:21_
+
+`uv pip compile` also does not export these by default; the behavior is intentional. Whether we want to support `--emit-index-url` is an open question though.
+
+---
+
+_Comment by @Mateuscvieira on 2024-09-18 14:36_
+
+> `uv pip compile` also does not export these by default; the behavior is intentional
+
+I understand, but both `uv export` and `uv pip compile` have --extra-index-url flags which don't actually add the extra index to the output, and neither of them provide feedback about using the extra indexes in resolution but not in output. As is, the functionality is pretty confusing for us using private packages
+
+---
+
+_Label `needs-decision` added by @zanieb on 2024-09-18 15:05_
+
+---
+
+_Comment by @generatedone on 2024-11-08 01:18_
+
+Hello @Mateuscvieira,
+
+The following commands do the job for me.
+```powershell
+uv venv
+uv pip install --index https://downloads.ceicdata.com/python ceic_api_client
+``` 
+        
+Please let me know if that is what you need.
+
+In addition to that, I have couple of more questions to raise here:
+
+1. Can you/sb compare it (kind of benchmark testing) with the regular installation way - using the `pip install` command? 
+2. Which are the overall benefits of using the `uv` package manager instead the `pip`?
+3. Are there any new/enhanced features and functionalities that it provides (from the set of custom commands/options) that outperform their `pip` equivalent or are of greater convenience?
+4. Does the `uv` manager allows any particular benefit when utilizing the `ceic_api_client` compared to `pip`?
+5. Why have you even considered `uv` as an option as it is not described in any documentations of the package?
+6. Are there any other tools (data manipulation/visualization, etc.) that you are using with that specific package? If yes - please list and explain each of them.
+
+Apologies for the long list of questions but the discussed topic is very interesting. 
+I would appreciate if you manage to reply to some (if not all) of them.
+
+
+---
+
+_Comment by @neggert on 2024-11-08 19:14_
+
+I'll chime in supporting this. `pip-compile` deals with this by making it optional via the `--emit-index-url` flag. I'd love it if `uv export` supported something similar.
+
+For my use case, I'm trying to export a requirements.txt file that I can pass to a remote Apache Ray cluster. Running `uv` on the other end to do this the "right" way isn't currently an option, but just adding in the `--extra-index-url` flags would solve the problem for 99% of cases.
+
+My current workaround is to just manually edit the `uv export` output to add the index URLs, but that's not really a great solution.
+
+---
+
+_Referenced in [galaxyproject/galaxy#19284](../../galaxyproject/galaxy/pulls/19284.md) on 2024-12-08 12:57_
+
+---
+
+_Referenced in [ray-project/ray#47819](../../ray-project/ray/issues/47819.md) on 2024-12-23 14:37_
+
+---
+
+_Comment by @ties on 2025-01-02 12:47_
+
+> `uv pip compile` also does not export these by default; the behavior is intentional. Whether we want to support `--emit-index-url` is an open question though.
+
+I would also really appreciate support for this feature. I want to generate `requirements.txt` from uv to replace the current requirements file and this blocks it. I am using a [workaround in a pre-commit hook (gist)](https://gist.github.com/ties/9b8c96da9eaf774fdb5c577afdbb0e2c).
+
+Either just `--emit-index-url` or `--emit-index-url --index-strategy unsafe-best-match` (because of pip's effective resolution behaviour) would be perfect.
+
+
+---
+
+_Comment by @tony-garcia on 2025-01-09 15:25_
+
++1 to adding `--emit-index-url` to `uv export`
+
+---
+
+_Comment by @matthewpick on 2025-02-14 15:09_
+
+My workaround is the same as @neggert. I am modifying the output of `uv export` to include an index-url.
+
+For example
+```bash
+uv export --no-dev --frozen --quiet -o requirements.txt
+echo '--index-url https://<my-domain>/artifactory/api/pypi/pypi/simple' | cat - requirements.txt > temp && mv temp requirements.txt
+cat requirements.txt
+```
+Note: this requirements.txt is being fed into a serverless lambda deployment. Adding the index-url to the top of the file is the preferred way of specifying alternative repos.
+
+---
+
+_Comment by @ozancaglayan on 2025-02-21 17:39_
+
+Was trying to migrate from poetry to uv and hit this issue. I do not want to use poetry or uv to install the deps in CI/CD and Dockerfiles so that's why being able to generate requirements.txt files to just use with pip is convenient.
+
+---
+
+_Referenced in [astral-sh/uv#12580](../../astral-sh/uv/issues/12580.md) on 2025-03-31 09:18_
+
+---
+
+_Comment by @joejoinerr on 2025-06-09 16:24_
+
+Another +1 for this. Google Cloud Functions only allow requirements.txt, so I am using uv for local development and then running `uv export` to get the requirements.txt file for deployment. Not being able to easily include the indexes is a pain. 
+
+My automated solution is using a script in [just](https://just.systems/man/en/) to parse the pyproject.toml and dump the indexes, then add to that with uv. 
+
+```justfile
+export-indexes-pip:
+    #!/usr/bin/env -S uv run --script
+    import tomllib
+    with open("pyproject.toml", "rb") as f:
+        pyproject = tomllib.load(f)
+    indexes = pyproject.get("tool", {}).get("uv", {}).get("index", [])
+    for index in indexes:
+        print(f"--index-url {index['url']}")
+
+build:
+    just export-indexes-pip > src/requirements.txt && uv export --no-dev --frozen >> src/requirements.txt
+```
+
+---
+
+_Comment by @fanick1 on 2025-07-08 08:13_
+
++1 to export the extra-index-url. `sam build` also uses requirements.txt and we are forced to have ugly workarounds just to have that thing work.
+edit: we've found a workaround in the form of env variable `PIP_EXTRA_INDEX_URL` which we set before executing the `sam build`
+
+---
+
+_Comment by @konstin on 2025-08-20 20:57_
+
+I know it's not the original question, but there is now the standardized `pylock.toml` format, which solves the index problem for exports, among other improvements.
+
+---
+
+_Comment by @rob-steele-active on 2025-08-27 15:56_
+
+> I know it's not the original question, but there is now the standardized `pylock.toml` format, which solves the index problem for exports, among other improvements.
+
++1 for this. Supporting it for pylock.toml seems like a fair middleground.
+
+---
+
+_Referenced in [astral-sh/uv#16016](../../astral-sh/uv/issues/16016.md) on 2025-09-24 14:27_
+
+---

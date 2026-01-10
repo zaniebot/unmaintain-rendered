@@ -1,0 +1,31 @@
+---
+number: 13377
+title: (opened with wrong account, please ignore)
+type: issue
+state: closed
+author: glukai
+labels: []
+assignees: []
+created_at: 2024-09-17T09:24:41Z
+updated_at: 2024-09-17T09:28:32Z
+url: https://github.com/astral-sh/ruff/issues/13377
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# (opened with wrong account, please ignore)
+
+---
+
+_Issue opened by @glukai on 2024-09-17 09:24_
+
+EDIT: opened this with the wrong account, please ignore it
+
+---
+
+_Renamed from "When set to parents (default) ban-relative-imports setting results in no errors despite parent relative imports being present" to "(opened with wrong account, please ignore)" by @glukai on 2024-09-17 09:28_
+
+---
+
+_Closed by @glukai on 2024-09-17 09:28_
+
+---

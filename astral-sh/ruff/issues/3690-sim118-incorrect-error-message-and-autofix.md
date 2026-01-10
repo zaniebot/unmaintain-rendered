@@ -1,0 +1,99 @@
+---
+number: 3690
+title: SIM118 Incorrect error message and autofix
+type: issue
+state: closed
+author: dosisod
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2023-03-23T18:29:51Z
+updated_at: 2023-03-23T21:15:10Z
+url: https://github.com/astral-sh/ruff/issues/3690
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# SIM118 Incorrect error message and autofix
+
+---
+
+_Issue opened by @dosisod on 2023-03-23 18:29_
+
+<!--
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Given the following code:
+
+```python
+x: dict[str, str] | None = None
+
+y = "abc" in (x or {}).keys()
+```
+
+Ruff returns the following error:
+
+```
+$ ruff file.py
+file.py:3:5: SIM118 [*] Use `"abc" in x or {}` instead of `"abc" in x or {}.keys()`
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+The error is correct except the `x or {}` part of the error message isn't wrapped in parenthesis. And, when running with `--fix`, the following (incorrect) code is produced:
+
+```python
+x: dict[str, str] | None = None
+
+y = "abc" in x or {}
+```
+
+If `x` is `None`, this code will now cause a `NoneType` error, and if `x` is a `dict` but doesn't contain `"abc"`, then `y` will be a `dict` instead of a `bool`.
+
+There might be other checks that have a similar issue, this just happened to be the first one I came across.
+
+Currently using Ruff v0.0.258
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-23 18:32_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-03-23 18:32_
+
+---
+
+_Comment by @charliermarsh on 2023-03-23 18:34_
+
+Oh yeah, definitely. Thanks for filing.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-23 18:46_
+
+---
+
+_Referenced in [astral-sh/ruff#3695](../../astral-sh/ruff/pulls/3695.md) on 2023-03-23 20:49_
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-23 20:58_
+
+Sorry @charliermarsh, I already finished implementing it before seeing that you self-assigned this issue.
+
+---
+
+_Closed by @charliermarsh on 2023-03-23 21:14_
+
+---
+
+_Comment by @charliermarsh on 2023-03-23 21:15_
+
+No worries, this is great! I'd started on this but got sidetracked IRL.
+
+---

@@ -1,0 +1,37 @@
+---
+number: 21061
+title: "`soft-keyword-shadowing` (akin to `A001`)"
+type: issue
+state: open
+author: theXaMi
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-10-24T13:50:40Z
+updated_at: 2025-10-24T19:22:52Z
+url: https://github.com/astral-sh/ruff/issues/21061
+synced_at: 2026-01-10T01:23:02Z
+---
+
+# `soft-keyword-shadowing` (akin to `A001`)
+
+---
+
+_Issue opened by @theXaMi on 2025-10-24 13:50_
+
+### Summary
+
+`match` and `case` are keywords that exist for some time already and we don't have any rule to prevent using them as variables. Some static token highlighters are highlighting it as a keyword because of it (including Bitbucket's diff view). I think it should exist as an optional rule to Ruff.
+
+The only issue I see is that soft keywords also include `type` keyword, which is already covered by rule `A001`, so we would have overlapping rules, but it could be justified that it's not the same thing as it's used in two completely different contexts - it's just the token that's the same.
+
+---
+
+_Label `rule` added by @ntBre on 2025-10-24 19:22_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-10-24 19:22_
+
+---

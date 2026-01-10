@@ -1,0 +1,74 @@
+---
+number: 16663
+title: "Multiple `--with-editable` gives resolve conflict"
+type: issue
+state: open
+author: tpgillam
+labels: []
+assignees: []
+created_at: 2025-11-10T10:39:21Z
+updated_at: 2025-11-13T10:47:49Z
+url: https://github.com/astral-sh/uv/issues/16663
+synced_at: 2026-01-10T01:26:08Z
+---
+
+# Multiple `--with-editable` gives resolve conflict
+
+---
+
+_Issue opened by @tpgillam on 2025-11-10 10:39_
+
+Using uv 0.9.8.
+
+Suppose I have three packages, which I'll call `a`, `b` and `c`. In their respective pyproject.toml's , there is a dependency chain `c -> b -> a`.
+
+Assume that I have local versions of each of these packages in some directory. Within `c` I can do either:
+
+```console
+$ uv run --with-editable ../b python ...
+$ uv run --with-editable ../a python ...
+```
+
+and this works as expected.
+
+However, I run into a problem if trying to use local versions of both of them simultaneously:
+
+```console
+$ uv run --with-editable ../b --with-editable ../a python ...
+  × Failed to resolve dependencies for `b` (v0.1.0)
+  ╰─▶ Requirements contain conflicting URLs for package `a`:
+      - file:///path/to/a (editable)
+      - git+https://github.com/OuOrg/a.git@shashashashasha
+```
+
+---
+
+In the above, `a`, `b` and `c` are private packages within our organisation, with dependencies encoded via git SHAs. But I suspect I could construct a reproducible example using pypi packages -- let me know if this would be useful.
+
+---
+
+_Comment by @charliermarsh on 2025-11-10 16:36_
+
+The `--with-editable` entries get resolved together, and `../a` does conflict with the declared Git dependency. I'm not certain how we should handle this. I think you'd need to use overrides?
+
+---
+
+_Comment by @tpgillam on 2025-11-10 16:43_
+
+The behaviour - very roughly - I expected, was something like:
+
+1) collect a set of paths given from `--with-editable` arguments
+2) each path should correspond to a particular package; so we get a set of packages
+3) then when we resolve, every time we come across a package that's in this 'special set' of packages, we ignore the dependency and use the editable one
+
+--- 
+
+Just to justify why the behaviour above would be useful: sometimes we need to make a change in both `a` and `b` simultaneously, and then test that it has the desired impact in `c`.
+
+---
+
+_Comment by @konstin on 2025-11-13 10:47_
+
+We do need some better support for replacing URL dependencies with local checkouts, we lacking a notion of priorities in URL, where e.g. a CLI override URL can replace a transitive URL. See https://docs.astral.sh/uv/reference/settings/#override-dependencies for the workaround with overrides.
+
+---

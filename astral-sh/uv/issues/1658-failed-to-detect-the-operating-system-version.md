@@ -1,0 +1,59 @@
+---
+number: 1658
+title: Failed to Detect the Operating System Version
+type: issue
+state: closed
+author: PeterParker
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-02-18T17:32:52Z
+updated_at: 2024-02-18T21:00:46Z
+url: https://github.com/astral-sh/uv/issues/1658
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# Failed to Detect the Operating System Version
+
+---
+
+_Issue opened by @PeterParker on 2024-02-18 17:32_
+
+Using `uv venv` inside a [RedHat UBI9 Docker container](https://hub.docker.com/r/redhat/ubi9/tags) leads to an error after failing to detect the operation system version:
+
+```
+#144 ... RUN uv venv --verbose
+#144 0.174   × Failed to detect the operating system version: Couldn't parse /bin/ls for
+#144 0.174   │ detecting the ld version: Invalid magic number: 0x622f7273752f2123
+#144 ERROR: process "/bin/sh -c uv venv --verbose" did not complete successfully: exit code: 1
+```
+
+I have installed `binutils` and ensured that `ld` is available.
+
+A simplified Dockerfile to reproduce would be something like this:
+
+```
+FROM redhat/ubi9:9.2
+
+RUN yum -y update && yum -y install binutils python-pip
+RUN pip install uv
+RUN uv venv
+```
+
+---
+
+_Comment by @PeterParker on 2024-02-18 17:52_
+
+Actually, I was running `0.1.2` and it looks like it has already been fixed in `0.1.4`.
+
+Closing, apologies for noise.
+
+---
+
+_Closed by @PeterParker on 2024-02-18 17:52_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-18 21:00_
+
+---

@@ -1,0 +1,1673 @@
+---
+number: 16747
+title: "\"Access is denied. (os error 5)\" during .venv updates and database write errors for Python installed via uv"
+type: issue
+state: open
+author: Cmastris
+labels:
+  - windows
+  - needs-mre
+assignees: []
+created_at: 2025-11-15T17:03:33Z
+updated_at: 2025-12-05T12:51:52Z
+url: https://github.com/astral-sh/uv/issues/16747
+synced_at: 2026-01-10T01:26:09Z
+---
+
+# "Access is denied. (os error 5)" during .venv updates and database write errors for Python installed via uv
+
+---
+
+_Issue opened by @Cmastris on 2025-11-15 17:03_
+
+### Summary
+
+- uv: uv 0.9.8 (85c5d3228 2025-11-07)
+- OS: Windows 10 Home; Version 22H2; OS Build 19045.6456; x64
+- Installation method: as detailed in https://docs.astral.sh/uv/getting-started/installation/#standalone-installer (standalone installer via PowerShell run as admin); apparently succeeded
+- Installation dir: C:\Users\[my-user]\.local\bin
+- uv executable permissions: all allowed for "SYSTEM", "Administrators", and my user (default after installation; no manual modification)
+- The specific contents of `pyproject.toml`/`uv.lock` don't seem to be relevant, as I've encountered these issues for various packages and Python versions
+- Antivirus software (may or may not be relevant): Avast Free Antivirus
+- Possibly related: https://github.com/astral-sh/uv/issues/7382 and https://github.com/astral-sh/uv/issues/15968
+
+Hi there. I really like the idea of uv, and I want to love it, but unfortunately, I've been plagued by issues with basic usage since installing (and reinstalling at least a couple of times).
+
+There are two primary symptoms, but I'm including both in this issue because I strongly suspect they have the same root cause (an installation/permissions issue):
+
+1. Commands which involve modification of the project's /.venv/ files (created via `uv sync` or another uv command and then modified by another uv command, e.g. manual `pyproject.toml` modification or `uv add` -> `uv lock` -> `uv sync`) fail with an `Access is denied. (os error 5)`.
+2. Upgrading to a newer patch or minor version of Python 3 via uv (e.g. manual `pyproject.toml` & `.python-version` modification -> `uv lock` -> `uv sync`) resulted in a bizarre bug which caused a fatal error in my locally run Django application due to an `attempt to write a readonly database` error, every time I attempted a write action (e.g. new contact message). I'm very confident that this isn't a Python/Django bug, because I've since tried installing one of the same Python versions (3.13.9) via the Python website/Windows installer, and the previous errors are no longer occurring for the same actions. Likewise, I previously tried upgrading Python by a single patch version via uv (3.11.9 -> 3.11.10, with nothing in the release notes that would obviously explain the issue in .10) and then encountered the error. What *does* confuse me is that version 3.11.9 of Python installed via uv (a few days ago, while encountering the issues with other versions of Python) was working fine, and likewise worked fine every time I reverted to it after encountering the issues above. As far as I could tell, this wasn't a version which was already installed elsewhere on my system, but perhaps I missed something.
+
+Now that I'm aware of these issues, and for anyone else encountering the same, there are a couple of workarounds for each of the above, respectively:
+
+1. Delete the project's /.venv/ directory before updating the environment, i.e. before running `uv sync` or another command which updates the local virtual environment. uv seems to have no issues writing to a new/clean directory, but the errors occur if it tries deleting/replacing any existing files.
+2. Install Python outside of the uv ecosystem, where it can later be picked up by uv to be used in a virtual environment etc.
+
+I appreciate that this is probably a fantastically difficult (impossible?) issue to debug, particularly considering there seem to be relatively few people affected by it (unless they've just given up and used something else, which apparently I'm a bit too stubborn to do...). With that said, given the headache it has caused me over the past week or two, if it's not feasible to replicate/fix then would it be possible to document these somewhere as known issues? (Or if not, at least this issue is documentation in itself!)
+
+Thanks.
+
+### Platform
+
+Windows 10 Home; Version 22H2; OS Build 19045.6456; x64
+
+### Version
+
+uv 0.9.8 (85c5d3228 2025-11-07)
+
+### Python version
+
+N/A (encountered for 3.11.10, 3.12, 3.13 via uv installation)
+
+---
+
+_Label `bug` added by @Cmastris on 2025-11-15 17:03_
+
+---
+
+_Renamed from ""Access is denied. (os error 5)" during `uv sync` and database write errors for Python installed via uv" to ""Access is denied. (os error 5)" during .venv updates and database write errors for Python installed via uv" by @Cmastris on 2025-11-15 17:04_
+
+---
+
+_Comment by @konstin on 2025-11-18 15:30_
+
+Are there any Python processes still running when you get the error, including e.g. through an IDE? Which files are specifically affected, can you copy the full error message and ideally verbose output (`uv sync -v`)? And finally, do you regularly switch between admin and non-admin terminal and applications?
+
+---
+
+_Label `bug` removed by @konstin on 2025-11-18 15:30_
+
+---
+
+_Label `windows` added by @konstin on 2025-11-18 15:30_
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-11-18 15:30_
+
+---
+
+_Comment by @Cmastris on 2025-11-23 15:47_
+
+### Package update/removal error
+
+Here's a full example starting from a fresh directory (running Git Bash as an administrator)...
+
+Initiating a project and adding a new package seems to work fine:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/uv-test
+$ uv init
+Initialized project `uv-test`
+
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/uv-test (main)
+$ uv add pytest==9.0.0
+Using CPython 3.11.9
+Creating virtual environment at: .venv
+Resolved 7 packages in 10ms
+Installed 6 packages in 119ms
+ + colorama==0.4.6
+ + iniconfig==2.3.0
+ + packaging==25.0
+ + pluggy==1.6.0
+ + pygments==2.19.2
+ + pytest==9.0.0
+
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/uv-test (main)
+$ uv sync
+Resolved 7 packages in 1ms
+Audited 6 packages in 0.58ms
+```
+
+However, the OS error is encountered when I try to update the package:
+
+<details>
+
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/uv-test (main)
+$ uv add pytest==9.0.1 -v
+DEBUG uv 0.9.8 (85c5d3228 2025-11-07)
+DEBUG Acquired shared lock for `C:\Users\Cmast\AppData\Local\uv\cache`
+DEBUG Found project root: `C:\Users\Cmast\Documents\dev\uv-test`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\Cmast\Documents\dev\uv-test`
+DEBUG Reading Python requests from version file at `C:\Users\Cmast\Documents\dev\uv-test\.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.11`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\Temp\uv-fda795c4bfa40364.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-test @ file:///C:/Users/Cmast/Documents/dev/uv-test
+DEBUG No workspace root found, using project root
+DEBUG Resolving despite existing lockfile due to mismatched requirements for: `uv-test==0.1.0`
+  Requested: {Requirement { name: PackageName("pytest"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "9.0.1" }]), index: None, conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName("pytest"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "9.0.0" }]), index: None, conflict: None }, origin: None }}
+DEBUG Solving with installed Python version: 3.11.9
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: uv-test*
+DEBUG Searching for a compatible version of uv-test @ file:///C:/Users/Cmast/Documents/dev/uv-test (*)
+DEBUG Adding direct dependency: pytest>=9.0.1, <9.0.1+
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pytest.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/pytest/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pytest.lock`
+DEBUG Searching for a compatible version of pytest (>=9.0.1, <9.0.1+)
+DEBUG Selecting: pytest==9.0.1 [compatible] (pytest-9.0.1-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pytest\pytest-9.0.1-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/0b/8b/6300fb80f858cda1c51ffa17075df5d846757081d11ab4aa35cef9e6258b/pytest-9.0.1-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pytest\pytest-9.0.1-py3-none-any.lock`
+DEBUG Adding transitive dependency for pytest==9.0.1: colorama{sys_platform == 'win32'}>=0.4
+DEBUG Adding transitive dependency for pytest==9.0.1: iniconfig>=1.0.1
+DEBUG Adding transitive dependency for pytest==9.0.1: packaging>=22
+DEBUG Adding transitive dependency for pytest==9.0.1: pluggy>=1.5, <2
+DEBUG Adding transitive dependency for pytest==9.0.1: pygments>=2.7.2
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\colorama.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\iniconfig.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\packaging.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pluggy.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pygments.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/colorama/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\colorama.lock`
+DEBUG Searching for a compatible version of colorama{sys_platform == 'win32'} (>=0.4)
+DEBUG Selecting: colorama==0.4.6 [preference] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Adding transitive dependency for colorama==0.4.6: colorama==0.4.6
+DEBUG Adding transitive dependency for colorama==0.4.6: colorama{sys_platform == 'win32'}==0.4.6
+DEBUG Searching for a compatible version of colorama (==0.4.6)
+DEBUG Selecting: colorama==0.4.6 [preference] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pluggy.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\colorama\colorama-0.4.6-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pluggy\pluggy-1.6.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/pygments/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pygments.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/iniconfig/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\iniconfig.lock`
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\packaging.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pygments\pygments-2.19.2-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\iniconfig\iniconfig-2.3.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl.metadata
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\packaging\packaging-25.0-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\colorama\colorama-0.4.6-py2.py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pluggy\pluggy-1.6.0-py3-none-any.lock`
+DEBUG Searching for a compatible version of colorama{sys_platform == 'win32'} (==0.4.6)
+DEBUG Selecting: colorama==0.4.6 [preference] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Searching for a compatible version of iniconfig (>=1.0.1)
+DEBUG Selecting: iniconfig==2.3.0 [preference] (iniconfig-2.3.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\packaging\packaging-25.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\iniconfig\iniconfig-2.3.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pygments\pygments-2.19.2-py3-none-any.lock`
+DEBUG Searching for a compatible version of packaging (>=22)
+DEBUG Selecting: packaging==25.0 [preference] (packaging-25.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of pluggy (>=1.5, <2)
+DEBUG Selecting: pluggy==1.6.0 [preference] (pluggy-1.6.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of pygments (>=2.7.2)
+DEBUG Selecting: pygments==2.19.2 [preference] (pygments-2.19.2-py3-none-any.whl)
+DEBUG Tried 7 versions: colorama 1, iniconfig 1, packaging 1, pluggy 1, pygments 1, pytest 1, uv-test 1
+DEBUG all marker environments resolution took 0.007s
+Resolved 7 packages in 12ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement installed, but mismatched:
+  Installed: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("pytest"), version: "9.0.0", path: "C:\\Users\\Cmast\\Documents\\dev\\uv-test\\.venv\\Lib\\site-packages\\pytest-9.0.0.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(<uninit>) }
+  Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "9.0.1" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Registry requirement already cached: pytest==9.0.1
+DEBUG Requirement already installed: colorama==0.4.6
+DEBUG Requirement already installed: iniconfig==2.3.0
+DEBUG Requirement already installed: packaging==25.0
+DEBUG Requirement already installed: pluggy==1.6.0
+DEBUG Requirement already installed: pygments==2.19.2
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+DEBUG Released lock at `C:\Users\Cmast\Documents\dev\uv-test\.venv\.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\.lock`
+error: failed to remove file `C:\Users\Cmast\Documents\dev\uv-test\.venv\Lib\site-packages\pytest-9.0.0.dist-info/entry_points.txt`: Access is denied. (os error 5)
+```
+
+</details>
+
+Confirming that no Python processes are running:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/uv-test (main)
+$ ps -ef | grep python
+```
+
+### Python SQL database write error
+Here's an example using the same repository that I previously encountered issues with (running a new Git Bash shell as an administrator)...
+
+Navigating to the project directory and activate the virtual env:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev
+$ cd web/django_photo_gallery/photo_gallery && source ../.venv/Scripts/activate
+(django-photo-gallery)
+```
+Display the project requirements:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ cat ../pyproject.toml
+[project]
+name = "django-photo-gallery"
+version = "1.0"
+description = "A photo gallery website built using Django."
+readme = "README.md"
+requires-python = ">=3.13.9,<3.14"
+dependencies = [
+    "crispy-bootstrap5==2025.6",
+    "django==5.2.8",
+    "django-crispy-forms==2.5",
+    "django-imagekit==6.0.0",
+]
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ cat ../.python-version
+3.13.9
+(django-photo-gallery)
+```
+Confirming the Python version and environment being used:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ which python
+/c/Users/Cmast/Documents/dev/web/django_photo_gallery/.venv/Scripts/python
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ uv python find
+C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Scripts\python.exe
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ py -V
+Python 3.13.9
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ django-admin --version
+5.2.8
+(django-photo-gallery)
+```
+Displaying the list of Python versions (3.13.9 was installed via the Python website/installer, as noted in the original report):
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ uv python list --only-installed
+cpython-3.13.9-windows-x86_64-none    C:\Users\Cmast\AppData\Local\Programs\Python\Python313\python.exe
+cpython-3.11.9-windows-x86_64-none    C:\Users\Cmast\AppData\Roaming\uv\python\cpython-3.11.9-windows-x86_64-none\python.exe
+cpython-3.11.3-windows-x86_64-none    C:\Python311\python.exe
+cpython-3.11.3-windows-x86_64-none    C:\ProgramData\chocolatey\bin\python3.11.exe
+(django-photo-gallery)
+```
+Verifying that the contact form (local SQLITE3 db write) works:
+
+<details>
+
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ py manage.py runserver
+Watching for file changes with StatReloader
+[SOME SUCCESSFUL GET REQUESTS; REMOVED AS NOT RELEVANT]
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 23, 2025 - 15:13:50
+Django version 5.2.8, using settings 'photo_gallery.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Contact Message: Hello
+From: from_email@example.com
+To: email1@example.com, email2@example.com
+Date: Sun, 23 Nov 2025 15:14:33 -0000
+Message-ID: <176391087361.9292.11819754775497455104@LAPTOP-3GSD60QD>
+
+Contact message received from Chris M (email@example.com).
+
+Subject: Hello
+Message:
+
+Testing the existing, working version of Python.
+-------------------------------------------------------------------------------
+[23/Nov/2025 15:14:33] "POST /contact HTTP/1.1" 302 0
+[23/Nov/2025 15:14:33] "GET /contact-success HTTP/1.1" 200 4871
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[23/Nov/2025 15:14:33] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4044
+(django-photo-gallery)
+```
+
+</details>
+
+Modifying the Python version to the previous (not installed) patch version:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ cat ../pyproject.toml
+[project]
+name = "django-photo-gallery"
+version = "1.0"
+description = "A photo gallery website built using Django."
+readme = "README.md"
+requires-python = "==3.13.8"
+dependencies = [
+    "crispy-bootstrap5==2025.6",
+    "django==5.2.8",
+    "django-crispy-forms==2.5",
+    "django-imagekit==6.0.0",
+]
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ cat ../.python-version
+3.13.8
+(django-photo-gallery)
+```
+
+Syncing (note that the first issue occurs):
+
+<details>
+
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ uv sync -v
+DEBUG uv 0.9.8 (85c5d3228 2025-11-07)
+DEBUG Acquired shared lock for `C:\Users\Cmast\AppData\Local\uv\cache`
+DEBUG Found project root: `C:\Users\Cmast\Documents\dev\web\django_photo_gallery`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\Cmast\Documents\dev\web\django_photo_gallery`
+DEBUG Reading Python requests from version file at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.python-version`
+DEBUG Using Python request `3.13.8` from version file at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.python-version`
+DEBUG Checking for Python environment at: `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv`
+DEBUG The project environment's Python version does not satisfy the request: `Python 3.13.8`
+DEBUG Searching for Python 3.13.8 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\Cmast\AppData\Roaming\uv\python`
+DEBUG Skipping managed installation `cpython-3.11.9-windows-x86_64-none`: does not satisfy `3.13.8`
+DEBUG Found `cpython-3.13.9-windows-x86_64-none` at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Scripts\python.exe` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Scripts\python.exe`: system interpreter required
+DEBUG Found `cpython-3.11.3-windows-x86_64-none` at `C:\Python311\python.exe` (search path)
+DEBUG Skipping interpreter at `C:\Python311\python.exe` from search path: does not satisfy request `3.13.8`
+DEBUG Found `cpython-3.13.9-windows-x86_64-none` at `C:\Users\Cmast\AppData\Local\Programs\Python\Python313\python.exe` (search path)
+DEBUG Skipping interpreter at `C:\Users\Cmast\AppData\Local\Programs\Python\Python313\python.exe` from search path: does not satisfy request `3.13.8`
+DEBUG Python interpreter in the registry is not executable: `Software\Python\PythonCore\2.7
+DEBUG Python interpreter in the registry is not executable: `Software\Python\PythonCore\3.10
+DEBUG Python interpreter in the registry is not executable: `Software\Python\PythonCore\3.7-32
+DEBUG Python interpreter in the registry is not executable: `Software\Python\PythonCore\3.9
+DEBUG Python interpreter in the registry is not executable: `Software\Python\PythonCore\3.12
+DEBUG Found `cpython-3.13.9-windows-x86_64-none` at `C:\Users\Cmast\AppData\Local\Programs\Python\Python313\python.exe` (registry)
+DEBUG Skipping interpreter at `C:\Users\Cmast\AppData\Local\Programs\Python\Python313\python.exe` from registry: does not satisfy request `3.13.8`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Roaming\uv\python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20251010/cpython-3.13.8%2B20251010-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.13.8-20251010-x86_64-pc-windows-msvc-install_only_stripped.tar.gz to temporary location: C:\Users\Cmast\AppData\Roaming\uv\python\.temp\.tmp5weJh2
+Downloading cpython-3.13.8-windows-x86_64-none (download) (20.6MiB)
+ Downloading cpython-3.13.8-windows-x86_64-none (download)
+DEBUG Moving C:\Users\Cmast\AppData\Roaming\uv\python\.temp\.tmp5weJh2\python to C:\Users\Cmast\AppData\Roaming\uv\python\cpython-3.13.8-windows-x86_64-none
+DEBUG Released lock at `C:\Users\Cmast\AppData\Roaming\uv\python\.lock`
+Using CPython 3.13.8
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\Temp\uv-d3d53ba162320d80.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\.lock`
+error: failed to remove directory `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib`: Access is denied. (os error 5)
+(django-photo-gallery)
+
+```
+
+</details>
+
+At this point, I manually deleted the whole .venv directory via File Explorer and tried syncing again (this is a long one, but it appeared to work):
+
+<details>
+
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ uv sync -v
+DEBUG uv 0.9.8 (85c5d3228 2025-11-07)
+DEBUG Acquired shared lock for `C:\Users\Cmast\AppData\Local\uv\cache`
+DEBUG Found project root: `C:\Users\Cmast\Documents\dev\web\django_photo_gallery`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\Cmast\Documents\dev\web\django_photo_gallery`
+DEBUG Reading Python requests from version file at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.python-version`
+DEBUG Using Python request `3.13.8` from version file at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.python-version`
+DEBUG Checking for Python environment at: `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv`
+DEBUG Searching for Python 3.13.8 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\Cmast\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.13.8-windows-x86_64-none`
+DEBUG Found `cpython-3.13.8-windows-x86_64-none` at `C:\Users\Cmast\AppData\Roaming\uv\python\cpython-3.13.8-windows-x86_64-none\python.exe` (managed installations)
+Using CPython 3.13.8
+Creating virtual environment at: C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv
+DEBUG Using base executable for virtual environment: C:\Users\Cmast\AppData\Roaming\uv\python\cpython-3.13.8-windows-x86_64-none\python.exe
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\Temp\uv-d3d53ba162320d80.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv`
+DEBUG Using request timeout of 30s
+warning: Resolving despite existing lockfile due to fork markers being disjoint with `requires-python`: `python_full_version >= '3.13.9' and python_full_version < '3.14'` vs `python_full_version == '3.13.8'`
+DEBUG Found static `pyproject.toml` for: django-photo-gallery @ file:///C:/Users/Cmast/Documents/dev/web/django_photo_gallery
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.8
+DEBUG Solving with target Python version: ==3.13.8
+DEBUG Adding direct dependency: django-photo-gallery*
+DEBUG Searching for a compatible version of django-photo-gallery @ file:///C:/Users/Cmast/Documents/dev/web/django_photo_gallery (*)
+DEBUG Adding direct dependency: crispy-bootstrap5>=2025.6, <2025.6+
+DEBUG Adding direct dependency: django>=5.2.8, <5.2.8+
+DEBUG Adding direct dependency: django-crispy-forms>=2.5, <2.5+
+DEBUG Adding direct dependency: django-imagekit>=6.0.0, <6.0.0+
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\crispy-bootstrap5.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django-crispy-forms.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django-imagekit.lock`
+DEBUG Found stale response for: https://pypi.org/simple/django-imagekit/
+DEBUG Sending revalidation request for: https://pypi.org/simple/django-imagekit/
+DEBUG Found stale response for: https://pypi.org/simple/crispy-bootstrap5/
+DEBUG Sending revalidation request for: https://pypi.org/simple/crispy-bootstrap5/
+DEBUG Found stale response for: https://pypi.org/simple/django-crispy-forms/
+DEBUG Sending revalidation request for: https://pypi.org/simple/django-crispy-forms/
+DEBUG Found stale response for: https://pypi.org/simple/django/
+DEBUG Sending revalidation request for: https://pypi.org/simple/django/
+DEBUG Found modified response for: https://pypi.org/simple/django/
+DEBUG Found not-modified response for: https://pypi.org/simple/crispy-bootstrap5/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\crispy-bootstrap5.lock`
+DEBUG Searching for a compatible version of crispy-bootstrap5 (>=2025.6, <2025.6+)
+DEBUG Selecting: crispy-bootstrap5==2025.6 [preference] (crispy_bootstrap5-2025.6-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\crispy-bootstrap5\crispy_bootstrap5-2025.6-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d8/d4/8cf1ba773a91fc17bab1fd46b75bbdef780c4cccbbb8230e617980a0362c/crispy_bootstrap5-2025.6-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\crispy-bootstrap5\crispy_bootstrap5-2025.6-py3-none-any.lock`
+DEBUG Adding transitive dependency for crispy-bootstrap5==2025.6: django>=4.2
+DEBUG Adding transitive dependency for crispy-bootstrap5==2025.6: django-crispy-forms>=2.3
+DEBUG Found not-modified response for: https://pypi.org/simple/django-crispy-forms/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django-crispy-forms.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django.lock`
+DEBUG Searching for a compatible version of django (>=5.2.8, <5.2.8+)
+DEBUG Selecting: django==5.2.8 [preference] (django-5.2.8-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django-crispy-forms\django_crispy_forms-2.5-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django\django-5.2.8-py3-none-any.lock`
+DEBUG Found not-modified response for: https://pypi.org/simple/django-imagekit/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/2c/58/ac3a11950baaf75c1f3242e3af9dfe45201f6ee10c113dd37a9c000876d2/django_crispy_forms-2.5-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django-crispy-forms\django_crispy_forms-2.5-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/5e/3d/a035a4ee9b1d4d4beee2ae6e8e12fe6dee5514b21f62504e22efcbd9fb46/django-5.2.8-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django\django-5.2.8-py3-none-any.lock`
+DEBUG Adding transitive dependency for django==5.2.8: asgiref>=3.8.1
+DEBUG Adding transitive dependency for django==5.2.8: sqlparse>=0.3.1
+DEBUG Adding transitive dependency for django==5.2.8: tzdata{sys_platform == 'win32'}*
+DEBUG Searching for a compatible version of django-crispy-forms (>=2.5, <2.5+)
+DEBUG Selecting: django-crispy-forms==2.5 [preference] (django_crispy_forms-2.5-py3-none-any.whl)
+DEBUG Adding transitive dependency for django-crispy-forms==2.5: django>=4.2
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django-imagekit.lock`
+DEBUG Searching for a compatible version of django-imagekit (>=6.0.0, <6.0.0+)
+DEBUG Selecting: django-imagekit==6.0.0 [preference] (django_imagekit-6.0.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django-imagekit\django_imagekit-6.0.0-py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\asgiref.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\sqlparse.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\tzdata.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a8/ed/fbd7dc7529c7d51ec6f07d970ed3f82c28c3ea92f4a5a602f302182c0dd5/django_imagekit-6.0.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django-imagekit\django_imagekit-6.0.0-py3-none-any.lock`
+DEBUG Adding transitive dependency for django-imagekit==6.0.0: django-appconf*
+DEBUG Adding transitive dependency for django-imagekit==6.0.0: pilkit*
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django-appconf.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pilkit.lock`
+DEBUG Found stale response for: https://pypi.org/simple/sqlparse/
+DEBUG Sending revalidation request for: https://pypi.org/simple/sqlparse/
+DEBUG Found stale response for: https://pypi.org/simple/asgiref/
+DEBUG Sending revalidation request for: https://pypi.org/simple/asgiref/
+DEBUG Found stale response for: https://pypi.org/simple/tzdata/
+DEBUG Sending revalidation request for: https://pypi.org/simple/tzdata/
+DEBUG Found stale response for: https://pypi.org/simple/pilkit/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pilkit/
+DEBUG Found stale response for: https://pypi.org/simple/django-appconf/
+DEBUG Sending revalidation request for: https://pypi.org/simple/django-appconf/
+DEBUG Found not-modified response for: https://pypi.org/simple/sqlparse/
+DEBUG Found modified response for: https://pypi.org/simple/asgiref/
+DEBUG Found not-modified response for: https://pypi.org/simple/tzdata/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\sqlparse.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\tzdata.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\sqlparse\sqlparse-0.5.3-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\asgiref.lock`
+DEBUG Searching for a compatible version of asgiref (>=3.8.1)
+DEBUG Selecting: asgiref==3.10.0 [preference] (asgiref-3.10.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\tzdata\tzdata-2025.2-py2.py3-none-any.lock`
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\asgiref\asgiref-3.10.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/5c/23/c7abc0ca0a1526a0774eca151daeb8de62ec457e77262b66b359c3c7679e/tzdata-2025.2-py2.py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\tzdata\tzdata-2025.2-py2.py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a9/5c/bfd6bd0bf979426d405cc6e71eceb8701b148b16c21d2dc3c261efc61c7b/sqlparse-0.5.3-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\sqlparse\sqlparse-0.5.3-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/17/9c/fc2331f538fbf7eedba64b2052e99ccf9ba9d6888e2f41441ee28847004b/asgiref-3.10.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\asgiref\asgiref-3.10.0-py3-none-any.lock`
+DEBUG Searching for a compatible version of sqlparse (>=0.3.1)
+DEBUG Selecting: sqlparse==0.5.3 [preference] (sqlparse-0.5.3-py3-none-any.whl)
+DEBUG Searching for a compatible version of tzdata{sys_platform == 'win32'} (*)
+DEBUG Selecting: tzdata==2025.2 [preference] (tzdata-2025.2-py2.py3-none-any.whl)
+DEBUG Adding transitive dependency for tzdata==2025.2: tzdata==2025.2
+DEBUG Adding transitive dependency for tzdata==2025.2: tzdata{sys_platform == 'win32'}==2025.2
+DEBUG Searching for a compatible version of tzdata (==2025.2)
+DEBUG Selecting: tzdata==2025.2 [preference] (tzdata-2025.2-py2.py3-none-any.whl)
+DEBUG Searching for a compatible version of tzdata{sys_platform == 'win32'} (==2025.2)
+DEBUG Selecting: tzdata==2025.2 [preference] (tzdata-2025.2-py2.py3-none-any.whl)
+DEBUG Found not-modified response for: https://pypi.org/simple/django-appconf/
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\django-appconf.lock`
+DEBUG Searching for a compatible version of django-appconf (*)
+DEBUG Selecting: django-appconf==1.2.0 [preference] (django_appconf-1.2.0-py3-none-any.whl)
+DEBUG Found not-modified response for: https://pypi.org/simple/pilkit/
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django-appconf\django_appconf-1.2.0-py3-none-any.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pilkit.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e8/e6/4c34d94dfb74bbcbc489606e61f1924933de30d22c593dd1f429f35fbd7f/django_appconf-1.2.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\django-appconf\django_appconf-1.2.0-py3-none-any.lock`
+DEBUG Adding transitive dependency for django-appconf==1.2.0: django*
+DEBUG Searching for a compatible version of pilkit (*)
+DEBUG Selecting: pilkit==3.0 [preference] (pilkit-3.0-py3-none-any.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pilkit\pilkit-3.0-py3-none-any.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/de/ec/877b84b82cbcba6203e39d068cecfdbcfb61de69260cb851ea11be9b67f3/pilkit-3.0-py3-none-any.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pilkit\pilkit-3.0-py3-none-any.lock`
+DEBUG Adding transitive dependency for pilkit==3.0: pillow>=7.0
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pillow.lock`
+DEBUG Found stale response for: https://pypi.org/simple/pillow/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pillow/
+DEBUG Found modified response for: https://pypi.org/simple/pillow/
+WARN Skipping file for pillow: Pillow-1.7.5-py2.4-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.5-py2.5-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.5-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.5-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.6-py2.4-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.6-py2.5-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.6-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.6-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.7-py2.4-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.7-py2.5-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.7-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.7-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.8-py2.4-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.8-py2.5-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.8-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-1.7.8-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-1.7.8-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-1.7.8-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.0.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.0.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.1.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.1.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.1.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.2.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.2.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.2.2-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.2.2-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.2.2.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.3.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.3.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.3.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.4.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.4.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.4.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.2-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.2-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.2.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.3-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.5.3-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.5.3.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.6.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.6.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.6.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.6.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.6.2-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.6.2-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.6.2.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.7.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.7.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.7.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.8.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.8.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.8.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.8.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.8.2-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.8.2-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.8.2.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.9.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-2.9.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-2.9.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.0.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.0.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.1.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.1.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.1.1-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.2.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.2.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.3.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.3.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.3.1-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.3.1.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.4.0-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.2-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.2-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.2.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.4.1-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.1-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.4.1.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.4.2-py2.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py2.6-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-3.4.2-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win32-py2.6.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-3.4.2.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.0.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.0.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.1.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.1.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.1.1-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.2.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.2.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.2.1-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.3.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.3-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.3-win32.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-4.3.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.3.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.0.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.0.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.0.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.1.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.1.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.1.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.2.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.2.0-py3.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.3.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.3.0-py3.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.4.0-py2.7-macosx-10.13-x86_64.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.0-py3.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.0.dev0-py3.7-macosx-10.13-x86_64.egg
+WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.4.1-py2.7-macosx-10.13-x86_64.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.4-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.4-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-5.4.1-py3.7-win32.egg
+WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.7.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.4.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.7.exe
+WARN Skipping file for pillow: Pillow-6.0.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py3.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.0.0-py3.7-win32.egg
+WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py3.7.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-6.0.0.win32-py3.7.exe
+WARN Skipping file for pillow: Pillow-6.1.0-py2.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py2.7-win32.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.5-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.5-win32.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.6-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.6-win32.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.7-macosx-10.14-x86_64.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.7-win-amd64.egg
+WARN Skipping file for pillow: Pillow-6.1.0-py3.7-win32.egg
+WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py2.7.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py3.5.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py3.6.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py3.7.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win32-py2.7.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win32-py3.5.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win32-py3.6.exe
+WARN Skipping file for pillow: Pillow-6.1.0.win32-py3.7.exe
+WARN Skipping file for pillow: Pillow-7.1.0-py3.8-macosx-10.9-x86_64.egg
+WARN Skipping file for pillow: Pillow-7.1.1-py3.8-macosx-10.9-x86_64.egg
+WARN Skipping file for pillow: Pillow-7.1.2-py3.8-macosx-10.9-x86_64.egg
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\simple-v18\pypi\pillow.lock`
+DEBUG Searching for a compatible version of pillow (>=7.0)
+DEBUG Selecting: pillow==12.0.0 [preference] (pillow-12.0.0-cp313-cp313-ios_13_0_arm64_iphoneos.whl)
+DEBUG Acquired lock for `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pillow\pillow-12.0.0-cp313-cp313-ios_13_0_arm64_iphoneos.lock`
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/62/f2/de993bb2d21b33a98d031ecf6a978e4b61da207bef02f7b43093774c480d/pillow-12.0.0-cp313-cp313-ios_13_0_arm64_iphoneos.whl.metadata
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\wheels-v5\pypi\pillow\pillow-12.0.0-cp313-cp313-ios_13_0_arm64_iphoneos.lock`
+DEBUG Tried 11 versions: asgiref 1, crispy-bootstrap5 1, django 1, django-appconf 1, django-crispy-forms 1, django-imagekit 1, django-photo-gallery 1, pilkit 1, pillow 1, sqlparse 1, tzdata 1
+DEBUG all marker environments resolution took 0.472s
+Resolved 11 packages in 476ms
+DEBUG Using request timeout of 30s
+DEBUG Registry requirement already cached: crispy-bootstrap5==2025.6
+DEBUG Registry requirement already cached: django==5.2.8
+DEBUG Registry requirement already cached: django-crispy-forms==2.5
+DEBUG Registry requirement already cached: django-imagekit==6.0.0
+DEBUG Registry requirement already cached: asgiref==3.10.0
+DEBUG Registry requirement already cached: sqlparse==0.5.3
+DEBUG Registry requirement already cached: tzdata==2025.2
+DEBUG Registry requirement already cached: django-appconf==1.2.0
+DEBUG Registry requirement already cached: pilkit==3.0
+DEBUG Registry requirement already cached: pillow==12.0.0
+Installed 10 packages in 3.49s
+ + asgiref==3.10.0
+ + crispy-bootstrap5==2025.6
+ + django==5.2.8
+ + django-appconf==1.2.0
+ + django-crispy-forms==2.5
+ + django-imagekit==6.0.0
+ + pilkit==3.0
+ + pillow==12.0.0
+ + sqlparse==0.5.3
+ + tzdata==2025.2
+DEBUG Released lock at `C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\.lock`
+DEBUG Released lock at `C:\Users\Cmast\AppData\Local\uv\cache\.lock`
+(django-photo-gallery)
+```
+
+</details>
+
+Confirming the Python version being used:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ which python
+/c/Users/Cmast/Documents/dev/web/django_photo_gallery/.venv/Scripts/python
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ uv python find
+C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Scripts\python.exe
+(django-photo-gallery)
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ py -V
+Python 3.13.8
+(django-photo-gallery)
+```
+Displaying the list of Python versions (note that 3.13.8 is now installed in the uv directory):
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ uv python list --only-installed
+cpython-3.13.9-windows-x86_64-none    C:\Users\Cmast\AppData\Local\Programs\Python\Python313\python.exe
+cpython-3.13.8-windows-x86_64-none    C:\Users\Cmast\AppData\Roaming\uv\python\cpython-3.13.8-windows-x86_64-none\python.exe
+cpython-3.11.9-windows-x86_64-none    C:\Users\Cmast\AppData\Roaming\uv\python\cpython-3.11.9-windows-x86_64-none\python.exe
+cpython-3.11.3-windows-x86_64-none    C:\Python311\python.exe
+cpython-3.11.3-windows-x86_64-none    C:\ProgramData\chocolatey\bin\python3.11.exe
+(django-photo-gallery)
+```
+
+Re-testing the contact form:
+
+<details>
+
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ py manage.py runserver
+Watching for file changes with StatReloader
+[23/Nov/2025 15:40:32] "GET / HTTP/1.1" 200 12390
+[23/Nov/2025 15:40:34] "GET /contact HTTP/1.1" 200 7002
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[23/Nov/2025 15:41:08] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4044
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 23, 2025 - 15:40:27
+Django version 5.2.8, using settings 'photo_gallery.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Contact Message: Hello
+From: from_email@example.com
+To: email1@example.com, email2@example.com
+Date: Sun, 23 Nov 2025 15:41:10 -0000
+Message-ID: <176391247035.10564.17674161395713553647@LAPTOP-3GSD60QD>
+
+Contact message received from Chris M (example@example.com).
+
+Subject: Hello
+Message:
+
+Testing using Python 3.13.8 installed via uv.
+-------------------------------------------------------------------------------
+Internal Server Error: /contact
+Traceback (most recent call last):
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: attempt to write a readonly database
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\views\generic\edit.py", line 182, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\photo_gallery\contact\views.py", line 25, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\views\generic\edit.py", line 133, in form_valid
+    self.object = form.save()
+                  ~~~~~~~~~^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\forms\models.py", line 554, in save
+    self.instance.save()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\query.py", line 1873, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Cmast\Documents\dev\web\django_photo_gallery\.venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: attempt to write a readonly database
+[23/Nov/2025 15:41:10] "POST /contact HTTP/1.1" 500 191264
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[23/Nov/2025 15:41:10] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4044
+Not Found: /favicon.ico
+[23/Nov/2025 15:41:11] "GET /favicon.ico HTTP/1.1" 404 3933
+(django-photo-gallery)
+```
+
+</details>
+
+Interestingly, my tests using a test db work fine:
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ py manage.py test --failfast
+Creating test database for alias 'default'...
+.............................................
+----------------------------------------------------------------------
+Ran 45 tests in 7.132s
+
+OK
+Destroying test database for alias 'default'...
+Found 45 test(s).
+System check identified no issues (0 silenced).
+(django-photo-gallery)
+```
+
+I then reverted all file changes, deleted the .venv, ran `uv sync`, and re-tested the contact form, which worked again.
+
+> Are there any Python processes still running when you get the error, including e.g. through an IDE?
+
+```
+Cmast@LAPTOP-3GSD60QD MINGW64 ~/Documents/dev/web/django_photo_gallery/photo_gallery (main)
+$ ps -ef | grep python
+(django-photo-gallery)
+```
+I ran all of the above in the same Git Bash window, so Python shouldn't have been running except while I was running the local server.
+
+> do you regularly switch between admin and non-admin terminal and applications?
+
+I always run Git Bash as an administrator, and I ran PowerShell as an administrator for the uv installation per the instructions. Otherwise, I run applications (VS Code, but not using the built-in terminal; Chrome; File Explorer, but not with the .venv directory open; and maybe Notepad in this case) as a regular user.
+
+---
+
+_Comment by @zanieb on 2025-11-23 17:05_
+
+I think a reasonable debugging step would be to disable Avast and Windows Defender temporarily and see if you can reproduce? It's possible they're scanning these files preventing us from mutating them?
+
+---
+
+_Comment by @Cmastris on 2025-12-05 12:51_
+
+**TL;DR:** Thanks for nothing, Avast. Both issues were resolved after uninstalling Avast (and using Windows Defender/Security instead). As you suspected, Avast was evidently **silently** preventing the files from being mutated :no_mouth:. I will not be reinstalling it...
+
+So, I tried uninstalling Avast (leaving Windows Security/Defender enabled). After that, I navigated to my test repo, deleted the existing .venv, and ran `uv sync`. I then modified the pyproject.toml dependency (incremented pytest by a minor version), ran `uv lock`, and then ran `uv sync`. No issues. To double check, I then removed the dependency from pyproject.toml, re-ran the above, and still no issues. Issue #1 solved.
+
+I then switched back to my Django project repo and tried incrementing the Python patch version to 3.13.10. This version couldn't be found by uv when I tried `uv lock`, so I upgraded uv (`uv self update`; 0.9.8 -> 0.9.15) and tried again. No issues that time, so I then ran `uv sync` to start using the new version installed via uv. Finally, I tried replicating issue #2 by running the local server and submitting a contact message (i.e. modifying the db). No issues! Issue #2 solved.
+
+Technically, I did introduce another change as part of this when I upgraded uv. However, considering nobody has been working on this and given that issue #1 was solved without the upgrade, I'm pretty sure that was all Avast's doing.
+
+That's my issue sorted, but **would you consider adding a note about this in the docs** somewhere? Perhaps a new item in https://docs.astral.sh/uv/reference/troubleshooting/build-failures/? Something like...
+
+### Access is denied
+
+If you receive an `Access is denied` error or similar when running uv commands that attempt to modify or delete files, or you encounter similar file/database modification errors using a version of Python installed via uv, then this may be a result of your security/antivirus software silently preventing these actions. Consider temporarily disabling this software to check if this resolves the issue. If so, switching to alternative software or modifying the settings may resolve the issue. As an alternative, you can work around these issues by installing Python directly and/or by manually deleting and rebuilding the project's virtual environment when updating the project dependencies.
+
+
+Thanks for your help with this.
+
+---

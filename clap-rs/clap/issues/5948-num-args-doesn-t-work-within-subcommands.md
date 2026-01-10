@@ -1,0 +1,90 @@
+---
+number: 5948
+title: "`num_args` doesn't work within subcommands"
+type: issue
+state: closed
+author: yongqli
+labels:
+  - C-bug
+assignees: []
+created_at: 2025-03-13T18:37:33Z
+updated_at: 2025-03-13T18:51:59Z
+url: https://github.com/clap-rs/clap/issues/5948
+synced_at: 2026-01-10T01:28:19Z
+---
+
+# `num_args` doesn't work within subcommands
+
+---
+
+_Issue opened by @yongqli on 2025-03-13 18:37_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.85.0
+
+### Clap Version
+
+4.5.24
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+#[derive(clap::Parser, Debug)]
+enum Cmd {
+    Subcmd {
+        #[arg(num_args = 1..)]
+        args: Vec<String>,
+    },
+}
+
+fn main() {
+    let Cmd::Subcmd { args } = Cmd::parse();
+    assert!(args.len() > 0);
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+When `Cmd` is a struct,  `num_args` enforces the number of args, as expected. But when used in a subcommand, i.e. when `Cmd` is an enum, as above, it has no effect. Running the above program as `program subcmd` triggers the panic instead of printing an error message.
+
+### Actual Behaviour
+
+`num_args` is not enforced.
+
+### Expected Behaviour
+
+`num_args` is enforced.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @yongqli on 2025-03-13 18:37_
+
+---
+
+_Comment by @epage on 2025-03-13 18:51_
+
+I'm seeing the same behavior with and without a subcommand.
+
+This is expected behavior.  You can find more information in my post at https://github.com/clap-rs/clap/issues/5526#issuecomment-2158456321
+
+---
+
+_Closed by @epage on 2025-03-13 18:51_
+
+---

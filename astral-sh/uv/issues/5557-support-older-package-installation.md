@@ -1,0 +1,141 @@
+---
+number: 5557
+title: Support older package installation
+type: issue
+state: open
+author: mayuresh-quartic
+labels: []
+assignees: []
+created_at: 2024-07-29T12:26:15Z
+updated_at: 2025-03-11T17:33:00Z
+url: https://github.com/astral-sh/uv/issues/5557
+synced_at: 2026-01-10T01:23:50Z
+---
+
+# Support older package installation
+
+---
+
+_Issue opened by @mayuresh-quartic on 2024-07-29 12:26_
+
+uv version: 0.2.30
+
+UV pip compile fails for installation of old python packages
+
+Error:
+<img width="597" alt="image" src="https://github.com/user-attachments/assets/e9725d5d-ceb6-4761-bec4-246216e43a1d">
+
+
+We recently changed the env variable NO_BUILD_ISOLATION to true and from there we saw this issue
+When we were not using the env var it was working as expected
+
+Note that the env was added due to latest breaking setuptools issue (https://github.com/pypa/setuptools/issues/4519)
+
+
+---
+
+_Comment by @charliermarsh on 2024-07-29 14:52_
+
+It seems that that distribution is broken, in that it reports to be v0.2.0 but the metadata itself lists version v0.0.0. Where are you installing it from?
+
+---
+
+_Comment by @sevdog on 2024-07-29 15:02_
+
+I have a similar error with [`django-push-notifications`](https://pypi.org/project/django-push-notifications/)
+
+```
+> [webserver compiler 7/7] RUN uv pip install -p /opt/venv/bin/python --compile --no-cache-dir -r /requirements.txt 'setuptools==71.1.0' --no-build-isolation:                
+3.430   × No solution found when resolving dependencies:                                                                                                                  
+3.430   ╰─▶ Because django-push-notifications==3.1.0 has inconsistent metadata and                                                                                        
+3.430       you require django-push-notifications==3.1.0, we can conclude that the                                                                                        
+3.430       requirements are unsatisfiable.                                                                                                                               
+3.430                                                                                                                                                                     
+3.430       hint: Metadata for django-push-notifications==3.1.0 was inconsistent:                                                                                         
+3.430         Package metadata version `0.0.0` does not match given version `3.1.0`  
+```
+
+I started getting this error only after adding the `--no-build-isolation` flag while fighting with setuptools 72, without that flag the istall did not give any error.
+
+Now that setuptools 72 has been yanked I have removed that flag and it is working again.
+
+I do not have any local cache and I am not providing any custom URL for that repository.
+
+---
+
+_Comment by @mayuresh-quartic on 2024-07-30 04:16_
+
+Thanks for the reply @charliermarsh 
+
+I am installing aloe from official pypi repo
+https://pypi.org/project/aloe/
+
+There can be scenarios with same issue (0.0.0 version in metatdata file) but pypi listed version is something else
+
+Can this be handled?
+As @sevdog mentioned this is after adding the `--no-build-isolation` flag
+If we don't provide this flag `uv pip compile` and install works fine
+
+---
+
+_Comment by @mayuresh-quartic on 2024-07-30 08:13_
+
+Also one suggestion
+
+While installing uv can it take setuptools, wheel and pip from envs?
+Like UV_PIP_VERSION, UV_SETUPTOOLS_VERSION (by default it can be latest)
+
+With this user will have more flexibility over choosing the required versions instead of using latest
+
+And this would have also not affected the setuptools issue that we faced yesterday
+
+References:
+https://github.com/pypa/setuptools/issues/4519#issuecomment-2256189683
+https://github.com/astral-sh/uv/blob/51b7e9bff1cbf0c8ad18c5447f808176e902db22/crates/uv/src/commands/venv.rs#L278
+
+---
+
+_Comment by @charliermarsh on 2024-07-30 17:22_
+
+`uv pip install aloe==0.2.0 -n` is working as expected for me. Any way I can reproduce?
+
+---
+
+_Comment by @sevdog on 2024-07-31 06:16_
+
+Maybe the problem was related to `setuptools==72.0.0`, which was yanked.
+
+---
+
+_Comment by @mayuresh-quartic on 2024-07-31 17:13_
+
+Yes 
+I am also able to install it now
+
+Maybe if we pick the suggestion this ticket issue will also be resolved
+https://github.com/astral-sh/uv/issues/5557#issuecomment-2257745704
+
+---
+
+_Comment by @mayuresh-quartic on 2024-08-12 07:12_
+
+@charliermarsh 
+Tagging you if you missed this
+
+---
+
+_Comment by @maggiemoreno-synth on 2025-03-11 17:32_
+
+Following. I'm having the same issue. Logs from building my docker container:
+```
+#12 [temporal-worker prddeps 8/9] RUN uv pip install --no-cache-dir --target /site-packages  --no-build-isolation pymediainfo==6.1.0
+#12 0.095 Using CPython 3.11.11 interpreter at: /usr/local/bin/python
+#12 0.452 Resolved 1 package in 356ms
+#12 0.622    Building pymediainfo==6.1.0
+#12 0.922   × Failed to download and build `pymediainfo==6.1.0`
+#12 0.922   ╰─▶ Package metadata version `0.0.0` does not match given version `6.1.0`
+#12 ERROR: process "/bin/sh -c uv pip install --no-cache-dir --target ${PACKAGE_FOLDER}  --no-build-isolation pymediainfo==6.1.0" did not complete successfully: exit code: 1
+------
+```
+
+---

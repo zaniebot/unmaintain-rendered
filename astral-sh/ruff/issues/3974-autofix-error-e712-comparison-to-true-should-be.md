@@ -1,0 +1,74 @@
+---
+number: 3974
+title: "[Autofix error] E712 Comparison to `True` should be `cond is True` inside an f-string"
+type: issue
+state: closed
+author: sdenier
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2023-04-14T15:49:11Z
+updated_at: 2023-05-21T13:27:48Z
+url: https://github.com/astral-sh/ruff/issues/3974
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# [Autofix error] E712 Comparison to `True` should be `cond is True` inside an f-string
+
+---
+
+_Issue opened by @sdenier on 2023-04-14 15:49_
+
+Actually this code deals with Pandas series, so the real solution for us is to ignore the error as per https://github.com/charliermarsh/ruff/issues/1852 - so maybe this is too much of an edge case ?
+
+This is an excerpt from our code which should be enough to reproduce:
+
+```
+def supprimer_doublons_osm_bpe(df_commerces):
+    print(f"Suppression de {df_commerces['doublon_a_supprimer'] == True}")
+```
+
+Then `python -m ruff --fix  .` returns
+
+```
+error: Autofix introduced a syntax error. Reverting all changes.
+```
+
+* Version and settings
+
+ruff 0.0.260
+
+Settings same as https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml, only with:
+```
+line-length = 150
+```
+
+
+---
+
+_Comment by @charliermarsh on 2023-04-14 15:51_
+
+Ah yeah, I'm guessing the syntax error here is that we're replacing `df_commerces['doublon_a_supprimer'] == True` with `df_commerces["doublon_a_supprimer"] is True` (i.e., changing the quotes, which isn't valid within the f-string).
+
+(Though it's a separate issue that we don't want to apply these rules to Pandas comparisons -- a harder one to solve.)
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-04-14 15:51_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-04-14 15:51_
+
+---
+
+_Comment by @JonathanPlasse on 2023-05-21 09:19_
+
+This is now fixed and works with Ruff 0.0.269.
+
+---
+
+_Closed by @charliermarsh on 2023-05-21 13:27_
+
+---

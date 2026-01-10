@@ -1,0 +1,120 @@
+---
+number: 6051
+title: Incorrect MSRV in v3.0.0
+type: issue
+state: closed
+author: synalice
+labels: []
+assignees: []
+created_at: 2025-06-28T19:32:33Z
+updated_at: 2025-06-30T13:56:44Z
+url: https://github.com/clap-rs/clap/issues/6051
+synced_at: 2026-01-10T01:28:21Z
+---
+
+# Incorrect MSRV in v3.0.0
+
+---
+
+_Issue opened by @synalice on 2025-06-28 19:32_
+
+CHANGELOG.md [states](https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#minimum-required-rust) that for v3.0.0 MSRV is 1.54.0, but I get the following error.
+
+```
+error: package `textwrap v0.16.2` cannot be built because it requires rustc 1.70 or newer, while the currently active rustc version is 1.63.0-nightly
+```
+
+```toml
+[dependencies]
+clap = "3.0.0"
+```
+
+Should we update the CHANGELOG? Or, just maybe, it is possible to fix this for v3.0.0?
+
+---
+
+_Comment by @epage on 2025-06-28 20:42_
+
+While this can be confusing, the MSRV is valid. A dependency releasing a new version doesn't invalidate it. If you can use a newer Cargo in a one-off way, you can generate a new lockfile using https://doc.rust-lang.org/cargo/reference/config.html#resolverincompatible-rust-versions. If not, you can use `cargo update --precise` to force an older version of that dependency.
+
+---
+
+_Closed by @epage on 2025-06-29 02:34_
+
+---
+
+_Comment by @synalice on 2025-06-30 10:27_
+
+@epage, are you saying it's 100% possible to use `clap=3.0.0` with `1.63.0-nightly` or is it may-or-may-not-be-possible type of situation?
+
+I am trying
+
+```toml
+[dependencies]
+clap = "3.0.0"
+```
+
+While I don't think that `cargo update -p clap --precise 3.0.0` did anything for me, setting
+
+```toml
+[package]
+rust-version = "1.63"
+```
+
+changed the error message into this:
+
+```
+error: package `tracing-core v0.1.34` cannot be built because it requires rustc 1.65.0 or newer, while the currently active rustc version is 1.63.0-nightly
+```
+
+
+---
+
+_Comment by @synalice on 2025-06-30 10:32_
+
+Found these links, gonna see if anything helps.
+
+- https://github.com/rust-lang/libs-team/issues/72#issuecomment-1308130499
+- https://github.com/rust-lang/cargo/issues/10653
+- https://github.com/rust-lang/cargo/issues/9930
+- https://github.com/rust-lang/cargo/issues/11687
+
+
+---
+
+_Comment by @synalice on 2025-06-30 13:44_
+
+Good news 🎉
+
+I fixed this by doing this:
+
+```toml
+[dependencies]
+clap = "=3.2.22"
+```
+
+Today I learned that writing the version like this uses latest available major version. I mean, that does kind of make sense though. Changing the version of the toolchain is not something that SemVer here should protect against, shouldn't it?
+
+Btw `=3.2.22` compiles and the error about `textwrap v0.16.2` is introduced in `=3.2.23`.
+
+---
+
+_Comment by @epage on 2025-06-30 13:56_
+
+Generally, it would be better to do `cargo update clap --precise 3.2.22` though this is likely an application so most problems associated with `=` won't be there.  See also https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#version-metadata
+
+Like I said, if you could run
+```console
+$ CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +stable generate-lockfile
+```
+then you will likely get all the dependency versions you need.
+
+When I originally suggested `--precise`, it was for the specific dependency that was causing a problem.  If you look at [the versions of `textwrap`](https://crates.io/crates/textwrap/versions), you'll see that 0.15.0, 0.16.0, and 0.16.1 are compatible with your MSRV while 0.16.2 is not.
+
+So you could have `clap = "3.2.23"` and run
+```console
+$ cargo update textwrap --precise 0.16.1
+```
+and then you'll be on a version of that dependency that works.  Doing this manually for every dependency is a bit of a pain ([example](https://github.com/rust-lang/rfcs/blob/master/text/3537-msrv-resolver.md#status-quo)) which is why we added support for `CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback` and in a way that doesn't require bumping your MSRV.
+
+---

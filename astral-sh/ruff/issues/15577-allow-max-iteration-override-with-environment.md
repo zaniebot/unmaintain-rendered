@@ -1,0 +1,35 @@
+---
+number: 15577
+title: Allow max iteration override with environment variable
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - configuration
+assignees: []
+created_at: 2025-01-18T23:00:23Z
+updated_at: 2025-01-19T10:03:40Z
+url: https://github.com/astral-sh/ruff/issues/15577
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Allow max iteration override with environment variable
+
+---
+
+_Issue opened by @charliermarsh on 2025-01-18 23:00_
+
+In some rare cases, it's actually _correct_ to override this.
+
+
+---
+
+_Label `configuration` added by @charliermarsh on 2025-01-18 23:00_
+
+---
+
+_Comment by @MichaReiser on 2025-01-19 10:03_
+
+I'm still inclined not to support this. It hasn't come up frequently and it's generally a symptom of a bug that I rather want to know about 
+
+---

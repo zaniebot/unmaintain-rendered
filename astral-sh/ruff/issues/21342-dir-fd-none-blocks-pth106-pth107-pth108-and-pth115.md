@@ -1,0 +1,50 @@
+---
+number: 21342
+title: "`dir_fd=None` blocks PTH106, PTH107, PTH108, and PTH115"
+type: issue
+state: open
+author: dscorbett
+labels:
+  - rule
+assignees: []
+created_at: 2025-11-08T17:51:21Z
+updated_at: 2025-11-10T14:32:47Z
+url: https://github.com/astral-sh/ruff/issues/21342
+synced_at: 2026-01-10T01:23:02Z
+---
+
+# `dir_fd=None` blocks PTH106, PTH107, PTH108, and PTH115
+
+---
+
+_Issue opened by @dscorbett on 2025-11-08 17:51_
+
+### Summary
+
+[`os-rmdir` (PTH106)](https://docs.astral.sh/ruff/rules/os-rmdir/), [`os-remove` (PTH107)](https://docs.astral.sh/ruff/rules/os-remove/), [`os-unlink` (PTH108)](https://docs.astral.sh/ruff/rules/os-unlink/), and [`os-readlink` (PTH115)](https://docs.astral.sh/ruff/rules/os-readlink/) have false negatives when `dir_fd` is explicitly set to its default value of `None`. All other PTH rules for functions that support `dir_fd` handle `dir_fd=None`.
+```console
+$ cat >pth1.py <<'# EOF'
+import os
+os.rmdir("path", dir_fd=None)
+os.remove("path", dir_fd=None)
+os.unlink("path", dir_fd=None)
+os.readlink("path", dir_fd=None)
+# EOF
+
+$ ruff --isolated check pth1.py --select PTH106,PTH107,PTH108,PTH115
+All checks passed!
+```
+
+### Version
+
+ruff 0.14.4 (c7ff9826d 2025-11-06)
+
+---
+
+_Label `rule` added by @ntBre on 2025-11-10 14:32_
+
+---
+
+_Referenced in [astral-sh/ruff#21371](../../astral-sh/ruff/pulls/21371.md) on 2025-11-11 00:19_
+
+---

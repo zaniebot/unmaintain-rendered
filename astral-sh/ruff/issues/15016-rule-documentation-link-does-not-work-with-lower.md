@@ -1,0 +1,64 @@
+---
+number: 15016
+title: Rule documentation link does not work with lower case code
+type: issue
+state: closed
+author: DaniBodor
+labels:
+  - documentation
+assignees: []
+created_at: 2024-12-16T10:07:05Z
+updated_at: 2025-01-18T04:39:24Z
+url: https://github.com/astral-sh/ruff/issues/15016
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# Rule documentation link does not work with lower case code
+
+---
+
+_Issue opened by @DaniBodor on 2024-12-16 10:07_
+
+When trying to load a specific rule's documentation page using a the lower case letter for that rule (e.g. https://docs.astral.sh/ruff/rules/f401), I get a `404 - Not Found`. 
+After loading the page once using an uppercase letter instead (which does work), if I then try it again with the lowercase, my browser (Firefox) automatically corrects the lowercase to the uppercase and the site does load.
+It might be nice to make the mirror work immediately in a case insensitive manner.
+
+---
+
+_Label `documentation` added by @AlexWaygood on 2024-12-16 14:47_
+
+---
+
+_Renamed from "documentation mirror does not work with lower case letters" to "Rule documentation link does not work with lower case code" by @dhruvmanila on 2024-12-17 04:59_
+
+---
+
+_Comment by @dhruvmanila on 2024-12-17 05:04_
+
+Yeah, I noticed this last week and I was wondering if this should be allowed because the rule selection wouldn't allow lowercase either (`select = ["f401"]` doesn't work). The same argument can be applied to rule names as well as it only works with lower case names so https://docs.astral.sh/ruff/rules/Unused-Import doesn't work.
+
+---
+
+_Comment by @DaniBodor on 2024-12-17 11:11_
+
+What would be the argument not to allow it?
+I guess formally you're right that it's an "invalid" rule code, but I don't think there's any level of confusion of what is intended when a user inputs a rule code with a lower case letter.
+I find it convenient to type the rule code without worrying about the capitalization, and have now a few times been surprised as to why it doesnt always work (until I discovered that it'll only work if I've been on that page before).
+
+---
+
+_Comment by @dhruvmanila on 2025-01-17 06:35_
+
+I think it's fine to add the lowercase variant. The following would need to be updated to generate the redirects from lowercase rule codes as well:
+
+https://github.com/astral-sh/ruff/blob/7ddf59be5fdf6636e407dd31ebf199bfc6686bd6/scripts/generate_mkdocs.py#L257-L266
+
+---
+
+_Referenced in [astral-sh/ruff#15564](../../astral-sh/ruff/pulls/15564.md) on 2025-01-18 00:52_
+
+---
+
+_Closed by @dhruvmanila on 2025-01-18 04:39_
+
+---

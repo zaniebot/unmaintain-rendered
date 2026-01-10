@@ -1,0 +1,106 @@
+---
+number: 17049
+title: "[red-knot] False-positive errors for a `sys.version_info`-guarded import"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - bug
+  - ty
+assignees: []
+created_at: 2025-03-28T19:50:56Z
+updated_at: 2025-05-07T15:20:58Z
+url: https://github.com/astral-sh/ruff/issues/17049
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# [red-knot] False-positive errors for a `sys.version_info`-guarded import
+
+---
+
+_Issue opened by @AlexWaygood on 2025-03-28 19:50_
+
+### Summary
+
+If `python-version` is set to 3.9, red-knot emits an error on the following code:
+
+```py
+import sys
+
+if sys.version_info >= (3, 11):
+    from typing import Self  # error: Module `typing` has no member `Self`
+```
+
+Red-knot correctly understands that the code is okay if `python-version` is set to 3.11 or higher. However, this kind of `sys.version_info`-guarded import is reasonably common in code that aims to support old Python versions -- e.g. lots of libraries do things like this, so that they can have `typing_extensions` only as a dependency on old Python versions:
+
+```py
+import sys
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+```
+
+Mypy and pyright both support this pattern, so I think it's quite important for red-knot to also support it (though it's perhaps not something that's essential to do before the alpha release).
+
+- https://playknot.ruff.rs/a4955e44-b332-43c1-afc1-2063e4d6fc70
+- https://mypy-play.net/?mypy=latest&python=3.9&gist=3077724b9d32730ed4970d8feda7f3bc
+- https://pyright-play.net/?pythonVersion=3.9&code=JYWwDg9gTgLgBAZwJ4IFCuAM0SgdANwFMoFgIA7AfWHMwjgD4BeOACgGYAaOARh4EoAXKjii4mKBBBwYSMDQDmcUJFhwAyoQA2mVEA
+
+---
+
+_Label `bug` added by @AlexWaygood on 2025-03-28 19:50_
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2025-03-28 19:50_
+
+---
+
+_Added to milestone `Red Knot Beta` by @AlexWaygood on 2025-03-28 19:50_
+
+---
+
+_Comment by @sharkdp on 2025-03-28 19:57_
+
+This looks like a duplicate of astral-sh/ruff#15797 or https://github.com/astral-sh/ty/issues/160?
+
+---
+
+_Comment by @AlexWaygood on 2025-03-28 20:08_
+
+Hmm, yes, it appears as though it's a combination of both issues. Mypy seems to view the code under the `if sys.version_info >= (3, 11)` branch as unreachable -- this can be seen from the fact that it does not emit any errors on this code:
+
+```py
+import sys
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+    "foo" + 42
+```
+
+but note that mypy does _not_ emit an `[unreachable]` error on that snippet even if you enable its (off-by-default) `--warn-unreachable` option. @sharkdp and I surmise that the `[unreachable]` logic in mypy applies some special handling for `sys.version_info` branches, since these are in some sense "deliberately unreachable" (a diagnostic telling you off about the unreachability would only be annoying).
+
+For something more complex such as this, mypy _does_ emit warnings, since it no longer understands the condition to be always true (although red-knot does):
+
+```py
+import sys
+
+if 42 and sys.version_info >= (3, 11):
+    from typing import Self  # mypy error: Module "typing" has no attribute "Self"  [attr-defined]
+```
+
+---
+
+_Closed by @AlexWaygood on 2025-03-28 20:08_
+
+---
+
+_Referenced in [astral-sh/ruff#15797](../../astral-sh/ruff/issues/15797.md) on 2025-03-28 20:12_
+
+---
+
+_Referenced in [astral-sh/ruff#17336](../../astral-sh/ruff/pulls/17336.md) on 2025-04-10 15:51_
+
+---

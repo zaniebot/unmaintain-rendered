@@ -1,0 +1,52 @@
+---
+number: 6112
+title: Has anyone used uv with Bazel?
+type: issue
+state: closed
+author: pablospe
+labels:
+  - question
+assignees: []
+created_at: 2024-08-15T14:04:31Z
+updated_at: 2024-08-20T14:21:17Z
+url: https://github.com/astral-sh/uv/issues/6112
+synced_at: 2026-01-10T01:23:56Z
+---
+
+# Has anyone used uv with Bazel?
+
+---
+
+_Issue opened by @pablospe on 2024-08-15 14:04_
+
+_No description provided._
+
+---
+
+_Comment by @zanieb on 2024-08-15 14:12_
+
+Seems like it: https://github.com/theoremlp/rules_uv
+
+---
+
+_Label `question` added by @zanieb on 2024-08-15 14:12_
+
+---
+
+_Comment by @ewianda on 2024-08-16 01:03_
+
+rules_pycross also supports uv.lock
+
+https://github.com/jvolkman/rules_pycross/commit/b0b8c8f10364fb3bf2e0ae9aebef9084d0ce9b50
+
+---
+
+_Comment by @pablospe on 2024-08-20 14:21_
+
+thanks for the replies!
+
+---
+
+_Closed by @pablospe on 2024-08-20 14:21_
+
+---

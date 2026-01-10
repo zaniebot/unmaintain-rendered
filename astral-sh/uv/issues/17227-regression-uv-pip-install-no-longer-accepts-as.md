@@ -1,0 +1,78 @@
+---
+number: 17227
+title: "Regression: `uv pip install` no longer accepts `-` as file for constraints, overrides, exclusions"
+type: issue
+state: closed
+author: Jesse-Bakker
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-23T11:06:18Z
+updated_at: 2025-12-24T13:47:54Z
+url: https://github.com/astral-sh/uv/issues/17227
+synced_at: 2026-01-10T01:26:15Z
+---
+
+# Regression: `uv pip install` no longer accepts `-` as file for constraints, overrides, exclusions
+
+---
+
+_Issue opened by @Jesse-Bakker on 2025-12-23 11:06_
+
+### Summary
+
+Bisected to 5947fb (#16923)
+
+Before:
+```shell
+$ echo "ruff == 0.13" | uv pip install ruff --overrides=-
+Resolved 1 package in 21ms
+Installed 1 package in 7ms
+ + ruff==0.13.0
+```
+
+After:
+```shell
+$ echo "ruff == 0.13" | uv pip install ruff --overrides=-
+error: File not found: `-`
+```
+
+### Platform
+
+Linux 6.18.1-arch1-2 x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.18 (0cee76417 2025-12-16)
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @Jesse-Bakker on 2025-12-23 11:06_
+
+---
+
+_Renamed from "Regression: `uv pip install` no longer accepts stdin as file for constraints, overrides, exclusions" to "Regression: `uv pip install` no longer accepts `-` as file for constraints, overrides, exclusions" by @Jesse-Bakker on 2025-12-23 11:14_
+
+---
+
+_Referenced in [astral-sh/uv#17188](../../astral-sh/uv/pulls/17188.md) on 2025-12-23 16:55_
+
+---
+
+_Comment by @charliermarsh on 2025-12-24 13:47_
+
+Should be fixed by https://github.com/astral-sh/uv/pull/17188 -- sorry about that.
+
+---
+
+_Closed by @charliermarsh on 2025-12-24 13:47_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-12-24 13:47_
+
+---

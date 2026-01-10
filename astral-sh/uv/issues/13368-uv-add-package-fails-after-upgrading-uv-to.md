@@ -1,0 +1,174 @@
+---
+number: 13368
+title: uv add package fails after upgrading uv to version 0.7.3
+type: issue
+state: closed
+author: jenriquehdez
+labels:
+  - question
+assignees: []
+created_at: 2025-05-09T19:41:53Z
+updated_at: 2025-05-13T03:04:26Z
+url: https://github.com/astral-sh/uv/issues/13368
+synced_at: 2026-01-10T01:25:32Z
+---
+
+# uv add package fails after upgrading uv to version 0.7.3
+
+---
+
+_Issue opened by @jenriquehdez on 2025-05-09 19:41_
+
+### Summary
+
+This issue started happening after upgrading uv to  version `0.7.3`. Previously this was working fine with `uv 0.6.13`
+
+**What is not working**
+`uv add sinapsis --index https://pypi.sinapsis.tech/ `
+
+```bash
+  × No solution found when resolving dependencies for split (python_full_version >= '3.13'):
+  ╰─▶ Because sinapsis was not found in the package registry and your project depends on sinapsis, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://pypi.sinapsis.tech/) could not be queried due to a lack of valid authentication credentials (403 Forbidden).
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+**What is working but not desired**
+`uv add sinapsis --index https://pypi.sinapsis.tech/ --index-strategy unsafe-first-match`
+```bash
+Resolved 13 packages in 926ms
+Installed 10 packages in 9ms`
+```
+Index is already included in the pyproject.toml file.
+```bash
+[[tool.uv.index]]
+url = "https://pypi.sinapsis.tech/"
+```
+
+### Platform
+
+Ubuntu 22.04.4 LTS
+
+### Version
+
+uv 0.7.3
+
+### Python version
+
+Python 3.10.12
+
+---
+
+_Label `bug` added by @jenriquehdez on 2025-05-09 19:41_
+
+---
+
+_Comment by @charliermarsh on 2025-05-09 20:56_
+
+It looks like your index returns a 403 for "Not found" packages. I think you should add:
+```toml
+[[tool.uv.index]]
+url = "https://pypi.sinapsis.tech/"
+ignore-error-codes = [403]
+```
+
+See: https://docs.astral.sh/uv/configuration/indexes/#ignoring-error-codes-when-searching-across-indexes
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-05-09 20:56_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-05-09 20:56_
+
+---
+
+_Comment by @jenriquehdez on 2025-05-09 22:25_
+
+Thanks for your reply. I think that only partially fix the issue, similar error occurs when trying to install the package in a virtual environment located in a project folder without a pyproject file. For example:
+
+`uv pip install sinapsis --extra-index-url https://pypi.sinapsis.tech`
+
+produces
+
+```bash
+No solution found when resolving dependencies:
+  ╰─▶ Because sinapsis was not found in the package registry and you require sinapsis, we can conclude that your requirements are unsatisfiable.
+
+      hint: An index URL (https://pypi.sinapsis.tech/) could not be queried due to a lack of valid authentication credentials (403 Forbidden).
+```
+which don't happen when using raw pip
+
+`pip install sinapsis --extra-index-url https://pypi.sinapsis.tech`
+
+Output:
+```bash
+Looking in indexes: https://pypi.org/simple, https://pypi.ngc.nvidia.com, https://pypi.sinapsis.tech
+Collecting sinapsis
+  Downloading sinapsis-0.2.10-py3-none-any.whl.metadata (9.3 kB)
+Collecting sinapsis-core>=0.1.0 (from sinapsis)
+  Downloading https://pypi.sinapsis.tech/sinapsis-core/sinapsis_core-0.1.3-py3-none-any.whl (64 kB)
+Collecting pydantic>=2.8.2 (from sinapsis-core>=0.1.0->sinapsis)
+  Downloading pydantic-2.11.4-py3-none-any.whl.metadata (66 kB)
+Collecting docstring-parser>=0.16 (from sinapsis-core>=0.1.0->sinapsis)
+  Downloading docstring_parser-0.16-py3-none-any.whl.metadata (3.0 kB)
+Collecting pyyaml>=6.0.2 (from sinapsis-core>=0.1.0->sinapsis)
+  Downloading PyYAML-6.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+Collecting loguru>=0.7.3 (from sinapsis-core>=0.1.0->sinapsis)
+  Downloading loguru-0.7.3-py3-none-any.whl.metadata (22 kB)
+Collecting annotated-types>=0.6.0 (from pydantic>=2.8.2->sinapsis-core>=0.1.0->sinapsis)
+  Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.33.2 (from pydantic>=2.8.2->sinapsis-core>=0.1.0->sinapsis)
+  Downloading pydantic_core-2.33.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+Collecting typing-extensions>=4.12.2 (from pydantic>=2.8.2->sinapsis-core>=0.1.0->sinapsis)
+  Downloading typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting typing-inspection>=0.4.0 (from pydantic>=2.8.2->sinapsis-core>=0.1.0->sinapsis)
+  Downloading typing_inspection-0.4.0-py3-none-any.whl.metadata (2.6 kB)
+Downloading sinapsis-0.2.10-py3-none-any.whl (29 kB)
+Downloading docstring_parser-0.16-py3-none-any.whl (36 kB)
+Downloading loguru-0.7.3-py3-none-any.whl (61 kB)
+Downloading pydantic-2.11.4-py3-none-any.whl (443 kB)
+Downloading pydantic_core-2.33.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 22.8 MB/s eta 0:00:00
+Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Downloading PyYAML-6.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (751 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 751.2/751.2 kB 25.5 MB/s eta 0:00:00
+Downloading typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+Downloading typing_inspection-0.4.0-py3-none-any.whl (14 kB)
+Installing collected packages: typing-extensions, pyyaml, loguru, docstring-parser, annotated-types, typing-inspection, pydantic-core, pydantic, sinapsis-core, sinapsis
+Successfully installed annotated-types-0.7.0 docstring-parser-0.16 loguru-0.7.3 pydantic-2.11.4 pydantic-core-2.33.2 pyyaml-6.0.2 sinapsis-0.2.10 sinapsis-core-0.1.3 typing-extensions-4.13.2 typing-inspection-0.4.0
+``` 
+
+Could you please elaborate if there are plans to handle these scenarios? So there's no need to force users to use flags like `--index-strategy unsafe-first-match` when adding or installing a package. Or forcing to add this additional config  `ignore-error-codes = [403]` in pyproject files.
+
+Also could you please explain what are the advantages to follow this new approach considering these flags were not needed in previous versions? 
+
+  
+
+---
+
+_Comment by @zanieb on 2025-05-09 23:59_
+
+> Also could you please explain what are the advantages to follow this new approach considering these flags were not needed in previous versions?
+
+The motivation for the differences from pip are discussed at https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes
+
+In brief, the advantage is that this approach is more secure by default and reduces the possibility of dependency confusion attacks. See #12805 as well.
+
+>  I think that only partially fix the issue, similar error occurs when trying to install the package in a virtual environment located in a project folder without a pyproject file.
+
+We're still figuring out the best way to expose the `ignore-error-codes` configuration option to the `uv pip` command-line interface.
+
+---
+
+_Closed by @charliermarsh on 2025-05-13 03:03_
+
+---
+
+_Comment by @charliermarsh on 2025-05-13 03:04_
+
+(You might be interested in https://github.com/astral-sh/uv/pull/13249 which would expose this on the CLI.)
+
+---

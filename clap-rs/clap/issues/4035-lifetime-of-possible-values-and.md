@@ -1,0 +1,108 @@
+---
+number: 4035
+title: Lifetime of possible values and PossibleValueParser
+type: issue
+state: closed
+author: liningpan
+labels:
+  - C-bug
+  - M-breaking-change
+  - A-builder
+  - S-blocked
+assignees: []
+created_at: 2022-08-07T16:47:57Z
+updated_at: 2022-08-22T18:06:08Z
+url: https://github.com/clap-rs/clap/issues/4035
+synced_at: 2026-01-10T01:27:50Z
+---
+
+# Lifetime of possible values and PossibleValueParser
+
+---
+
+_Issue opened by @liningpan on 2022-08-07 16:47_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.62.1 (e092d0b6b 2022-07-16)
+
+### Clap Version
+
+3.2.16
+
+### Minimal reproducible code
+
+```rust
+use clap::{command, Arg};
+
+fn main() {
+    let possible_values: Vec<&str> = vec!["abc", "def"];
+    let app = command!().arg(Arg::new("example").possible_values(&possible_values));
+    let matches = app.get_matches();
+    println!("{:#?}", matches);
+}
+
+```
+
+### Steps to reproduce the bug with the above code
+
+I'm trying to build a dynamic command line interface, where possible options are read from a config file. This is currently possible as `.possible_values()` requires `'help` lifetime, but the new `PossibleValueParser` implementation requires `'static` lifetime. 
+
+### Actual Behaviour
+
+N/A
+
+### Expected Behaviour
+
+N/A
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @liningpan on 2022-08-07 16:47_
+
+---
+
+_Label `A-builder` added by @epage on 2022-08-09 18:23_
+
+---
+
+_Label `S-blocked` added by @epage on 2022-08-09 18:23_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2022-08-09 18:24_
+
+---
+
+_Added to milestone `4.0` by @epage on 2022-08-09 18:24_
+
+---
+
+_Comment by @epage on 2022-08-09 18:24_
+
+We can't add lifetimes to `PossibleValueParser` without a breaking change and on next breaking change, we're hoping to remove lifetimes completely, see https://github.com/clap-rs/clap/issues/1041.
+
+---
+
+_Comment by @epage on 2022-08-22 18:06_
+
+Resolved in #4097 
+
+---
+
+_Closed by @epage on 2022-08-22 18:06_
+
+---

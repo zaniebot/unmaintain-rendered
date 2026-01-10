@@ -1,0 +1,149 @@
+---
+number: 11092
+title: automatically deactivate the current virtual environment when switching python versions
+type: issue
+state: closed
+author: DetachHead
+labels:
+  - enhancement
+  - windows
+assignees: []
+created_at: 2025-01-30T12:59:42Z
+updated_at: 2025-01-31T11:15:30Z
+url: https://github.com/astral-sh/uv/issues/11092
+synced_at: 2026-01-10T01:25:01Z
+---
+
+# automatically deactivate the current virtual environment when switching python versions
+
+---
+
+_Issue opened by @DetachHead on 2025-01-30 12:59_
+
+### Summary
+
+currently if you switch python versions while the venv is activated, uv will fail to delete it and the venv will become corrupted, forcing the user to have to manually delete the `.venv` directory before it can be recreated.
+
+it would be nice if uv detected whether the venv it needs to delete is active, then deactivate it first before attempting to delete the directory
+
+### Example
+
+```
+PS C:\Users\user\project> .venv/Scripts/Activate.ps1
+(project) PS C:\Users\user\project> uv sync
+Resolved 88 packages in 1ms
+Audited 75 packages in 0.52ms
+(project) PS C:\Users\user\project> python --version
+Python 3.8.20
+(project) PS C:\Users\user\project> uv python pin 3.13
+Updated `.python-version` from `3.8` -> `3.13`
+(project) PS C:\Users\user\project> uv sync
+Using CPython 3.13.0 interpreter at: C:\Program Files\Python313\python.exe
+error: failed to remove directory `C:\Users\user\project\.venv`: Access is denied. (os error 5)
+(project) PS C:\Users\user\project> deactivate
+PS C:\Users\user\project> uv sync
+Using CPython 3.13.0 interpreter at: C:\Program Files\Python313\python.exe
+error: Project virtual environment directory `C:\Users\user\project\.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+```
+
+some additional context: i always run uv from inside vscode which conveniently automatically activates the venv when a terminal is opened, so it's very easy to accidentally cause this issue
+
+---
+
+_Label `enhancement` added by @DetachHead on 2025-01-30 12:59_
+
+---
+
+_Renamed from "automatically deactivate the current virtyual environment when switching python versions" to "automatically deactivate the current virtual environment when switching python versions" by @DetachHead on 2025-01-30 13:00_
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 14:15_
+
+Interesting, why does it fail to remove it? I feel like that should work. (I don't think we can "deactivate" it; that has to happen in the shell, just like how we can't "activate" it for you.)
+
+---
+
+_Label `windows` added by @charliermarsh on 2025-01-30 14:15_
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 14:32_
+
+Is uv installed in the environment itself?
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-30 14:33_
+
+---
+
+_Comment by @DetachHead on 2025-01-30 15:19_
+
+nope it's installed in a separate envionmemt with pyprojectx (the same setup i used in https://github.com/detachhead/uv-issue-repro). i assume having the venv activated locks some of the files inside it
+
+---
+
+_Comment by @zanieb on 2025-01-30 15:20_
+
+>  i assume having the venv activated locks some of the files inside it
+
+This doesn't really make sense, I think it basically just exports some variables? Perhaps it's because your editor is using the interpreter to power functionality?
+
+---
+
+_Comment by @rdsteed on 2025-01-30 18:08_
+
+The "os error 5" suggests the user executing the uv sync command may not be the owner of the .venv directory.  Does the error occur when the example is run as an admin?  
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 18:09_
+
+Yeah I can't repro in my initial attempt. Is it possible that there's an interpreter open somewhere (like in the editor)?
+
+---
+
+_Comment by @DetachHead on 2025-01-31 00:16_
+
+ok yeah it's because the ruff vscode extension was locking the venv because the ruff language server was running, my bad. i didn't think that was the cause because usually when that happens it mentions the ruff executable not just the `.venv` folder
+
+
+
+---
+
+_Closed by @DetachHead on 2025-01-31 00:16_
+
+---
+
+_Comment by @my1e5 on 2025-01-31 11:11_
+
+I'm also running into this issue which happens when I switch python versions (`.python-version` file changes). For example, if I switch from 3.12 to 3.13 I get
+
+```
+$ uv run foobar.py 
+Using CPython 3.13.1
+error: failed to remove directory `C:\Users\my1e5\foo\.venv`: Access is denied. (os error 5)
+```
+And then if I switch `.python-version` back to 3.12, it builds but then I get a 'No pyvenv.cfg file'?
+```
+$ uv run foobar.py 
+   Built foo @ file:///C:/Users/my1e5/foo
+Installed 76 packages in 48.78s
+No pyvenv.cfg file
+```
+Manually deleting the `.venv` and starting afresh fixes everything. @DetachHead - I am also running the ruff vscode extension. Is that the root cause? Is there anything more that can be done to avoid this bug (apart from disabling the extension)? 
+
+```
+uv 0.5.26 (5ef3d5139 2025-01-30)
+Windows 10
+```
+I can try set up a fully reproducible example and see if the vscode ruff extension is the root cause.
+
+---
+
+_Comment by @DetachHead on 2025-01-31 11:15_
+
+i noticed it also kept happening when i disabled the ruff extension, it might even be the vscode python extension locking the currently active environment but im not sure
+
+---

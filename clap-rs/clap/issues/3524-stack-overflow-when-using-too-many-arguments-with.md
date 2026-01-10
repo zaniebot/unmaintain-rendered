@@ -1,0 +1,184 @@
+---
+number: 3524
+title: "Stack overflow when using too many arguments with `arg!()`"
+type: issue
+state: open
+author: bkstein
+labels:
+  - C-bug
+  - A-builder
+  - E-hard
+  - E-help-wanted
+assignees: []
+created_at: 2022-03-01T16:17:35Z
+updated_at: 2023-01-06T16:41:06Z
+url: https://github.com/clap-rs/clap/issues/3524
+synced_at: 2026-01-10T01:27:42Z
+---
+
+# Stack overflow when using too many arguments with `arg!()`
+
+---
+
+_Issue opened by @bkstein on 2022-03-01 16:17_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.58.1 (db9d1b20b 2022-01-20)
+
+### Clap Version
+
+3.1.3
+
+### Minimal reproducible code
+
+```rust
+use clap::{arg, Command};
+
+fn main() {
+    let _cli_args = Command::new("clap-overflow")
+        .about("Demonstrates stack overflow using clap.")
+        .arg(arg!(-a --aa <ARG> ""))
+        .arg(arg!(-b --bb <ARG> ""))
+        .arg(arg!(-c --cc <ARG> ""))
+        .arg(arg!(-d --dd <ARG> ""))
+        .arg(arg!(-e --ee <ARG> ""))
+        .arg(arg!(-f --ff <ARG> ""))
+        .arg(arg!(-g --gg <ARG> ""))
+        .arg(arg!(-h --hh <ARG> ""))
+        .arg(arg!(-i --ii <ARG> ""))
+        .arg(arg!(-j --jj <ARG> ""))
+        .arg(arg!(-k --kk <ARG> ""))
+        .arg(arg!(-l --ll <ARG> ""))
+        .arg(arg!(-m --mm <ARG> ""))
+        .arg(arg!(-o --oo <ARG> ""))
+        .arg(arg!(-p --pp <ARG> ""))
+        .arg(arg!(-q --qq <ARG> ""))
+        .arg(arg!(-r --rr <ARG> ""))
+        .arg(arg!(-s --ss <ARG> ""))
+        .arg(arg!(-t --tt <ARG> ""))
+        .arg(arg!(-u --uu <ARG> ""))// this line makes the difference
+        .get_matches();
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+cargo run
+
+### Actual Behaviour
+
+thread 'main' has overflowed its stack
+error: process didn't exit successfully: `C:\Users\kletterstein\Projects\rust-bug-clap-stackoverflow\target\debug\rust-bug-clap-stackoverflow.exe` (exit code: 0xc00000fd, STATUS_STACK_OVERFLOW)
+
+Process finished with exit code -1073741571 (0xC00000FD)
+
+### Expected Behaviour
+
+I expect the following output on stdout:
+
+```
+error: The following required arguments were not provided:
+    --aa <ARG>
+    --bb <ARG>
+    --cc <ARG>
+    --dd <ARG>
+    --ee <ARG>
+    --ff <ARG>
+    --gg <ARG>
+    --hh <ARG>
+    --ii <ARG>
+    --jj <ARG>
+    --kk <ARG>
+    --ll <ARG>
+    --mm <ARG>
+    --oo <ARG>
+    --pp <ARG>
+    --qq <ARG>
+    --rr <ARG>
+    --ss <ARG>
+    --tt <ARG>
+    --uu <ARG>
+
+USAGE:
+    rust-bug-clap-stackoverflow.exe --aa <ARG> --bb <ARG> --cc <ARG> --dd <ARG> --ee <ARG> --ff <ARG> --gg <ARG> --hh <ARG> --ii <ARG> --jj <ARG> --kk <ARG> --ll <ARG> --mm <ARG> --oo <ARG> --pp <ARG> --qq <ARG> --rr <ARG> --ss <ARG> --tt <ARG> --uu <ARG>
+
+For more information try --help
+```
+
+### Additional Context
+
+Using Windows 10
+
+### Debug Output
+
+No additional output.
+
+---
+
+_Label `C-bug` added by @bkstein on 2022-03-01 16:17_
+
+---
+
+_Comment by @epage on 2022-03-01 18:37_
+
+Not reproducible on Linux.  I'll have to scrounge up a Windows computer and look at this later.
+
+---
+
+_Comment by @bkstein on 2022-03-02 06:59_
+
+Hint: no stack overflow, if the arguments are created without the `arg!` macro, but with `clap::Arg::new()`
+
+---
+
+_Label `A-builder` added by @epage on 2022-09-28 16:20_
+
+---
+
+_Label `E-hard` added by @epage on 2022-09-28 16:20_
+
+---
+
+_Label `E-help-wanted` added by @epage on 2022-09-28 16:20_
+
+---
+
+_Comment by @kbknapp on 2023-01-06 16:18_
+
+IIRC Windows uses a much smaller default stack size (1MB) versus Linux (8MB I believe)
+
+---
+
+_Comment by @epage on 2023-01-06 16:25_
+
+#4516 also deals with a stack overflow but from within the derive API.  In that case, temporary variables are also being used but one per statement (`let cmd = cmd.arg(...);`).  I suspect rustc isn't being smart about reclaiming stack space so we need to do things to force it to do that.  Just unsure what the best approach for that is.
+
+---
+
+_Comment by @kbknapp on 2023-01-06 16:34_
+
+I wonder also if the way rustc will write heap values by first writing them to the stack and `memcpy` them is playing a role here too? For that there are `unsafe` ways out of it, as well as crates that avoid the copy in order to write directly to the heap.
+
+---
+
+_Comment by @epage on 2023-01-06 16:41_
+
+A part of me hopes this problem will go away with
+- pcwalton's stack work: https://arewestackefficientyet.com/
+- As I get to implementing the [plugin architecture](https://github.com/clap-rs/clap/discussions/3476) where less commonly used fields get moved into an `AnyMap`, reducing the stack size of `Command` and `Arg` (while allowing cases like a user applying a `clap_complete` setting to an `Arg` without `clap ` ever needing to know about it *cough* ValueHint *cough*)
+
+---
+
+_Referenced in [clap-rs/clap#4670](../../clap-rs/clap/issues/4670.md) on 2023-01-24 22:26_
+
+---
+
+_Referenced in [clap-rs/clap#5134](../../clap-rs/clap/issues/5134.md) on 2023-09-23 17:56_
+
+---

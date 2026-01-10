@@ -1,0 +1,152 @@
+---
+number: 11584
+title: project.scripts not running my scripts
+type: issue
+state: open
+author: sh1man
+labels:
+  - question
+assignees: []
+created_at: 2025-02-17T20:57:52Z
+updated_at: 2025-02-24T00:07:39Z
+url: https://github.com/astral-sh/uv/issues/11584
+synced_at: 2026-01-10T01:25:07Z
+---
+
+# project.scripts not running my scripts
+
+---
+
+_Issue opened by @sh1man on 2025-02-17 20:57_
+
+### Question
+
+
+
+`(asr) sh1man@sh1man-ubuntu:~/PycharmProjects/asr$ uv run hatchet
+error: Failed to spawn: `hatchet`
+  Caused by: No such file or directory (os error 2)
+`
+
+
+
+```
+[project]
+name = "asr"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "dishka>=1.4.2",
+    "fastapi>=0.115.8",
+    "faster-whisper>=1.1.1",
+    "hatchet-sdk>=0.45.2",
+    "pydantic-settings>=2.7.1",
+    "uvicorn>=0.34.0",
+]
+[dependency-groups]
+dev = [
+  "black>=25.1.0",
+  "pytest>=8.1.1,<9",
+  "ruff>=0.9.2",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "FIX",
+    "TD", # disable todo warnings
+    "ANN003", # missing kwargs
+    "ANN101", # missing self type
+    "B006",
+    "B008",
+    "D10",  # disabled required docstrings
+    "D401",
+    "EM102",
+    "FBT001",
+    "FBT002",
+    "PLR0913",
+    "PLR2004", # magic
+    "S104",
+    "T201", # print
+    "INP001",
+]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[project.scripts]
+api = "src.api.run:make_app"
+hatchet = "src.workflows.run:start"
+```
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+uv 0.6.1
+
+---
+
+_Label `question` added by @sh1man on 2025-02-17 20:57_
+
+---
+
+_Comment by @charliermarsh on 2025-02-17 21:01_
+
+Can you try adding a build system to your `pyproject.toml`? For example:
+
+```toml
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+```
+
+By default, we treat projects without a build system as "virtual" such that they don't get installed in the environment; only their dependencies are included.
+
+---
+
+_Comment by @sh1man on 2025-02-23 11:36_
+
+I added this
+
+```
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+```
+
+got a new error, I did a uv sync.
+
+```
+(asr) sh1man@sh1man-ubuntu:~/PycharmProjects/asr$ api
+Traceback (most recent call last):
+  File "/home/sh1man/PycharmProjects/asr/.venv/bin/api", line 4, in <module>
+    from src.api.run import make_app
+ModuleNotFoundError: No module named 'src'
+```
+
+
+---
+
+_Comment by @charliermarsh on 2025-02-24 00:07_
+
+That looks like a problem with your project, rather than a problem with uv. How is your project structured? It's very uncommon to include `src` in the import path like that.
+
+---

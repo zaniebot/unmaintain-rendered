@@ -1,0 +1,99 @@
+---
+number: 6890
+title: Nursery rules E231,E202 causes infinite loop
+type: issue
+state: closed
+author: qarmin
+labels:
+  - fixes
+  - needs-decision
+  - fuzzer
+assignees: []
+created_at: 2023-08-26T07:11:20Z
+updated_at: 2023-10-01T08:26:44Z
+url: https://github.com/astral-sh/ruff/issues/6890
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# Nursery rules E231,E202 causes infinite loop
+
+---
+
+_Issue opened by @qarmin on 2023-08-26 07:11_
+
+Ruff 0.0.286 (latest changes from main branch)
+
+```
+ruff  *.py --select E231,E202 --no-cache
+```
+
+file content:
+```
+class HovertemplateValidato; }rÌ_plotly_uti
+```
+
+error:
+```
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `PY_FILE_TEST_5384603786.py`, the rule codes CPY001, E202, E702, E999, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+```
+
+[PY_FILE_TEST_5384603786.py.zip](https://github.com/astral-sh/ruff/files/12444747/PY_FILE_TEST_5384603786.py.zip)
+
+
+
+---
+
+_Comment by @dhruvmanila on 2023-08-26 11:16_
+
+Thanks! Minimal repro although an invalid syntax:
+
+```python
+foo;}
+```
+
+Using the command:
+
+```
+cargo run --bin ruff -- check --no-cache --isolated --select=E202,E231 t.py --fix
+```
+
+---
+
+_Comment by @dhruvmanila on 2023-08-26 11:22_
+
+I'm not sure if this would be considered as a bug as it's an invalid syntax /cc @charliermarsh 
+
+---
+
+_Label `autofix` added by @dhruvmanila on 2023-08-26 11:22_
+
+---
+
+_Label `needs-decision` added by @dhruvmanila on 2023-08-26 11:22_
+
+---
+
+_Label `fuzzer` added by @dhruvmanila on 2023-08-26 11:22_
+
+---
+
+_Renamed from "Nursery rules CPY001, E202, E702, E999 causes infinite loop" to "Nursery rules E231,E202 causes infinite loop" by @qarmin on 2023-09-02 21:47_
+
+---
+
+_Comment by @qarmin on 2023-10-01 08:26_
+
+File no longer parasable
+
+---
+
+_Closed by @qarmin on 2023-10-01 08:26_
+
+---

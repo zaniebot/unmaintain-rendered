@@ -1,0 +1,28 @@
+---
+number: 15913
+title: "Re-enable ANSI colors for `tracing!` messages"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - cli
+assignees: []
+created_at: 2025-09-17T14:32:02Z
+updated_at: 2025-09-17T14:32:05Z
+url: https://github.com/astral-sh/uv/issues/15913
+synced_at: 2026-01-10T01:26:01Z
+---
+
+# Re-enable ANSI colors for `tracing!` messages
+
+---
+
+_Issue opened by @charliermarsh on 2025-09-17 14:32_
+
+See: https://github.com/astral-sh/uv/issues/15840
+
+---
+
+_Label `cli` added by @charliermarsh on 2025-09-17 14:32_
+
+---

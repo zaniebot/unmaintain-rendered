@@ -1,0 +1,131 @@
+---
+number: 6456
+title: Docker build hangs with uv sync
+type: issue
+state: closed
+author: jules-ch
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-08-22T18:48:54Z
+updated_at: 2024-08-22T19:01:48Z
+url: https://github.com/astral-sh/uv/issues/6456
+synced_at: 2026-01-10T01:24:01Z
+---
+
+# Docker build hangs with uv sync
+
+---
+
+_Issue opened by @jules-ch on 2024-08-22 18:48_
+
+Docker build hangs with this configuration.
+It's working outside of docker.
+
+uv version: `uv 0.3.1 (be17d132a 2024-08-21)`
+
+Tested on both Linux Ubuntu and Windows.
+
+Probably related to network calls.
+
+```Dockerfile
+
+FROM python:3.11-slim
+ENV RUST_LOG=TRACE
+RUN pip install uv
+
+COPY ./pyproject.toml ./uv.lock ./
+RUN uv venv
+RUN uv sync
+```
+
+pyproject.toml :
+```toml
+[project]
+name = "test"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.112.1",
+  "pyjwt[crypto]>=2.9.0",
+  "polars>=1.5.0",
+  "pyarrow>=17.0.0",
+  "numpy>=2.1.0",
+  "pydantic>=2.8.2",
+  "pydantic-settings>=2.4.0",
+  "uvicorn[standard]>=0.30.6",
+  "arq>=0.26.0",
+  "psycopg[binary]>=3.2.1",
+  "fastjsonschema>=2.20.0",
+  "structlog>=24.4.0",
+  "httpx>=0.27.0",
+  "xarray>=2024.7.0",
+  "aiocache[redis]>=0.12.2",
+  "alembic>=1.13.2",
+  "orjson>=3.10.7",
+]
+```
+### Log:
+
+[build.log](https://github.com/user-attachments/files/16716291/build.log)
+
+
+
+---
+
+_Comment by @zanieb on 2024-08-22 18:50_
+
+Hi! Is this a duplicate of #6443?
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-08-22 18:50_
+
+---
+
+_Comment by @jules-ch on 2024-08-22 18:58_
+
+Yeah seems t be related.
+
+Using just pyproject.toml + uv.lock does not seem to work.
+When I add my src folder with hatchling
+
+```toml
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+```
+
+It works, still failing with default setuptools
+
+---
+
+_Comment by @zanieb on 2024-08-22 19:00_
+
+Unfortunately this is a setuptools bug — and I think we need to default to that to match the specification. Maybe there's something we can do to help avoid hanging here though...
+
+---
+
+_Comment by @jules-ch on 2024-08-22 19:01_
+
+Alright I'm closing thanks for pointing the related issue :)
+
+---
+
+_Closed by @jules-ch on 2024-08-22 19:01_
+
+---
+
+_Referenced in [astral-sh/uv#6460](../../astral-sh/uv/issues/6460.md) on 2024-08-22 21:03_
+
+---
+
+_Referenced in [astral-sh/uv#6462](../../astral-sh/uv/issues/6462.md) on 2024-08-22 21:08_
+
+---

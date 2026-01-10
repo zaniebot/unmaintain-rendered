@@ -1,0 +1,53 @@
+---
+number: 1043
+title: "App::long_about can't be used"
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-bug
+  - A-help
+assignees: []
+created_at: 2017-09-13T18:39:55Z
+updated_at: 2018-08-02T03:30:11Z
+url: https://github.com/clap-rs/clap/issues/1043
+synced_at: 2026-01-10T01:26:42Z
+---
+
+# App::long_about can't be used
+
+---
+
+_Issue opened by @kbknapp on 2017-09-13 18:39_
+
+`App::long_about` is never applied to help output
+
+---
+
+_Label `C: help message` added by @kbknapp on 2017-09-13 18:39_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-09-13 18:39_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2017-09-13 18:39_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-09-13 18:39_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-09-13 18:39_
+
+---
+
+_Closed by @kbknapp on 2017-09-14 14:37_
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2017-09-14 17:09_
+
+---

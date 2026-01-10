@@ -1,0 +1,90 @@
+---
+number: 5339
+title: "`uv add` should not remove version specifiers when adding source"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - bug
+  - good first issue
+  - help wanted
+  - preview
+assignees: []
+created_at: 2024-07-23T15:50:33Z
+updated_at: 2024-07-23T20:48:42Z
+url: https://github.com/astral-sh/uv/issues/5339
+synced_at: 2026-01-10T01:23:47Z
+---
+
+# `uv add` should not remove version specifiers when adding source
+
+---
+
+_Issue opened by @zanieb on 2024-07-23 15:50_
+
+e.g. the version specifier is removed from `httpx` in `project.dependencies`
+
+```
+$ uv init
+$ uv add 'httpx>0.1.0'
+$ uv add git+https://github.com/encode/httpx
+$ cat pyproject.toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+dependencies = [
+    "httpx",
+]
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.uv.sources]
+httpx = { git = "https://github.com/encode/httpx" }
+```
+
+---
+
+_Label `bug` added by @zanieb on 2024-07-23 15:50_
+
+---
+
+_Label `preview` added by @zanieb on 2024-07-23 15:50_
+
+---
+
+_Comment by @zanieb on 2024-07-23 15:53_
+
+Adding the version specifiers _after_ the source is present retains the source.
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2024-07-23 16:54_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-07-23 16:54_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-23 20:21_
+
+---
+
+_Referenced in [astral-sh/uv#5370](../../astral-sh/uv/pulls/5370.md) on 2024-07-23 20:38_
+
+---
+
+_Closed by @charliermarsh on 2024-07-23 20:48_
+
+---
+
+_Referenced in [astral-sh/uv#5383](../../astral-sh/uv/issues/5383.md) on 2024-07-26 00:50_
+
+---
+
+_Referenced in [astral-sh/uv#5505](../../astral-sh/uv/issues/5505.md) on 2024-07-27 03:00_
+
+---

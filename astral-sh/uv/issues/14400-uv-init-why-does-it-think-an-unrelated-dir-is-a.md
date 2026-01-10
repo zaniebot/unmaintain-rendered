@@ -1,0 +1,77 @@
+---
+number: 14400
+title: "`uv init` why does it think an unrelated dir is a workspace member?"
+type: issue
+state: closed
+author: anentropic
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-01T18:33:03Z
+updated_at: 2025-07-01T18:38:57Z
+url: https://github.com/astral-sh/uv/issues/14400
+synced_at: 2026-01-10T01:25:44Z
+---
+
+# `uv init` why does it think an unrelated dir is a workspace member?
+
+---
+
+_Issue opened by @anentropic on 2025-07-01 18:33_
+
+### Summary
+
+I created a new empty dir `~/dev/myproject`
+
+I `cd` into it...
+
+```
+~/dev/myproject
+╰─ ls -la
+total 0
+drwxr-xr-x@  2 pgarner  staff    64  1 Jul 19:12 .
+drwxr-xr-x@ 65 pgarner  staff  2080  1 Jul 19:12 ..
+```
+
+ ...and run `uv init .` (or `uv init myproject`)
+
+> error: Failed to discover parent workspace; use `uv init --no-workspace` to ignore
+>  Caused by: Nested workspaces are not supported, but workspace member (`~/dev/my-other-project`) has a `uv.workspace` table
+
+I don't understand why `~/dev/my-other-project` (which does use uv workspace in its pyproject.toml) affects anything here? it's in a sibling directory path
+
+### Platform
+
+Darwin 23.6.0 arm64
+
+### Version
+
+uv 0.7.13 (62ed17b23 2025-06-12)
+
+### Python version
+
+error: Nested workspaces are not supported
+
+---
+
+_Label `bug` added by @anentropic on 2025-07-01 18:33_
+
+---
+
+_Comment by @zanieb on 2025-07-01 18:37_
+
+Can you share a minimal reproduction please? e.g., in the `/tmp` directory?
+
+---
+
+_Comment by @anentropic on 2025-07-01 18:38_
+
+never mind, I just found my parent directory unexpectedly had a pyproject.toml in it
+
+some kind of leftovers from a mis-targeted project init in the past
+
+---
+
+_Closed by @anentropic on 2025-07-01 18:38_
+
+---

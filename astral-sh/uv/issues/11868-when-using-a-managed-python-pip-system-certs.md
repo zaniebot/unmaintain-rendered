@@ -1,0 +1,267 @@
+---
+number: 11868
+title: "When using a managed python pip-system-certs doesn't work"
+type: issue
+state: open
+author: jschewebbn
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2025-02-28T21:24:58Z
+updated_at: 2025-05-30T04:29:42Z
+url: https://github.com/astral-sh/uv/issues/11868
+synced_at: 2026-01-10T01:25:12Z
+---
+
+# When using a managed python pip-system-certs doesn't work
+
+---
+
+_Issue opened by @jschewebbn on 2025-02-28 21:24_
+
+### Summary
+
+If I create a virtual environment with the system python, with or without uv, and install pip-system-certs into the virtualenv the certificate store on the system is used and our corporate certificate authority is trusted.
+However if I create a virtual environment using a uv managed python and install the same packages the corporate certificate authority is not trusted.
+
+
+### Platform
+
+Linux 4.18.0-553.40.1.el8_10.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.2
+
+### Python version
+
+System python 3.9.20 uv python version 3.13
+
+---
+
+_Label `bug` added by @jschewebbn on 2025-02-28 21:24_
+
+---
+
+_Comment by @zanieb on 2025-02-28 21:39_
+
+It's not trusted in what context? When using uv?
+
+Can you share a rough reproduction?
+
+---
+
+_Comment by @jschewebbn on 2025-03-03 13:48_
+
+Not trusted by the requests module when making a request to the site. We have internal company certificate authorities installed into the system SSL trust store. If I have some python code
+```python
+import requests
+
+result = requests.get('https://company.internal')
+```
+
+I have a virtualenv with `requests` and `pip-system-certs` installed.
+If I setup the virtualenv with
+```
+uv venv --python-preference only-system 
+```
+All is fine
+
+If I setup the virtualenv with
+```
+uv venv --python-preference only-managed
+```
+The requests call fails because the system trust store isn't used. 
+
+I'm not sure if this is a problem with how `uv` sets things up or with how `pip-system-certs` finds the system trust store with a uv managed python.
+
+
+
+Stack trace for the error when using a uv managed python:
+```
+>PYTHONPATH=/var/lib/bbn/bi-scripts ./venv-managed/bin/python3 /var/lib/bbn/bi-scripts/bin/ssh_key_expiration_reminder.py
+Traceback (most recent call last):
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connection.py", line 741, in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+        sock=sock,
+    ...<14 lines>...
+        assert_fingerprint=self.assert_fingerprint,
+    )
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connection.py", line 920, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+        sock=sock,
+    ...<8 lines>...
+        tls_in_tls=tls_in_tls,
+    )
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/util/ssl_.py", line 460, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/util/ssl_.py", line 504, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/userpki-scripts/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/lib/python3.13/ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sock=sock,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        session=session
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/userpki-scripts/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/lib/python3.13/ssl.py", line 1076, in _create
+    self.do_handshake()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/userpki-scripts/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/lib/python3.13/ssl.py", line 1372, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1028)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1028)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='company.internal', port=443): Max retries exceeded with url: /v1/ansible/data/common/userpki_read-only (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1028)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/lib/bbn/bi-scripts/bin/ssh_key_expiration_reminder.py", line 105, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/var/lib/bbn/bi-scripts/bin/ssh_key_expiration_reminder.py", line 101, in main
+    return main_method(args)
+  File "/var/lib/bbn/bi-scripts/bin/ssh_key_expiration_reminder.py", line 34, in main_method
+    with userpki.get_session() as session:
+         ~~~~~~~~~~~~~~~~~~~^^
+  File "/var/lib/bbn/bi-scripts/services/userpki/db.py", line 112, in get_session
+    _engine = create_db_engine()
+  File "/var/lib/bbn/bi-scripts/services/userpki/db.py", line 67, in create_db_engine
+    credentials = common_utils.Config(Path('userpki_credentials.json'), 'BBN_USERPKI_CREDENTIALS')
+  File "/var/lib/bbn/bi-scripts/services/common/utils.py", line 172, in __init__
+    vault_utils.load_vault_config(self.config)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/var/lib/bbn/bi-scripts/services/vault/utils.py", line 139, in load_vault_config
+    result = vault.session.get(f'{vault_url}/v1/{vault_mount}/data/{vault_path}').json()
+             ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/var/lib/bbn/userpki-scripts/venv-managed/lib/python3.13/site-packages/requests/adapters.py", line 698, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='company.internal', port=443): Max retries exceeded with url: /v1/ansible/data/common/userpki_read-only (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1028)')))
+bash: __git_ps1: command not found
+(venv-managed)
+/
+
+```
+
+
+The pip-system-certs source is at https://gitlab.com/alelec/pip-system-certs
+
+---
+
+_Comment by @andrewleech on 2025-03-04 00:21_
+
+As per https://gitlab.com/alelec/pip-system-certs/-/issues/31 the issue here will be entirely be becuase [pip-system-certs](https://gitlab.com/alelec/pip-system-certs) has been broken by newer versions of `urllib3` so doesn't work currently.
+
+---
+
+_Comment by @zanieb on 2025-03-04 01:05_
+
+mm interesting. thanks for the link @andrewleech 
+
+---
+
+_Label `external` added by @zanieb on 2025-03-04 01:05_
+
+---
+
+_Comment by @zanieb on 2025-03-04 01:07_
+
+@jschewebbn make sure to use a consistent Python version when checking for differences. Presumably `uv venv 3.19 --python-preference only-managed` works?
+
+---
+
+_Comment by @jschewebbn on 2025-03-04 15:25_
+
+@andrewleech  yes, I just saw that message. That's unfortunate. However in this case I have the same version of urllib (2.3.0) in both environments, so that seems odd.
+
+@zanieb  that's a good point. I just created my virtual environment with `/usr/local/bin/uv venv -p 3.9.20 --python-preference only-managed venv-managed-3.9.20` which matches the system version of python. I still get the SSL error with this virtualenv. 
+
+I used `/usr/local/bin/uv pip list` to check the version of urllib3 in the virtualenvs and all of them show version 2.3.0.
+
+
+
+---
+
+_Comment by @zanieb on 2025-03-04 15:59_
+
+Ah that's interesting. Thanks for checking that. I don't have any ideas off the top of my head, unfortunately.
+
+---
+
+_Comment by @andrewleech on 2025-03-04 20:04_
+
+Is it the same version of requests? I think it bundles it's own copy of urllib
+
+---
+
+_Comment by @jschewebbn on 2025-03-04 21:30_
+
+Yes, 2.32.3 in both virtualenvs.
+
+---
+
+_Comment by @jschewebbn on 2025-03-05 19:57_
+
+I have tried `truststore` and it works fine in my initial testing. I'm mildly interested in knowing why pip-system-certs doesn't work with a uv-managed python, but I'm fine if you don't want to dig into that and close this out.
+
+---
+
+_Comment by @lekinisn on 2025-05-29 18:41_
+
+I'm facing the same issue with requests 2.31.0 and managed python 3.12.10
+
+---
+
+_Comment by @andrewleech on 2025-05-30 04:29_
+
+I'm pretty sure pip-system-certs currently cannot work with python 3.12 regardless of the requests version
+
+---

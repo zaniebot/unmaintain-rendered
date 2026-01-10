@@ -1,0 +1,79 @@
+---
+number: 9958
+title: Improve message when attempting to remove package from wrong dependency group
+type: issue
+state: closed
+author: dean-tate
+labels:
+  - error messages
+assignees: []
+created_at: 2024-12-17T05:06:21Z
+updated_at: 2024-12-17T14:16:02Z
+url: https://github.com/astral-sh/uv/issues/9958
+synced_at: 2026-01-10T01:24:48Z
+---
+
+# Improve message when attempting to remove package from wrong dependency group
+
+---
+
+_Issue opened by @dean-tate on 2024-12-17 05:06_
+
+uv version: 0.5.9
+
+If you have dependency groups and attempt to remove a package from the wrong group the warning message provided gives an incomplete command.
+
+```
+[project]
+name = "myproject"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+[dependency-groups]
+dev = [
+        "black",
+]
+test = [
+        "pytest",
+        "pytest-cov",
+]
+```
+```
+uv remove pytest --group dev
+warning: `pytest` is in the `test` group; try calling `uv remove --group test`
+error: The dependency `pytest` could not be found in `dev-dependencies` or `dependency-groups.dev`
+```
+
+The command suggested `uv remove --group test` is incomplete - the suggestion could just include pytest to make it a valid command.
+
+In addition, the error message for the command below seems confusing too - the black dependency was found in dependency-groups after-all.
+
+```
+uv remove black --group test
+warning: `black` is in the `dev` group; try calling `uv remove --group dev`
+error: The dependency `black` could not be found in `dependency-groups`
+```
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-12-17 05:15_
+
+---
+
+_Label `error messages` added by @zanieb on 2024-12-17 05:15_
+
+---
+
+_Referenced in [astral-sh/uv#9959](../../astral-sh/uv/pulls/9959.md) on 2024-12-17 05:21_
+
+---
+
+_Comment by @zanieb on 2024-12-17 05:21_
+
+Thanks for letting us know!
+
+---
+
+_Closed by @zanieb on 2024-12-17 14:16_
+
+---

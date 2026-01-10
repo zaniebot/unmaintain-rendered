@@ -1,0 +1,149 @@
+---
+number: 10023
+title: uv tries to create cache dir with --no-cache flag
+type: issue
+state: closed
+author: ondrados
+labels:
+  - question
+assignees: []
+created_at: 2024-12-19T09:44:02Z
+updated_at: 2024-12-19T13:51:49Z
+url: https://github.com/astral-sh/uv/issues/10023
+synced_at: 2026-01-10T01:24:49Z
+---
+
+# uv tries to create cache dir with --no-cache flag
+
+---
+
+_Issue opened by @ondrados on 2024-12-19 09:44_
+
+I wanna report issue that it seems that `uv run ... --no-cache` tries to create cache directory. But since I am running it as nonprivileged user inside docker container I get permission denied error.
+
+`uv 0.5.10`
+
+What I did:
+
+1. `docker init` which generates Dockerfile with some best practices in mind for python apps
+2. i switched pip for uv and this is my dockerfile:
+
+```dockerfile
+# syntax=docker/dockerfile:1
+
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
+
+# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
+
+ARG PYTHON_VERSION=3.13
+FROM python:${PYTHON_VERSION}-slim as base
+
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:0.5.10 /uv /uvx /bin/
+
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Create a non-privileged user that the app will run under.
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
+
+# Switch to the non-privileged user to run the application.
+USER appuser
+
+# Copy the source code into the container.
+COPY . .
+
+# Expose the port that the application listens on.
+EXPOSE 8000
+
+# Run the application.
+CMD uv run app.py --no-cache
+
+```
+
+It builds fine, but when i try to run it I get this:
+
+`error: failed to create directory '/nonexistent/.cache/uv/': Permission denied (os error 13)`
+
+I have also tried different flags like `--frozen`, `--no-sync` and combination of them, but they all failed with same error
+
+Based on documentation I have tried to activate environment first an then invoke python directly and this works
+```dockerfile
+# Activate the virtual environment.
+ENV PATH="/app/.venv/bin:$PATH"
+
+CMD python app.py
+```
+
+Is this a bug or am I doing something wrong in the first option?
+
+
+---
+
+_Comment by @j178 on 2024-12-19 11:10_
+
+> --no-cache, -n
+> Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation
+
+When `--no-cache` is used, uv uses a temporary directory for caching,  effectively turning it into a one-time, in-process cache. This approach simplifies the cache implementation I think.
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 13:37_
+
+That's right -- we always create a temporary directory to serve as the cache for the life of the process. This is both simpler and has the effect that we correctly cache _within_ a process (so, if we download a wheel during resolution, we can correctly reuse it during installation).
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 13:40_
+
+Wait sorry, if you're doing `uv run ... --no-cache`, that may be a mistake. You need `--no-cache` to come _before_ the run command, like `uv run --no-cache command ...`. If you put it last, it will be interpreted as an argument to the command.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-12-19 13:40_
+
+---
+
+_Comment by @charliermarsh on 2024-12-19 13:40_
+
+So the last line should be `CMD uv run --no-cache app.py`.
+
+---
+
+_Comment by @ondrados on 2024-12-19 13:50_
+
+Thank you for your replies. 
+
+> So the last line should be `CMD uv run --no-cache app.py`.
+
+yeah this is it, now its working
+
+
+
+---
+
+_Closed by @charliermarsh on 2024-12-19 13:51_
+
+---

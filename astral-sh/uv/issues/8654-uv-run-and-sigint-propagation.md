@@ -1,0 +1,146 @@
+---
+number: 8654
+title: uv run and SIGINT propagation
+type: issue
+state: closed
+author: hynek
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-10-29T08:06:57Z
+updated_at: 2024-10-30T06:55:25Z
+url: https://github.com/astral-sh/uv/issues/8654
+synced_at: 2026-01-10T01:24:31Z
+---
+
+# uv run and SIGINT propagation
+
+---
+
+_Issue opened by @hynek on 2024-10-29 08:06_
+
+Signal handling is weird and one of the most confusing parts is the handling of SIGINT / KeyboardInterrupt / Ctrl-C. Because for non-0-PID processes, a manual Ctrl-C is usually propagated to its children (overly simplifying here) – a SIGINT is not despite being the same signal.
+
+---
+
+Running Python scripts with `uv run` doesn't quite play along which is what I noticed when trying to use it with [watchfiles](https://pypi.org/project/watchfiles/):
+
+When I start a script using uv and wrapped in watchfiles, pressing Ctrl-C reaches my application. watchfiles's SIGINT, does **not**. If I replace `uv run` by a Python interpreter, it works.
+
+---
+
+For example:
+
+```python
+import os, time
+
+try:
+    print(os.getpid())
+    time.sleep(600)
+except KeyboardInterrupt:
+    print("got sigint!")
+```
+
+Pressing Ctrl-C works:
+
+```python
+$ uv run sleepy.py
+85706
+^Cgot sigint!
+```
+
+`kill -sigint 85859` works too:
+
+```console
+$ uv run sleepy.py
+85859
+got sigint!
+```
+
+But (this watches the file sleepy.py that I touch in another terminal):
+
+```console
+$ uvx watchfiles 'uv run sleepy.py' sleepy.py
+[08:56:39] watchfiles v0.24.0 👀  path="/Users/hynek/tmp/sleepy.py" target="uv run sleepy.py" (command) filter=DefaultFilter...
+86705
+[08:56:40] 1 change detected
+[08:56:45] SIGINT timed out after 5 seconds
+[08:56:45] process has not terminated, sending SIGKILL
+86739
+^Cgot sigint!
+got sigint!
+[08:56:48] KeyboardInterrupt caught, stopping watch
+[08:56:48] process already dead, exit code: 0
+```
+Note how my ^C goes thru.
+
+Replacing `uv run` by Python works:
+
+```console
+$ uvx watchfiles 'python3.13 sleepy.py' sleepy.py
+[08:55:43] watchfiles v0.24.0 👀  path="/Users/hynek/tmp/sleepy.py" target="python3.13 sleepy.py" (command) filter=DefaultFilter...
+86420
+[08:55:46] 1 change detected
+got sigint!
+86445
+```
+
+So, it looks like uv is somehow eating that signal? cc @samuelcolvin
+
+---
+
+_Comment by @notatallshaw on 2024-10-29 14:08_
+
+I also had issues, although I didn't investigate enough whether it was uv or uvicorn primarily causing the issue.
+
+I have some code that calls a subprocess using uv run and I could not find a way to successfully kill it: https://github.com/notatallshaw/Pip-Resolution-Scenarios-and-Benchmarks/blob/d1dd9cee7b3e174d1840e4120be5d10035450fd8/scenarios.py#L58
+
+As it was a webserver, in the end I created an API to shut itself down, but if uv could improve here that would be great.
+
+---
+
+_Comment by @zanieb on 2024-10-29 14:15_
+
+Duplicate of https://github.com/astral-sh/uv/issues/6724
+
+See also https://github.com/astral-sh/uv/pull/6738#issuecomment-2315466033
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-10-29 14:15_
+
+---
+
+_Comment by @zanieb on 2024-10-29 14:15_
+
+Unfortunately we just haven't had the time to dig deep into this. I'd love some help.
+
+---
+
+_Comment by @hynek on 2024-10-29 14:31_
+
+huh I swear I searched for `uv run`. 🙈 Extra funny that it quotes my own blog post.
+
+---
+
+_Closed by @hynek on 2024-10-29 14:31_
+
+---
+
+_Comment by @samuelcolvin on 2024-10-29 21:52_
+
+Thanks for cc'ing me, I'll watch the other issue, happy to make changes in watchfiles if it helps.
+
+---
+
+_Comment by @hynek on 2024-10-30 06:55_
+
+> Thanks for cc'ing me, I'll watch the other issue, happy to make changes in watchfiles if it helps.
+
+I think you might be able to help with https://github.com/astral-sh/uv/pull/6738#issuecomment-2315466033? I really don't know enough about Rust to be of great help here. _eyes his Stevens books_
+
+---
+
+_Referenced in [modelcontextprotocol/python-sdk#932](../../modelcontextprotocol/python-sdk/issues/932.md) on 2025-07-10 02:38_
+
+---

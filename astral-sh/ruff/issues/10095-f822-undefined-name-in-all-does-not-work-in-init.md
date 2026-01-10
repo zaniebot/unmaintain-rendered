@@ -1,0 +1,134 @@
+---
+number: 10095
+title: "F822 Undefined name in `__all__` does not work in `__init__.py`"
+type: issue
+state: closed
+author: ilius
+labels: []
+assignees: []
+created_at: 2024-02-23T12:55:50Z
+updated_at: 2024-05-30T03:15:07Z
+url: https://github.com/astral-sh/ruff/issues/10095
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# F822 Undefined name in `__all__` does not work in `__init__.py`
+
+---
+
+_Issue opened by @ilius on 2024-02-23 12:55_
+
+If you have `__all__` in a module, and it contains one or more names that are undefined in that module, `ruff` will tell you about it:
+
+    F822 Undefined name `abcd` in `__all__`
+
+**Unless that module file is named `__init__.py`.**
+
+To reproduce, simply create a file  `__init__.py` in a directory / sub-directory, and add:
+```
+__all__ = ["abcd"]
+```
+and nothing else.
+Run `ruff` and it gives no error!
+
+Copy that file to another file like `test.py` and it will give error.
+
+I have tried this in an empty project with no `pyproject.toml` file, so that doesn't seem to be related.
+
+```
+ruff --version
+ruff 0.2.2
+```
+
+---
+
+_Renamed from "F822 Undefined name in `__all__` does not work in __init__.py" to "F822 Undefined name in `__all__` does not work in `__init__.py`" by @ilius on 2024-02-23 12:55_
+
+---
+
+_Comment by @ilius on 2024-02-23 13:02_
+
+Although an unknown name might be the name a module inside that directory!
+So maybe ruff also has to check if `abcd.py` file or `abcd` directory exists in that directory.
+
+---
+
+_Comment by @MichaReiser on 2024-02-23 14:15_
+
+Hmm, I'm not sure why this is the case. I see a few checks where we exclude `__init__.py` files but @charliermarsh has rewritten the logic a couple times which makes it rather challenging to find the origin PR. @charliermarsh do you remember why and when we exclude `__init__.py` files. We do have [a setting related to init modules](https://docs.astral.sh/ruff/settings/#lint_ignore-init-module-imports) but I don't think that one is relevant here.
+
+---
+
+_Comment by @AlexWaygood on 2024-02-23 16:15_
+
+As @ilius mentioned, you can have `__init__.py` files that look like this: https://github.com/python/cpython/blob/main/Lib/xml/__init__.py. None of the names in `__all__` there are defined in that file; `__all__` is being used there to declare submodules of the `xml` package as public.
+
+If you think this is an antipattern, so do I! At runtime, it has this (bizarre) effect, where `*` imports work differently (for some reason) to regular imports. I'm not sure why you'd ever actually want this:
+
+```pycon
+% python                                                                                                                                       ~/dev
+Python 3.12.2 (v3.12.2:6abddd9f6a, Feb  6 2024, 17:02:06) [Clang 13.0.0 (clang-1300.0.29.30)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import xml
+>>> xml.dom
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'xml' has no attribute 'dom'
+>>> xml.parsers
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'xml' has no attribute 'parsers'
+>>> xml.etree
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'xml' has no attribute 'etree'
+>>> xml.sax
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'xml' has no attribute 'sax'
+>>> from xml import *
+>>> xml.dom
+<module 'xml.dom' from '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/xml/dom/__init__.py'>
+>>> xml.parsers
+<module 'xml.parsers' from '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/xml/parsers/__init__.py'>
+>>> xml.etree
+<module 'xml.etree' from '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/xml/etree/__init__.py'>
+>>> xml.sax
+<module 'xml.sax' from '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/xml/sax/__init__.py'>
+```
+
+It is (sadly) valid Python, though.
+
+---
+
+_Comment by @hassec on 2024-02-28 01:06_
+
+I'd argue that the more consistent behaviour would be to have ruff raise a F822 warning for all files, and then one can add an ignore comment for `__init__.py` files like the one linked @AlexWaygood 
+
+That IMHO is the better default as it would create less surprises.
+
+Note that e.g. Pyright follows that approach.
+
+---
+
+_Referenced in [pydata/xarray#8791](../../pydata/xarray/pulls/8791.md) on 2024-02-28 01:17_
+
+---
+
+_Comment by @charliermarsh on 2024-04-12 02:03_
+
+I kind of agree with @hassec. I'm curious how disruptive this would be to change.
+
+---
+
+_Referenced in [astral-sh/ruff#11370](../../astral-sh/ruff/pulls/11370.md) on 2024-05-11 17:32_
+
+---
+
+_Closed by @charliermarsh on 2024-05-30 03:15_
+
+---
+
+_Referenced in [astral-sh/ruff#19740](../../astral-sh/ruff/issues/19740.md) on 2025-08-04 10:59_
+
+---

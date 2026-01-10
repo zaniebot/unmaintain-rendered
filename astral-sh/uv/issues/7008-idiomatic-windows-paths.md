@@ -1,0 +1,198 @@
+---
+number: 7008
+title: Idiomatic Windows paths
+type: issue
+state: open
+author: 2-5
+labels:
+  - windows
+  - needs-decision
+  - breaking
+assignees: []
+created_at: 2024-09-04T12:06:16Z
+updated_at: 2025-06-21T09:53:38Z
+url: https://github.com/astral-sh/uv/issues/7008
+synced_at: 2026-01-10T01:24:09Z
+---
+
+# Idiomatic Windows paths
+
+---
+
+_Issue opened by @2-5 on 2024-09-04 12:06_
+
+The paths used by `uv` on Windows are not very idiomatic.
+
+Clean install:
+```shell
+irm https://astral.sh/uv/install.ps1 | iex
+uv tool install ruff
+```
+
+Outcome:
+```
+uv.exe      C:\Users\USER\.cargo\bin
+uv cache    C:\Users\USER\AppData\Local\uv\cache
+ruff venv   C:\Users\USER\AppData\Roaming\uv\tools\ruff
+ruff.exe    C:\Users\USER\.local\bin\ruff.exe
+
+# not actually installed
+uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
+```
+
+`~/.cargo/bin` is not ideal, but I guess that ship has sailed since it's the Rust default.
+
+I think the tools venvs dir should be moved from `AppData\Roaming (%APPDATA%)` to `AppData\Local (%LOCALAPPDATA%)`. You're not supposed to store binaries in the `AppData\Roaming` directory, it's more of a `.config` kind of directory. Also, the tool venv from `AppData\Roaming` will use the uv cache from `AppData\Local`, this will break in a corporate setup, where the `AppData\Roaming` can "roam" (a sort of a network share) - you'll login into a new machine with your domain user, the `AppData\Roaming` will be copied/mounted there, but there will be no corresponding `uv` cache in the `AppData\Local` directory.
+
+The `~/.local/bin` choice is terrible on Windows, it pollutes the home directory. I think it should also go in the `AppData\Local` directory.
+
+My proposal for the paths:
+```
+uv.exe      C:\Users\USER\.cargo\bin
+uv cache    C:\Users\USER\AppData\Local\uv\cache
+ruff venv   C:\Users\USER\AppData\Local\uv\tools\ruff
+ruff.exe    C:\Users\USER\AppData\Local\uv\bin\ruff.exe
+
+uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
+```
+
+
+---
+
+_Comment by @2-5 on 2024-09-04 12:12_
+
+Maybe @zooba could comment on this as an authoritative figure.
+
+---
+
+_Comment by @zooba on 2024-09-04 12:37_
+
+Recent versions of Windows have made it so dot-prefixed directories are no longer actively hostile, so the `.cargo` and `.local` are now just messy, rather than anti-user.
+
+Your understanding of how `AppData\Local` and `AppData\Roaming` are meant to work is accurate. What goes on within those (provided you follow it with a unique company/program name) is up to the project. But it is fair to assume that `Roaming` may be copied onto another machine, and so anything that is specific to the current machine (e.g. file paths) either shouldn't go in there or should be safe for transfer.
+
+With Dev Drive growing in use, you'll also definitely want a way to permanently relocate caches into a new location. Global environment variables (like pip) are fine, but perhaps you'll have a better idea (such as setting up a cache on the same drive as the install target). There's no solid convention for where to put files on a Dev Drive yet, but I'd say it's probably fine to claim `D:\.uv`. (For reference, [intro to Dev Drive](https://devblogs.microsoft.com/visualstudio/devdrive/)[^1] and [checking if it's a Dev Drive](https://github.com/python/cpython/blob/main/Modules/posixmodule.c#L4835)).
+
+[^1]: Wondering why the graph has a Django benchmark and not pip? The perf gain for package installation on a Dev Drive was so big it would've looked like we were lying 😉 
+
+---
+
+_Label `windows` added by @AlexWaygood on 2024-09-04 12:42_
+
+---
+
+_Comment by @2-5 on 2024-09-04 12:54_
+
+>setting up a cache on the same drive as the install target
+
+That's what I did, consolidated all programming tools caches (including `uv`) into one directory on the Dev Drive.
+
+```
+GOCACHE=D:\Cache\go\build
+GOPATH=D:\Cache\go
+NPM_CONFIG_CACHE=D:\Cache\npm
+NUGET_PACKAGES=D:\Cache\nuget
+PIP_CACHE_DIR=D:\Cache\pip
+PYLINTHOME=D:\Cache\pylint
+UV_CACHE_DIR=D:\Cache\uv\cache
+UV_TOOL_BIN_DIR=D:\Cache\uv\bin
+UV_TOOL_DIR=D:\Cache\uv\tool
+VCPKG_DEFAULT_BINARY_CACHE=D:\Cache\vcpkg
+YARN_GLOBAL_FOLDER=D:\Cache\yarn
+```
+
+Maybe Dev Drive could provide a `%DevDrive%` env var (like `%SystemDrive%`) and all tools could use that if it's set, although there is the question of what happens if you have multiple such drives.
+
+
+---
+
+_Comment by @zanieb on 2024-09-04 13:34_
+
+> The ~/.local/bin choice is terrible on Windows, it pollutes the home directory
+
+This is what pipx does, which is why we're using it.
+
+Regarding Roaming, yeah that seems problematic. It was intentional to place this data in Roaming, but if it's not colocated with the cache it sounds like a problem since we link files? We also don't special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.
+
+---
+
+_Label `breaking` added by @zanieb on 2024-09-04 13:34_
+
+---
+
+_Comment by @zanieb on 2024-09-04 13:34_
+
+We can probably change the directory without it being breaking, but we'll need to be careful when changing these.
+
+---
+
+_Comment by @zooba on 2024-09-04 13:40_
+
+> We also don't special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.
+
+When we were adding the same kind of thing to Visual Studio, we basically had a "roaming" identifier that mapped to a "local" path, so if you moved machine you'd have the same identifier but the correct path (and of course for anything we auto-detected we controlled the identifier, so knew it was stable). But that may be overkill here, compared to just detecting each time.
+
+> Maybe Dev Drive could provide a `%DevDrive%` env var (like `%SystemDrive%`) and all tools could use that if it's set, although there is the question of what happens if you have multiple such drives.
+
+At the OS level, that question makes the whole idea prohibitive. So the recommendation is to check each drive (or more likely, the relevant drive for whatever your context is) to see whether it's a better cache/temp location than `%UserProfile%`.
+
+---
+
+_Comment by @danielniccoli on 2025-03-13 14:49_
+
+> My proposal for the paths:
+> 
+> ```
+> uv.exe      C:\Users\USER\.cargo\bin
+> uv cache    C:\Users\USER\AppData\Local\uv\cache
+> ruff venv   C:\Users\USER\AppData\Local\uv\tools\ruff
+> ruff.exe    C:\Users\USER\AppData\Local\uv\bin\ruff.exe
+> 
+> uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
+> ```
+
+I partially disagree with these proposed paths. While I appreciate the effort to adopt a more idiomatic folder structure for Windows—which, unfortunately, is often overlooked—some of these paths do not actually follow Windows conventions. Specifically, when creating files or folders directly in `%USERPROFILE`. See
+
+> Applications should not create files or folders [in the user's profile folder]; they should put their data under the locations referred to by [ApplicationData](https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0#system-environment-specialfolder-applicationdata).
+
+Source: https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0
+
+Windows provides a dedicated folder for user-installed programs: [`FOLDERID_UserProgramFiles`](https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid). Based on this, I propose the following structure:  
+
+- Install `uv` inside `%LOCALAPPDATA%\Programs\uv\`.  
+- Store cache and other volatile files within `%LOCALAPPDATA%\uv\`, if `%TEMP%` may not be the better choice.  
+- Place binaries installed via `uv` either:  
+  - Directly in `%LOCALAPPDATA%\Programs\uv\`, alongside `uv.exe`.  
+  - Or in a separate folder: `%LOCALAPPDATA%\Programs\uv\scripts`, similar to how Python installs scripts in `%LOCALAPPDATA%\Python\Python312\Scripts`.
+- Place uv-specific config files in %APPDATA%\uv\` so they can roam (as you suggested).
+
+This structure would align better with Windows guidelines while keeping things organized.
+
+> This (~/.local/bin) is what pipx does, which is why we're using it.
+
+@zanieb  One should not take the bad habits of others as an example.
+
+> It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.
+
+@zanieb What do you mean by "accessible via a network share"? The roaming profile is not accessed on-demand, but synced to the client on logon. And programs are not supposed to roam. :)
+
+
+
+
+
+---
+
+_Referenced in [astral-sh/uv#13307](../../astral-sh/uv/issues/13307.md) on 2025-05-06 00:14_
+
+---
+
+_Comment by @refack on 2025-06-18 21:11_
+
+![Image](https://github.com/user-attachments/assets/836e503a-7e77-4d28-a344-d52f19b55631)
+This ☝ 
+
+---
+
+_Label `needs-decision` added by @zanieb on 2025-06-20 13:52_
+
+---

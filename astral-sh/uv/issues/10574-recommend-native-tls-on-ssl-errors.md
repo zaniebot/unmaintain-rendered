@@ -1,0 +1,52 @@
+---
+number: 10574
+title: "Recommend `--native-tls` on SSL errors"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - error messages
+assignees: []
+created_at: 2025-01-13T18:11:07Z
+updated_at: 2025-01-14T18:17:20Z
+url: https://github.com/astral-sh/uv/issues/10574
+synced_at: 2026-01-10T01:24:55Z
+---
+
+# Recommend `--native-tls` on SSL errors
+
+---
+
+_Issue opened by @zanieb on 2025-01-13 18:11_
+
+e.g., https://github.com/astral-sh/uv/issues/10563#issuecomment-2587288206
+
+We should add a hint that recommends enabling native TLS when these are encountered.
+
+An alternative approach would be native TLS by default, though that's controversial.
+
+---
+
+_Label `error messages` added by @zanieb on 2025-01-13 18:11_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-14 16:34_
+
+---
+
+_Label `error messages` removed by @charliermarsh on 2025-01-14 16:44_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2025-01-14 17:33_
+
+---
+
+_Referenced in [astral-sh/uv#10605](../../astral-sh/uv/pulls/10605.md) on 2025-01-14 17:33_
+
+---
+
+_Closed by @charliermarsh on 2025-01-14 18:17_
+
+---

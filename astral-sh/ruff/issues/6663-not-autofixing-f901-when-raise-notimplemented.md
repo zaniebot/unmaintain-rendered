@@ -1,0 +1,137 @@
+---
+number: 6663
+title: "Not autofixing `F901` when `raise NotImplemented`"
+type: issue
+state: open
+author: jamesbraza
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-08-17T22:48:18Z
+updated_at: 2025-09-06T19:53:52Z
+url: https://github.com/astral-sh/ruff/issues/6663
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Not autofixing `F901` when `raise NotImplemented`
+
+---
+
+_Issue opened by @jamesbraza on 2023-08-17 22:48_
+
+I am using `ruff==0.0.285` on the below code:
+
+```python
+class Foo:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, type(self)):
+            raise NotImplemented  # Erroneous code, and ruff autofix can be considered erroneous too
+        return object.__eq__(self, other)
+```
+
+`F901` ([`raise-not-implemented`](https://beta.ruff.rs/docs/rules/raise-not-implemented/)) autofixes line 4 to `raise NotImplementedError`.
+
+However, this is actually undesirable in this case, because the correct fix is actually `return NotImplemented`.
+
+```python
+class Foo:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, type(self)):
+            return NotImplemented  # Now this is correct
+        return object.__eq__(self, other)
+```
+
+In conclusion, I think `raise NotImplemented` should not be auto-fixed to `raise NotImplementedError`.
+
+---
+
+_Comment by @charliermarsh on 2023-08-18 03:30_
+
+Could we not detect and suggest `return NotImplemented` when inside of a supported method? FWIW, I also think this is perfectly fine as a suggested fix (which will be opt-in once we respect those on the CLI), since it's likely to be correct in the vast majority of cases.
+
+---
+
+_Label `waiting-on-author` added by @charliermarsh on 2023-08-18 03:30_
+
+---
+
+_Comment by @jamesbraza on 2023-08-18 04:39_
+
+> Could we not detect and suggest return NotImplemented when inside of a supported method?
+
+Yeah that sounds great! 👍 
+
+Would you repurpose `F901`/`raise-not-implemented` to handle that?  I am not sure how close `ruff` stays to the original `flake8` rules' intent, or would you make a new `RUF` rule for it?
+
+Also, what is CLI0?
+
+---
+
+_Comment by @charliermarsh on 2023-08-18 04:41_
+
+Hmm -- maybe we'd avoid raising F901 in such cases, and we could add a new rule in `RUF` to detect this alternate case (though open to alternatives, it's late and that's just the first idea that popped into my head).
+
+> Also, what is CLI0?
+
+Sorry, that was a type -- it meant to say "CLI" followed by a closing parenthesis :)
+
+---
+
+_Label `waiting-on-author` removed by @charliermarsh on 2023-08-18 04:41_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-08-18 04:41_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-08-18 04:41_
+
+---
+
+_Comment by @jamesbraza on 2023-08-18 04:59_
+
+I am thinking the behavior could be:
+1. `raise NotImplementedError("has message")`, anywhere: this is fine
+2. `return NotImplemented` inside of `object` comparison methods: this is fine
+3. `return NotImplemented` outside of `object` comparison methods: `RUF###`/`improper-return-not-implemented`, no autofix
+4. `raise NotImplemented` inside of `object` comparison methods: `RUF###`/`improper-return-not-implemented`, and `RUF###` overrides `F901` if both are enabled
+5. `raise NotImplemented` outside of `object` comparison methods: `F901`/`raise-not-implemented`, with autofix
+
+I would lean towards making an autofix for point 4 because:
+- We know we're inside an `object` comparison method
+- Developer didn't specify a message
+
+So it's safe to assume `return NotImplemented` was desired.
+
+---
+
+_Comment by @jaywonchung on 2024-06-07 01:58_
+
+I just hit this situation. I also think suggesting to replace `raise NotImplemented` with `raise NotImplementedError` can be misleading. I think another way to handle this is to simply update the error message from
+> raise NotImplemented should be raise NotImplementedError
+
+to something along the lines of
+
+> raise NotImplemented should either be raise NotImplementedError or return NotImplemented (if you're overloading binary special methods)
+
+The phrase *binary special methods* was taken from the [Python documentation of `NotImplemented`](https://docs.python.org/3/library/constants.html#NotImplemented).
+
+This will make Ruff's F901 slightly deviate from the original pyflakes8 specification. I personally find no problem with that because I think this is a strict enhancement, but it would be a project policy decision.
+
+---
+
+_Comment by @calliecameron on 2025-09-06 13:59_
+
+It might also be useful to detect `raise NotImplementedError` inside binary special methods - although this is allowed if the method hasn't been implemented yet, I've come across code where it's used accidentally in place of `return NotImplemented`.
+
+I.e. add another rule that only allows `raise NotImplementedError` inside binary special methods if it's the only line in the method?
+
+---
+
+_Comment by @calliecameron on 2025-09-06 19:53_
+
+Actually, maybe the rule should detect `raise NotImplementedError` in *any* non-abstract method, since the only(?) uses of it are in abstract methods or to temporarily mark methods that will be implemented later - and a warning ensures these won't be forgotten. Thoughts?
+
+---

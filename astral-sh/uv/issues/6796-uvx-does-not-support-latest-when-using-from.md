@@ -1,0 +1,68 @@
+---
+number: 6796
+title: "Uvx does not support @latest when using --from"
+type: issue
+state: closed
+author: RomainBrault
+labels:
+  - enhancement
+  - cli
+assignees: []
+created_at: 2024-08-29T08:13:13Z
+updated_at: 2024-08-30T13:00:18Z
+url: https://github.com/astral-sh/uv/issues/6796
+synced_at: 2026-01-10T01:24:06Z
+---
+
+# Uvx does not support @latest when using --from
+
+---
+
+_Issue opened by @RomainBrault on 2024-08-29 08:13_
+
+I was expecting the following to work but it doesnt.
+
+```console
+> uvx --from Babel pybabel@latest
+The executable `pybabel@latest` was not found.
+warning: An executable named `pybabel@latest` is not provided by package `babel`.
+The following executables are provided by `babel`:
+- pybabel
+```
+
+The other option I thought of doesn´t work either:
+
+```console
+> uvx --from Babel@latest pybabel
+error: Distribution not found at: XXX
+```
+
+I din't find any helpful information in the documentation
+
+---
+
+_Comment by @zanieb on 2024-08-29 13:27_
+
+Fair enough :) Thanks for the report.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-29 13:27_
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-29 13:27_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-30 00:01_
+
+---
+
+_Referenced in [astral-sh/uv#6842](../../astral-sh/uv/pulls/6842.md) on 2024-08-30 00:06_
+
+---
+
+_Closed by @charliermarsh on 2024-08-30 13:00_
+
+---

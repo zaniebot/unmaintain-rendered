@@ -1,0 +1,84 @@
+---
+number: 1814
+title: "Do not add `--upgrade` flag to generated output file"
+type: issue
+state: closed
+author: hofrob
+labels:
+  - bug
+  - good first issue
+  - compatibility
+assignees: []
+created_at: 2024-02-21T14:46:33Z
+updated_at: 2024-02-23T19:01:16Z
+url: https://github.com/astral-sh/uv/issues/1814
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# Do not add `--upgrade` flag to generated output file
+
+---
+
+_Issue opened by @hofrob on 2024-02-21 14:46_
+
+`uv` and `pip-tools` both add the full command to the generated output file. When running an upgrade command, `uv` will add `--upgrade` too while `pip-tools` will not.
+
+This flag in particular should be ignored when generating the output file I think. My reasoning is, I'm running `pre-commit` checks that will only check if the generated file from `pyproject.toml` is consistent with the `requirements.txt` in the repo. Since the command does not use `--upgrade` it will detect a change in the generated output after an upgrade.
+
+Or if I do not execute my hooks, the CI will complain because the files were changed by doing `uv pip compile`.
+
+# `pip-tools`
+
+```
+pip-compile --upgrade
+pip-compile
+```
+
+Both commands will generate the same output file.
+
+# `uv`
+
+```
+uv pip compile pyproject.toml --upgrade --output-file requirements.txt
+uv pip compile pyproject.toml --output-file requirements.txt
+```
+
+The generated outputs will be different: the first one will contain the `--upgrade` flag, the second one won't.
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-21 17:01_
+
+---
+
+_Label `compatibility` added by @zanieb on 2024-02-21 17:01_
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-02-21 17:01_
+
+---
+
+_Comment by @hofrob on 2024-02-22 10:56_
+
+Another one that's ignored by `pip-tools`: `--quiet`
+
+Additionally, this is nothing too serious, but I thought I'd mention it: From what I've seen `pip-tools` also re-orders the CLI args before creating the output file. So when changing order of the CLI params in our scripts, the generated file is still the same.
+
+I tested this by running `pip-compile --strip-extras --quiet --extra-index-url=https://pypi.example.net/...`. The command in the `requirements.txt` will look like this: `pip-compile --extra-index-url=https://pypi.example.net/... --strip-extras`
+
+---
+
+_Referenced in [astral-sh/uv#1873](../../astral-sh/uv/pulls/1873.md) on 2024-02-22 15:35_
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 16:28_
+
+Agreed.
+
+---
+
+_Closed by @charliermarsh on 2024-02-23 19:01_
+
+---

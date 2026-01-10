@@ -1,0 +1,91 @@
+---
+number: 21630
+title: "Feature not working (Feature request: Ignore specific rule on per file basis via in-file comment #2446)"
+type: issue
+state: open
+author: red8888
+labels:
+  - question
+assignees: []
+created_at: 2025-11-25T17:49:03Z
+updated_at: 2025-12-05T19:29:35Z
+url: https://github.com/astral-sh/ruff/issues/21630
+synced_at: 2026-01-10T01:23:02Z
+---
+
+# Feature not working (Feature request: Ignore specific rule on per file basis via in-file comment #2446)
+
+---
+
+_Issue opened by @red8888 on 2025-11-25 17:49_
+
+### Summary
+
+Feature allows for inline file level ignores, without having to use `per-file-ignores` but it doesn't work.
+
+When I add `# ruff: noqa: XXX` at top or bottom of the file it is not applied and its flag as an used rule (RUF100).
+
+Was this feature actually rolled out? I'm using the vs code extension
+
+### Version
+
+vscode extension version: Version 2025.30.0, The extension ships with ruff==0.14.6
+
+---
+
+_Comment by @MichaReiser on 2025-11-25 17:53_
+
+Yes, file-level suppressions have been rolled out for quite a while now. 
+
+Can you share an example that isn't working for you?
+
+---
+
+_Label `question` added by @MichaReiser on 2025-11-25 17:53_
+
+---
+
+_Comment by @dylwil3 on 2025-11-25 19:21_
+
+If you are getting [unused-noqa (RUF100)](https://docs.astral.sh/ruff/rules/unused-noqa/#unused-noqa-ruf100) it means that there is no need for the noqa directive because the suppressed diagnostic doesn't actually occur in that file. In other words: I suspect that in your example the `# ruff: noqa: XXX` is not necessary.
+
+---
+
+_Comment by @red8888 on 2025-12-05 18:59_
+
+> If you are getting [unused-noqa (RUF100)](https://docs.astral.sh/ruff/rules/unused-noqa/#unused-noqa-ruf100) it means that there is no need for the noqa directive because the suppressed diagnostic doesn't actually occur in that file. In other words: I suspect that in your example the `# ruff: noqa: XXX` is not necessary.
+
+Not the case. For example note below screenshot these classes raise `Missing docstring in public classRuff[D101](https://docs.astral.sh/ruff/rules/undocumented-public-class)`
+
+I throw `# noqa: D101` at the top of the file OR the bottom of the file and its flagged as unused and removed on save. Putting it inline is the only way to suppress the ruff warning.
+
+This should be an easy reproducible example if this works for you then perhaps there is some mis-config in my editor.
+
+<img width="562" height="321" alt="Image" src="https://github.com/user-attachments/assets/cdb871e1-6000-40a1-ac96-3b8a9f43dcf7" />
+
+<img width="695" height="316" alt="Image" src="https://github.com/user-attachments/assets/e31e8ac9-9edc-4091-b06f-d05a119d7bfb" />
+
+<img width="556" height="277" alt="Image" src="https://github.com/user-attachments/assets/436215ea-bf13-40f1-95ab-added54bbe02" />
+
+---
+
+_Comment by @ntBre on 2025-12-05 19:29_
+
+This could probably be more prominent in our docs, but file-level suppressions have to start with `ruff:` or `flake8:`, not just `noqa`:
+
+> A file-level exemption comment is given by a case-sensitive match for #ruff: or #flake8:, with optional whitespace after # and before :, followed by optional whitespace and a case-insensitive match for noqa. After this, the specification is as in the inline case.
+
+- https://docs.astral.sh/ruff/linter/#full-suppression-comment-specification
+- https://play.ruff.rs/1b051fec-39fb-48fb-a978-34502fe34658
+
+That wasn't obvious to me until I checked the test cases in #2978.
+
+---
+
+_Comment by @dylwil3 on 2025-12-05 19:29_
+
+Could you try using `# ruff: noqa: D101` instead of `# noqa: D101`? The former is the format for file-level suppressions, while the latter only works for in-line suppressions. See [the docs](https://docs.astral.sh/ruff/linter/#error-suppression) for the full specification.
+
+Edit: jinx @ntBre 😄 
+
+---

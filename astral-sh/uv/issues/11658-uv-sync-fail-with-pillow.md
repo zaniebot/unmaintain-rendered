@@ -1,0 +1,177 @@
+---
+number: 11658
+title: uv sync fail with pillow
+type: issue
+state: open
+author: barakatzir
+labels: []
+assignees: []
+created_at: 2025-02-20T09:06:53Z
+updated_at: 2025-03-07T10:02:20Z
+url: https://github.com/astral-sh/uv/issues/11658
+synced_at: 2026-01-10T01:25:08Z
+---
+
+# uv sync fail with pillow
+
+---
+
+_Issue opened by @barakatzir on 2025-02-20 09:06_
+
+### Summary
+
+I'm not sure if this is a `uv` bug or a `hatchling` bug but I stumbled across it while using `uv sync`.
+
+I'm testing my package with its lowest dependencies and I get build errors when I use `pillow`. I think it is because old `pillow` versions do not support newer python version, but I'm not sure (I didn't see anything suspicious in their `setup.py` file).
+
+What I expected to happen is for `uv` to set me up with the minimal version of pillow that works on the requested python version.
+
+Here is a minimal reproduction:
+```console
+➜  temp mkdir uvcheck
+➜  temp cd uvcheck 
+➜  uvcheck uv init --package --python 3.10
+Initialized project `uvcheck`
+➜  uvcheck git:(master) ✗ uv add 'pillow>=9.0.0'
+Using CPython 3.10.14
+Creating virtual environment at: .venv
+Resolved 2 packages in 2ms
+      Built uvcheck @ file:///home/barak-katzir/dev/temp/uvcheck
+Prepared 1 package in 166ms
+Installed 2 packages in 1ms
+ + pillow==11.1.0
+ + uvcheck==0.1.0 (from file:///home/barak-katzir/dev/temp/uvcheck)
+➜  uvcheck git:(master) ✗ uv sync --python 3.13 
+Using CPython 3.13.0
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.48ms
+Installed 2 packages in 2ms
+ + pillow==11.1.0
+ + uvcheck==0.1.0 (from file:///home/barak-katzir/dev/temp/uvcheck)
+➜  uvcheck git:(master) ✗ uv sync --python 3.13 --resolution lowest-direct
+Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+Resolved 2 packages in 3ms
+  × Failed to build `pillow==9.0.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+      status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+          requires = get_requires_for_build({})
+        File
+      "/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 304, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File
+      "/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 320, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File "<string>", line 29, in <module>
+        File "<string>", line 26, in get_version
+      KeyError: '__version__'
+
+      hint: This usually indicates a problem with the package or the build
+      environment.
+  help: `pillow` (v9.0.0) was included because `uvcheck` (v0.1.0) depends
+        on `pillow`
+➜  uvcheck git:(master) ✗ uv sync --python 3.10 --resolution lowest-direct
+Using CPython 3.10.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.52ms
+Installed 2 packages in 2ms
+ + pillow==9.0.0
+ + uvcheck==0.1.0 (from file:///home/barak-katzir/dev/temp/uvcheck)
+
+```
+
+### Platform
+
+Ubuntu 24.04.1 LTS amd64
+
+### Version
+
+uv 0.6.1
+
+### Python version
+
+managed (see minimal reproduction for details)
+
+---
+
+_Label `bug` added by @barakatzir on 2025-02-20 09:06_
+
+---
+
+_Comment by @konstin on 2025-02-20 09:54_
+
+This looks like a bug in an old version of the pillow build script.
+
+uv unfortunately can't detect what the upper limit for the python version on a package is. If you want to force using a wheel for pillow, you can use the `--no-build-package pillow` option, this option makes uv backtrack to a newer version that has a wheel for the current Python version and platform.
+
+---
+
+_Label `bug` removed by @konstin on 2025-02-20 09:54_
+
+---
+
+_Comment by @barakatzir on 2025-02-20 13:22_
+
+I like the idea of the solution, but this doesn't seem to work as you suggest.
+On lowest-direct, `uv` insists to use `pillow==9.0.0` and fails.
+
+```console
+➜  uvcheck git:(master) ✗ uv sync --python 3.13 --resolution lowest-direct --no-build-package pillow
+Resolved 2 packages in 0.50ms
+error: Distribution `pillow==9.0.0 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+```
+
+---
+
+_Comment by @konstin on 2025-02-20 13:31_
+
+Can you try passing `--upgrade` too? This should update the resolution with the higher pillow version.
+
+---
+
+_Comment by @barakatzir on 2025-02-20 14:36_
+
+I still get the same error:
+```console
+➜  uvcheck git:(master) ✗ uv sync --python 3.13 --upgrade --resolution lowest-direct --no-build-package pillow
+Resolved 2 packages in 249ms
+error: Distribution `pillow==9.0.0 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+```
+
+---
+
+_Comment by @charliermarsh on 2025-02-20 20:08_
+
+Unfortunately I think the real "solution" here is to set a lower-bound constraint on Pillow?
+
+---
+
+_Comment by @barakatzir on 2025-02-20 22:20_
+
+I did set a lower bound on pillow to 9.0.0 which does work with python 3.10 but not newer python versions.
+
+I using the lowest direct resolution on the earliest python version, so this issue doesn't bother me too much, but since I got unexpected error I thought I better report it.
+
+If I could have uv detect the earliest pillow build available for the python version I require it could save me the hassle of manually looking for the version and setting it to 9.0.0. A solution like using the `--no-build-package pillow` could be good for that.
+
+---

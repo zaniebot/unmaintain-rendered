@@ -1,0 +1,185 @@
+---
+number: 13233
+title: "BUG: `uv run --no-sync` incorrectly resets CPython 3.14 venv in version 0.7"
+type: issue
+state: closed
+author: neutrinoceros
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-30T14:54:48Z
+updated_at: 2025-05-01T10:47:51Z
+url: https://github.com/astral-sh/uv/issues/13233
+synced_at: 2026-01-10T01:25:30Z
+---
+
+# BUG: `uv run --no-sync` incorrectly resets CPython 3.14 venv in version 0.7
+
+---
+
+_Issue opened by @neutrinoceros on 2025-04-30 14:54_
+
+### Summary
+
+The following CI job failed with uv 0.7.0 (and 0.7.1), but succeeded with 0.6.x
+
+https://github.com/neutrinoceros/inifix/actions/runs/14757311421/job/41428805320
+
+Essentially, it can be boiled down to
+```yaml
+jobs:
+  build:
+    name: py${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version:
+        - '3.14'
+        - 3.14t
+
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: astral-sh/setup-uv@c7f87aa956e4c323abf06d5dec078e358f6b4d04 # v6.0.0
+      with:
+        python-version: ${{ matrix.python-version }}
+        enable-cache: false
+    - name: Configure uv
+      run: |
+        echo "RUST_LOG=uv=debug" >> $GITHUB_ENV
+
+    - name: Set PYTHON_GIL
+      if: ${{ endswith( matrix.python-version , 't' ) }}
+      run: |
+        echo "PYTHON_GIL=0" >> $GITHUB_ENV
+
+    - run: uv lock --upgrade --prerelease=allow
+    - run: uv sync --frozen --no-editable --group test
+    - name: Run tests
+      run: |
+        uv run --no-sync pytest --color=yes
+```
+The final error is:
+```
+error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2)
+```
+If I understand logs correctly, this is caused by uv incorrectly (and needlessly) re-creating my env on `uv run`:
+https://github.com/neutrinoceros/inifix/actions/runs/14757311421/job/41428805320#step:8:31
+
+This happens with both builds of Python 3.14 (gil-enabled, and free-threading). I can reproduce this locally too with
+```
+export UV_PYTHON=3.14
+uv sync --group test --frozen --no-editable
+uv run --no-sync pytest
+```
+
+pasting the last command's output:
+```
+Using CPython 3.14.0a6
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2)
+```
+
+I read the release notes but didn't find anything that looked related. Is this change somehow intentional ?
+
+### Platform
+
+ubuntu-latest
+
+### Version
+
+uv 0.7.1
+
+### Python version
+
+3.14.0a6
+
+---
+
+_Label `bug` added by @neutrinoceros on 2025-04-30 14:54_
+
+---
+
+_Referenced in [neutrinoceros/inifix#414](../../neutrinoceros/inifix/pulls/414.md) on 2025-04-30 14:55_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2025-04-30 15:09_
+
+---
+
+_Comment by @zanieb on 2025-04-30 15:10_
+
+Thanks for the report! I'll investigate.
+
+---
+
+_Comment by @zanieb on 2025-04-30 15:30_
+
+Reproducible with
+
+```
+❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ uv add pytest
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+Resolved 6 packages in 109ms
+Prepared 1 package in 77ms
+Installed 4 packages in 6ms
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.5.0
+ + pytest==8.3.5
+❯ UV_PYTHON=3.14 uv sync
+Using CPython 3.14.0a3 interpreter at: /usr/local/bin/python3.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 6 packages in 6ms
+Installed 4 packages in 7ms
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.5.0
+ + pytest==8.3.5
+❯ UV_PYTHON=3.14 uv run --no-sync pytest
+Using CPython 3.14.0a3 interpreter at: /usr/local/bin/python3.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2)
+```
+
+---
+
+_Comment by @zanieb on 2025-04-30 15:30_
+
+The key is 
+
+```
+DEBUG Checking for Python environment at `.venv`
+DEBUG The interpreter in the virtual environment has different version (3.14.0) than it was created with (3.14.0a3)
+```
+
+---
+
+_Referenced in [astral-sh/uv#13234](../../astral-sh/uv/pulls/13234.md) on 2025-04-30 15:43_
+
+---
+
+_Referenced in [astral-sh/uv#13235](../../astral-sh/uv/issues/13235.md) on 2025-04-30 15:51_
+
+---
+
+_Closed by @zanieb on 2025-04-30 15:55_
+
+---
+
+_Comment by @neutrinoceros on 2025-05-01 10:47_
+
+Thanks @zanieb for this extremely quick response !
+
+---

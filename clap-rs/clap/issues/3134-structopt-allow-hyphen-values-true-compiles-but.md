@@ -1,0 +1,107 @@
+---
+number: 3134
+title: "#[structopt(allow_hyphen_values = true]) compiles but does not work"
+type: issue
+state: closed
+author: epage
+labels:
+  - A-derive
+assignees: []
+created_at: 2021-12-09T16:34:17Z
+updated_at: 2021-12-09T16:41:24Z
+url: https://github.com/clap-rs/clap/issues/3134
+synced_at: 2026-01-10T01:27:34Z
+---
+
+# #[structopt(allow_hyphen_values = true]) compiles but does not work
+
+---
+
+_Issue opened by @epage on 2021-12-09 16:34_
+
+<a href="https://github.com/nstinus"><img src="https://avatars.githubusercontent.com/u/217075?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [nstinus](https://github.com/nstinus)**
+_Thursday Nov 04, 2021 at 21:35 GMT_
+_Originally opened as https://github.com/TeXitoi/structopt/issues/510_
+
+----
+
+Hi,
+
+I am trying to allow an i32 positional argument and I can't parse negative inputs.
+I have tried using
+```
+#[structopt(allow_hyphen_values = true]) 
+arg: i32,
+```
+to no avail.
+
+I'll greatly appreciate any help.
+
+Thanks!
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:34_
+
+<a href="https://github.com/DominikRusso"><img src="https://avatars.githubusercontent.com/u/50487108?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [DominikRusso](https://github.com/DominikRusso)**
+_Thursday Nov 04, 2021 at 23:01 GMT_
+
+----
+
+Try `#[structopt(settings = &[structopt::clap::AppSettings::AllowNegativeNumbers])]` on a top level field.
+
+For example:
+```
+use structopt::clap::AppSettings;
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+pub enum Subcommand {
+    // ...
+    
+    #[structopt(alias = "bri", settings = &[AppSettings::AllowNegativeNumbers])]
+    Brightness {
+        brightness: String,
+        lights: Vec<String>,
+    },
+
+    // ...
+}
+```
+
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:34_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Friday Nov 05, 2021 at 09:18 GMT_
+
+----
+
+Yeah, allow_hypen_values is for options, not for args.
+
+Also, please provide a complete compiling example when you have a question, explaining the actual behavior and the expected behavior. It will be much easier to understand the question.
+
+
+---
+
+_Closed by @epage on 2021-12-09 16:39_
+
+---
+
+_Comment by @epage on 2021-12-09 16:40_
+
+Looks like this was resolved
+
+---
+
+_Label `A-derive` added by @epage on 2021-12-09 16:41_
+
+---
+
+_Referenced in [clap-rs/clap#3268](../../clap-rs/clap/issues/3268.md) on 2022-01-07 20:18_
+
+---

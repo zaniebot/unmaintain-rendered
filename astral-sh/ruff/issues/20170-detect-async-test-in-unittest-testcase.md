@@ -1,0 +1,61 @@
+---
+number: 20170
+title: Detect async test in unittest.TestCase
+type: issue
+state: open
+author: WimYedema
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-08-30T21:12:58Z
+updated_at: 2025-09-01T15:10:06Z
+url: https://github.com/astral-sh/ruff/issues/20170
+synced_at: 2026-01-10T01:23:01Z
+---
+
+# Detect async test in unittest.TestCase
+
+---
+
+_Issue opened by @WimYedema on 2025-08-30 21:12_
+
+### Summary
+
+This test will pass:
+
+```py
+import unittest
+
+class SimpleTest(unittest.TestCase):
+    async def test_false(self):
+        self.assertTrue(False)
+```
+
+But it will give a "helpful" warning:
+
+```sh
+$ uv run python -m unittest tests/test_false.py 
+C:\Users\wimye\.pyenv\pyenv-win\versions\3.12.5\Lib\unittest\case.py:589: RuntimeWarning: coroutine 'SimpleTest.test_false' was never awaited
+  if method() is not None:
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+C:\Users\wimye\.pyenv\pyenv-win\versions\3.12.5\Lib\unittest\case.py:690: DeprecationWarning: It is deprecated to return a value that is not None from a test case (<bound method SimpleTest.test_false of <tests.test_false.SimpleTest testMethod=test_false>>)        
+  return self.run(*args, **kwds)
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+OK
+```
+
+It would be nice to have a rule that checks this.
+
+---
+
+_Label `rule` added by @ntBre on 2025-09-01 15:10_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-09-01 15:10_
+
+---

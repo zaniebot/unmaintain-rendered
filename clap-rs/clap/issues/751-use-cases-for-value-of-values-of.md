@@ -1,0 +1,314 @@
+---
+number: 751
+title: use cases for value_of/values_of
+type: issue
+state: closed
+author: BurntSushi
+labels:
+  - M-breaking-change
+  - A-docs
+  - A-parsing
+  - E-medium
+  - E-help-wanted
+assignees: []
+created_at: 2016-11-14T21:36:39Z
+updated_at: 2021-08-18T21:50:43Z
+url: https://github.com/clap-rs/clap/issues/751
+synced_at: 2026-01-10T01:26:35Z
+---
+
+# use cases for value_of/values_of
+
+---
+
+_Issue opened by @BurntSushi on 2016-11-14 21:36_
+
+Sorry to keep opening issues, and this may indeed be more of a question because I've missed something, but what are the intended use cases of `value_of`/`values_of`? In particular, I notice that this is part of its contract:
+
+> This method will panic! if the value contains invalid UTF-8 code points.
+
+(Pedant: I think this should say "invalid UTF-8." There is no such thing as a "UTF-8 codepoint.")
+
+Since the value is typed by the user, this means that the user can cause your program to panic if you use `value_of`/`values_of` when the user gives a value that isn't valid UTF-8. In my view, if an *end user* sees a panic, then it ought to be considered a bug. If my interpretation is right, then that means I should *never* use `value_of`/`values_of`, right?
+
+I do see one possible use case: if a caller *disables* the `AllowInvalidUtf8` setting, then I believe clap will return a nice error if it detects invalid UTF-8, and therefore, `value_of`/`values_of` will *never* panic. However, according to the docs, `AllowInvalidUtf8` is enabled by default, so this seems like a potential footgun.
+
+(This is a good instance of the pot calling the kettle black because `docopt.rs`, for example, can't handle invalid UTF-8 *at all*! :-) So clap is already leagues better in this regard.)
+
+---
+
+_Comment by @kbknapp on 2016-11-14 21:56_
+
+No worries, so far all the issues you've written have been superb and are pushing great things! Keep them coming!
+
+I think you're absolutely correct in that reasoning, and I actually agree the `StrictUtf8` should be the default, where the users actually opt-in to allowing invalid UTF-8, at which point they're also conscious that they should be using the `value[s]_of_os` instead. 
+
+I can't remember exactly, but I believe my reasoning behind making invalid UTF-8 allowed by default was....whelp no I can't remember. I know I had a reason though! Maybe it was prior to adding the `value[s]_of_os`? Oh well...
+
+Changing that default is _technically_ a breaking change, although like Rust I do believe some breaking changes should be allowed if they fix [logic] bugs, prevent security holes, or otherwise correct other unsound behavior. It should be simple to at least find github users who have used the `value[s]_of_os` and know to what extent this change would cause. I know that's not the whole sample, but should at least give an idea.
+
+Thoughts?
+
+Changing the docs is a quick fix too :wink: 
+
+
+---
+
+_Label `C: docs` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Label `E: breaking change` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-11-14 21:56_
+
+---
+
+_Comment by @kbknapp on 2016-11-14 22:01_
+
+Ok, so on Github there are actually more than I thought using the `value[s]_of_os` methods. Probably more than I'd feel comfortable switching the default. It's roughly ~30 uses, which is totally possible to contact all of them and warn them of the change. What scares me is that there's ~30 on github, but I have no idea how many in all the other places with no way to warn them. This may just have to wait for 3.x :cry: 
+
+
+---
+
+_Comment by @BurntSushi on 2016-11-14 22:32_
+
+I think it's perfectly fine to wait for `3.x` FWIW. It does feel like a bit of a sneaky breaking change to try to squeeze it in into a minor bump. I also think making `StrictUtf8` the default is a good solution given the current API too.
+
+
+---
+
+_Comment by @BurntSushi on 2016-11-14 22:34_
+
+One thing to consider though is this fact: if I'm writing a CLI tool on Unix and my tool accepts file paths as arguments, then I probably always want to allow invalid UTF-8 because I'm otherwise preventing my tool from working on all file paths. This is kind of a bigger picture question to answer that's probably out-of-scope for a small footgun, because it means putting UTF-8 handling front and center, which obviously sacrifices a bit of ergonomics. It's a hard line to walk and probably requiring them to explicitly use the `os` methods is a fine answer.
+
+
+---
+
+_Comment by @kbknapp on 2016-11-14 23:35_
+
+Exactly, I wouldn't make a change like that unless I could reasonably sure it either breaks no code _or_ I was able to contact the majority (if not all) users of said feature to get their approval first. And in this case I don't think that's reasonable. 
+
+I have been thinking of a 3.x for a while now, so hopefully the wait won't be too long! :)
+
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2016-11-14 23:36_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2016-11-14 23:36_
+
+---
+
+_Added to milestone `3.0` by @kbknapp on 2016-12-27 04:34_
+
+---
+
+_Removed from milestone `3.0` by @kbknapp on 2018-02-02 01:56_
+
+---
+
+_Added to milestone `v3-alpha1` by @kbknapp on 2018-02-02 01:56_
+
+---
+
+_Referenced in [rust-cli/team#26](../../rust-cli/team/issues/26.md) on 2018-03-25 00:12_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2018-07-22 01:04_
+
+---
+
+_Label `good first issue` added by @kbknapp on 2018-07-22 01:04_
+
+---
+
+_Referenced in [clap-rs/clap#1483](../../clap-rs/clap/pulls/1483.md) on 2019-06-02 17:54_
+
+---
+
+_Comment by @kornelski on 2019-06-03 12:00_
+
+I've tried to fix panics in Cargo (w/clap 2.x), but Cargo frequently uses such pattern (and its `match` equivalent):
+
+```
+if matches.value_of("arg") == Some("value")
+```
+
+Changing it to `value_of_os`/`value_of_lossy` prevents direct comparison, and requires mapping/unwrapping which makes it longer and less readable. 
+
+Without breaking changes, it could be improved by adding `matches.value_equals(arg_name, &str)` which could simply return `false` for non-UTF-8 args (since they can never match a `str`).
+
+Perhaps it could be fixed at the source, by changing definition of arguments? Currently `app.arg()` doesn't define the data type it expects. 
+
+How about having `app.arg_os()` or `app.arg_path()` that would define the arg is/isn't a path, and force use of `value_of_os`/`value_of_pathbuf`? And `app.arg()` (or `app.arg_str()`?) would reject non-UTF-8 arg.
+
+
+
+---
+
+_Removed from milestone `v3-alpha.2` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Added to milestone `v3.0` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Comment by @CreepySkeleton on 2020-07-07 14:33_
+
+It does seem like the vast majority of non-utf8 offenders in CLI args are filesystem paths, and otherwise there's little sense to be on guard against invalid utf-8, correct? Maybe introducing some sort of path-specific getter (as described in #1723 for instance) is the way to mitigating the issue?
+
+> How about having app.arg_os() or app.arg_path() that would define the arg is/isn't a path, and force use of value_of_os/value_of_pathbuf? And app.arg() (or app.arg_str()?) would reject non-UTF-8 arg.
+
+That might not be a bad idea, but it's not really feasible implementation-wise. That's just very far image from how the current implementation works; we'd have to rewrite a good part of clap for it. Maybe in next major version 🤷 
+
+---
+
+_Label `D: easy` removed by @CreepySkeleton on 2020-07-07 19:49_
+
+---
+
+_Label `Z: good first issue` removed by @CreepySkeleton on 2020-07-07 19:49_
+
+---
+
+_Label `C: matches` added by @CreepySkeleton on 2020-07-07 19:49_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-07-07 19:49_
+
+---
+
+_Comment by @ldm0 on 2021-03-07 18:08_
+
+Opinion: Using `value_of` do introduce possiblility of panic, but the current api design is the same as [`std::env::args()`](https://doc.rust-lang.org/std/env/fn.args.html) and [`std::env::args_os`](https://doc.rust-lang.org/std/env/fn.args_os.html). So removing `value_of()` is unneeded. And I don't think adding new convenient functions is good for api surface's cleaness.
+
+---
+
+_Comment by @epage on 2021-07-19 19:35_
+
+`clap_derive` is using `value_of` behind the scenes.  We should either switch away from `value_of` for the derive or fix this because this is a case where the user has no idea this is happening and don't have a choice to move away from it.
+
+---
+
+_Comment by @BurntSushi on 2021-07-21 20:27_
+
+Is it planned to fix this for clap 3? It looks like the current API as of clap 3 beta 2 still panics on invalid UTF-8: https://docs.rs/clap/3.0.0-beta.2/clap/struct.ArgMatches.html#method.value_of
+
+---
+
+_Comment by @epage on 2021-07-21 21:32_
+
+I assume so since its tagged with the 3.0 milestone.  At minimum, I'd like to see hidden callers use a non-panicing API (derive, `value_of_t`, etc), whether that involves fixing this or changing the call sites.
+
+Options
+- `StrictUtf8` being the default
+  - Downside: This can't discriminate on how the arg will be used, so breaking all uses of accepting `PathBuf` / `OsString`.  Enabling support for that would then re-enable the panic
+- ArgSettings for invalid/strict like the similar AppSettings
+  - Looks like we look at `StrictUtf8` *after* we know which are we are processing, so this looks feasible
+  - `clap_derive` can auto-set this
+  - We can make this the default with a comment on `value_of_os` that they should unset the flag.
+  - The question is how to have this interact with the AppSetting, if we keep it.
+    - If someone sets `StrictUtf8` at the App level, there isn't a way to opt-out at the Arg level.  We'd need a tri-state (yes, no, default).
+    - We could keep both `StrictUtf8` and `AllowInvalidUtf8` to mimic the tri-state.  What to do if someone sets both on an Arg or on the App?  Unsetting a default would be different from all other settings (instead of unset, you set something different)
+    - Its also used for external subcommands, so we'd need something for that.  
+    - This is similar to the "How about having app.arg_os() or app.arg_path()" idea before mentioned but is tying into the way clap is currently doing things
+- Change `value_of`s signature to return an error
+  - This ties into #2505 for whether not-present should be an error, or whether we should use `Option<Result<_, _>>` or `Result<Option<_>, _>`
+
+I lean towards
+- `ArgSetting::StrictUtf8` being added and being the default
+  - `value_of_os` would document this
+  - `clap_derive` would "do the right thing"
+- `AppSetting::StrictUtf8` would be changed to `AppSetting::StrictUtf8ExternalSubcommand` and would be **on** by default just to keep the documentation simple
+  - `value_of_os` would document this
+  - `clap_derive` would "do the right thing"
+
+---
+
+_Referenced in [clap-rs/clap#2617](../../clap-rs/clap/issues/2617.md) on 2021-07-22 15:37_
+
+---
+
+_Comment by @pksunkara on 2021-07-25 17:21_
+
+There's a little bit of holistic clean up that needs to be done regarding these API methods and how they are used in derive. This is related to a few others issues too. Definitely need to be done before 3.0
+
+---
+
+_Comment by @epage on 2021-07-26 14:42_
+
+@pksunkara how does my proposal sound for a path to move forward? 
+
+---
+
+_Comment by @epage on 2021-07-28 17:29_
+
+Based on another thread (https://github.com/clap-rs/clap/discussions/2627), By making `StrictUtf8` the default, we'd need to invert its name again back to `AllowInvalidUtf8`
+
+---
+
+_Referenced in [clap-rs/clap#2623](../../clap-rs/clap/pulls/2623.md) on 2021-08-02 16:32_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-09 02:14_
+
+---
+
+_Comment by @pksunkara on 2021-08-09 02:20_
+
+Yup. So, we basically need to change the `StrictUtf8` setting in favor of `AllowInvalidUtf8`.
+
+---
+
+_Comment by @epage on 2021-08-09 13:48_
+
+@pksunkara just want to make sure you read what my comment was associated with; its not just inverting it but also moving it from an app setting to an arg setting
+
+---
+
+_Comment by @pksunkara on 2021-08-09 16:40_
+
+Missed that, but still sounds good. This change might be a bit big for @hosseind88 though in #2623 
+
+---
+
+_Referenced in [clap-rs/clap#2677](../../clap-rs/clap/pulls/2677.md) on 2021-08-10 15:21_
+
+---
+
+_Referenced in [clap-rs/clap#2687](../../clap-rs/clap/issues/2687.md) on 2021-08-13 19:27_
+
+---
+
+_Closed by @pksunkara on 2021-08-18 21:50_
+
+---
+
+_Referenced in [solana-labs/solana-program-library#4511](../../solana-labs/solana-program-library/issues/4511.md) on 2023-06-08 23:33_
+
+---

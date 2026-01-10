@@ -1,0 +1,272 @@
+---
+number: 10444
+title: Allow users to override cache control headers
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - configuration
+  - network
+assignees: []
+created_at: 2025-01-09T21:02:49Z
+updated_at: 2025-07-15T18:31:41Z
+url: https://github.com/astral-sh/uv/issues/10444
+synced_at: 2026-01-10T01:24:54Z
+---
+
+# Allow users to override cache control headers
+
+---
+
+_Issue opened by @charliermarsh on 2025-01-09 21:02_
+
+Some registries don't provide any cache-control headers, which can make for a suboptimal experience (see: #10359). (PyPI returns 10-minute caching headers.) I wonder if it makes sense to allow users to override the cache-control headers?
+
+---
+
+_Label `configuration` added by @charliermarsh on 2025-01-09 21:02_
+
+---
+
+_Label `network` added by @charliermarsh on 2025-01-09 21:02_
+
+---
+
+_Comment by @zanieb on 2025-01-09 21:42_
+
+See also #10380 
+
+---
+
+_Comment by @charliermarsh on 2025-01-10 03:37_
+
+#10380 seems different -- that appears to be a request that we add a mode that attempts to hit the index, but falls back to `--offline` behavior if it's unavailable?
+
+---
+
+_Comment by @zanieb on 2025-01-10 04:46_
+
+I agree it's different. I think the similarity is that we may need to override cache control headers (as I mentioned there) to read from a stale cache? I'm not actually familiar with how that interacts with the offline mode.
+
+---
+
+_Comment by @charliermarsh on 2025-01-10 04:48_
+
+I believe we allow reading from a stale cache in offline mode.
+
+---
+
+_Comment by @chanderson0 on 2025-02-12 23:23_
+
++1 to this, just contributing a use case for our organization: 
+
+We are working on installing NVIDIA IsaacLab via uv - a huge step up from their bespoke conda envs. This requires downloading a few gigabytes of packages that do not cache because (I assume) NVIDIA's package index is set to return `cache-control: max-age=0, no-cache, no-store`. This makes fresh Docker build times using uv quite slow compared to the previous approach, which was to install the package at the system level.
+
+<details>
+
+<summary>An example wheel and HTTP headers</summary>
+
+```
+curl -v https://pypi.nvidia.com/isaacsim-benchmark/isaacsim_benchmark-4.5.0.0-cp310-none-manylinux_2_34_x86_64.whl
+*   Trying 23.209.72.14:443...
+* Connected to pypi.nvidia.com (23.209.72.14) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /usr/lib/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: C=US; ST=California; L=Santa Clara; O=NVIDIA Corporation; CN=it.nvidia.com
+*  start date: Dec  2 00:00:00 2024 GMT
+*  expire date: Dec  2 23:59:59 2025 GMT
+*  subjectAltName: host "pypi.nvidia.com" matched cert's "*.nvidia.com"
+*  issuer: C=US; O=DigiCert Inc; CN=DigiCert TLS RSA SHA256 2020 CA1
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multiplexing
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* Using Stream ID: 1 (easy handle 0x63b43ddf0eb0)
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> GET /isaacsim-benchmark/isaacsim_benchmark-4.5.0.0-cp310-none-manylinux_2_34_x86_64.whl HTTP/2
+> Host: pypi.nvidia.com
+> user-agent: curl/7.81.0
+> accept: */*
+> 
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+< HTTP/2 200 
+< content-type: application/x-gzip
+< content-length: 3318653
+< last-modified: Wed, 29 Jan 2025 23:45:30 GMT
+< x-amz-server-side-encryption: AES256
+< accept-ranges: bytes
+< server: AmazonS3
+< etag: "d92eac51baff4bf6ba14a6d4f0bb8bba"
+< x-amz-cf-pop: EWR53-C1
+< x-amz-cf-id: E6Wtn-2__Xl3Zj_upc2AkLe2TfEo7vVta1wTO6Pk9j3JXPLiFKwlBg==
+< expires: Wed, 12 Feb 2025 23:14:25 GMT
+< cache-control: max-age=0, no-cache, no-store
+< pragma: no-cache
+< date: Wed, 12 Feb 2025 23:14:25 GMT
+< x-cdn-version: v1
+< x-cdn: akam
+< akamai-grn: 0.8e04d217.1739402065.1f05112d
+< 
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+* Failure writing output to destination
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* stopped the pause stream!
+* Connection #0 to host pypi.nvidia.com left intact
+```
+
+</details>
+
+---
+
+_Comment by @charliermarsh on 2025-03-19 01:49_
+
+The only thing I'm not sure about here is... There are cache-control headers for the Simple API, and then cache-control headers for wheels. And you definitely don't want them to be the same. You probably want, like, 10 minutes for the Simple API, and then forever (immutable) for wheels.
+
+---
+
+_Comment by @charliermarsh on 2025-03-19 02:06_
+
+I'm tempted to say that we always treat registry wheels as immutable for cache purposes.
+
+---
+
+_Comment by @heathkh-recursion on 2025-05-05 18:26_
+
+In case it is useful... I believe we are experiencing the same issue with a private Google Artifact Registry python index.  From the logs, the cache-control headers are set to 0 which seems to be associated with redownloading the same package (and unbounded growth of the cache).   If there is something we can do to help troubleshoot or test, let me know!
+
+---
+
+_Referenced in [astral-sh/uv#14121](../../astral-sh/uv/issues/14121.md) on 2025-06-18 00:01_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-07-14 21:55_
+
+---
+
+_Referenced in [astral-sh/uv#14620](../../astral-sh/uv/pulls/14620.md) on 2025-07-14 23:54_
+
+---
+
+_Closed by @charliermarsh on 2025-07-15 14:00_
+
+---
+
+_Comment by @s22chan on 2025-07-15 16:59_
+
+for https://github.com/astral-sh/uv/pull/14620, does this only allow cache overrides for simple API registries?
+
+One issue I experience is that installing wheels from github releases can explode a cache directory pretty quickly, each one (prior to 2.8.1) is 1GB unzipped.
+https://github.com/Dao-AILab/flash-attention/releases
+
+```
+❯ curl -I
+https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.0.post2/flash_attn-2.8.0.post2+cu12torch2.5cxx11abiTRUE-cp313-cp313-linux_x86_64.whl
+HTTP/2 302
+...
+cache-control: no-cache
+```
+
+the pypi sources take 30mins+ to compile, so it's not ideal to fallback to that.
+
+---
+
+_Comment by @charliermarsh on 2025-07-15 17:47_
+
+I believe we already cache direct URL dependencies indefinitely. Can you give me a concrete workflow or example that exhibits this problem?
+
+Separately: why download the wheels directly rather than going through the PyPI source distribution? The Flash Attention source distribution just downloads the wheels from GitHub when you're using a compatible version -- by default, it doesn't build from source.
+
+
+---
+
+_Comment by @s22chan on 2025-07-15 18:31_
+
+Thanks for responding so quickly!
+
+> I believe we already cache direct URL dependencies indefinitely. Can you give me a concrete workflow or example that exhibits this problem?
+
+Unfortunately this is under pixi, so let me try to make a minimal repro.
+
+> Separately: why download the wheels directly rather than going through the PyPI source distribution? The Flash Attention source distribution just downloads the wheels from GitHub when you're using a compatible version -- by default, it doesn't build from source.
+
+I wasn't aware of the automatic wheel download, I tried and it still builds; I'm not sure what I'm doing wrong:
+
+```shell
+❯ uv add --script example.py 'torch' 'flash-attn'
+Updated `example.py`
+
+❯ uv run example.py
+  × Failed to build `flash-attn==2.8.1`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+          requires = get_requires_for_build({})
+        File
+      "/mnt/main0/home/stevechan/.cache/uv/builds-v0/.tmpinViaV/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/mnt/main0/home/stevechan/.cache/uv/builds-v0/.tmpinViaV/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 301, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File
+      "/mnt/main0/home/stevechan/.cache/uv/builds-v0/.tmpinViaV/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/mnt/main0/home/stevechan/.cache/uv/builds-v0/.tmpinViaV/lib/python3.13/site-packages/setuptools/build_meta.py",
+      line 317, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File "<string>", line 22, in <module>
+      ModuleNotFoundError: No module named 'torch'
+
+      hint: This error likely indicates that `flash-attn@2.8.1` depends on `torch`, but doesn't declare it as a build
+      dependency. If `flash-attn` is a first-party package, consider adding `torch` to its `build-system.requires`.
+      Otherwise, `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+```
+
+---

@@ -1,0 +1,206 @@
+---
+number: 8067
+title: "`uv tool install --reinstall` not working as documented"
+type: issue
+state: open
+author: dpoznik
+labels:
+  - documentation
+assignees: []
+created_at: 2024-10-10T03:12:54Z
+updated_at: 2025-02-15T13:53:50Z
+url: https://github.com/astral-sh/uv/issues/8067
+synced_at: 2026-01-10T01:24:23Z
+---
+
+# `uv tool install --reinstall` not working as documented
+
+---
+
+_Issue opened by @dpoznik on 2024-10-10 03:12_
+
+The docs suggest that `uv tool install --reinstall` should reinstall _all_ packages:
+```sh
+$ uv --version
+uv 0.4.20 (0e1b25a53 2024-10-08)
+
+$ uv tool install --help
+...
+      --reinstall                              Reinstall all packages, regardless of whether they're already installed. Implies `--refresh`
+      --reinstall-package <REINSTALL_PACKAGE>  Reinstall a specific package, regardless of whether it's already installed. Implies `--refresh-package`
+...
+```
+This suggests that one need not specify a particular package. But in practice, a package name is expected:
+```sh
+$ uv tool install --reinstall
+error: the following required arguments were not provided:
+  <PACKAGE>
+
+Usage: uv tool install --reinstall --index-url <INDEX_URL> <PACKAGE>
+
+```
+
+---
+
+_Comment by @charliermarsh on 2024-10-10 09:04_
+
+`uv tool install --reinstall <PACKAGE>` will reinstall `<PACKAGE>` and all of its dependencies (whereas `uv tool --reinstall-package <FOO> <PACKAGE>` will reinstall `<FOO>`, but not `<PACKAGE>`). Any suggestions on how to make this clearer?
+
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-10-10 09:04_
+
+---
+
+_Comment by @bluss on 2024-10-10 09:09_
+
+`--reinstall` is not "Reinstall all tools", but it's like "Reinstall everything for one tool".
+
+
+Maybe this is a clarification.
+Here PACKAGE is the tool you want to install:
+
+```
+Usage: uv tool install [OPTIONS] <PACKAGE>
+```
+
+
+----
+
+
+But below, *packages* is all the distribution packages in the installation of *the tool* (the previous single `PACKAGE`).
+
+```
+Installer options:
+      --reinstall
+          Reinstall all packages, regardless of whether they're already installed. Implies
+          `--refresh`
+```
+
+
+
+---
+
+_Comment by @dpoznik on 2024-10-10 14:53_
+
+> Any suggestions on how to make this clearer?
+
+Perhaps something like the following, wherein instances of "package" have been edited to forms of "dependency" to disambiguate "packages" providing tools from "packages" these tool-providing packages depend on:
+```
+      --reinstall                         Reinstall all dependencies, regardless of whether they're already installed. Implies `--refresh`
+      --reinstall-package <DEPENDENCY>    Reinstall a specific dependency, regardless of whether it's already installed. Implies `--refresh-package`
+
+      --refresh                           Refresh all cached data
+      --refresh-package <DEPENDENCY>      Refresh cached data for a specific dependency
+```
+
+It may be even clearer if the second and fourth option were `--reinstall-dependency` and `--refresh-dependency`, respectively. But that would involve more than just a documentation tweak.
+
+Thanks!
+
+
+---
+
+_Comment by @dpoznik on 2024-10-10 15:04_
+
+Relatedly, does `uv tool` have an equivalent to `pipx`'s [`reinstall-all`](https://pipx.pypa.io/stable/docs/#pipx-reinstall-all) subcommand?
+I find this useful when, for example, upgrading Python.
+
+---
+
+_Comment by @charliermarsh on 2024-10-10 15:16_
+
+You can do `uv tool upgrade --all`. You can even do `uv tool upgrade --all --python 3.13` to upgrade all installed tools to Python 3.13.
+
+---
+
+_Comment by @dpoznik on 2024-10-10 15:40_
+
+> You can do `uv tool upgrade --all`. You can even do `uv tool upgrade --all --python 3.13` to upgrade all installed tools to Python 3.13.
+
+Ah, so `uv tool upgrade` is closer in behavior to [`pipx reinstall`](https://pipx.pypa.io/stable/docs/#pipx-reinstall) than to [`pipx upgrade`](https://pipx.pypa.io/stable/docs/#pipx-upgrade), which upgrades a tool _within_ its existing environment. Got it. Thanks!
+
+If not already present, it may be worth noting this contrast somewhere in the docs to help folks transition.
+
+---
+
+_Comment by @charliermarsh on 2024-10-11 09:45_
+
+\cc @zanieb for opinions on changing the `--reinstall` docs.
+
+---
+
+_Comment by @aa956 on 2024-12-12 18:53_
+
+`uv tool upgrade --all` does not actually (re)create links in the `~/.local/bin/`.
+
+`uv tool upgrade --all --python 3.13` does recreate them.
+
+I've installed same packages/tools multiple times using `pip install --user package`, `pipx install package`, `uv tool install package`.
+
+After that, pip and pipx packages were uninstalled and some of the uv installed tool links are removed from `~/.local/bin/` by that.
+
+Is there a need to have a way to replay all of the installations for all of the tools with all of the `--with optional-dependency` and `package[extra]`?
+
+At the moment the only thing that gets damaged in mixed environment (uv/pipx/pip) is link in `~/.local/bin/` but maybe something else is installed outside of `~/.local/share/uv/`. Man pages for example?
+
+It is clearly not an everyday operation to install the same package using 3 different package managers but I've just tried to compare pipx, poetry and uv.
+
+
+---
+
+_Comment by @Perlence on 2024-12-24 12:18_
+
+I'd love to have a version of `pipx reinstall-all` in `uv tool`. My use case is that after upgrading and removing some Python versions, the venvs for the installed uv tools stopped working. If it was pipx, I would run `pipx reinstall-all` and it would reinstall the packages with new venvs from working Python versions.
+
+An additional note is that some packages were specifically installed with an older version of Python, e.g. `uv tool install --python 3.12 PACKAGE`. In this case, I would expect `uv tool reinstall-all` to reinstall the package with the latest Python 3.12 fix.
+
+---
+
+_Referenced in [astral-sh/uv#11534](../../astral-sh/uv/issues/11534.md) on 2025-02-15 11:05_
+
+---
+
+_Comment by @elliot-100 on 2025-02-15 12:25_
+
+I appreciate there's an ongoing discussion about how best to handle this, but I feel this related message is wrong as it stands:
+
+```sh
+> uvx --reinstall
+warning: Tools cannot be reinstalled via `uvx`; use `uv tool
+upgrade --reinstall` to reinstall all installed tools, or `uvx
+package@latest` to run the latest version of a tool.
+Provide a command to run with `uvx <command>`.
+
+See `uvx --help` for more information.
+```
+And should read 
+```sh
+use `uv tool upgrade --reinstall --all` to reinstall all installed tools
+```
+
+as:
+
+```sh
+> uv tool upgrade --reinstall
+error: the following required arguments were not provided:
+  <NAME>...
+
+Usage: uv tool upgrade --reinstall <NAME>...
+
+For more information, try '--help'.
+```
+
+
+---
+
+_Referenced in [astral-sh/uv#11535](../../astral-sh/uv/pulls/11535.md) on 2025-02-15 13:53_
+
+---
+
+_Comment by @charliermarsh on 2025-02-15 13:53_
+
+Thanks! That looks like an oversight (https://github.com/astral-sh/uv/pull/11535).
+
+---

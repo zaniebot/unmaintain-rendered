@@ -1,0 +1,118 @@
+---
+number: 1165
+title: "`validator_os` takes `&OsStr`, but `validator` takes `String`"
+type: issue
+state: closed
+author: oli-obk
+labels:
+  - A-validators
+assignees: []
+created_at: 2018-02-05T07:59:59Z
+updated_at: 2020-05-01T12:10:28Z
+url: https://github.com/clap-rs/clap/issues/1165
+synced_at: 2026-01-10T01:26:44Z
+---
+
+# `validator_os` takes `&OsStr`, but `validator` takes `String`
+
+---
+
+_Issue opened by @oli-obk on 2018-02-05 07:59_
+
+If find it somewhat inconsistent that one function borrows the value, while the other takes it by value. It is very unlikely that anyone just forwards the argument passed to the `Err` return value, so there's no benefit of offering users an owned `String`.
+
+Full disclosure: It clashes with a clippy lint, and I don't know how to act on it: https://github.com/rust-lang-nursery/rust-clippy/issues/2434
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2018-02-05 15:19_
+
+---
+
+_Comment by @kbknapp on 2018-02-05 15:23_
+
+This is kind of related to #848 and I plan on re-working the signature of these methods in v3 (see #1037).
+
+The reason `validator` takes `String` by value is there is (was?) no way to convert from `OsStr` (which originates from `env::args_os`) to `&str` because of the utf-8 validation. But `validator_os` has no such stipulation and can just use the `OsStr` directly. 
+
+---
+
+_Comment by @kbknapp on 2018-02-05 15:24_
+
+Bottom line, this is something I've been wanting to change and put more thought into but couldn't without a breaking change. Hindsight is always 20/20 and I wish I'd done it differently prior 😄 
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2018-02-05 15:25_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2018-02-05 15:25_
+
+---
+
+_Label `C: validators` added by @kbknapp on 2018-02-05 15:25_
+
+---
+
+_Added to milestone `v3-alpha1` by @kbknapp on 2018-02-05 15:25_
+
+---
+
+_Referenced in [rust-cli/team#26](../../rust-cli/team/issues/26.md) on 2018-03-25 00:12_
+
+---
+
+_Removed from milestone `v3-alpha.2` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Added to milestone `v3.0` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-28 12:37_
+
+Having looked at the the code, this is the only place validators play:
+
+https://github.com/clap-rs/clap/blob/5b9dbee5db540f44c336c2db54ece444624c30ef/src/parse/validator.rs#L138-L159
+
+Essentially, we could just replace 
+```
+vtor(val.to_string_lossy().into_owned())
+```
+
+with 
+```
+vtor(val.to_string_lossy().as_ref())) // what was the correct function?
+```
+
+And change the signature for `Validator`. 
+
+This kind of change won't give us any perf improvement, but it will make the API uniform (both `os` and `str` versions will take a reference) and will open road to future improvements. @pksunkara What do you think?
+
+Side note: as of now, if both `validator` and `validator_os` are present, `str` version takes priority (is executed first). I never saw anybody using both, but maybe me should disallow this? Or perhaps run `os` version only if `str` has failed?
+
+---
+
+_Comment by @kbknapp on 2020-04-29 16:52_
+
+> Side note: as of now, if both validator and validator_os are present, str version takes priority (is executed first). I never saw anybody using both, but maybe me should disallow this? Or perhaps run os version only if str has failed?
+
+I don't think it would make sense to have both, as all `validator_os` can handle anything `validator` can, but the reverse is not true. So I'm not sure there'd be a reason for a user to have both?
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-29 17:39_
+
+None I can think of. I'll make it panic in case both have been passed.
+
+---
+
+_Referenced in [clap-rs/clap#1884](../../clap-rs/clap/pulls/1884.md) on 2020-04-30 17:58_
+
+---
+
+_Closed by @bors[bot] on 2020-05-01 12:10_
+
+---

@@ -1,0 +1,194 @@
+---
+number: 2898
+title: "Derive: adding `visible_alias` attribute to complex subcommands results in duplicated aliases"
+type: issue
+state: closed
+author: tranzystorekk
+labels:
+  - C-bug
+  - A-derive
+assignees: []
+created_at: 2021-10-16T20:08:23Z
+updated_at: 2021-10-26T23:04:39Z
+url: https://github.com/clap-rs/clap/issues/2898
+synced_at: 2026-01-10T01:27:28Z
+---
+
+# Derive: adding `visible_alias` attribute to complex subcommands results in duplicated aliases
+
+---
+
+_Issue opened by @tranzystorekk on 2021-10-16 20:08_
+
+StructOpt Issue: https://github.com/TeXitoi/structopt/issues/418
+StructOpt PR: https://github.com/TeXitoi/structopt/pull/504
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+1.55.0
+
+### Clap Version
+
+3.0.0-beta.4
+
+### Minimal reproducible code
+
+```rust
+use clap::Clap;
+
+#[derive(Clap)]
+enum Cmd {
+    #[clap(visible_alias = "alias")]
+    Test { args: Vec<String> },
+}
+
+#[derive(Clap)]
+struct Cli {
+    #[clap(subcommand)]
+    cmd: Cmd,
+}
+
+fn main() {
+    let cli = Cli::parse();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run -- --help
+
+### Actual Behaviour
+
+```console
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    help    Print this message or the help of the given subcommand(s)
+    test     [aliases: alias, alias]
+```
+
+### Expected Behaviour
+
+```console
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    help    Print this message or the help of the given subcommand(s)
+    test     [aliases: alias]
+```
+
+### Additional Context
+
+Output of `cargo expand` with duplicated calls to `visible_alias`:
+
+```rust
+impl clap::Subcommand for Cmd {
+    fn augment_subcommands<'b>(app: clap::App<'b>) -> clap::App<'b> {
+        let app = app;
+        let app = app.subcommand({
+            let subcommand = clap::App::new("test");
+            let subcommand = subcommand;
+            let subcommand = {
+                let subcommand = subcommand;
+                let subcommand = subcommand.arg(
+                    clap::Arg::new("args")
+                        .takes_value(true)
+                        .value_name("ARGS")
+                        .multiple_values(true)
+                        .validator(|s| ::std::str::FromStr::from_str(s).map(|_: String| ())),
+                );
+                subcommand.visible_alias("alias")
+            };
+            subcommand.visible_alias("alias")
+        });
+        app
+    }
+```
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `T: bug` added by @tranzystorekk on 2021-10-16 20:08_
+
+---
+
+_Renamed from "Derive: adding `visible_alias` attribute to complex subcommands result in duplicated aliases" to "Derive: adding `visible_alias` attribute to complex subcommands results in duplicated aliases" by @tranzystorekk on 2021-10-16 20:10_
+
+---
+
+_Label `C: alias` added by @pksunkara on 2021-10-16 20:22_
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-10-16 20:22_
+
+---
+
+_Comment by @pksunkara on 2021-10-16 20:22_
+
+@epage Might be fixed by your recent changes.
+
+---
+
+_Comment by @epage on 2021-10-16 20:28_
+
+It isn't.  This was also recently reported for structopt.  You can see the proposed fix https://github.com/TeXitoi/structopt/pull/504
+
+---
+
+_Comment by @epage on 2021-10-16 20:30_
+
+My proposed fix for #2894 should also fix this without having to duplicate logic like in the structopt fix (due to our divergence, the level of duplication is different, I don't remember if its worse or better).  So the question is whether we get to #2894 or go ahead and port structopt's fix over in the mean time.
+
+---
+
+_Comment by @pksunkara on 2021-10-16 20:41_
+
+I am of the opinion that we should focus on #2894 after the release and fix it correctly. Structopt's fixes are temporary because it is basically in maintenance mode.
+
+---
+
+_Comment by @epage on 2021-10-16 20:46_
+
+#2894 involves a breaking change (just added the tag).  We'll have to change the trait definitions.
+
+This is one of those things I classify as a non-disruptive breaking change.  Most users will be using the derive and will not notice the breaking change, only the bug fixes (and where you draw the line on behavior changes being breaking is another question)
+
+---
+
+_Referenced in [tranzystorekk/pakr#2](../../tranzystorekk/pakr/issues/2.md) on 2021-10-16 20:46_
+
+---
+
+_Added to milestone `3.0` by @epage on 2021-10-25 18:37_
+
+---
+
+_Assigned to @epage by @epage on 2021-10-26 18:40_
+
+---
+
+_Referenced in [clap-rs/clap#2952](../../clap-rs/clap/pulls/2952.md) on 2021-10-26 21:01_
+
+---
+
+_Closed by @bors[bot] on 2021-10-26 23:04_
+
+---
+
+_Closed by @bors[bot] on 2021-10-26 23:04_
+
+---

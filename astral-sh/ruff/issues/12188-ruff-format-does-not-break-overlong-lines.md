@@ -1,0 +1,78 @@
+---
+number: 12188
+title: ruff format does not break overlong lines
+type: issue
+state: closed
+author: PerMildner
+labels: []
+assignees: []
+created_at: 2024-07-04T12:53:44Z
+updated_at: 2024-07-04T13:16:52Z
+url: https://github.com/astral-sh/ruff/issues/12188
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# ruff format does not break overlong lines
+
+---
+
+_Issue opened by @PerMildner on 2024-07-04 12:53_
+
+I would expect `ruff format` to break overlong comment lines, but it does not seem to do this.
+
+The example is from a devcontainer terminal within VSCode, but I do not think that is significant, given that I pass the `--isolated` flag to `ruff`.
+
+Note that `ruff format` does fix the repeated whitespace (so `format` does some work) but it does nothing with the long comment line.
+
+```
+$ poetry run ruff --version
+ruff 0.5.0
+$ poetry run ruff format --verbose --isolated --line-length=88 --diff tests/conftest.py 
+[2024-07-04][12:47:40][ruff::resolve][DEBUG] Isolated mode, not reading any pyproject.toml
+[2024-07-04][12:47:40][ruff::commands::format][DEBUG] format_path; path=/home/user/..redacted../tests/conftest.py
+[2024-07-04][12:47:40][tracing::span][DEBUG] Printer::print;
+[2024-07-04][12:47:40][ruff::commands::format][DEBUG] Formatted 1 files in 20.02ms
+--- tests/conftest.py
++++ tests/conftest.py
+@@ -20,7 +20,7 @@
+ # Test whether CI detect this overlong line: long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long
+ @pytest.fixture(scope="session")
+ def s3(request: pytest.FixtureRequest) -> S3Client:
+-    url =    request.config.option.storage_url
++    url = request.config.option.storage_url
+     if url is None:
+         pytest.fail("No --storage-url parameter passed to pytest", False)
+     user = request.config.option.storage_user
+
+1 file would be reformatted
+$
+```
+
+
+---
+
+_Comment by @MichaReiser on 2024-07-04 13:02_
+
+It took me a moment to find the issue. I knew it was somewhere. I'll close this issue in favor of https://github.com/astral-sh/ruff/issues/7414
+
+---
+
+_Closed by @MichaReiser on 2024-07-04 13:02_
+
+---
+
+_Comment by @charliermarsh on 2024-07-04 13:12_
+
+Yeah, we don't wrap overlong comments.
+
+---
+
+_Comment by @PerMildner on 2024-07-04 13:16_
+
+Thanks for the update. I understand.
+
+That this is, at least for now, as intended is not at all clear from the documentation of `ruff format`, though.
+
+Should I open a separate "documentation is unclear" ticket?
+
+---

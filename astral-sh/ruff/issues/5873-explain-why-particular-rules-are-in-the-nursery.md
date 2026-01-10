@@ -1,0 +1,97 @@
+---
+number: 5873
+title: Explain why particular rules are in the nursery category
+type: issue
+state: closed
+author: tjkuson
+labels:
+  - documentation
+  - help wanted
+assignees: []
+created_at: 2023-07-18T22:47:24Z
+updated_at: 2024-05-12T20:33:41Z
+url: https://github.com/astral-sh/ruff/issues/5873
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Explain why particular rules are in the nursery category
+
+---
+
+_Issue opened by @tjkuson on 2023-07-18 22:47_
+
+Rules in the nursery category are now visible in the documentation (#5439). However, the documentation does not explain _why_ particular rules are experimental or unstable. This means users are unable to make an informed decision regarding if they want to enable a given nursery rule.
+
+Seeing as rules in the nursery group must have known issues, it would probably be helpful for users of ruff if all nursery rules had a 'Known issues' section explaining why the rule isn't enabled by default (with links to GitHub issues where appropriate). This is also what Clippy seems to do (the named inspiration for the category).
+
+**pycodestyle**
+
+- [ ] indentation-with-invalid-multiple (E111)
+- [ ] no-indented-block (E112)
+- [ ] unexpected-indentation (E113)
+- [ ] indentation-with-invalid-multiple-comment (E114)
+- [ ] no-indented-block-comment (E115)
+- [ ] unexpected-indentation-comment (E116)
+- [ ] over-indented (E117)
+- [ ] whitespace-after-open-bracket (E201)
+- [ ] whitespace-before-close-bracket (E202)
+- [ ] whitespace-before-punctuation (E203)
+- [ ] whitespace-before-parameters (E211)
+- [ ] multiple-spaces-before-operator (E221)
+- [ ] multiple-spaces-after-operator (E222)
+- [ ] tab-before-operator (E223)
+- [ ] tab-after-operator (E224)
+- [ ] missing-whitespace-around-operator (E225)
+- [ ] missing-whitespace-around-arithmetic-operator (E226)
+- [ ] missing-whitespace-around-bitwise-or-shift-operator (E227)
+- [ ] missing-whitespace-around-modulo-operator (E228)
+- [ ] missing-whitespace (E231)
+- [ ] unexpected-spaces-around-keyword-parameter-equals (E251)
+- [ ] missing-whitespace-around-parameter-equals (E252)
+- [ ] too-few-spaces-before-inline-comment (E261)
+- [ ] no-space-after-inline-comment (E262)
+- [ ] no-space-after-block-comment (E265)
+- [ ] multiple-leading-hashes-for-block-comment (E266)
+- [ ] multiple-spaces-after-keyword (E271)
+- [ ] multiple-spaces-before-keyword (E272)
+- [ ] tab-after-keyword (E273)
+- [ ] tab-before-keyword (E274)
+- [ ] missing-whitespace-after-keyword (E275)
+
+**flake8-copyright**
+
+- [ ] missing-copyright-notice (CPY001)
+
+**Pylint**
+
+- [x] compare-to-empty-string (PLC1901)
+
+---
+
+_Comment by @zanieb on 2023-07-19 00:26_
+
+This is a great idea. It seems nice to have a brief description in the documentation then link to an issue tracking stabilization that includes the latest details on why it's in the nursery.
+
+---
+
+_Label `help wanted` added by @zanieb on 2023-07-19 00:26_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-07-19 01:23_
+
+---
+
+_Referenced in [astral-sh/ruff#5879](../../astral-sh/ruff/pulls/5879.md) on 2023-07-19 10:34_
+
+---
+
+_Comment by @tjkuson on 2024-05-12 20:33_
+
+This category doesn't exist any more
+
+---
+
+_Closed by @tjkuson on 2024-05-12 20:33_
+
+---

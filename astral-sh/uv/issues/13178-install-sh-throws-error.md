@@ -1,0 +1,75 @@
+---
+number: 13178
+title: install.sh throws error
+type: issue
+state: closed
+author: DavidACunningham
+labels:
+  - bug
+assignees: []
+created_at: 2025-04-28T14:47:45Z
+updated_at: 2025-04-28T14:58:06Z
+url: https://github.com/astral-sh/uv/issues/13178
+synced_at: 2026-01-10T01:25:29Z
+---
+
+# install.sh throws error
+
+---
+
+_Issue opened by @DavidACunningham on 2025-04-28 14:47_
+
+### Summary
+
+While running uv-install.sh I receive the output:
+
+
+```
+downloading uv 0.6.17 x86_64-unknown-linux-gnu
+curl: (23) client returned ERROR on write of 16375 bytes
+failed to download https://github.com/astral-sh/uv/releases/download/0.6.17/uv-x86_64-unknown-linux-gnu.tar.gz
+this may be a standard network error, but it may also indicate
+that uv's release process is not working. When in doubt
+please feel free to open an issue!
+```
+
+When I navigate to the actual tar.gz file manually and initiate a download, the file is there and downloads correctly.
+
+
+
+### Platform
+
+Ubuntu 24.04.1 x86-64, linux 6.11.0-24-generic kernel
+
+### Version
+
+0.6.17
+
+### Python version
+
+Python 3.12.3
+
+---
+
+_Label `bug` added by @DavidACunningham on 2025-04-28 14:47_
+
+---
+
+_Comment by @DavidACunningham on 2025-04-28 14:57_
+
+Found other duplicate issues. For anyone reading this:
+
+`sudo snap remove curl`
+`sudo apt install curl`
+
+The issue appears to be with the snap curl distribution.
+
+---
+
+_Closed by @DavidACunningham on 2025-04-28 14:58_
+
+---
+
+_Referenced in [boukendesho/curl-snap#1](../../boukendesho/curl-snap/issues/1.md) on 2025-04-29 08:25_
+
+---

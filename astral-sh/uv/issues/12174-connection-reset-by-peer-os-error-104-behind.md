@@ -1,0 +1,274 @@
+---
+number: 12174
+title: Connection reset by peer (os error 104) behind corporate proxy (zscaler)
+type: issue
+state: open
+author: danpf
+labels:
+  - bug
+  - external
+  - network
+assignees: []
+created_at: 2025-03-14T19:14:41Z
+updated_at: 2025-05-09T16:09:43Z
+url: https://github.com/astral-sh/uv/issues/12174
+synced_at: 2026-01-10T01:25:16Z
+---
+
+# Connection reset by peer (os error 104) behind corporate proxy (zscaler)
+
+---
+
+_Issue opened by @danpf on 2025-03-14 19:14_
+
+### Summary
+
+I'm not really sure this is a bug but I'm having a heck of a time getting uv to work behind Zscaler.
+
+the only thing that has worked is to use:
+
+```
+uv venv --allow-insecure-host github.com --python 3.13
+```
+but I'd like to not just use allow-insecure-host everywhere. I must be missing something - if anyone has any hints or cli utilities for me to poke at this problem with I'd greatly appreciate it.  -- I will be responding to this issue with any updates I have or things I've tried if that's alright.
+
+
+# Attempts and logs
+
+/etc/pki/ca-trust/source/anchors/ZscalerRootCA.crt exists and i ran all variations of  update-ca-trust I could find.
+
+using the SSL_CERT_FILE=/etc/pki/ca-trust/source/anchors/ZscalerRootCA.crt as an environment variable gives me:
+
+```
+>>> SSL_CERT_FILE=/etc/pki/ca-trust/source/anchors/ZscalerRootCA.crt uv venv --python 3.13
+
+  × Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  ├─▶ client error (Connect)
+  ╰─▶ Connection reset by peer (os error 104)
+```
+
+Without `--native-tls`
+```
+>>> uv venv --python 3.13
+
+  × Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  ├─▶ client error (Connect)
+  ╰─▶ Connection reset by peer (os error 104)
+```
+
+logs with RUST_LOG=trace and --native-tls
+```
+
+>>> RUST_LOG=trace uv --native-tls venv --python 3.13
+DEBUG uv 0.6.4
+DEBUG Using Python request `3.13` from explicit request
+DEBUG Searching for Python 3.13 in managed installations or search path
+DEBUG Searching for managed installations at `.local/share/uv/python`
+TRACE Found `ld` path: /lib64/ld-linux-x86-64.so.2
+TRACE stdout output from `ld`: ""
+TRACE stderr output from `ld`: "/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help' for more information.\n"
+TRACE Tried to find musl version by running `"/lib64/ld-linux-x86-64.so.2"`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
+TRACE Tried to find libc version from possible symlink at "/lib64/ld-linux-x86-64.so.2", but failed: Failed to determine libc
+TRACE stdout output from `ldd --version`: "ld.so (GNU libc) stable release version 2.34.\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n"
+TRACE Found manylinux 2.34 in stdout of `ldd --version`
+TRACE Searching PATH for executables: python3.13, python3, python
+TRACE Checking `PATH` directory for interpreters: /home/user/.local/share/micromamba/envs/py3/bin
+TRACE Found possible Python executable: /home/user/.local/share/micromamba/envs/py3/bin/python3
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: .local/share/micromamba/envs/py3/bin/python3
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/home/user/.local/share/micromamba/envs/py3/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `.local/share/micromamba/envs/py3/bin/python3` from first executable in the search path: does not satisfy request `3.13`
+TRACE Found possible Python executable: /home/user/.local/share/micromamba/envs/py3/bin/python
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: .local/share/micromamba/envs/py3/bin/python
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/home/user/.local/share/micromamba/envs/py3/bin/python` (search path)
+DEBUG Skipping interpreter at `.local/share/micromamba/envs/py3/bin/python` from search path: does not satisfy request `3.13`
+TRACE Checking `PATH` directory for interpreters: /home/user/.local/share/bob/nvim-bin
+TRACE Checking `PATH` directory for interpreters: /usr/local/bin
+TRACE Checking `PATH` directory for interpreters: /usr/bin
+TRACE Found possible Python executable: /usr/bin/python3
+TRACE Cached interpreter info for Python 3.9.21, skipping probing: /usr/bin/python3
+DEBUG Found `cpython-3.9.21-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.13`
+TRACE Found possible Python executable: /usr/bin/python
+TRACE Cached interpreter info for Python 3.9.21, skipping probing: /usr/bin/python
+DEBUG Found `cpython-3.9.21-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `3.13`
+TRACE Checking `PATH` directory for interpreters: /usr/local/sbin
+TRACE Checking `PATH` directory for interpreters: /usr/sbin
+TRACE Checking `PATH` directory for interpreters: /home/user/bin
+DEBUG Requested Python not found, checking for available download...
+TRACE Found `ld` path: /lib64/ld-linux-x86-64.so.2
+TRACE stdout output from `ld`: ""
+TRACE stderr output from `ld`: "/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help' for more information.\n"
+TRACE Tried to find musl version by running `"/lib64/ld-linux-x86-64.so.2"`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
+TRACE Tried to find libc version from possible symlink at "/lib64/ld-linux-x86-64.so.2", but failed: Failed to determine libc
+TRACE stdout output from `ldd --version`: "ld.so (GNU libc) stable release version 2.34.\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n"
+TRACE Found manylinux 2.34 in stdout of `ldd --version`
+TRACE Checking lock for `.local/share/uv/python` at `.local/share/uv/python/.lock`
+DEBUG Acquired lock for `.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+TRACE Handling request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Attempting unauthenticated request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE checkout waiting for idle connection: ("https", github.com)
+DEBUG starting new connection: https://github.com/
+TRACE Http::connect; scheme=Some("https"), host=Some("github.com"), port=None
+DEBUG connecting to 140.82.113.3:443
+DEBUG connected to 140.82.113.3:443
+TRACE checkout dropped for ("https", github.com)
+DEBUG Transient request failure for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 104)
+WARN Retry attempt #0. Sleeping 498.284535ms before the next attempt
+TRACE Handling request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Attempting unauthenticated request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE checkout waiting for idle connection: ("https", github.com)
+DEBUG starting new connection: https://github.com/
+TRACE Http::connect; scheme=Some("https"), host=Some("github.com"), port=None
+DEBUG connecting to 140.82.113.3:443
+DEBUG connected to 140.82.113.3:443
+TRACE checkout dropped for ("https", github.com)
+DEBUG Transient request failure for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 104)
+WARN Retry attempt #1. Sleeping 1.122626552s before the next attempt
+TRACE Handling request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Attempting unauthenticated request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE checkout waiting for idle connection: ("https", github.com)
+DEBUG starting new connection: https://github.com/
+TRACE Http::connect; scheme=Some("https"), host=Some("github.com"), port=None
+DEBUG connecting to 140.82.113.3:443
+DEBUG connected to 140.82.113.3:443
+TRACE checkout dropped for ("https", github.com)
+DEBUG Transient request failure for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 104)
+WARN Retry attempt #2. Sleeping 745.387698ms before the next attempt
+TRACE Handling request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Attempting unauthenticated request for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE checkout waiting for idle connection: ("https", github.com)
+DEBUG starting new connection: https://github.com/
+TRACE Http::connect; scheme=Some("https"), host=Some("github.com"), port=None
+DEBUG connecting to 140.82.113.3:443
+DEBUG connected to 140.82.113.3:443
+TRACE checkout dropped for ("https", github.com)
+DEBUG Transient request failure for https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: Connection reset by peer (os error 104)
+TRACE Considering retry of error: NetworkMiddlewareError(Url { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("github.com")), port: None, path: "/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz", query: None, fragment: None }, Request failed after 3 retries
+
+Caused by:
+    0: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+    1: client error (Connect)
+    2: Connection reset by peer (os error 104))
+TRACE Cannot retry error: not one of `ConnectionReset` or `UnexpectedEof`
+DEBUG Released lock at `/home/user/.local/share/uv/python/.lock`
+  × Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.13.2%2B20250212-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  ├─▶ client error (Connect)
+  ╰─▶ Connection reset by peer (os error 104)
+```
+
+### Platform
+
+RHEL
+
+### Version
+
+0.6.4
+
+### Python version
+
+3.12.3
+
+---
+
+_Label `bug` added by @danpf on 2025-03-14 19:14_
+
+---
+
+_Comment by @olliepro on 2025-04-02 18:47_
+
+I believe this is due to the changes in Python 3.13 which deprecates support for SSL_CERT_FILE. It's quite annoying.
+
+Here's some [deepresearch from chatgpt on the change](https://chatgpt.com/share/67ed869d-926c-8004-8c9e-015d3f72327e)
+
+---
+
+_Comment by @olliepro on 2025-04-02 18:48_
+
+This may be a ZSCALER bug, rather than UV's problem.
+
+---
+
+_Comment by @zanieb on 2025-04-02 19:19_
+
+(@olliepro we don't use Python's networking stack)
+
+---
+
+_Label `network` added by @zanieb on 2025-04-02 19:19_
+
+---
+
+_Comment by @zanieb on 2025-04-02 19:20_
+
+per https://github.com/rustls/rustls-native-certs/issues/16 I'm surprised setting the cert file doesn't work?
+
+---
+
+_Comment by @olliepro on 2025-04-02 22:25_
+
+@danpf do you have similar issues under python 3.12? I have a similar ZScaler setup and I'm unable to replicate the issue with a fresh python download. Could be your ZScaler setup? Since you can download it without the ssl verification, its probably not that zscaler is blocking the download. 
+
+Are you able to curl the file from github without disabling ssl verification? That might confirm the scope of the problem, and whether it's limited to uv.
+
+---
+
+_Comment by @danpf on 2025-04-03 21:42_
+
+@zanieb I haven't really gotten anywhere with this, with curl and requests I can set the env var to a directory, I don't see any references to ssl_cert_dir in the source - I see references to ssl_cert_file though. is it supported implicitly through reqwest?
+
+This could also be a problem with my company's network stack so I've been running it up the IT chain but that takes a bit of time.
+
+@olliepro I see it with python 3.11 and 3.12 but the calls are made on the rust end so I'm not sure it would make much of a difference.   curl with the correct ssl_cert_dir path works as intended.
+
+EDIT:
+Reading the referenced pr now: https://github.com/rustls/rustls-native-certs/pull/32 
+seems they aren't interested in supporting directories.... I don't know enough about networking to dispute what they're saying but I've only ever found success in using directories not individual ca files directly.
+
+> I have only implemented SSL_CERT_FILE here, not SSL_CERT_DIR. There was some discussion about this at the start of https://github.com/rustls/rustls-native-certs/issues/16, I think the conclusion was that it's much more complicated (see https://github.com/rustls/rustls-native-certs/issues/9) and rarely worthwhile. Happy to discuss, but imo we should leave that as a future extension if/when somebody specifically requests it.
+
+
+
+
+---
+
+_Comment by @zanieb on 2025-04-03 22:09_
+
+Thanks for pulling up that ref. It sounds like you'll need to request it upstream or find another way to set the certificates? We could consider a different TLS package too, but this one is fairly fundamental.
+
+---
+
+_Label `external` added by @zanieb on 2025-04-03 22:09_
+
+---
+
+_Comment by @imarambiocatan on 2025-05-09 16:09_
+
+Does it work for an older version of python? this looks more like the change in [create_default_context()](https://docs.python.org/3/library/ssl.html#ssl.create_default_context)
+
+
+---

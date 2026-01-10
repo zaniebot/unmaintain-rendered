@@ -1,0 +1,159 @@
+---
+number: 19062
+title: "[BUG] `ruff` does not correctly check mandatory arguments"
+type: issue
+state: closed
+author: yarnabrina
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-07-01T01:28:26Z
+updated_at: 2025-07-23T15:50:09Z
+url: https://github.com/astral-sh/ruff/issues/19062
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# [BUG] `ruff` does not correctly check mandatory arguments
+
+---
+
+_Issue opened by @yarnabrina on 2025-07-01 01:28_
+
+### Summary
+
+Consider the following snippet
+
+```python
+"""Compare ruff and pylint behvaiour on missing mandatory arguments."""
+
+
+def add(x: int, y: int) -> int:
+    """Add two integers.
+
+    Parameters
+    ----------
+    x : int
+        first integer
+    y : int
+        second integer
+
+    Returns
+    -------
+    int
+        sum of ``x`` and ``y``
+    """
+    return x + y
+
+
+add(1)
+
+```
+
+This code should fail with the following:
+
+```
+Traceback (most recent call last):
+  File "/path/to/folder/ruff_bug_report.py", line 22, in <module>
+    add(1)
+TypeError: add() missing 1 required positional argument: 'y'
+```
+
+However, ruff check passes.
+
+```
+❯ 
+❯ ruff --version
+ruff 0.11.12
+❯ ruff check ruff_bug_report.py
+All checks passed!
+❯ 
+```
+
+It can be reproduced on https://play.ruff.rs/381e3098-8e90-4773-83eb-a798942191e7.
+
+This check is part of pylint, e.g. [E1120](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/no-value-for-parameter.html).
+
+```
+❯ 
+❯ pylint --version
+pylint 3.3.7
+astroid 3.3.10
+Python 3.11.13 (main, Jun  3 2025, 18:38:25) [Clang 16.0.0 (clang-1600.0.26.6)]
+❯ pylint ruff_bug_report.py
+************* Module compare
+compare.py:22:0: E1120: No value for argument 'y' in function call (no-value-for-parameter)
+
+------------------------------------------------------------------
+Your code has been rated at 0.00/10 (previous run: 0.00/10, +0.00)
+
+❯ 
+```
+
+### Version
+
+ruff 0.11.12 (aee3af0f7 2025-05-29)
+
+---
+
+_Comment by @yarnabrina on 2025-07-01 01:30_
+
+Note: I created https://github.com/astral-sh/ruff/issues/13329 last year, which was told to fail because of ruff's lack of support of multi file analysis. This error is very similar to that one, but this is of course happening in a single module.
+
+---
+
+_Comment by @ntBre on 2025-07-01 13:17_
+
+Thanks, it looks like we don't implement that pylint rule in Ruff yet.
+
+However, it looks like our type checker does handle this case already: https://play.ty.dev/2204a404-fb5f-4a1c-a691-7b434b50202f
+
+---
+
+_Label `rule` added by @ntBre on 2025-07-01 13:17_
+
+---
+
+_Label `type-inference` added by @ntBre on 2025-07-01 13:17_
+
+---
+
+_Comment by @yarnabrina on 2025-07-01 15:34_
+
+I wasn't even aware of `ty`, thanks for sharing. Is it going to be separate from `ruff` and essentially be like myly/pyright etc.?
+
+---
+
+_Comment by @ntBre on 2025-07-01 15:45_
+
+Yes, for now it's a separate program in the vein of mypy and pyright. At some point we hope to use some of its type inference in Ruff, but we're a while away from that currently.
+
+---
+
+_Comment by @MichaReiser on 2025-07-07 08:53_
+
+This is a feature better handled by a type checker than a linter as Brent already pointed out.
+
+---
+
+_Closed by @MichaReiser on 2025-07-07 08:53_
+
+---
+
+_Comment by @yarnabrina on 2025-07-20 09:43_
+
+@MichaReiser sorry for replying late, but can you please elaborate on your comment? The failure here is not with respect to types of passed arguments or returns, but because wrong signature is being used, is it not expected for a linter to check?
+
+---
+
+_Comment by @ntBre on 2025-07-21 13:38_
+
+The signature is part of the function's type, so it's easier to write this kind of lint rule in a type checker, which already tracks function types more rigorously and across files, than in Ruff. At least that's what I was thinking.
+
+---
+
+_Comment by @yarnabrina on 2025-07-23 15:50_
+
+Ok, sure. I know that at least in our team type checkers are not that consistently used because of lack of stubs in our dependencies, so having it in `ruff` (which also has some other type annotation based rules) would have been easier for us. But let us start exploring `ty` and/or combination with `pylint`.
+
+---

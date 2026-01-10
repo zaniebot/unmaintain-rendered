@@ -1,0 +1,81 @@
+---
+number: 2825
+title: "SIM114: duplicate reports and same source code is shown"
+type: issue
+state: closed
+author: spaceone
+labels: []
+assignees: []
+created_at: 2023-02-12T21:33:39Z
+updated_at: 2023-02-12T22:22:21Z
+url: https://github.com/astral-sh/ruff/issues/2825
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# SIM114: duplicate reports and same source code is shown
+
+---
+
+_Issue opened by @spaceone on 2023-02-12 21:33_
+
+```python
+failures = errors = skipped = disabled = 0
+if result.eofs == 'O':
+    pass
+elif result.eofs == 'S':
+    skipped = 1
+elif result.eofs == 'F':
+    failures = 1
+elif result.eofs == 'E':
+    errors = 1
+else:
+    errors = 1
+```
+
+reports:
+```
+foo.py:9:5: SIM114 Combine `if` statements using `or`
+  |
+9 |     errors = 1
+  |     ^^^^^^^^^^ SIM114
+  |
+
+foo.py:9:5: SIM114 Combine `if` statements using `or`
+  |
+9 |     errors = 1
+  |     ^^^^^^^^^^ SIM114
+  |
+
+foo.py:9:5: SIM114 Combine `if` statements using `or`
+  |
+9 |     errors = 1
+  |     ^^^^^^^^^^ SIM114
+  |
+
+foo.py:9:5: SIM114 Combine `if` statements using `or`
+  |
+9 |     errors = 1
+  |     ^^^^^^^^^^ SIM114
+  |
+
+Found 4 errors.
+```
+
+→ it's always the same line and row. Should only reported once then.
+→ it should underline the whole affected source code
+
+---
+
+_Comment by @charliermarsh on 2023-02-12 21:38_
+
+Thanks, doing another pass on this one anyway to improve a few things.
+
+---
+
+_Referenced in [astral-sh/ruff#2827](../../astral-sh/ruff/pulls/2827.md) on 2023-02-12 22:13_
+
+---
+
+_Closed by @charliermarsh on 2023-02-12 22:22_
+
+---

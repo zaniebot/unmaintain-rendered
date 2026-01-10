@@ -1,0 +1,61 @@
+---
+number: 13282
+title: I want to use my own environment, but after executing UV sync -- locked, it will automatically create a virtual environment under the current project,
+type: issue
+state: closed
+author: zhaoxii
+labels:
+  - question
+assignees: []
+created_at: 2025-05-04T13:52:05Z
+updated_at: 2025-05-15T06:25:24Z
+url: https://github.com/astral-sh/uv/issues/13282
+synced_at: 2026-01-10T01:25:31Z
+---
+
+# I want to use my own environment, but after executing UV sync -- locked, it will automatically create a virtual environment under the current project,
+
+---
+
+_Issue opened by @zhaoxii on 2025-05-04 13:52_
+
+### Question
+
+I want to use my own environment, but after executing UV sync -- locked, it will automatically create a virtual environment under the current project, and all packages will be in this environment. I want it to be installed in my own environment. How do I handle this。
+
+![Image](https://github.com/user-attachments/assets/c4833257-d744-4258-9b65-fbb7c26697ba)
+
+![Image](https://github.com/user-attachments/assets/920f7d66-d86b-4c4e-8dde-0d56912b5ebc)
+
+### Platform
+
+windows10
+
+### Version
+
+uv version is 0.6.14
+
+---
+
+_Label `question` added by @zhaoxii on 2025-05-04 13:52_
+
+---
+
+_Comment by @j178 on 2025-05-04 23:33_
+
+Try set the `UV_PROJECT_ENVIRONMENT` environment variable to your environment. 
+https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path
+
+---
+
+_Comment by @zhaoxii on 2025-05-15 06:25_
+
+> Try set the `UV_PROJECT_ENVIRONMENT` environment variable to your environment. https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path
+
+ok. thank you ！！！
+
+---
+
+_Closed by @zhaoxii on 2025-05-15 06:25_
+
+---

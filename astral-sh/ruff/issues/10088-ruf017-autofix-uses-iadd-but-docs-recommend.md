@@ -1,0 +1,42 @@
+---
+number: 10088
+title: RUF017 Autofix uses iadd but docs recommend iconcat
+type: issue
+state: closed
+author: nicodemus26
+labels:
+  - documentation
+assignees: []
+created_at: 2024-02-22T23:54:40Z
+updated_at: 2024-03-30T00:32:35Z
+url: https://github.com/astral-sh/ruff/issues/10088
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# RUF017 Autofix uses iadd but docs recommend iconcat
+
+---
+
+_Issue opened by @nicodemus26 on 2024-02-22 23:54_
+
+I could not find a substantive difference between `iadd` and `iconcat` in cpython aside from some narrower type contexts for iconcat. As the autofix uses `iadd` to resolve RUF017, I'd suggest updating the documents to match that behavior. If there is a significant difference, it would be helpful to call it out in the docs.
+
+It may be helpful to mention the performance characteristics of the alternatives suggested, as observed here: https://github.com/astral-sh/ruff/issues/9045#issuecomment-1845429922
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-02-23 05:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:19_
+
+---
+
+_Referenced in [astral-sh/ruff#10666](../../astral-sh/ruff/pulls/10666.md) on 2024-03-30 00:24_
+
+---
+
+_Closed by @charliermarsh on 2024-03-30 00:32_
+
+---

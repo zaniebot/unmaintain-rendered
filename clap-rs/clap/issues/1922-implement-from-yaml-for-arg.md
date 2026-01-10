@@ -1,0 +1,138 @@
+---
+number: 1922
+title: "Implement `From<Yaml>` for Arg"
+type: issue
+state: closed
+author: pksunkara
+labels:
+  - C-enhancement
+  - E-medium
+  - E-easy
+assignees: []
+created_at: 2020-05-12T08:37:39Z
+updated_at: 2020-05-27T14:29:39Z
+url: https://github.com/clap-rs/clap/issues/1922
+synced_at: 2026-01-10T01:27:09Z
+---
+
+# Implement `From<Yaml>` for Arg
+
+---
+
+_Issue opened by @pksunkara on 2020-05-12 08:37_
+
+<!-- Issuehunt Badges -->
+[<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%245%20Rewarded-%237E24E3.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1922)
+<!-- /Issuehunt Badges -->
+
+
+### Describe your use case
+
+We already have `From<Yaml>` for `App`, but `Arg` is still using `Arg::from_yaml`.
+
+Also search for `from_yaml` and update them all to `from`
+
+
+<!-- Issuehunt content -->
+
+---
+
+<details>
+<summary>
+<b>IssueHunt Summary</b>
+</summary>
+
+#### [<img src='https://avatars1.githubusercontent.com/u/3434045?v=4' alt='lanesawyer' width=24 height=24> lanesawyer](https://issuehunt.io/u/lanesawyer) has been rewarded.
+
+### Backers (Total: $5.00)
+
+- [<img src='https://avatars0.githubusercontent.com/u/174703?v=4' alt='pksunkara' width=24 height=24> pksunkara](https://issuehunt.io/u/pksunkara) ($5.00)
+
+### Submitted pull Requests
+- [#1926 refactor: Implement From<Yaml> on Arg and ArgGroup](https://issuehunt.io/r/clap-rs/clap/pull/1926)
+---
+
+### Tips
+
+- Checkout the [Issuehunt explorer](https://issuehunt.io/r/clap-rs/clap/) to discover more funded issues.
+- Need some help from other developers? [Add your repositories](https://issuehunt.io/r/new) on IssueHunt to raise funds.
+</details>
+<!-- /Issuehunt content-->
+
+---
+
+_Label `T: enhancement` added by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Label `C: args` added by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Label `Z: mentored` added by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Label `Z: good first issue` added by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Assigned to @pksunkara by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Unassigned @pksunkara by @pksunkara on 2020-05-12 08:37_
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-05-13 11:09_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has funded $5.00 to this issue.
+
+---
+- Submit pull request via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1922) to receive this reward.
+- Want to contribute? Chip in to this issue via [IssueHunt](https://issuehunt.io/repos/31315121/issues/1922).
+- Checkout the [IssueHunt Issue Explorer](https://issuehunt.io/issues) to see more funded issues.
+- Need help from developers? [Add your repository](https://issuehunt.io/r/new) on IssueHunt to raise funds.
+
+---
+
+_Label `:dollar: Funded on Issuehunt` added by @issuehunt-oss[bot] on 2020-05-13 11:09_
+
+---
+
+_Referenced in [clap-rs/clap#1926](../../clap-rs/clap/pulls/1926.md) on 2020-05-13 21:45_
+
+---
+
+_Closed by @bors[bot] on 2020-05-14 09:08_
+
+---
+
+_Comment by @issuehunt-oss[bot] on 2020-05-27 14:28_
+
+[@pksunkara](https://issuehunt.io/u/pksunkara) has rewarded $4.50 to [@lanesawyer](https://issuehunt.io/u/lanesawyer). [See it on IssueHunt](https://issuehunt.io/repos/31315121/issues/1922)
+
+- :moneybag: Total deposit: $5.00
+- :tada: Repository reward(0%): $0.00
+- :wrench: Service fee(10%): $0.50
+
+---
+
+_Label `:dollar: Funded on Issuehunt` removed by @issuehunt-oss[bot] on 2020-05-27 14:28_
+
+---
+
+_Label `:gift: Rewarded on Issuehunt` added by @issuehunt-oss[bot] on 2020-05-27 14:28_
+
+---
+
+_Comment by @pksunkara on 2020-05-27 14:29_
+
+@lanesawyer Sorry about being late. I didn't get any notification that you submitted output. I was waiting for the notification.
+
+---

@@ -1,0 +1,42 @@
+---
+number: 3241
+title: Supports the installation of new Python versions that do not exist locally
+type: issue
+state: closed
+author: boringplay
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-04-24T14:46:31Z
+updated_at: 2024-04-24T14:54:28Z
+url: https://github.com/astral-sh/uv/issues/3241
+synced_at: 2026-01-10T01:23:25Z
+---
+
+# Supports the installation of new Python versions that do not exist locally
+
+---
+
+_Issue opened by @boringplay on 2024-04-24 14:46_
+
+To install new Python versions similar to pyenv, use:
+```
+pyenv install -v 3.7.2
+```
+At present, `uv` only supports the installation of Python versions that have already been installed locally.
+
+---
+
+_Comment by @zanieb on 2024-04-24 14:54_
+
+Hi this is a duplicate of https://github.com/astral-sh/uv/issues/2607
+
+---
+
+_Closed by @zanieb on 2024-04-24 14:54_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-04-24 14:54_
+
+---

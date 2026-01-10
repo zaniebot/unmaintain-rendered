@@ -1,0 +1,64 @@
+---
+number: 6716
+title: "Failed to create fix for UnnecessaryDoubleCastOrProcess: Expected at least one argument in inner function call"
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-08-21T08:51:38Z
+updated_at: 2023-08-21T14:05:10Z
+url: https://github.com/astral-sh/ruff/issues/6716
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Failed to create fix for UnnecessaryDoubleCastOrProcess: Expected at least one argument in inner function call
+
+---
+
+_Issue opened by @qarmin on 2023-08-21 08:51_
+
+Ruff 0.0.285
+
+```
+ruff  *.py --select ALL
+```
+
+file content:
+```
+def test_error():
+    assert 0.0
+    assert set(set())
+```
+
+error:
+```
+error: Failed to create fix for UnnecessaryDoubleCastOrProcess: Expected at least one argument in inner function call
+```
+
+[PY_FILE_TEST_514302205.py.zip](https://github.com/astral-sh/ruff/files/12394173/PY_FILE_TEST_514302205.py.zip)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-21 12:56_
+
+---
+
+_Label `fuzzer` added by @charliermarsh on 2023-08-21 12:56_
+
+---
+
+_Referenced in [astral-sh/ruff#6725](../../astral-sh/ruff/pulls/6725.md) on 2023-08-21 13:15_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-08-21 14:04_
+
+---
+
+_Closed by @charliermarsh on 2023-08-21 14:05_
+
+---

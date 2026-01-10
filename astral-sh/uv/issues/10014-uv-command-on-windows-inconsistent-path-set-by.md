@@ -1,0 +1,168 @@
+---
+number: 10014
+title: "`uv` command on Windows: Inconsistent PATH set by installer"
+type: issue
+state: closed
+author: fdcastel
+labels:
+  - windows
+  - releases
+assignees: []
+created_at: 2024-12-19T00:23:31Z
+updated_at: 2025-01-15T18:44:35Z
+url: https://github.com/astral-sh/uv/issues/10014
+synced_at: 2026-01-10T01:24:49Z
+---
+
+# `uv` command on Windows: Inconsistent PATH set by installer
+
+---
+
+_Issue opened by @fdcastel on 2024-12-19 00:23_
+
+## Problem
+
+The Windows installer currently does not configure the PATH system variable consistently.
+
+
+
+## Steps to reproduce
+
+On a fresh installation of Windows 11, use the official script to install `uv` with the following command:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+
+
+## ✅ Working scenario
+
+When the Terminal is opened through the right-click menu on the Windows Start button
+
+![Image](https://github.com/user-attachments/assets/cbfca4be-8b18-4590-a660-e5543abeda7d)
+
+the PATH is properly configured, and the `uv` command functions as expected:
+
+```powershell
+PS C:\> uv
+An extremely fast Python package manager.
+
+Usage: uv.exe [OPTIONS] <COMMAND>
+
+(...)
+```
+
+
+
+## ❌ Non-working scenario
+ 
+HOWEVER, when opening a new Powershell session with any of the following methods:
+- typing `powershell` on Start Menu; or
+- Using the "Run" command (`WIN` key + R) to run `powershell.exe`; or 
+- Using "Open Powershell window here" from Windows Explorer right click context menu
+
+the `uv` command is not found:
+
+```powershell
+PS C:\> uv
+uv : The term 'uv' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the
+spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ uv
++ ~~
+    + CategoryInfo          : ObjectNotFound: (uv:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+```
+
+
+
+## Additional comments
+
+By comparing the `$env:PATH` variable across both sessions, I observed that the first session (the working session) includes an entry for `C:\Users\<myuser>\.local\bin`, which is absent in the second session.
+
+---
+
+_Comment by @zanieb on 2024-12-19 00:28_
+
+Did you reboot after installation?
+
+---
+
+_Label `releases` added by @zanieb on 2024-12-19 00:28_
+
+---
+
+_Label `windows` added by @zanieb on 2024-12-19 00:28_
+
+---
+
+_Comment by @fdcastel on 2024-12-19 00:47_
+
+No. Is this necessary?
+
+I’m unable to do it at the moment as my test computer is occupied with a long batch operation.  I should be able to reboot it in about 30 minutes. 
+
+In any case, a reboot shouldn’t typically be required for a straightforward tool installation, especially if it’s only related to PATH modifications.
+
+---
+
+_Comment by @zanieb on 2024-12-19 00:49_
+
+At this time, yeah.
+
+I agree. See https://github.com/axodotdev/cargo-dist/issues/1614
+
+---
+
+_Comment by @fdcastel on 2024-12-19 01:16_
+
+Thank you @zanieb for both your clarifications and quick response. 
+
+I'm still unable to reboot the machine, but I did try to run [this](https://github.com/axodotdev/cargo-dist/issues/1614#issuecomment-2552567367) and I can confirm that it didn't work.
+
+However, I did some additional tests with `[Environment]::SetEnvironmentVariable()` which seems to be promising. Please check [this comment](https://github.com/axodotdev/cargo-dist/issues/1614#issuecomment-2552567367). 
+
+After using `[Environment]::SetEnvironmentVariable()` I can see the `PATH` updated in both scenarios I described in the original post.
+
+---
+
+_Comment by @o-l-a-v on 2025-01-06 12:45_
+
+With `[System.Environment]::SetEnvironmentVariable()` one could also set `PATH` for both `User` and `Process` context. `User` would persist, `Process` would make it work without having to restart system or even the PowerShell session itself.
+
+* <https://learn.microsoft.com/en-us/dotNet/api/system.environment.setenvironmentvariable>
+
+---
+
+Or install with [Scoop](https://scoop.sh/), and it's added to shims and works right away.
+
+```pwsh
+PS > scoop install main/uv
+
+PS > Get-Command -Name 'uv' | Format-List -Property 'Name','Path'
+
+Name : uv.exe
+Path : C:\Users\olav.birkeland\scoop\shims\uv.exe
+
+PS >
+```
+
+Manifest: <https://github.com/ScoopInstaller/Main/blob/master/bucket/uv.json>
+
+---
+
+Seems WinGet would get the job done too: <https://github.com/microsoft/winget-pkgs/blob/master/manifests/a/astral-sh/uv/0.5.8/astral-sh.uv.installer.yaml>.
+
+
+---
+
+_Comment by @ndegroot on 2025-01-15 07:44_
+
+As noted by zanieb  Cargo had the same problem. Looks like it has been solved there see https://github.com/axodotdev/cargo-dist/issues/1614
+
+---
+
+_Closed by @zanieb on 2025-01-15 18:44_
+
+---

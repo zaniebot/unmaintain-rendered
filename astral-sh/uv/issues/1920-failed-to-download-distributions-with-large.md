@@ -1,0 +1,139 @@
+---
+number: 1920
+title: Failed to download distributions with large requirements file
+type: issue
+state: closed
+author: strickvl
+labels:
+  - duplicate
+  - question
+assignees: []
+created_at: 2024-02-23T16:55:02Z
+updated_at: 2024-02-24T11:56:22Z
+url: https://github.com/astral-sh/uv/issues/1920
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# Failed to download distributions with large requirements file
+
+---
+
+_Issue opened by @strickvl on 2024-02-23 16:55_
+
+Have a Dockerfile in which I'm testing the use of uv, but uv fails to build the dependencies:
+
+```
+# Use Python 3.9 as the base image
+FROM python:3.9-slim
+
+# Set environment variables to make Python outputs work correctly in Docker
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100
+
+# Install Git, as it's often necessary for installing dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+# Create a virtual environment to isolate our package dependencies locally
+RUN python3 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+RUN pip install -U pip && pip install git+https://github.com/zenml-io/zenml.git@bugfix/whylogs-extras#20138b5a8c8e01ba74e3d8f3ba6f6a8ce4efb36b#egg=zenml[server,templates,terraform,secrets-aws,secrets-gcp,secrets-azure,secrets-hashicorp,s3fs,gcsfs,adlfs,dev,mlstacks]
+
+RUN zenml integration export-requirements \
+    --output-file integration-requirements.txt \
+    whylogs scipy pytorch azure airflow aws deepchecks
+
+RUN pip install uv
+RUN uv venv
+
+ENV PATH="/venv/bin:$PATH"
+
+RUN uv pip install -r integration-requirements.txt
+
+# Set the default command for the container to keep it running.
+CMD ["tail", "-f", "/dev/null"]
+```
+
+The error I see is:
+
+```
+ => ERROR [8/8] RUN uv pip install -r integration-requirements.txt                                                            314.9s
+------
+ > [8/8] RUN uv pip install -r integration-requirements.txt:
+13.74 Resolved 274 packages in 13.14s
+314.2 error: Failed to download distributions
+314.2   Caused by: Failed to fetch wheel: torch==2.2.1
+314.2   Caused by: Failed to extract source distribution
+314.2   Caused by: request or response body error: operation timed out
+314.2   Caused by: operation timed out
+------
+Dockerfile_test:59
+--------------------
+  57 |     ENV PATH="/venv/bin:$PATH"
+  58 |
+  59 | >>> RUN uv pip install -r integration-requirements.txt
+  60 |
+  61 |     # Set the default command for the container to keep it running.
+--------------------
+ERROR: failed to solve: process "/bin/sh -c uv pip install -r integration-requirements.txt" did not complete successfully: exit code: 2
+```
+
+It doesn't time out on the same download each time. I'm assuming sorting the `integration-requirements.txt` file makes no difference, but there's something nondeterministic about this case.
+
+---
+
+_Comment by @zanieb on 2024-02-23 17:05_
+
+Can you try increasing your request timeout? e.g. `HTTP_TIMEOUT=600` or `UV_HTTP_TIMEOUT=600`
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-23 17:05_
+
+---
+
+_Label `question` added by @zanieb on 2024-02-23 17:05_
+
+---
+
+_Comment by @zanieb on 2024-02-23 17:06_
+
+Duplicate of:
+
+- https://github.com/astral-sh/uv/issues/1912
+
+---
+
+_Referenced in [astral-sh/uv#1921](../../astral-sh/uv/issues/1921.md) on 2024-02-23 17:07_
+
+---
+
+_Comment by @zanieb on 2024-02-23 17:29_
+
+Exploring some other ideas in 
+
+- #1921 
+- #1922 
+
+We'll track this in those long-term.
+
+---
+
+_Closed by @zanieb on 2024-02-23 17:29_
+
+---
+
+_Comment by @strickvl on 2024-02-23 17:31_
+
+Setting `HTTP_TIMEOUT=600` and `UV_HTTP_TIMEOUT=600` made it work / pass, btw.
+
+---
+
+_Comment by @strickvl on 2024-02-24 11:56_
+
+Actually it failed a few times later, so it's not completely solid :) I guess the time was longer than the values I put in. No worry; happy to wait for the better solution.
+
+---

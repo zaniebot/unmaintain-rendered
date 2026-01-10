@@ -1,0 +1,649 @@
+---
+number: 6443
+title: "`uv sync` freezes infinitely at the container root"
+type: issue
+state: closed
+author: sterliakov
+labels:
+  - bug
+  - great writeup
+  - external
+assignees: []
+created_at: 2024-08-22T15:24:16Z
+updated_at: 2024-08-22T17:47:30Z
+url: https://github.com/astral-sh/uv/issues/6443
+synced_at: 2026-01-10T01:24:01Z
+---
+
+# `uv sync` freezes infinitely at the container root
+
+---
+
+_Issue opened by @sterliakov on 2024-08-22 15:24_
+
+To reproduce, try building the following Dockerfile (remove `sudo` if your docker is rootless):
+
+```
+cat <<EOF | sudo BUILDKIT_PROGRESS=plain docker build -
+FROM library/python:3.11                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+RUN pip install 'uv == 0.3.1' \                                                                                                                                                                                                                        
+    && printf >pyproject.toml '\                                                                                                                                                                                                            
+      [project]\n\                                                                                                                                                                                                                          
+      dependencies = ["django ~= 4.2"]\n\                                                                                                                                                                                                   
+      name = "demo"\n\                                                                                                                                                                                                                      
+      version = "0.1.0"\n\                                                                                                                                                                                                                  
+      requires-python = ">=3.11.7"\n\                                                                                                                                                                                                       
+    '\                                                                                                                                                                                                                                      
+    && uv lock                                                                                                                                                                                                                              
+RUN uv sync -vv                                                                                                                                                                                                                             
+EOF
+```
+
+This is not specific to Django, according to my experiments.
+
+The build freezes after `uv_build::run_python_script script="get_requires_for_build_editable", python_version=3.11.9` verbose log, keeping a high CPU load for a few minutes.
+
+
+<details>
+  <summary>Output</summary>
+
+  ```
+  #0 building with "default" instance using docker driver
+  
+  #1 [internal] load build definition from Dockerfile
+  #1 transferring dockerfile: 301B done
+  #1 DONE 0.0s
+  
+  #2 [internal] load metadata for docker.io/library/python:3.11
+  #2 DONE 0.0s
+  
+  #3 [internal] load .dockerignore
+  #3 transferring context: 2B done
+  #3 DONE 0.0s
+  
+  #4 [1/3] FROM docker.io/library/python:3.11
+  #4 CACHED
+  
+  #5 [2/3] RUN pip install 'uv == 0.3.1'     && printf >pyproject.toml '      [project]\n      dependencies = ["django ~= 4.2"]\n      name = "demo"\n      version = "0.1.0"\n      requires-python = ">=3.11.7"\n    '    && uv lock
+  #5 2.203 Collecting uv==0.3.1
+  #5 2.413   Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
+  #5 2.476 Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.4 MB)
+  #5 5.212    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 4.3 MB/s eta 0:00:00
+  #5 5.309 Installing collected packages: uv
+  #5 5.457 Successfully installed uv-0.3.1
+  #5 5.457 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+  #5 5.730 
+  #5 5.730 [notice] A new release of pip is available: 24.0 -> 24.2
+  #5 5.730 [notice] To update, run: pip install --upgrade pip
+  #5 5.947 Using Python 3.11.9 interpreter at: usr/local/bin/python3
+  #5 6.327 Resolved 5 packages in 379ms
+  #5 DONE 6.6s
+  
+  #6 [3/3] RUN uv sync -vv
+  #6 0.227     0.000584s DEBUG uv uv 0.3.1
+  #6 0.227     0.001085s DEBUG uv_workspace::workspace Found project root: `/`
+  #6 0.227     0.001190s DEBUG uv_workspace::workspace No workspace root found, using project root
+  #6 0.229     0.001385s DEBUG uv_python::discovery Searching for Python >=3.11.7 in managed installations or system path
+  #6 0.229     0.001447s DEBUG uv_python::discovery Searching for managed installations at `root/.local/share/uv/python`
+  #6 0.229     0.002008s DEBUG uv_python::discovery Found `cpython-3.11.9-linux-x86_64-gnu` at `/usr/local/bin/python3` (search path)
+  #6 0.229 Using Python 3.11.9 interpreter at: usr/local/bin/python3
+  #6 0.229 Creating virtualenv at: .venv
+  #6 0.229  uv_client::linehaul::linehaul 
+  #6 0.229     0.003282s DEBUG uv_client::base_client Using request timeout of 30s
+  #6 0.229  uv_resolver::flat_index::from_entries 
+  #6 0.230  uv_distribution::distribution_database::get_or_build_wheel_metadata dist=demo @ file:///
+  #6 0.230     0.004150s DEBUG uv_fs Acquired lock for `/root/.cache/uv/built-wheels-v3/editable/e750c63ec64f8e52`
+  #6 0.230     0.004287s   0ms DEBUG uv_distribution::source No static `PKG-INFO` available for: demo @ file:/// (MissingPkgInfo)
+  #6 0.230     0.004368s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: demo @ file:///
+  #6 0.230     0.004428s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+  #6 0.230     0.004463s DEBUG uv::commands::project::lock Existing `uv.lock` satisfies workspace requirements
+  #6 0.231 Resolved 5 packages in 1ms
+  #6 0.231  uv_client::linehaul::linehaul 
+  #6 0.231     0.004687s DEBUG uv_client::base_client Using request timeout of 30s
+  #6 0.231  uv_resolver::flat_index::from_entries 
+  #6 0.231     0.004809s DEBUG uv_installer::plan Identified uncached requirement: asgiref==3.8.1
+  #6 0.231     0.004875s DEBUG uv_installer::plan Identified uncached requirement: demo @ file:///
+  #6 0.231     0.004908s DEBUG uv_installer::plan Identified uncached requirement: django==4.2.15
+  #6 0.231     0.004937s DEBUG uv_installer::plan Identified uncached requirement: sqlparse==0.5.1
+  #6 0.231  uv_installer::preparer::prepare total=4
+  #6 0.231    uv_installer::preparer::get_wheel name=demo @ file:///, size=None, url=""
+  #6 0.231      uv_distribution::distribution_database::get_or_build_wheel dist=demo @ file:///
+  #6 0.231    uv_installer::preparer::get_wheel name=django==4.2.15, size=Some(7992797), url="https://files.pythonhosted.org/packages/0e/77/86af525feb6a9951d2bc96371ae3652f11bb35933b21966abc594f777956/Django-4.2.15-py3-none-any.whl"
+  #6 0.231     0.005156s DEBUG uv_fs Acquired lock for `/root/.cache/uv/built-wheels-v3/editable/e750c63ec64f8e52`
+  #6 0.231      uv_distribution::distribution_database::get_or_build_wheel dist=django==4.2.15
+  #6 0.231        uv_client::cached_client::get_serde 
+  #6 0.231          uv_client::cached_client::get_cacheable 
+  #6 0.231            uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/django/django-4.2.15-py3-none-any.http
+  #6 0.231    uv_installer::preparer::get_wheel name=sqlparse==0.5.1, size=Some(44156), url="https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl"
+  #6 0.231      uv_distribution::distribution_database::get_or_build_wheel dist=sqlparse==0.5.1
+  #6 0.231        uv_client::cached_client::get_serde 
+  #6 0.231  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/django/django-4.2.15-py3-none-any.http"
+  #6 0.231          uv_client::cached_client::get_cacheable 
+  #6 0.231            uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/sqlparse/sqlparse-0.5.1-py3-none-any.http
+  #6 0.231  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/sqlparse/sqlparse-0.5.1-py3-none-any.http"
+  #6 0.231    uv_installer::preparer::get_wheel name=asgiref==3.8.1, size=Some(23828), url="https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl"
+  #6 0.231      uv_distribution::distribution_database::get_or_build_wheel dist=asgiref==3.8.1
+  #6 0.231        uv_client::cached_client::get_serde 
+  #6 0.231          uv_client::cached_client::get_cacheable 
+  #6 0.231            uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/asgiref/asgiref-3.8.1-py3-none-any.http
+  #6 0.231  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/asgiref/asgiref-3.8.1-py3-none-any.http"
+  #6 0.231             0.005451s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl
+  #6 0.231            uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl"
+  #6 0.232        uv_distribution::source::build_distribution dist=demo @ file:///
+  #6 0.232           0.005651s   0ms DEBUG uv_distribution::source Building: demo @ file:///
+  #6 0.232             0.005739s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/0e/77/86af525feb6a9951d2bc96371ae3652f11bb35933b21966abc594f777956/Django-4.2.15-py3-none-any.whl
+  #6 0.232            uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/0e/77/86af525feb6a9951d2bc96371ae3652f11bb35933b21966abc594f777956/Django-4.2.15-py3-none-any.whl"
+  #6 0.232             0.005858s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl
+  #6 0.232            uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl"
+  #6 0.232          uv_dispatch::setup_build version_id="demo @ file:///", subdirectory=None
+  #6 0.233             0.006519s   0ms INFO uv_virtualenv::virtualenv Ignoring empty directory
+  #6 0.234  uv_resolver::resolver::solve 
+  #6 0.234     0.007706s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.11.9
+  #6 0.234    uv_resolver::resolver::choose_version package=root
+  #6 0.234    uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+  #6 0.234      uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+  #6 0.234     0.007810s   0ms DEBUG uv_resolver::resolver Adding direct dependency: setuptools>=40.8.0
+  #6 0.234    uv_resolver::resolver::choose_version package=setuptools
+  #6 0.234            uv_resolver::resolver::process_request request=Versions setuptools
+  #6 0.234              uv_client::registry_client::simple_api package=setuptools
+  #6 0.234                uv_client::cached_client::get_cacheable 
+  #6 0.234                  uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/simple-v12/pypi/setuptools.rkyv
+  #6 0.234            uv_resolver::resolver::process_request request=Prefetch setuptools >=40.8.0
+  #6 0.234  uv_client::cached_client::from_path_sync path="/root/.cache/uv/simple-v12/pypi/setuptools.rkyv"
+  #6 0.234                   0.008233s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/setuptools/
+  #6 0.234                  uv_client::cached_client::fresh_request url="https://pypi.org/simple/setuptools/"
+  #6 0.300                  uv_client::cached_client::new_cache file=/root/.cache/uv/simple-v12/pypi/setuptools.rkyv
+  #6 0.300                  uv_client::registry_client::parse_simple_api package=setuptools
+  #6 0.338            uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/asgiref/asgiref-3.8.1-py3-none-any.http
+  #6 0.338            uv_distribution::distribution_database::wheel wheel=asgiref==3.8.1
+  #6 0.358            uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/sqlparse/sqlparse-0.5.1-py3-none-any.http
+  #6 0.358            uv_distribution::distribution_database::wheel wheel=sqlparse==0.5.1
+  #6 0.360            uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/django/django-4.2.15-py3-none-any.http
+  #6 0.361            uv_distribution::distribution_database::wheel wheel=django==4.2.15
+  #6 0.380                     0.154062s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b1-py2.3.egg
+  #6 0.380                     0.154118s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b1-py2.4.egg
+  #6 0.380                     0.154191s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b2-py2.3.egg
+  #6 0.380                     0.154214s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b2-py2.4.egg
+  #6 0.381                     0.154356s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b3-py2.3.egg
+  #6 0.381                     0.154457s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b3-py2.4.egg
+  #6 0.381                     0.154593s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b4-py2.3.egg
+  #6 0.381                     0.154699s  80ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b4-py2.4.egg
+  #6 0.381                     0.154834s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c1-py2.3.egg
+  #6 0.381                     0.154929s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c1-py2.4.egg
+  #6 0.381                     0.155087s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-1.src.rpm
+  #6 0.381                     0.155180s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.3.egg
+  #6 0.381                     0.155272s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.4.egg
+  #6 0.382                     0.155372s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.5.egg
+  #6 0.382                     0.155412s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.6.egg
+  #6 0.382                     0.155474s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.3.exe
+  #6 0.382                     0.155503s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.4.exe
+  #6 0.382                     0.155521s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.5.exe
+  #6 0.382                     0.155540s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.6.exe
+  #6 0.382                     0.155597s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-1.src.rpm
+  #6 0.382                     0.155618s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.3.egg
+  #6 0.382                     0.155631s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.4.egg
+  #6 0.382                     0.155647s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.5.egg
+  #6 0.382                     0.155662s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.6.egg
+  #6 0.382                     0.155681s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.7.egg
+  #6 0.382                     0.155729s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.3.exe
+  #6 0.382                     0.155746s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.4.exe
+  #6 0.382                     0.155762s  81ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.5.exe
+  #6 0.382                     0.155779s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.6.exe
+  #6 0.382                     0.155797s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.7.exe
+  #6 0.382                     0.155846s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c2-py2.3.egg
+  #6 0.382                     0.155876s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c2-py2.4.egg
+  #6 0.382                     0.155925s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c3-py2.3.egg
+  #6 0.382                     0.155955s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c3-py2.4.egg
+  #6 0.382                     0.156039s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c3-py2.5.egg
+  #6 0.382                     0.156197s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-1.src.rpm
+  #6 0.382                     0.156292s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-py2.3.egg
+  #6 0.382                     0.156383s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-py2.4.egg
+  #6 0.383                     0.156478s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-py2.5.egg
+  #6 0.383                     0.156605s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4.win32-py2.3.exe
+  #6 0.383                     0.156696s  82ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4.win32-py2.4.exe
+  #6 0.383                     0.156791s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4.win32-py2.5.exe
+  #6 0.383                     0.156942s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-1.src.rpm
+  #6 0.383                     0.157049s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-py2.3.egg
+  #6 0.383                     0.157139s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-py2.4.egg
+  #6 0.383                     0.157228s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-py2.5.egg
+  #6 0.383                     0.157366s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5.win32-py2.3.exe
+  #6 0.384                     0.157460s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5.win32-py2.4.exe
+  #6 0.384                     0.157550s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5.win32-py2.5.exe
+  #6 0.384                     0.157680s  83ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-1.src.rpm
+  #6 0.384                     0.157769s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-py2.3.egg
+  #6 0.384                     0.157866s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-py2.4.egg
+  #6 0.384                     0.157966s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-py2.5.egg
+  #6 0.386                     0.158104s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6.win32-py2.3.exe
+  #6 0.386                     0.158518s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6.win32-py2.4.exe
+  #6 0.386                     0.158629s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6.win32-py2.5.exe
+  #6 0.386                     0.158752s  84ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-1.src.rpm
+  #6 0.386                     0.158979s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-py2.3.egg
+  #6 0.386                     0.159070s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-py2.4.egg
+  #6 0.386                     0.159166s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-py2.5.egg
+  #6 0.386                     0.159327s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7.win32-py2.3.exe
+  #6 0.386                     0.159415s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7.win32-py2.4.exe
+  #6 0.386                     0.159548s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7.win32-py2.5.exe
+  #6 0.386                     0.159670s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-1.src.rpm
+  #6 0.386                     0.159760s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-py2.3.egg
+  #6 0.386                     0.159848s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-py2.4.egg
+  #6 0.386                     0.159941s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-py2.5.egg
+  #6 0.386                     0.160074s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8.win32-py2.3.exe
+  #6 0.386                     0.160168s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8.win32-py2.4.exe
+  #6 0.386                     0.160256s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8.win32-py2.5.exe
+  #6 0.387                     0.160397s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-1.src.rpm
+  #6 0.387                     0.160493s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.3.egg
+  #6 0.388                     0.160586s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.4.egg
+  #6 0.388                     0.160676s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.5.egg
+  #6 0.388                     0.160768s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.6.egg
+  #6 0.388                     0.160949s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9.win32-py2.3.exe
+  #6 0.388                     0.161041s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9.win32-py2.4.exe
+  #6 0.388                     0.161136s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9.win32-py2.5.exe
+  #6 0.392                     0.165676s  91ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-18.3.1-py3.4.egg
+  #6 0.431              uv_resolver::version_map::from_metadata 
+  #6 0.432              uv_distribution::distribution_database::get_or_build_wheel_metadata dist=setuptools==73.0.1
+  #6 0.432                uv_client::registry_client::wheel_metadata built_dist=setuptools==73.0.1
+  #6 0.432       0.206227s 198ms DEBUG uv_resolver::resolver Searching for a compatible version of setuptools (>=40.8.0)
+  #6 0.434                  uv_client::cached_client::get_serde 
+  #6 0.434                    uv_client::cached_client::get_cacheable 
+  #6 0.434       0.206690s 198ms DEBUG uv_resolver::resolver Selecting: setuptools==73.0.1 [compatible] (setuptools-73.0.1-py3-none-any.whl)
+  #6 0.434                      uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.msgpack
+  #6 0.434  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.msgpack"
+  #6 0.434    uv_resolver::resolver::get_dependencies_forking package=setuptools, version=73.0.1
+  #6 0.434      uv_resolver::resolver::get_dependencies package=setuptools, version=73.0.1
+  #6 0.434                       0.207044s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl.metadata
+  #6 0.434                      uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl.metadata"
+  #6 0.469                      uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.msgpack
+  #6 0.469                      uv_client::registry_client::parse_metadata21 
+  #6 0.475     0.248788s 241ms DEBUG uv_resolver::resolver::batch_prefetch Tried 1 versions: setuptools 1
+  #6 0.476     0.248975s 241ms DEBUG uv_resolver::resolver Split specific environment resolution took 0.241s
+  #6 0.477            uv_dispatch::install resolution="setuptools==73.0.1", venv="/root/.cache/uv/builds-v0/.tmpVTTVrY"
+  #6 0.477               0.250983s   0ms DEBUG uv_dispatch Installing in setuptools==73.0.1 in /root/.cache/uv/builds-v0/.tmpVTTVrY
+  #6 0.478               0.251457s   0ms DEBUG uv_installer::plan Identified uncached requirement: setuptools==73.0.1
+  #6 0.478               0.251637s   0ms DEBUG uv_dispatch Downloading and building requirement for build: setuptools==73.0.1
+  #6 0.478              uv_installer::preparer::prepare total=1
+  #6 0.478                uv_installer::preparer::get_wheel name=setuptools==73.0.1, size=Some(2346588), url="https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl"
+  #6 0.478                  uv_distribution::distribution_database::get_or_build_wheel dist=setuptools==73.0.1
+  #6 0.479                    uv_client::cached_client::get_serde 
+  #6 0.479                      uv_client::cached_client::get_cacheable 
+  #6 0.479                        uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.http
+  #6 0.480  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.http"
+  #6 0.482                         0.255532s   3ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl
+  #6 0.482                        uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl"
+  #6 0.522                        uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.http
+  #6 0.522                        uv_distribution::distribution_database::wheel wheel=setuptools==73.0.1
+  #6 1.758               1.531802s   1s  DEBUG uv_dispatch Installing build requirement: setuptools==73.0.1
+  #6 1.758              uv_installer::installer::install num_wheels=1
+  #6 1.758  uv_installer::installer::install num_wheels=1
+  #6 1.786             1.559729s   1s  DEBUG uv_build Calling `setuptools.build_meta:__legacy__.get_requires_for_build_editable()`
+  #6 1.786            uv_build::run_python_script script="get_requires_for_build_editable", python_version=3.11.9
+  ```
+</details>
+
+However, this only happens if I build this at the root of filesystem. Adding `WORKDIR /home` before installation recovers everything, the build completes in seconds.
+
+<details>
+  <summary>Healthy output</summary>
+
+  ```
+  #0 building with "default" instance using docker driver
+  
+  #1 [internal] load build definition from Dockerfile
+  #1 transferring dockerfile: 315B done
+  #1 DONE 0.0s
+  
+  #2 [internal] load metadata for docker.io/library/python:3.11
+  #2 DONE 0.0s
+  
+  #3 [internal] load .dockerignore
+  #3 transferring context: 2B done
+  #3 DONE 0.0s
+  
+  #4 [1/4] FROM docker.io/library/python:3.11
+  #4 CACHED
+  
+  #5 [2/4] WORKDIR /home
+  #5 DONE 0.0s
+  
+  #6 [3/4] RUN pip install 'uv == 0.3.1'     && printf >pyproject.toml '      [project]\n      dependencies = ["django ~= 4.2"]\n      name = "demo"\n      version = "0.1.0"\n      requires-python = ">=3.11.7"\n    '    && uv lock
+  #6 2.111 Collecting uv==0.3.1
+  #6 2.261   Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
+  #6 2.330 Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.4 MB)
+  #6 5.310    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 3.9 MB/s eta 0:00:00
+  #6 5.404 Installing collected packages: uv
+  #6 5.553 Successfully installed uv-0.3.1
+  #6 5.554 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+  #6 5.969 
+  #6 5.969 [notice] A new release of pip is available: 24.0 -> 24.2
+  #6 5.969 [notice] To update, run: pip install --upgrade pip
+  #6 6.186 Using Python 3.11.9 interpreter at: /usr/local/bin/python3
+  #6 6.595 Resolved 5 packages in 408ms
+  #6 DONE 6.9s
+  
+  #7 [4/4] RUN uv sync -vv
+  #7 0.181     0.000526s DEBUG uv uv 0.3.1
+  #7 0.182     0.001037s DEBUG uv_workspace::workspace Found project root: `/home`
+  #7 0.182     0.001310s DEBUG uv_workspace::workspace No workspace root found, using project root
+  #7 0.182     0.001448s DEBUG uv_python::discovery Searching for Python >=3.11.7 in managed installations or system path
+  #7 0.182     0.001515s DEBUG uv_python::discovery Searching for managed installations at `/root/.local/share/uv/python`
+  #7 0.183     0.002203s DEBUG uv_python::discovery Found `cpython-3.11.9-linux-x86_64-gnu` at `/usr/local/bin/python3` (search path)
+  #7 0.183 Using Python 3.11.9 interpreter at: /usr/local/bin/python3
+  #7 0.183 Creating virtualenv at: .venv
+  #7 0.184  uv_client::linehaul::linehaul 
+  #7 0.184     0.003600s DEBUG uv_client::base_client Using request timeout of 30s
+  #7 0.184  uv_resolver::flat_index::from_entries 
+  #7 0.185  uv_distribution::distribution_database::get_or_build_wheel_metadata dist=demo @ file:///home
+  #7 0.185     0.004468s DEBUG uv_fs Acquired lock for `/root/.cache/uv/built-wheels-v3/editable/4eb8e3d687b66e2d`
+  #7 0.185     0.004594s   0ms DEBUG uv_distribution::source No static `PKG-INFO` available for: demo @ file:///home (MissingPkgInfo)
+  #7 0.185     0.004675s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: demo @ file:///home
+  #7 0.185     0.004751s   0ms DEBUG uv_workspace::workspace No workspace root found, using project root
+  #7 0.185     0.004808s DEBUG uv::commands::project::lock Existing `uv.lock` satisfies workspace requirements
+  #7 0.185 Resolved 5 packages in 1ms
+  #7 0.186  uv_client::linehaul::linehaul 
+  #7 0.186     0.005012s DEBUG uv_client::base_client Using request timeout of 30s
+  #7 0.186  uv_resolver::flat_index::from_entries 
+  #7 0.186     0.005145s DEBUG uv_installer::plan Identified uncached requirement: asgiref==3.8.1
+  #7 0.186     0.005206s DEBUG uv_installer::plan Identified uncached requirement: demo @ file:///home
+  #7 0.186     0.005251s DEBUG uv_installer::plan Identified uncached requirement: django==4.2.15
+  #7 0.186     0.005295s DEBUG uv_installer::plan Identified uncached requirement: sqlparse==0.5.1
+  #7 0.186  uv_installer::preparer::prepare total=4
+  #7 0.186    uv_installer::preparer::get_wheel name=demo @ file:///home, size=None, url=""
+  #7 0.186      uv_distribution::distribution_database::get_or_build_wheel dist=demo @ file:///home
+  #7 0.186    uv_installer::preparer::get_wheel name=django==4.2.15, size=Some(7992797), url="https://files.pythonhosted.org/packages/0e/77/86af525feb6a9951d2bc96371ae3652f11bb35933b21966abc594f777956/Django-4.2.15-py3-none-any.whl"
+  #7 0.186     0.005546s DEBUG uv_fs Acquired lock for `/root/.cache/uv/built-wheels-v3/editable/4eb8e3d687b66e2d`
+  #7 0.186      uv_distribution::distribution_database::get_or_build_wheel dist=django==4.2.15
+  #7 0.186        uv_client::cached_client::get_serde 
+  #7 0.186          uv_client::cached_client::get_cacheable 
+  #7 0.186            uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/django/django-4.2.15-py3-none-any.http
+  #7 0.186    uv_installer::preparer::get_wheel name=sqlparse==0.5.1, size=Some(44156), url="https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl"
+  #7 0.186  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/django/django-4.2.15-py3-none-any.http"
+  #7 0.186      uv_distribution::distribution_database::get_or_build_wheel dist=sqlparse==0.5.1
+  #7 0.186        uv_client::cached_client::get_serde 
+  #7 0.186          uv_client::cached_client::get_cacheable 
+  #7 0.186            uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/sqlparse/sqlparse-0.5.1-py3-none-any.http
+  #7 0.187  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/sqlparse/sqlparse-0.5.1-py3-none-any.http"
+  #7 0.187    uv_installer::preparer::get_wheel name=asgiref==3.8.1, size=Some(23828), url="https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl"
+  #7 0.187      uv_distribution::distribution_database::get_or_build_wheel dist=asgiref==3.8.1
+  #7 0.187        uv_client::cached_client::get_serde 
+  #7 0.187          uv_client::cached_client::get_cacheable 
+  #7 0.187            uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/asgiref/asgiref-3.8.1-py3-none-any.http
+  #7 0.187  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/asgiref/asgiref-3.8.1-py3-none-any.http"
+  #7 0.187        uv_distribution::source::build_distribution dist=demo @ file:///home
+  #7 0.187           0.006087s   0ms DEBUG uv_distribution::source Building: demo @ file:///home
+  #7 0.187             0.006122s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/0e/77/86af525feb6a9951d2bc96371ae3652f11bb35933b21966abc594f777956/Django-4.2.15-py3-none-any.whl
+  #7 0.187            uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/0e/77/86af525feb6a9951d2bc96371ae3652f11bb35933b21966abc594f777956/Django-4.2.15-py3-none-any.whl"
+  #7 0.187             0.006246s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl
+  #7 0.187            uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl"
+  #7 0.187             0.006375s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl
+  #7 0.187            uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl"
+  #7 0.187          uv_dispatch::setup_build version_id="demo @ file:///home", subdirectory=None
+  #7 0.187             0.006771s   0ms INFO uv_virtualenv::virtualenv Ignoring empty directory
+  #7 0.189  uv_resolver::resolver::solve 
+  #7 0.189     0.007860s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.11.9
+  #7 0.189    uv_resolver::resolver::choose_version package=root
+  #7 0.189    uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+  #7 0.189      uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+  #7 0.189     0.007960s   0ms DEBUG uv_resolver::resolver Adding direct dependency: setuptools>=40.8.0
+  #7 0.189    uv_resolver::resolver::choose_version package=setuptools
+  #7 0.189            uv_resolver::resolver::process_request request=Versions setuptools
+  #7 0.189              uv_client::registry_client::simple_api package=setuptools
+  #7 0.189                uv_client::cached_client::get_cacheable 
+  #7 0.189                  uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/simple-v12/pypi/setuptools.rkyv
+  #7 0.189            uv_resolver::resolver::process_request request=Prefetch setuptools >=40.8.0
+  #7 0.189  uv_client::cached_client::from_path_sync path="/root/.cache/uv/simple-v12/pypi/setuptools.rkyv"
+  #7 0.189                   0.008348s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/setuptools/
+  #7 0.189                  uv_client::cached_client::fresh_request url="https://pypi.org/simple/setuptools/"
+  #7 0.246                  uv_client::cached_client::new_cache file=/root/.cache/uv/simple-v12/pypi/setuptools.rkyv
+  #7 0.246                  uv_client::registry_client::parse_simple_api package=setuptools
+  #7 0.294            uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/sqlparse/sqlparse-0.5.1-py3-none-any.http
+  #7 0.294            uv_distribution::distribution_database::wheel wheel=sqlparse==0.5.1
+  #7 0.332                     0.150576s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b1-py2.3.egg
+  #7 0.332                     0.150646s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b1-py2.4.egg
+  #7 0.332                     0.150726s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b2-py2.3.egg
+  #7 0.332                     0.150765s  85ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b2-py2.4.egg
+  #7 0.332                     0.150809s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b3-py2.3.egg
+  #7 0.332                     0.150853s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b3-py2.4.egg
+  #7 0.332                     0.150890s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b4-py2.3.egg
+  #7 0.332                     0.151048s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6b4-py2.4.egg
+  #7 0.332                     0.151220s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c1-py2.3.egg
+  #7 0.332                     0.151410s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c1-py2.4.egg
+  #7 0.333                     0.151666s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-1.src.rpm
+  #7 0.333                     0.151796s  86ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.3.egg
+  #7 0.333                     0.151983s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.4.egg
+  #7 0.333                     0.152102s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.5.egg
+  #7 0.333                     0.152211s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10-py2.6.egg
+  #7 0.333                     0.152415s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.3.exe
+  #7 0.333                     0.152528s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.4.exe
+  #7 0.333                     0.152641s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.5.exe
+  #7 0.333                     0.152755s  87ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c10.win32-py2.6.exe
+  #7 0.334                     0.152900s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-1.src.rpm
+  #7 0.334                     0.153088s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.3.egg
+  #7 0.334                     0.153199s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.4.egg
+  #7 0.334                     0.153311s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.5.egg
+  #7 0.335                     0.153428s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.6.egg
+  #7 0.335                     0.153541s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11-py2.7.egg
+  #7 0.335                     0.153686s  88ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.3.exe
+  #7 0.335                     0.153878s  89ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.4.exe
+  #7 0.335                     0.153999s  89ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.5.exe
+  #7 0.335                     0.154124s  89ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.6.exe
+  #7 0.335                     0.154259s  89ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c11.win32-py2.7.exe
+  #7 0.335                     0.154407s  89ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c2-py2.3.egg
+  #7 0.335                     0.154596s  89ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c2-py2.4.egg
+  #7 0.336                     0.154833s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c3-py2.3.egg
+  #7 0.336                     0.154977s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c3-py2.4.egg
+  #7 0.336                     0.155155s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c3-py2.5.egg
+  #7 0.336                     0.155388s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-1.src.rpm
+  #7 0.336                     0.155502s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-py2.3.egg
+  #7 0.336                     0.155613s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-py2.4.egg
+  #7 0.336                     0.155724s  90ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4-py2.5.egg
+  #7 0.337                     0.155874s  91ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4.win32-py2.3.exe
+  #7 0.337                     0.156051s  91ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4.win32-py2.4.exe
+  #7 0.338                     0.156172s  91ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c4.win32-py2.5.exe
+  #7 0.338                     0.156580s  91ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-1.src.rpm
+  #7 0.338                     0.156714s  91ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-py2.3.egg
+  #7 0.338                     0.156889s  92ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-py2.4.egg
+  #7 0.338                     0.157013s  92ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5-py2.5.egg
+  #7 0.338                     0.157174s  92ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5.win32-py2.3.exe
+  #7 0.338                     0.157353s  92ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5.win32-py2.4.exe
+  #7 0.338                     0.157439s  92ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c5.win32-py2.5.exe
+  #7 0.338                     0.157633s  92ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-1.src.rpm
+  #7 0.339                     0.157823s  93ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-py2.3.egg
+  #7 0.339                     0.158029s  93ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-py2.4.egg
+  #7 0.339                     0.158149s  93ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6-py2.5.egg
+  #7 0.339                     0.158305s  93ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6.win32-py2.3.exe
+  #7 0.339                     0.158476s  93ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6.win32-py2.4.exe
+  #7 0.340                     0.158592s  93ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c6.win32-py2.5.exe
+  #7 0.340                     0.158742s  94ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-1.src.rpm
+  #7 0.340                     0.158937s  94ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-py2.3.egg
+  #7 0.340                     0.159060s  94ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-py2.4.egg
+  #7 0.340                     0.159181s  94ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7-py2.5.egg
+  #7 0.340                     0.159342s  94ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7.win32-py2.3.exe
+  #7 0.341                     0.159528s  94ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7.win32-py2.4.exe
+  #7 0.341                     0.159851s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c7.win32-py2.5.exe
+  #7 0.341                     0.160007s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-1.src.rpm
+  #7 0.341                     0.160205s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-py2.3.egg
+  #7 0.341                     0.160324s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-py2.4.egg
+  #7 0.341                     0.160443s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8-py2.5.egg
+  #7 0.342                     0.160599s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8.win32-py2.3.exe
+  #7 0.342                     0.160787s  95ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8.win32-py2.4.exe
+  #7 0.342                     0.160903s  96ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c8.win32-py2.5.exe
+  #7 0.342                     0.161100s  96ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-1.src.rpm
+  #7 0.342                     0.161278s  96ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.3.egg
+  #7 0.342                     0.161393s  96ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.4.egg
+  #7 0.343                     0.161522s  96ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.5.egg
+  #7 0.343                     0.161659s  96ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9-py2.6.egg
+  #7 0.343                     0.161810s  97ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9.win32-py2.3.exe
+  #7 0.343                     0.161997s  97ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9.win32-py2.4.exe
+  #7 0.343                     0.162117s  97ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-0.6c9.win32-py2.5.exe
+  #7 0.348                     0.167235s 102ms WARN uv_client::registry_client Skipping file for setuptools: setuptools-18.3.1-py3.4.egg
+  #7 0.381            uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/asgiref/asgiref-3.8.1-py3-none-any.http
+  #7 0.381            uv_distribution::distribution_database::wheel wheel=asgiref==3.8.1
+  #7 0.381            uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/index/b2a7eb67d4c26b82/django/django-4.2.15-py3-none-any.http
+  #7 0.381            uv_distribution::distribution_database::wheel wheel=django==4.2.15
+  #7 0.383              uv_resolver::version_map::from_metadata 
+  #7 0.383       0.202630s 194ms DEBUG uv_resolver::resolver Searching for a compatible version of setuptools (>=40.8.0)
+  #7 0.383              uv_distribution::distribution_database::get_or_build_wheel_metadata dist=setuptools==73.0.1
+  #7 0.383       0.202663s 194ms DEBUG uv_resolver::resolver Selecting: setuptools==73.0.1 [compatible] (setuptools-73.0.1-py3-none-any.whl)
+  #7 0.383                uv_client::registry_client::wheel_metadata built_dist=setuptools==73.0.1
+  #7 0.383                  uv_client::cached_client::get_serde 
+  #7 0.383    uv_resolver::resolver::get_dependencies_forking package=setuptools, version=73.0.1
+  #7 0.383      uv_resolver::resolver::get_dependencies package=setuptools, version=73.0.1
+  #7 0.383                    uv_client::cached_client::get_cacheable 
+  #7 0.384                      uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.msgpack
+  #7 0.384  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.msgpack"
+  #7 0.384                       0.203457s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl.metadata
+  #7 0.384                      uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl.metadata"
+  #7 0.427                      uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.msgpack
+  #7 0.427                      uv_client::registry_client::parse_metadata21 
+  #7 0.429     0.248395s 240ms DEBUG uv_resolver::resolver::batch_prefetch Tried 1 versions: setuptools 1
+  #7 0.429     0.248412s 240ms DEBUG uv_resolver::resolver Split specific environment resolution took 0.241s
+  #7 0.430            uv_dispatch::install resolution="setuptools==73.0.1", venv="/root/.cache/uv/builds-v0/.tmpivAxIl"
+  #7 0.430               0.248625s   0ms DEBUG uv_dispatch Installing in setuptools==73.0.1 in /root/.cache/uv/builds-v0/.tmpivAxIl
+  #7 0.430               0.248747s   0ms DEBUG uv_installer::plan Identified uncached requirement: setuptools==73.0.1
+  #7 0.430               0.248768s   0ms DEBUG uv_dispatch Downloading and building requirement for build: setuptools==73.0.1
+  #7 0.430              uv_installer::preparer::prepare total=1
+  #7 0.430                uv_installer::preparer::get_wheel name=setuptools==73.0.1, size=Some(2346588), url="https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl"
+  #7 0.430                  uv_distribution::distribution_database::get_or_build_wheel dist=setuptools==73.0.1
+  #7 0.430                    uv_client::cached_client::get_serde 
+  #7 0.430                      uv_client::cached_client::get_cacheable 
+  #7 0.430                        uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.http
+  #7 0.430  uv_client::cached_client::from_path_sync path="/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.http"
+  #7 0.430                         0.249178s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl
+  #7 0.430                        uv_client::cached_client::fresh_request url="https://files.pythonhosted.org/packages/07/6a/0270e295bf30c37567736b7fca10167640898214ff911273af37ddb95770/setuptools-73.0.1-py3-none-any.whl"
+  #7 0.476                        uv_client::cached_client::new_cache file=/root/.cache/uv/wheels-v1/pypi/setuptools/setuptools-73.0.1-py3-none-any.http
+  #7 0.476                        uv_distribution::distribution_database::wheel wheel=setuptools==73.0.1
+  #7 2.204               2.023302s   1s  DEBUG uv_dispatch Installing build requirement: setuptools==73.0.1
+  #7 2.204              uv_installer::installer::install num_wheels=1
+  #7 2.204  uv_installer::installer::install num_wheels=1
+  #7 2.221             2.040285s   2s  DEBUG uv_build Calling `setuptools.build_meta:__legacy__.get_requires_for_build_editable()`
+  #7 2.221            uv_build::run_python_script script="get_requires_for_build_editable", python_version=3.11.9
+  #7 2.787          uv_build::build_wheel version_id="demo @ file:///home"
+  #7 2.787             2.605975s   0ms DEBUG uv_build Calling `setuptools.build_meta:__legacy__.build_editable("/root/.cache/uv/built-wheels-v3/editable/4eb8e3d687b66e2d/iRViL0ZIPr1HRPoxZDAZ5/.tmpyt9mUg", {}, None)`
+  #7 2.787            uv_build::run_python_script script="build_editable", python_version=3.11.9
+  #7 3.078           2.897508s   2s  DEBUG uv_distribution::source Finished building: demo @ file:///home
+  #7 3.080 Prepared 4 packages in 2.89s
+  #7 3.080  uv_installer::installer::install_blocking num_wheels=4
+  #7 3.080    uv_installer::installer::install num_wheels=4
+  #7 3.233 Installed 4 packages in 153ms
+  #7 3.233  + asgiref==3.8.1
+  #7 3.233  + demo==0.1.0 (from file:///home)
+  #7 3.233  + django==4.2.15
+  #7 3.233  + sqlparse==0.5.1
+  #7 DONE 3.6s
+  
+  #8 exporting to image
+  #8 exporting layers
+  #8 exporting layers 0.8s done
+  #8 writing image sha256:3bb91ec30c2b3d53d377fa973b0a190a52381a48c7956c00bf21fa1fac1f5d44 done
+  #8 DONE 0.8s
+  ```
+</details>
+
+
+---
+
+_Comment by @zanieb on 2024-08-22 16:06_
+
+Thanks for the thorough report! Does this work if you use hatchling as a build backend instead of setuptools, e.g. as we do in default in `uv init`? I imagine this is a weird setuptools bug.
+
+---
+
+_Label `bug` added by @zanieb on 2024-08-22 16:06_
+
+---
+
+_Label `great writeup` added by @zanieb on 2024-08-22 16:06_
+
+---
+
+_Comment by @sterliakov on 2024-08-22 16:13_
+
+Hm, that's really interesting: it builds fine with `hatchling`. However, adding `--no-build-package demo` flag to the original `uv sync` command does not change anything, so the problem shouldn't be caused by building a root project.
+
+Just for the sake of completeness, here's what does build:
+
+```
+cat <<EOF | sudo BUILDKIT_PROGRESS=plain docker build -
+FROM library/python:3.11                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+RUN pip install 'uv == 0.3.1' \                                                                                                                                                                                                             
+    && printf >pyproject.toml '\                                                                                                                                                                                                            
+      [build-system]\n\                                                                                                                                                                                                                     
+      requires = ["hatchling"]\n\                                                                                                                                                                                                           
+      build-backend = "hatchling.build"\n\                                                                                                                                                                                                  
+      [tool.hatch.build.targets.wheel]\n\                                                                                                                                                                                                   
+      packages = ["src"]\n\                                                                                                                                                                                                                 
+      [project]\n\                                                                                                                                                                                                                          
+      dependencies = ["django ~= 4.2"]\n\                                                                                                                                                                                                   
+      name = "demo"\n\                                                                                                                                                                                                                      
+      version = "0.1.0"\n\                                                                                                                                                                                                                  
+      requires-python = ">=3.11.7"\n\                                                                                                                                                                                                       
+    '\                                                                                                                                                                                                                                      
+    && mkdir src && touch src/__init__.py \
+    && uv lock                                                                                                                                                                                        
+RUN uv sync -vv                                                                                                                                                                                                                             
+EOF
+```
+
+---
+
+_Comment by @zanieb on 2024-08-22 16:14_
+
+`--no-build-package` can't be applied to local editables — just remote source distributions. I think it will be ignored.
+
+Created an issue to improve messaging there https://github.com/astral-sh/uv/issues/6446
+
+---
+
+_Comment by @sterliakov on 2024-08-22 16:29_
+
+Ough. Is there any way to spell "I don't want the root project built - please just install the dependencies as specified"?
+
+---
+
+_Comment by @zanieb on 2024-08-22 16:33_
+
+Not yet, but probably soon — lots of discussion on that at https://github.com/astral-sh/uv/issues/4028
+
+I'd highly recommend not using setuptools in the meantime, maybe this needs to be reported there? I'm not sure without really digging in.
+
+---
+
+_Comment by @sterliakov on 2024-08-22 16:38_
+
+I'll try to debug a bit today, but this really looks like a setuptools problem - I'll report my investigation here later and close the issue if it's not on uv's side, reporting my observations to setuptools instead.
+
+---
+
+_Comment by @sterliakov on 2024-08-22 17:39_
+
+Well, sorry for spending your time - this bug has nothing to do with `uv`. It's caused by `setuptools` package discovery attempt and can be fixed with e.g.
+
+```
+[tool.setuptools.packages.find]
+where = []
+```
+
+Without this, setuptools apparently try to scan the whole image's filesystem while working in `/`, and that is expected to take unreasonable time.
+
+---
+
+_Closed by @sterliakov on 2024-08-22 17:39_
+
+---
+
+_Label `upstream` added by @zanieb on 2024-08-22 17:47_
+
+---
+
+_Referenced in [astral-sh/uv#6456](../../astral-sh/uv/issues/6456.md) on 2024-08-22 18:50_
+
+---
+
+_Referenced in [astral-sh/uv#6462](../../astral-sh/uv/issues/6462.md) on 2024-08-22 21:08_
+
+---
+
+_Referenced in [invoke-ai/InvokeAI#7944](../../invoke-ai/InvokeAI/pulls/7944.md) on 2025-04-23 00:50_
+
+---

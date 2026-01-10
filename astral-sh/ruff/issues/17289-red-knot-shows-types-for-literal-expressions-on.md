@@ -1,0 +1,80 @@
+---
+number: 17289
+title: Red Knot shows types for literal expressions on hover
+type: issue
+state: closed
+author: InSyncWithFoo
+labels:
+  - ty
+assignees: []
+created_at: 2025-04-08T01:10:24Z
+updated_at: 2025-04-08T10:52:18Z
+url: https://github.com/astral-sh/ruff/issues/17289
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# Red Knot shows types for literal expressions on hover
+
+---
+
+_Issue opened by @InSyncWithFoo on 2025-04-08 01:10_
+
+Minimal reproducible example ([playground](https://playknot.ruff.rs/ca9df1f1-6ebb-4063-a3d0-91b476f40efa)):
+
+```python
+print(
+    0  # Hover: `Literal[0]`
+)
+
+def f():
+    '''Lorem ipsum dolor sit amet.'''  # Hover: `Literal["Lorem ipsum dolor sit amet."]`
+```
+
+This information is, arguably, redundant and should not be emitted.
+
+---
+
+_Referenced in [astral-sh/ruff#17290](../../astral-sh/ruff/pulls/17290.md) on 2025-04-08 01:13_
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-08 06:22_
+
+---
+
+_Comment by @MichaReiser on 2025-04-08 06:25_
+
+As discussed on Discord. I don't necessarily agree with this and it's not the only place where we would show redundant type information (hovering a fully annotated function shows exactly the same signature). 
+
+I struggled with the python typing syntax and have found it useful when I was able to hover any expression and see how to spell that type because `Literal[1]` isn't the most obvious spelling (Unlike TypeScript where the `1` represents `Literal[1]` in python). 
+
+I do think hiding the type for docstrings does make sense.
+
+---
+
+_Comment by @sharkdp on 2025-04-08 06:33_
+
+I think I'm weakly in favor of this change. If I understand correctly, we would still reveal `Literal[…]` types whenever they come up in more complex expressions or annotations, we just wouldn't show them for expressions that directly result in `Literal[…]` types. I see the following arguments in favor of this change:
+
+- As argued above, it's redundant and potentially distracting.
+- If you're not very familiar with Python's type system, you might even be confused what `Literal[0]` means... and why we're not showing `int` etc.
+- We infer them in a lot of places, but it's actually very rare that you need to annotate something with `Literal[…]`.
+- I'm not sure if that's a good idea or even feasible, but I could imagine that we can make use of the fact that we do not show types for literal expressions. If you have something like `3 * x`, an hover over the `3`, we could "skip a level" and instead show the type for the full `3 * x` expression (I think most editors highlight the full expression when showing hover-types, so there should be no risk of confusion…?).
+
+---
+
+_Closed by @MichaReiser on 2025-04-08 07:05_
+
+---
+
+_Closed by @MichaReiser on 2025-04-08 07:05_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-04-08 10:52_
+
+@MichaReiser To see the type for a literal, a temporary variable can always be added as a workaround (`a = 42; reveal_type(a)`).
+
+As for function definitions, their hover popups generally contain two information: signature and docstring. A signature might contain inferred return types, which is far more valuable than the type of a literal expression. Even if it were fully typed, the signature should still be shown for consistency. And then there's also the docstring that is better read in rendered form.
+
+---

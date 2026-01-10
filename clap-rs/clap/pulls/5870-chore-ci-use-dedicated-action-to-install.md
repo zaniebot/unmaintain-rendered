@@ -1,0 +1,70 @@
+---
+number: 5870
+title: "chore(ci): Use dedicated action to install specified elvish version"
+type: pull_request
+state: open
+author: tw4452852
+labels: []
+assignees: []
+base: master
+head: elvish_ci
+created_at: 2025-01-07T01:14:58Z
+updated_at: 2025-05-31T13:50:49Z
+url: https://github.com/clap-rs/clap/pull/5870
+synced_at: 2026-01-10T01:28:24Z
+---
+
+# chore(ci): Use dedicated action to install specified elvish version
+
+---
+
+_Pull request opened by @tw4452852 on 2025-01-07 01:14_
+
+<!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+
+---
+
+_@epage reviewed on 2025-01-07 14:39_
+
+---
+
+_Review comment by @epage on `.github/workflows/ci.yml`:98 on 2025-01-07 14:39_
+
+A couple of concerns
+- Dealing with the spread of versions of elvish that contributors will be using
+- Updating elvish-version
+
+*(copied from #5869)*
+
+---
+
+_@tw4452852 reviewed on 2025-01-08 01:01_
+
+---
+
+_Review comment by @tw4452852 on `.github/workflows/ci.yml`:98 on 2025-01-08 01:01_
+
+The point of this change is that we could install the exact version we specify instead of depending on the system package manager (currently the version `apt install` on the CI is 0.17 which is very old).
+
+The next question is which version we guarantee the compability?
+
+---
+
+_@epage reviewed on 2025-01-08 16:28_
+
+---
+
+_Review comment by @epage on `.github/workflows/ci.yml`:98 on 2025-01-08 16:28_
+
+I don't have a good idea on what version should be our minimal (or even how to handle multiple incompatible versions).  Leaving it to the distribution sets a low water mark that gets automatically updated.
+
+---

@@ -1,0 +1,163 @@
+---
+number: 3927
+title: "universal-lock: audit data structures to ensure they can handle multiple versions of the same package"
+type: issue
+state: closed
+author: BurntSushi
+labels:
+  - preview
+assignees: []
+created_at: 2024-05-30T18:27:11Z
+updated_at: 2024-06-27T09:53:43Z
+url: https://github.com/astral-sh/uv/issues/3927
+synced_at: 2026-01-10T01:23:32Z
+---
+
+# universal-lock: audit data structures to ensure they can handle multiple versions of the same package
+
+---
+
+_Issue opened by @BurntSushi on 2024-05-30 18:27_
+
+Basically, it is suspected that there are some parts of our resolver that implicitly rely on the fact that there is only one version of a package available in resolution. This often leads to things like indexing on just package name. But we probably need to index on version (and possibly extra name?).
+
+This was first brought up by @charliermarsh in https://github.com/astral-sh/uv/pull/3831#pullrequestreview-2086236974
+
+---
+
+_Label `internal` added by @BurntSushi on 2024-05-30 18:27_
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2024-05-30 18:27_
+
+---
+
+_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-30 18:27_
+
+---
+
+_Comment by @charliermarsh on 2024-06-04 18:55_
+
+Here's an example failing `pyproject.toml` that should resolve:
+
+```toml
+[project]
+name = "black"
+version = "0.1.0"
+description = "Default template for a Flit project"
+authors = [
+    {name = "konstin", email = "konstin@mailbox.org"},
+]
+dependencies = [
+  "iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version >= '3.12'",
+  "iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl ; python_version < '3.12'"
+]
+requires-python = ">=3.11,<3.13"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["flit_core>=3.4,<4"]
+build-backend = "flit_core.buildapi"
+```
+
+---
+
+_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-06-10 12:46_
+
+---
+
+_Label `preview` added by @konstin on 2024-06-12 11:11_
+
+---
+
+_Comment by @konstin on 2024-06-12 11:24_
+
+I see three main types we have to change:
+* `Urls`, manifest and lookahead resolver: `Urls` needs to change from package name -> url to package name -> marker -> url. The lookahead resolver needs to be aware and track diverging branches and forward them to the manifest, which forwards them to the url resolver.
+* In the same pattern as `Urls`, `Locals` needs to become branch aware. 
+* `get_dependencies_forking` needs to make `PubGrubRequirement::from_requirement` aware of the marker subset we're in so we can filter `Urls` and `Locals` correctly.
+* `PreReleaseMode`: When one branch has a prerelase, a different branch with a different version range doesn't need to allow this version range.
+
+---
+
+_Comment by @BurntSushi on 2024-06-12 11:40_
+
+> * `get_dependencies_forking` needs to make `PubGrubRequirement::from_requirement` aware of the marker subset we're in so we can filter `Urls` and `Locals` correctly.
+
+I'm working on this piece today.
+
+---
+
+_Comment by @charliermarsh on 2024-06-12 12:35_
+
+Why does the lookahead resolver or the manifest need to track diverging branches? Isn’t it enough to just track the markers, then handle divergence in Urls?
+
+---
+
+_Comment by @konstin on 2024-06-12 12:45_
+
+Let's say we have
+
+root:
+```
+a @ https://example.org/a311 ; python_version == "3.11"
+a @ https://example.org/a312 ; python_version == "3.12"
+```
+
+https://example.org/a311:
+```
+b @ https://example.org/b311_win32 ; sys_platform == "win32"
+b @ https://example.org/b311_linux ; sys_platform == "linux"
+```
+
+https://example.org/a312:
+```
+b @ https://example.org/b312_win32 ; sys_platform == "win32"
+b @ https://example.org/b312_linux ; sys_platform == "linux"
+```
+
+Here we need to keep track of the markers so that when we ask "what is the url of b for `python_version == "3.11" && sys_platform == "win32"`?", we get `https://example.org/b311_win32`. We could try doing this in `Urls`, but i think it has to live in the lookahead resolver, which needs to keep track where a url came from.
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-06-12 13:05_
+
+It needs to track the requiring markers, just like it tracks the requiring extra, but I don't know that it needs to track _divergence_. Anyway, give it a shot, the implementation will prove out whether it's necessary or not, I might be wrong here.
+
+---
+
+_Comment by @konstin on 2024-06-12 13:10_
+
+Yes, the lookahead resolver does not actually need to check the divergence, it just needs to remember it which marker-conditionalized branch it currently is.
+
+---
+
+_Unassigned @BurntSushi by @konstin on 2024-06-20 09:08_
+
+---
+
+_Assigned to @konstin by @konstin on 2024-06-20 09:08_
+
+---
+
+_Referenced in [astral-sh/uv#4435](../../astral-sh/uv/pulls/4435.md) on 2024-06-21 16:10_
+
+---
+
+_Comment by @konstin on 2024-06-27 09:53_
+
+I'm closing this in favor of the more specific #4579 and #4580
+
+---
+
+_Closed by @konstin on 2024-06-27 09:53_
+
+---
+
+_Label `internal` removed by @konstin on 2024-06-27 09:53_
+
+---

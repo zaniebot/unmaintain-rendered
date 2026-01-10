@@ -1,0 +1,61 @@
+---
+number: 12236
+title: Unnecessary parentheses
+type: issue
+state: closed
+author: 17Reset
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-17T11:35:04Z
+updated_at: 2025-03-17T13:02:34Z
+url: https://github.com/astral-sh/uv/issues/12236
+synced_at: 2026-01-10T01:25:17Z
+---
+
+# Unnecessary parentheses
+
+---
+
+_Issue opened by @17Reset on 2025-03-17 11:35_
+
+### Summary
+
+**When activating the virtual environment created by uv on windows, the following kind of `()` appears**
+
+![Image](https://github.com/user-attachments/assets/dbbc656e-3f37-4da0-83bd-2506aad1d133)
+
+**Older versions do not:**
+![Image](https://github.com/user-attachments/assets/595d24ca-c032-4007-bacf-71534f98fa16)
+
+### Platform
+
+Windows11 x86_64
+
+### Version
+
+uv 0.6.6 (c1a0bb85e 2025-03-12)
+
+### Python version
+
+Python 3.13.1
+
+---
+
+_Label `bug` added by @17Reset on 2025-03-17 11:35_
+
+---
+
+_Comment by @charliermarsh on 2025-03-17 13:02_
+
+This was fixed in #12160 (not yet released).
+
+---
+
+_Closed by @charliermarsh on 2025-03-17 13:02_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-03-17 13:02_
+
+---

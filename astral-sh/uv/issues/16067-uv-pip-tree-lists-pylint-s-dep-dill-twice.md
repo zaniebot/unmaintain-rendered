@@ -1,0 +1,151 @@
+---
+number: 16067
+title: "`uv pip tree` lists `pylint`'s dep `dill` twice"
+type: issue
+state: closed
+author: tropicoo
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2025-09-29T21:07:30Z
+updated_at: 2025-10-01T16:01:43Z
+url: https://github.com/astral-sh/uv/issues/16067
+synced_at: 2026-01-10T01:26:03Z
+---
+
+# `uv pip tree` lists `pylint`'s dep `dill` twice
+
+---
+
+_Issue opened by @tropicoo on 2025-09-29 21:07_
+
+### Summary
+
+`uv pip tree` lists `pylint`'s dependency `dill` twice in the tree.
+
+### Project init
+```bash
+% uv init example && cd example && uv add pylint
+
+Initialized project `example` at `/Users/.../example`
+Using CPython 3.13.7
+Creating virtual environment at: .venv
+Resolved 9 packages in 33ms
+Installed 7 packages in 12ms
+ + astroid==3.3.11
+ + dill==0.4.0
+ + isort==6.0.1
+ + mccabe==0.7.0
+ + platformdirs==4.4.0
+ + pylint==3.3.8
+ + tomlkit==0.13.3
+```
+
+### `uv pip tree -v` output with duplicate `dill` records
+```bash
+% uv pip tree -v
+DEBUG uv 0.8.22 (ade2bdbd2 2025-09-23)
+DEBUG Acquired shared lock for `/Users/.../.cache/uv`
+DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.13.7-macos-aarch64-none` at `/Users/.../example/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.13.7 environment at: .venv
+pylint v3.3.8
+├── astroid v3.3.11
+├── dill v0.4.0
+├── dill v0.4.0
+├── isort v6.0.1
+├── mccabe v0.7.0
+├── platformdirs v4.4.0
+└── tomlkit v0.13.3
+DEBUG Released lock at `/Users/.../.cache/uv/.lock`
+
+```
+
+### Platform
+
+macOS (Darwin) 24.6.0 arm64
+
+### Version
+
+uv 0.8.22 (ade2bdbd2 2025-09-23)
+
+### Python version
+
+Python (CPython) 3.13.7
+
+---
+
+_Label `bug` added by @tropicoo on 2025-09-29 21:07_
+
+---
+
+_Renamed from "`uv pip tree` list `pylint`'s dep `dill` twice" to "`uv pip tree` lists `pylint`'s dep `dill` twice" by @tropicoo on 2025-09-29 21:07_
+
+---
+
+_Comment by @zanieb on 2025-09-29 22:29_
+
+Weird. I can reproduce this.
+
+---
+
+_Comment by @zanieb on 2025-09-29 22:31_
+
+```
+❯ uv pip tree --show-version-specifiers
+pylint v3.3.8
+├── astroid v3.3.11 [required: >=3.3.8, <=3.4.0.dev0]
+├── dill v0.4.0 [required: >=0.3.7]
+├── dill v0.4.0 [required: >=0.3.6]
+├── isort v6.0.1 [required: >=4.2.5, !=5.13, <7]
+├── mccabe v0.7.0 [required: >=0.6, <0.8]
+├── platformdirs v4.4.0 [required: >=2.2]
+└── tomlkit v0.13.3 [required: >=0.10.1]
+```
+
+There are two distinct version requests.
+
+This package is listed multiple times with different Python version markers
+
+```
+Requires-Dist: dill>=0.2; python_version < "3.11"
+Requires-Dist: dill>=0.3.6; python_version >= "3.11"
+Requires-Dist: dill>=0.3.7; python_version >= "3.12"
+```
+
+https://inspector.pypi.io/project/pylint/3.3.8/packages/2d/1a/711e93a7ab6c392e349428ea56e794a3902bb4e0284c1997cff2d7efdbc1/pylint-3.3.8-py3-none-any.whl/pylint-3.3.8.dist-info/METADATA#line.40
+
+---
+
+_Label `help wanted` added by @zanieb on 2025-09-30 15:49_
+
+---
+
+_Comment by @terror on 2025-09-30 16:48_
+
+What would expected behaviour here look like? In the default view, should we collapse those into a single line per dependency, or still show every marker-specific requirement? And for `--show-version-specifiers` (and possibly `--no-dedupe`), would you expect to see each constraint listed separately, some merged/annotated representation, or something else?
+
+---
+
+_Comment by @zanieb on 2025-09-30 17:51_
+
+Since the report is for a single Python version, I think only one of these should be applicable. I think I'd expect us to only show the one that is ultimately relevant.
+
+---
+
+_Referenced in [astral-sh/uv#16078](../../astral-sh/uv/pulls/16078.md) on 2025-09-30 18:59_
+
+---
+
+_Comment by @terror on 2025-09-30 19:40_
+
+> Since the report is for a single Python version, I think only one of these should be applicable. I think I'd expect us to only show the one that is ultimately relevant.
+
+I've put up https://github.com/astral-sh/uv/pull/16078 to address this, could use an initial look!
+
+---
+
+_Closed by @zanieb on 2025-10-01 16:01_
+
+---

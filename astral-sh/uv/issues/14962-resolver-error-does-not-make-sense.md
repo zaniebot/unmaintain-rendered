@@ -1,0 +1,97 @@
+---
+number: 14962
+title: Resolver error does not make sense
+type: issue
+state: closed
+author: zanieb
+labels: []
+assignees: []
+created_at: 2025-07-29T21:46:34Z
+updated_at: 2025-07-29T21:50:09Z
+url: https://github.com/astral-sh/uv/issues/14962
+synced_at: 2026-01-10T01:25:51Z
+---
+
+# Resolver error does not make sense
+
+---
+
+_Issue opened by @zanieb on 2025-07-29 21:46_
+
+```
+❯ uv tool run --from 'rooster-blue>=0.0.7' --python 3.12 --with 'click<0.8.2' --isolated -- rooster --help
+  × No solution found when resolving tool dependencies:
+  ╰─▶ Because typer>=0.9.0,<=0.9.4 depends on click>=7.1.1 and only the following versions
+      of typer are available:
+          typer<=0.9.0
+          typer==0.9.1
+          typer==0.9.2
+          typer==0.9.3
+          typer==0.9.4
+          typer>0.10.0
+      we can conclude that typer>=0.9.0,<0.10.0 depends on click>=7.1.1.
+      And because rooster-blue>=0.0.7 depends on typer>=0.9.0,<0.10.0 and only the
+      following versions of rooster-blue are available:
+          rooster-blue<=0.0.7
+          rooster-blue==0.0.8
+          rooster-blue==0.0.9
+      we can conclude that rooster-blue>=0.0.7 depends on click>=7.1.1.
+      And because you require rooster-blue>=0.0.7 and click<0.8.2, we can conclude that
+      your requirements are unsatisfiable.
+```
+
+---
+
+_Comment by @zanieb on 2025-07-29 21:46_
+
+Vague, but I'm really confused here?
+
+---
+
+_Comment by @zanieb on 2025-07-29 21:48_
+
+```
+term root==0a0.dev0
+  root==0a0.dev0 depends on click<0.8.2
+  term not click>=7.1.1, <9.0.0
+  term root==0a0.dev0
+    root==0a0.dev0 depends on rooster-blue>=0.0.7
+    term not click>=7.1.1, <9.0.0
+    term rooster-blue>=0.0.7
+      no versions of rooster-blue>0.0.7, <0.0.8 | >0.0.8, <0.0.9 | >0.0.9
+      term not click>=7.1.1, <9.0.0
+      term rooster-blue==0.0.7 | ==0.0.8 | ==0.0.9
+        rooster-blue==0.0.7 | ==0.0.8 | ==0.0.9 depends on typer>=0.9.0, <0.10.0
+        term not click>=7.1.1, <9.0.0
+        term typer>=0.9.0, <0.10.0
+          no versions of typer>0.9.0, <0.9.1 | >0.9.1, <0.9.2 | >0.9.2, <0.9.3 | >0.9.3, <0.9.4 | >0.9.4, <0.10.0
+          typer==0.9.0 | ==0.9.1 | ==0.9.2 | ==0.9.3 | ==0.9.4 depends on click>=7.1.1, <9.0.0
+Resolver derivation tree after reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on click<0.8.2
+  term not click>=7.1.1
+  term root==0a0.dev0
+    root==0a0.dev0 depends on rooster-blue>=0.0.7
+    term not click>=7.1.1
+    term rooster-blue>=0.0.7
+      no versions of rooster-blue>0.0.7, <0.0.8 | >0.0.8, <0.0.9 | >0.0.9
+      term not click>=7.1.1
+      term rooster-blue>=0.0.7
+        rooster-blue>=0.0.7 depends on typer>=0.9.0, <0.10.0
+        term not click>=7.1.1
+        term typer>=0.9.0, <0.10.0
+          no versions of typer>0.9.0, <0.9.1 | >0.9.1, <0.9.2 | >0.9.2, <0.9.3 | >0.9.3, <0.9.4 | >0.9.4, <0.10.0
+          typer>=0.9.0, <=0.9.4 depends on click>=7.1.1
+```
+
+---
+
+_Comment by @zanieb on 2025-07-29 21:49_
+
+_sigh_ `0.8.2` not `8.2.0`
+
+---
+
+_Closed by @zanieb on 2025-07-29 21:50_
+
+---

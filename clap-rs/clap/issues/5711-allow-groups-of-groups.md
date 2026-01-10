@@ -1,0 +1,97 @@
+---
+number: 5711
+title: Allow groups of groups
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - E-medium
+assignees: []
+created_at: 2024-08-30T20:30:23Z
+updated_at: 2024-09-04T23:38:47Z
+url: https://github.com/clap-rs/clap/issues/5711
+synced_at: 2026-01-10T01:28:15Z
+---
+
+# Allow groups of groups
+
+---
+
+_Issue opened by @epage on 2024-08-30 20:30_
+
+A blocker for #4697 which is important for #3123 and #2621 is the ability to have a group own another group.
+
+API-wise, I suspect we'd change `ArgGroup::arg` to `ArgGroup::member` or `ArgGroup::child` to generalize it for taking either an arg or a group ID.
+- To meet our compatibility goals,. this "change" would be a deprecation and a new function.
+  - I'd recommend doing this with a PR that (1) adds the new function, (2) updates existing uses to the new function, (3) adds the deprecation notice
+  - We might need to soft-deprecate it and not apply the attribute because a true deprecation must be done on a point release
+
+To unblock this, we'd need to update the debug assertions to make sure the `Id` is a valid Arg or Group `Id`.
+
+There is also the validation work
+
+---
+
+_Label `C-enhancement` added by @epage on 2024-08-30 20:30_
+
+---
+
+_Label `E-medium` added by @epage on 2024-08-30 20:30_
+
+---
+
+_Referenced in [clap-rs/clap#5700](../../clap-rs/clap/pulls/5700.md) on 2024-08-30 20:31_
+
+---
+
+_Comment by @ysndr on 2024-09-04 22:08_
+
+I've been looking into this a bit more.
+
+Are you sure there are still "debug assertions to make sure the Id is a valid Arg or Group Id" in the project?
+
+Grepping for `debug_assert` didn't yield anything looking close to that.
+The assertions i found are apparently only checking for Id but don;t assert what that Id represents: [1].
+Also it seems to check `arg in group.args` against _both_ arg_ids and group_ids: [2]
+That is to say, I dont think "groups of groups" are particularly _disallowed_.
+
+Variable naming is a bit biased, "arg" is everywhere around those methods even if it is explicitly checked against group_ids as well.
+
+Renaming the method(s) on `ArgGroup` is _relatively_ straight forward (sans all the doc tests..), i figure this should actually go further a bit, also changing "arg" at the usage side to "member".
+Since i'm particularly interested in the conflict side tho i might work on that first before hunting down umpteen "arg" variables that should be "member" instead.
+
+[1] https://github.com/ysndr/clap/blob/6539ab81c4858e051dfd2d76a984faec75c7b88d/clap_builder/src/builder/debug_asserts.rs#L307-L327
+
+[2] https://github.com/ysndr/clap/blob/6539ab81c4858e051dfd2d76a984faec75c7b88d/clap_builder/src/builder/debug_asserts.rs#L290-L305
+
+
+Edit: 
+Turns out the handling for groups in [1] were prior changes of mine that snuck into the renaming commit.
+
+---
+
+_Comment by @epage on 2024-09-04 22:29_
+
+I'm a bit confused.  You pointed at code in `debug_asserts.rs` in 6539ab81c4858e051dfd2d76a984faec75c7b88d to show that child groups are checked but for 6539ab81c4858e051dfd2d76a984faec75c7b88d  github is reporting "This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.".
+
+
+If I look in 
+https://github.com/clap-rs/clap/blob/64e37904615c3e2df85fd38370beb5961a31d557/clap_builder/src/builder/debug_asserts.rs#L290-L299
+which is the latest commit for `master`
+https://github.com/clap-rs/clap/blob/master/clap_builder/src/builder/debug_asserts.rs#L290-L299
+that code is not there.
+
+This matches the behavior you saw in https://github.com/clap-rs/clap/pull/5700#discussion_r1735314380
+
+---
+
+_Comment by @ysndr on 2024-09-04 23:36_
+
+Oh my that happens when you start off with existing work and mess up your rebase.
+
+So those lines 290 - 300 were _my_ changes from investigating the original subgroups approach.
+
+
+
+---

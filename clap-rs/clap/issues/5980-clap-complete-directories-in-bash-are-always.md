@@ -1,0 +1,118 @@
+---
+number: 5980
+title: "clap_complete: directories in bash are always followed by spaces"
+type: issue
+state: closed
+author: mernen
+labels:
+  - C-bug
+  - A-completion
+assignees: []
+created_at: 2025-04-27T21:36:17Z
+updated_at: 2025-05-04T21:01:47Z
+url: https://github.com/clap-rs/clap/issues/5980
+synced_at: 2026-01-10T01:28:20Z
+---
+
+# clap_complete: directories in bash are always followed by spaces
+
+---
+
+_Issue opened by @mernen on 2025-04-27 21:36_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.86.0 (05f9846f8 2025-03-31)
+
+### Clap Version
+
+master
+
+### Minimal reproducible code
+
+```rust
+use std::path::PathBuf;
+
+use clap::{CommandFactory, Parser, ValueHint};
+use clap_complete::{CompleteEnv, Shell};
+
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    #[arg(long, value_name = "SHELL")]
+    complete: Option<Shell>,
+    #[arg(short, long, value_name = "PATH", value_hint = ValueHint::FilePath)]
+    path: Option<PathBuf>,
+}
+
+fn main() {
+    CompleteEnv::with_factory(Cli::command).complete();
+
+    let cli = Cli::parse();
+
+    if let Some(complete) = cli.complete {
+        let mut cmd = Cli::command();
+        let name = cmd.get_name().to_string();
+        clap_complete::generate(complete, &mut cmd, name, &mut std::io::stdout());
+        return;
+    }
+
+    if let Some(path) = &cli.path {
+        println!("Path provided: {}", path.display());
+    }
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+1. Use bash as the shell
+2. `source <(COMPLETE=bash cargo run -- --complete bash)`
+3. Type `app-name --path sr` and press Tab
+
+### Actual Behaviour
+
+The last parameter should complete as `src/ `, with a trailing space
+
+### Expected Behaviour
+
+No trailing space should be added, allowing me to continue the path
+
+### Additional Context
+
+This seems to be a regression in e3f1ad932, where the completion script used to set an internal `$SUPPRESS_SPACE` variable and pass this information to the CLI as a `--space`/`--no-space` argument. This got replaced by `$_CLAP_COMPLETE_SPACE`, but the final step where `compopt nospace` got re-enabled still checks for the old `$SUPPRESS_SPACE` (which also has the opposite semantics as the new `$_CLAP_COMPLETE_SPACE`).
+
+Additionally, the Rust code expects a `_CLAP_COMPLETE_SPACE` env variable, but it is never set; this has presently no impact, though.
+
+### Debug Output
+
+(Not applicable, I think? This is a shell script error)
+
+---
+
+_Label `C-bug` added by @mernen on 2025-04-27 21:36_
+
+---
+
+_Referenced in [clap-rs/clap#5981](../../clap-rs/clap/pulls/5981.md) on 2025-04-27 21:40_
+
+---
+
+_Label `A-completion` added by @epage on 2025-04-28 14:00_
+
+---
+
+_Comment by @mernen on 2025-05-04 21:01_
+
+Fixed by #5981.
+
+---
+
+_Closed by @mernen on 2025-05-04 21:01_
+
+---

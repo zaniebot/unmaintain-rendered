@@ -1,0 +1,52 @@
+---
+number: 10779
+title: Add test coverage for a 40-character hex Git tag
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - testing
+assignees: []
+created_at: 2025-01-20T14:29:06Z
+updated_at: 2025-01-21T00:50:31Z
+url: https://github.com/astral-sh/uv/issues/10779
+synced_at: 2026-01-10T01:24:57Z
+---
+
+# Add test coverage for a 40-character hex Git tag
+
+---
+
+_Issue opened by @charliermarsh on 2025-01-20 14:29_
+
+This "looks like" a commit, but we shouldn't treat it as such.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-20 14:29_
+
+---
+
+_Label `testing` added by @charliermarsh on 2025-01-20 14:29_
+
+---
+
+_Comment by @charliermarsh on 2025-01-21 00:50_
+
+GitHub doesn't even allow this:
+
+```
+❯ git push --tags
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: error: GH002: Sorry, branch or tag names consisting of 40 hex characters are not allowed.
+remote: error: Invalid branch or tag name "8f14eb5bb69b017915bc7cb23a39e97ab0ab1b5a"
+To github.com:charliermarsh/git-commit-or-tag.git
+ ! [remote rejected] 8f14eb5bb69b017915bc7cb23a39e97ab0ab1b5a -> 8f14eb5bb69b017915bc7cb23a39e97ab0ab1b5a (pre-receive hook declined)
+error: failed to push some refs to 'github.com:charliermarsh/git-commit-or-tag.git'
+```
+
+---
+
+_Closed by @charliermarsh on 2025-01-21 00:50_
+
+---

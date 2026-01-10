@@ -1,0 +1,76 @@
+---
+number: 2055
+title: Unable to authenticate to GCP artifact registry
+type: issue
+state: closed
+author: meridionaljet
+labels: []
+assignees: []
+created_at: 2024-02-28T21:05:49Z
+updated_at: 2024-02-28T21:09:43Z
+url: https://github.com/astral-sh/uv/issues/2055
+synced_at: 2026-01-10T01:23:11Z
+---
+
+# Unable to authenticate to GCP artifact registry
+
+---
+
+_Issue opened by @meridionaljet on 2024-02-28 21:05_
+
+uv version: 0.1.11
+Platform: Linux
+
+I can't seem to get `uv` to authenticate to a GCP artifact registry that `pip` is able to pull packages from. In pip's case, I believe it uses `keyring` to provide the GCP credentials for the registry, with the keyring implementation set up by the `keyrings.google-artifactregistry-auth` package. I don't know if `uv` is designed to use keyring to facilitate this use case or whether that's the root of the issue here. The error below is identical whether or not the keyring packages are installed.
+
+```bash
+$ uv pip install --index-url https://us-west2-python.pkg.dev/<project>/<repo>/simple <package> --verbose
+ uv::requirements::from_source source=<package>
+    0.012747s DEBUG uv_interpreter::virtual_env Found a virtualenv through CONDA_PREFIX at: /home/user/micromamba/envs/test2
+    0.013021s DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.12.0, skipping probing: /home/user/micromamba/envs/test2/bin/python
+    0.013077s DEBUG uv::commands::pip_install Using Python 3.12.0 environment at /home/user/micromamba/envs/test2/bin/python
+    0.015614s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.020199s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.12.0
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.020380s   0ms DEBUG uv_resolver::resolver Adding direct dependency: <package>*
+   uv_resolver::resolver::choose_version package=<package>
+     uv_resolver::resolver::package_wait package_name=<package>
+ uv_resolver::resolver::process_request request=Versions <package>
+   uv_client::registry_client::simple_api package=<package>
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/home/user/.cache/uv/simple-v3/4d3bb4184f3a25c0/<package>.rkyv
+ uv_resolver::resolver::process_request request=Prefetch <package> *
+ uv_client::cached_client::from_path_sync path="/home/user/.cache/uv/simple-v3/4d3bb4184f3a25c0/<package>.rkyv"
+          0.021611s   0ms DEBUG uv_client::cached_client No cache entry for: https://us-west2-python.pkg.dev/<project>/<repo>/simple/<package>/
+       uv_client::cached_client::fresh_request url="https://us-west2-python.pkg.dev/<project>/<repo>/simple/<package>/"
+error: HTTP status client error (401 Unauthorized) for url (https://us-west2-python.pkg.dev/<project>/<repo>/simple/<package>/)
+```
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 21:06_
+
+Thanks -- I think this should be covered by https://github.com/astral-sh/uv/issues/1520, so I'll probably merge this issue into that one? We don't support keyring yet, but plan to.
+
+---
+
+_Comment by @meridionaljet on 2024-02-28 21:09_
+
+> Thanks -- I think this should be covered by #1520, so I'll probably merge this issue into that one? We don't support keyring yet, but plan to.
+
+Ah, apologies, I missed that issue. Thanks for the info!
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 21:09_
+
+Np! We'll get to it.
+
+---
+
+_Closed by @charliermarsh on 2024-02-28 21:09_
+
+---

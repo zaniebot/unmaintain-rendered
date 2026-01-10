@@ -1,0 +1,59 @@
+---
+number: 1899
+title: "AppSettings::InferSubcommands disables #[clap(external_subcommand)]"
+type: issue
+state: closed
+author: alerque
+labels:
+  - C-bug
+assignees: []
+created_at: 2020-05-02T22:48:31Z
+updated_at: 2020-05-02T22:49:20Z
+url: https://github.com/clap-rs/clap/issues/1899
+synced_at: 2026-01-10T01:27:09Z
+---
+
+# AppSettings::InferSubcommands disables #[clap(external_subcommand)]
+
+---
+
+_Issue opened by @alerque on 2020-05-02 22:48_
+
+I'm porting an app from StructOpt to Clap using the derive methods in the current Git HEAD version. The original app used `clap::AppSettings::InferSubcommands)`, and also later made use of `#[clap(external_subcommand)]`. This combo wasn't a problem in StructOpt, but it fails with Clap derive.
+
+```rust
+use clap::Clap;
+
+#[derive(Clap, Debug)]
+#[clap(setting = AppSettings::InferSubcommands)]
+struct Opt {
+    #[clap(subcommand)]
+    cmd: Command,
+}
+
+#[derive(Clap, Debug)]
+enum Command {
+    #[clap(external_subcommand)]
+    Other(Vec<String>),
+}
+
+fn main() {
+    let _ = Opt::parse();
+}
+```
+
+---
+
+_Label `T: bug` added by @alerque on 2020-05-02 22:48_
+
+---
+
+_Comment by @alerque on 2020-05-02 22:49_
+
+Sorry, didn't mean to post this. I started writing the report the other day but it seems to have been fixed in Git in the last 2 days. I can't replicate the issue I was having any more.
+
+---
+
+_Closed by @alerque on 2020-05-02 22:49_
+
+---

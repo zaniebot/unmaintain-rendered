@@ -1,0 +1,192 @@
+---
+number: 16581
+title: uv installs and uninstalls tink==1.10.0 during each sync
+type: issue
+state: closed
+author: chadac
+labels:
+  - external
+assignees: []
+created_at: 2025-11-03T15:52:57Z
+updated_at: 2025-11-03T16:53:23Z
+url: https://github.com/astral-sh/uv/issues/16581
+synced_at: 2026-01-10T01:26:07Z
+---
+
+# uv installs and uninstalls tink==1.10.0 during each sync
+
+---
+
+_Issue opened by @chadac on 2025-11-03 15:52_
+
+### Summary
+
+Currently in a uv-managed project, I'm seeing that whenever it syncs, it continually uninstalls and then reinstalls `tink==1.10.0`. This can be reproduced with the following:
+
+```bash
+uv init
+uv add tink==1.10.0
+uv sync # tink should be removed and re-added, similar for subsequent `uv sync` calls
+```
+
+The issue appears to be that `uv` finds no compatible macos version of tink upstream, so it uninstalls it -- and then reinstalls it whenever it still can't find a proper matching platform specifier. Including some logs below:
+
+```bash
+DEBUG uv 0.9.7 (0adb44480 2025-10-30)
+TRACE Checking shared lock for `/Users/chad.crawford/.cache/uv` at `/Users/chad.crawford/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/chad.crawford/.cache/uv`
+DEBUG Found project root: `/Users/chad.crawford/code/test-project`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/Users/chad.crawford/code/test-project` at `/var/folders/tb/04bsctp95yj8j1r9g92grnhw0000gn/T/uv-7f637a9264c3ff85.lock`
+DEBUG Acquired lock for `/Users/chad.crawford/code/test-project`
+DEBUG Reading Python requests from version file at `/Users/chad.crawford/code/test-project/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+TRACE Found cached interpreter info for Python 3.12.10, skipping query of: .venv/bin/python3
+DEBUG The project environment's Python version satisfies the request: `Python 3.12`
+TRACE The project environment's Python version meets the Python requirement: `>=3.12`
+TRACE The virtual environment's Python interpreter meets the Python preference: `prefer managed`
+DEBUG Released lock at `/var/folders/tb/04bsctp95yj8j1r9g92grnhw0000gn/T/uv-7f637a9264c3ff85.lock`
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test-project @ file:///Users/chad.crawford/code/test-project
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 4 packages in 4ms
+DEBUG Using request timeout of 30s
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("tink"), version: "1.10.0", path: "/Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/tink-1.10.0.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(<uninit>) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "1.10.0" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Platform tags mismatch for tink==1.10.0: The distribution is compatible with macOS (`macosx_10_9_x86_64`), but you're on macOS (`macosx_26_0_arm64`)
+DEBUG Requirement installed, but mismatched:
+  Installed: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("tink"), version: "1.10.0", path: "/Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/tink-1.10.0.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(Some(ExpandedTags([Small { small: WheelTagSmall { python_tag: CPython { python_version: (3, 12) }, abi_tag: CPython { gil_disabled: false, python_version: (3, 12) }, platform_tag: Macos { major: 10, minor: 9, binary_format: X86_64 } } }]))) }
+  Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "1.10.0" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Registry requirement already cached: tink==1.10.0
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("absl-py"), version: "2.3.1", path: "/Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/absl_py-2.3.1.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(<uninit>) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.3.1" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Requirement already installed: absl-py==2.3.1
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("protobuf"), version: "4.25.8", path: "/Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/protobuf-4.25.8.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(<uninit>) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.25.8" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Requirement already installed: protobuf==4.25.8
+DEBUG Uninstalled tink (200 files, 20 directories)
+Uninstalled 1 package in 31ms
+TRACE Extracting file name=PackageName("tink")
+TRACE Cloning /Users/chad.crawford/.cache/uv/archive-v0/oHWfPp1klEhoOP737Vd_Z/tink-1.10.0.dist-info to /Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/tink-1.10.0.dist-info
+TRACE Cloning /Users/chad.crawford/.cache/uv/archive-v0/oHWfPp1klEhoOP737Vd_Z/tink to /Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/tink
+TRACE Extracted 2 files name=PackageName("tink")
+TRACE No entrypoints name=PackageName("tink")
+TRACE No data name=PackageName("tink")
+TRACE Writing installer metadata name=PackageName("tink")
+TRACE Writing record name=PackageName("tink")
+Installed 1 package in 3ms
+ ~ tink==1.10.0
+DEBUG Released lock at `/Users/chad.crawford/code/test-project/.venv/.lock`
+DEBUG Released lock at `/Users/chad.crawford/.cache/uv/.lock`
+```
+
+This appears to be an issue with newer versions of `uv` -- I can see with uv `0.6.20` that this doesn't seem to be happening.
+
+### Platform
+
+macosx 26.0 arm64
+
+### Version
+
+uv 0.9.7 (0adb44480 2025-10-30)
+
+### Python version
+
+Python 3.12.10
+
+---
+
+_Label `bug` added by @chadac on 2025-11-03 15:52_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-11-03 15:55_
+
+---
+
+_Comment by @charliermarsh on 2025-11-03 15:57_
+
+Hmm, that's strange... It looks like the wheel is being built for x86, but uv thinks you're on an ARM machine. I assume you _are_ in fact on an ARM machine?
+
+---
+
+_Comment by @chadac on 2025-11-03 16:03_
+
+It is definitely an ARM machine -- so yeah not sure why it's getting that indicator. Lemme clear my cache and see if I can get it to rebuild as well... [the upstream setup.py](https://github.com/tink-crypto/tink-py/blob/main/setup.py) does seem to use bazel.
+
+---
+
+_Comment by @chadac on 2025-11-03 16:11_
+
+It looks like it isn't actually building it from the source archive, but using the `tink-1.10.0-cp312-cp312-macosx_11_0_universl2.whl` archive instead:
+
+```bash
+DEBUG Identified uncached distribution: tink==1.10.0
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("absl-py"), version: "2.3.1", path: "/Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/absl_py-2.3.1.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(<uninit>) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "2.3.1" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Requirement already installed: absl-py==2.3.1
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName("protobuf"), version: "4.25.8", path: "/Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/protobuf-4.25.8.dist-info", cache_info: None, build_info: None }), metadata_cache: OnceLock(<uninit>), tags_cache: OnceLock(<uninit>) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: "4.25.8" }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: "https", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("pypi.org")), port: None, path: "/simple", query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Requirement already installed: protobuf==4.25.8
+TRACE No cache entry exists for /Users/chad.crawford/.cache/uv/wheels-v5/pypi/tink/1.10.0-cp312-cp312-macosx_11_0_universal2.http
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Handling request for https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl with authentication policy auto
+TRACE Request for https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl
+TRACE Response from https://files.pythonhosted.org/packages/42/09/baf723b9ebc45135e1d547add7d72b70f0efc957610a72e19110e48b227e/tink-1.10.0-cp312-cp312-macosx_11_0_universal2.whl is storable because it has a 'public' cache-control directive
+```
+
+However, just realized I should check their dist-info too... it looks like they're self-reporting it as an x86_64 wheel:
+
+```bash
+$ cat /Users/chad.crawford/code/test-project/.venv/lib/python3.12/site-packages/tink-1.10.0.dist-info/WHEEL
+Wheel-Version: 1.0
+Generator: bdist_wheel (0.41.3)
+Root-Is-Purelib: false
+Tag: cp312-cp312-macosx_10_9_x86_64
+```
+
+I'm guessing in this case I probably should report this to them? Not sure if a mismatch between what is downloaded and what is reported in the WHEEL
+
+---
+
+_Label `bug` removed by @konstin on 2025-11-03 16:16_
+
+---
+
+_Label `question` added by @konstin on 2025-11-03 16:16_
+
+---
+
+_Label `question` removed by @konstin on 2025-11-03 16:16_
+
+---
+
+_Label `external` added by @konstin on 2025-11-03 16:16_
+
+---
+
+_Comment by @konstin on 2025-11-03 16:17_
+
+Yes this is a problem with the tink build system, the tag in the WHEEL file must match the tag on the wheel. The reinstalling happens because uv sees the installed tag in the WHEEL file and the tag in the lockfile and thinks that the installed file is outdated.
+
+This has been fixed in the latest version, you can solve this by updating the package: https://inspector.pypi.io/project/tink/1.12.0/packages/82/f5/6e20ade036eebbfe075a72184513c8303de176fe093cf232a0895e9f9e33/tink-1.12.0-cp312-cp312-macosx_11_0_universal2.whl/tink-1.12.0.dist-info/WHEEL#line.5
+
+---
+
+_Comment by @chadac on 2025-11-03 16:48_
+
+Thanks! looks like that fixes it -- sorry for bothering y'all
+
+---
+
+_Closed by @chadac on 2025-11-03 16:48_
+
+---
+
+_Comment by @charliermarsh on 2025-11-03 16:53_
+
+No problem, thanks for following up!
+
+---

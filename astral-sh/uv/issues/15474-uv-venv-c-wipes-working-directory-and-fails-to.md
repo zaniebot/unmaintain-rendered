@@ -1,0 +1,273 @@
+---
+number: 15474
+title: "`uv venv -c .` wipes working directory and fails to create a venv"
+type: issue
+state: closed
+author: notatallshaw
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-23T17:46:35Z
+updated_at: 2025-08-26T17:26:21Z
+url: https://github.com/astral-sh/uv/issues/15474
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# `uv venv -c .` wipes working directory and fails to create a venv
+
+---
+
+_Issue opened by @notatallshaw on 2025-08-23 17:46_
+
+### Summary
+
+I have a habit of accidentally writing `uv venv .` instead of `uv venv` or `uv venv .venv`, since `uv venv` now deletes everything in the directory this deleted my entire working directory.
+
+### Example
+
+```bash
+# DO NOT DO THIS:
+cd $HOME
+uv venv -c .
+```
+
+
+---
+
+_Label `enhancement` added by @notatallshaw on 2025-08-23 17:46_
+
+---
+
+_Renamed from "Refuse or throw a more scary error when user tries to create venv in current or parent directory" to "Refuse or throw a more scary error when `uv venv` is called in current or parent directory" by @notatallshaw on 2025-08-23 17:51_
+
+---
+
+_Renamed from "Refuse or throw a more scary error when `uv venv` is called in current or parent directory" to "Refuse or throw a more scary error when `uv venv` is called in current or parent directories" by @notatallshaw on 2025-08-23 17:51_
+
+---
+
+_Comment by @zanieb on 2025-08-23 18:53_
+
+Hm, I think `uv venv --clear` should fail if it's not a virtual environment (though I confirmed it does not). I'll need to look at the implementation again and see if that was mistakenly changed.
+
+---
+
+_Comment by @notatallshaw on 2025-08-23 19:05_
+
+> Hm, I think `uv venv --clear` should fail if it's not a virtual environment (though I confirmed it does not). I'll need to look at the implementation again and see if that was mistakenly changed.
+
+I should have more carefully provided steps to reproduce, sorry:
+
+```bash
+$ mkdir foo
+
+$ cd foo
+
+$ touch foo bar baz
+
+$ ls -ltr
+total 0
+-rw-r--r-- 1 damian damian 0 Aug 23 15:04 foo
+-rw-r--r-- 1 damian damian 0 Aug 23 15:04 baz
+-rw-r--r-- 1 damian damian 0 Aug 23 15:04 bar
+
+$ uv venv -c .
+Using CPython 3.13.7
+Creating virtual environment at: .
+error: Failed to create virtual environment
+  Caused by: No such file or directory (os error 2)
+
+$ ls -ltr
+total 0
+```
+
+---
+
+_Comment by @notatallshaw on 2025-08-23 19:08_
+
+Maybe I misunderstood what was happening, it appears to have cleared the directory before determining whether it can create the virtual environment or not. Seems like a bug?
+
+---
+
+_Comment by @zanieb on 2025-08-23 19:10_
+
+Huh I don't know why it fails to create it there
+
+https://github.com/astral-sh/uv/blob/3f83390e342dcb6fccc449335c15d1255885ad20/crates/uv-virtualenv/src/virtualenv.rs#L115-L119
+
+---
+
+_Comment by @notatallshaw on 2025-08-23 22:42_
+
+¯⁠\\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯, I dunno but it both wiped my working directory and failed to create a virtual environment. 
+
+---
+
+_Renamed from "Refuse or throw a more scary error when `uv venv` is called in current or parent directories" to "`uv venv -c .` wipes working directory and fails to create a venv" by @notatallshaw on 2025-08-23 22:44_
+
+---
+
+_Label `enhancement` removed by @zanieb on 2025-08-24 14:46_
+
+---
+
+_Label `bug` added by @zanieb on 2025-08-24 14:46_
+
+---
+
+_Comment by @DhavalGojiya on 2025-08-26 08:21_
+
+Yes, I also can reproduce it. See below:
+
+```bash
+mkdir interstellar
+cd interstellar
+mkdir sun moon earth
+ls -lh
+````
+
+Output:
+
+```text
+total 12K
+drwxrwxr-x 2 dhaval dhaval 4.0K Aug 26 13:47 earth
+drwxrwxr-x 2 dhaval dhaval 4.0K Aug 26 13:47 moon
+drwxrwxr-x 2 dhaval dhaval 4.0K Aug 26 13:47 sun
+```
+
+Then I tried to create a virtual environment using `uv`:
+
+```bash
+uv venv -c .
+```
+
+Output:
+
+```text
+Using CPython 3.12.11
+Creating virtual environment at: .
+error: Failed to create virtual environment
+  Caused by: No such file or directory (os error 2)
+```
+
+After that, checking the directory again:
+
+```bash
+ls -lh
+```
+
+Output:
+
+```text
+total 0
+```
+
+---
+
+_Comment by @notatallshaw on 2025-08-26 14:39_
+
+I can confirm later but I think this is new to 0.8, previously uv venv would create a venv in the current directory but not wipe everything. 
+
+This behavior is pretty dangerous, I almost lost a bunch of work, thankfully I had already committed everything remotely. 
+
+---
+
+_Comment by @zanieb on 2025-08-26 14:43_
+
+Hm? That's not what happened before 0.8
+
+```
+❯ uvx --from 'uv<0.8' uv venv .
+Installed 1 package in 5ms
+Using CPython 3.14.0rc2 interpreter at: /Users/zb/.local/bin/python3.14
+Creating virtual environment at: .
+uv::venv::creation
+
+  × Failed to create virtualenv
+  ╰─▶ The directory `.` exists, but it's not a virtual environment
+```
+
+Anyway, this is a high priority bug.
+
+---
+
+_Comment by @charliermarsh on 2025-08-26 14:45_
+
+I will look now.
+
+---
+
+_Comment by @zanieb on 2025-08-26 14:47_
+
+I think `--clear` should require `--force` or something to clear a non-virtual environment directory. At the very least, we should not prompt to clear the directory unless it's a virtual environment.
+
+---
+
+_Comment by @notatallshaw on 2025-08-26 14:49_
+
+> Hm? That's not what happened before 0.8
+
+Oh yeah, maybe I was misremembering a different tool or maybe there's something about my workspace which makes uv think it is a venv. Side discussion, but thanks for checking, I'll make a new issue if I can reproduce it on the latest version of uv. 
+
+---
+
+_Comment by @zanieb on 2025-08-26 14:53_
+
+It does reproduce on the latest version, it's definitely a regression from the `--clear` work.
+
+---
+
+_Comment by @notatallshaw on 2025-08-26 14:53_
+
+> I think `--clear` should require `--force` or something to clear a non-virtual environment directory.
+
+Same for the prompt, I'm using `uv venv -c . ` as the reproducible step but I actually did the command `uv venv . ` and just immediately hit enter at the prompt (because prompts just train users to hit enter if they default to doing an action, IMO prompts are therefore a bad UX and make other things like scripting more difficult).
+
+---
+
+_Comment by @charliermarsh on 2025-08-26 14:56_
+
+So it sounds like:
+
+- We should error (not prompt) if it's a non-empty, non-virtual environment, and the user didn't pass `-c`.
+- We should error if it's a non-empty, non-virtual environment, and the user did pass `-c`? Tell them to delete it manually? Seems safest honestly.
+- We should _not_ fail to re-create the environment if it's the CWD; it's sort of a weird use-case, but failing does seem like a bug.
+
+
+---
+
+_Comment by @charliermarsh on 2025-08-26 14:59_
+
+(The bug, specifically, is that accessing `CWD` fails because we deleted the current directory.)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-08-26 14:59_
+
+---
+
+_Comment by @zanieb on 2025-08-26 15:01_
+
+Yeah that sounds right!
+
+---
+
+_Comment by @notatallshaw on 2025-08-26 15:35_
+
+> * We should _not_ fail to re-create the environment if it's the CWD; it's sort of a weird use-case, but failing does seem like a bug.
+
+To be clear, this isn't a use case for me, it's a typo caused by crosswires in how I think about the command compared to other commands, I'm thinking "I want a venv in this directory" so I accidentally type `uv venv .`. 
+
+---
+
+_Referenced in [astral-sh/uv#15537](../../astral-sh/uv/pulls/15537.md) on 2025-08-26 16:19_
+
+---
+
+_Referenced in [astral-sh/uv#15538](../../astral-sh/uv/pulls/15538.md) on 2025-08-26 16:35_
+
+---
+
+_Closed by @charliermarsh on 2025-08-26 17:26_
+
+---

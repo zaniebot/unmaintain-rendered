@@ -1,0 +1,174 @@
+---
+number: 17424
+title: RUF009 - Frozen Dataclass default should be valid
+type: issue
+state: closed
+author: CarliJoy
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2025-04-16T10:53:34Z
+updated_at: 2025-06-23T19:10:13Z
+url: https://github.com/astral-sh/ruff/issues/17424
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# RUF009 - Frozen Dataclass default should be valid
+
+---
+
+_Issue opened by @CarliJoy on 2025-04-16 10:53_
+
+### Summary
+
+Frozen dataclasses and attrs objects should be considered immutable.
+
+[Playground](https://play.ruff.rs/b092eb6e-c17e-47dc-b45c-fdba55e00852)
+
+```python
+@attrs.frozen
+class A:
+    foo: int = 1
+
+@attrs.frozen
+class B:
+    a: A = A()  # should be valid, but gives RUF009
+
+@dataclasses.dataclass(frozen=True)
+class C:
+    foo: int = 1
+
+@dataclasses.dataclass(frozen=True)
+class D:
+    d: C = C()  # should be valid , but gives RUF009
+```
+
+### Version
+
+v0.11.5
+
+---
+
+_Renamed from "RUF009 - Frozen Dataclass default are valid" to "RUF009 - Frozen Dataclass default should be valid" by @CarliJoy on 2025-04-16 10:54_
+
+---
+
+_Label `type-inference` added by @dylwil3 on 2025-04-16 12:59_
+
+---
+
+_Comment by @dhruvmanila on 2025-04-21 19:15_
+
+I don't think that's what the rule is intended to catch. When you specify `frozen = True`, it's only the dataclass fields that are frozen i.e., you cannot re-assign the fields, and not the objects contained within the dataclass. Consider the following example:
+```pycon
+>>> from dataclasses import dataclass
+>>> class Foo:
+...     def __init__(self, x: int) -> None:
+...         self.x = x
+...         
+>>> @dataclass(frozen=True)
+... class Bar:
+...     f: Foo = Foo(1)
+...     
+>>> b1 = Bar()
+>>> b2 = Bar()
+>>> b3 = Bar()
+>>> b1.f.x
+1
+>>> b2.f.x
+1
+>>> b3.f.x
+1
+>>> b1.f.x = 2
+>>> b1.f.x
+2
+>>> b2.f.x
+2
+>>> b3.f.x
+2
+>>> b1.f = Foo(2)
+Traceback (most recent call last):
+  File "<python-input-13>", line 1, in <module>
+    b1.f = Foo(2)
+    ^^^^
+  File "<string>", line 15, in __setattr__
+dataclasses.FrozenInstanceError: cannot assign to field 'f'
+```
+
+You can see that updating the `Foo` object's `x` attribute on one instance of `Bar` (which is a dataclass) is visible to all instances of the same dataclass.
+
+---
+
+_Comment by @dhruvmanila on 2025-04-21 19:17_
+
+And, the way to fix that would be to use `field(default_factory=...)`:
+
+```pycon
+>>> from dataclasses import field
+>>> @dataclass(frozen=True)
+... class FixedBar:
+...     f: Foo = field(default_factory=lambda: Foo(1))
+...     
+>>> fb1 = FixedBar()
+>>> fb2 = FixedBar()
+>>> fb1.f.x
+1
+>>> fb2.f.x
+1
+>>> fb1.f.x = 2
+>>> fb1.f.x
+2
+>>> fb2.f.x
+1
+```
+
+---
+
+_Label `type-inference` removed by @dhruvmanila on 2025-04-21 19:17_
+
+---
+
+_Label `question` added by @dhruvmanila on 2025-04-21 19:17_
+
+---
+
+_Comment by @dhruvmanila on 2025-04-21 19:18_
+
+Oh shoot, I think I misunderstood the issue 🤦‍♂ 
+
+---
+
+_Label `question` removed by @dhruvmanila on 2025-04-21 19:18_
+
+---
+
+_Label `rule` added by @dhruvmanila on 2025-04-21 19:18_
+
+---
+
+_Label `type-inference` added by @dhruvmanila on 2025-04-21 19:18_
+
+---
+
+_Comment by @lubaskinc0de on 2025-06-15 07:48_
+
+I would like to start working on this from Monday.
+
+---
+
+_Referenced in [astral-sh/ruff#18734](../../astral-sh/ruff/pulls/18734.md) on 2025-06-17 19:20_
+
+---
+
+_Referenced in [astral-sh/ruff#18735](../../astral-sh/ruff/pulls/18735.md) on 2025-06-17 19:49_
+
+---
+
+_Closed by @ntBre on 2025-06-23 19:10_
+
+---
+
+_Referenced in [astral-sh/ruff#20266](../../astral-sh/ruff/issues/20266.md) on 2025-09-05 13:13_
+
+---

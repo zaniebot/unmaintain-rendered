@@ -1,0 +1,198 @@
+---
+number: 8262
+title: uv lock replacing all source registry URLs in uv.lock to the private registry
+type: issue
+state: open
+author: mazulo
+labels: []
+assignees: []
+created_at: 2024-10-16T15:47:36Z
+updated_at: 2025-07-23T09:02:31Z
+url: https://github.com/astral-sh/uv/issues/8262
+synced_at: 2026-01-10T01:24:26Z
+---
+
+# uv lock replacing all source registry URLs in uv.lock to the private registry
+
+---
+
+_Issue opened by @mazulo on 2024-10-16 15:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+Current uv platform: macOS 14.6.1 (23G93)
+Current uv version: uv 0.4.22 (34be3af84 2024-10-15)
+
+Hi team, first of all thank you for all the hard work on this project! Also let me know if there's an issue already covering this. I tried to search but couldn't find anything.
+
+Right now I'm having an issue which out of nowhere `uv lock` updates the `uv.lock` not only with the data for a new package added, but actually it's replacing all the source registry URL from `"https://pypi.org/simple"` to our private registry. Here's our configuration on `pyproject.toml`:
+
+```toml
+[project]
+name = "my-project"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "alembic==1.8.0",
+    "my-private-package==1.0.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "black==22.3.0",
+    "factory-boy==3.2.1",
+    "ipython==8.27.0",
+    "mock==2.0.0",
+    "mypy==1.11.2",
+]
+index-url = "https://pypi.org/simple"
+extra-index-url = [
+    "https://<ommited-registry>/pip/python/simple/",
+    "https://<ommited-registry>/pip-test/python/simple/",
+]
+index-strategy = "unsafe-first-match"
+```
+After running `uv lock --extra-index-url=https://<ommited-registry>/$ENV/org/pip/python/index/ --extra-index-url= https://<ommited-registry>/$ENV/org/pip-test/python/index/` the `uv.lock` has now replaced all registry from `https://pypi.org/simple` to our private registry.
+
+```diff
+────────────────────────────────────────────┐
+uv.lock:4: requires-python = ">=3.11, <4.0" │
+────────────────────────────────────────────┘
+[[package]]
+name = "aiohappyeyeballs"
+version = "2.4.3"
+- source = { registry = "https://pypi.org/simple" }
+- sdist = { url = "https://files.pythonhosted.org/packages/bc/69/2f6d5a019bd02e920a3417689a89887b39ad1e350b562f9955693d900c40/aiohappyeyeballs-2.4.3.tar.gz", hash = "sha256:75cf88a15106a5002a8eb1dab212525c00d1f4c0fa96e551c9fbe6f09a621586", size = 21809 }
++ source = { registry = "https://<ommited-registry>/TOKEN/org/pip/python/index/" }
++ sdist = { url = "https://<ommited-registry>/TOKEN/org/pip/python/aiohappyeyeballs-2.4.3.tar.gz", hash = "sha256:75cf88a15106a5002a8eb1dab212525c00d1f4c0fa96e551c9fbe6f09a621586" }
+wheels = [
+-    { url = "https://files.pythonhosted.org/packages/f7/d8/120cd0fe3e8530df0539e71ba9683eade12cae103dd7543e50d15f737917/aiohappyeyeballs-2.4.3-py3-none-any.whl", hash = "sha256:8a7a83727b2756f394ab2895ea0765a0a8c475e3c71e98d43d76f22b4b435572", size = 14742 },
++    { url = "https://<ommited-registry>/TOKEN/org/pip/python/aiohappyeyeballs-2.4.3-py3-none-any.whl", hash = "sha256:8a7a83727b2756f394ab2895ea0765a0a8c475e3c71e98d43d76f22b4b435572" },
+]
+
+[[package]]
+name = "aiohttp"
+version = "3.10.9"
+- source = { registry = "https://pypi.org/simple" }
++ source = { registry = "https://<ommited-registry>/TOKEN/org/pip/python/index/" }
+dependencies = [
+    { name = "aiohappyeyeballs" },
+    { name = "aiosignal" },
+```
+
+I'm really confused because I haven't see this happening before. Any ideas on what's happening and how to fix it?
+
+
+---
+
+_Comment by @mazulo on 2024-10-16 15:51_
+
+I'm not sure if https://github.com/astral-sh/uv/pull/7481 would fix the issue, but it seems that the features/fixes on that PR were not released yet. Sorry for the direct ping @charliermarsh but would you know anything about it?
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 15:51_
+
+Are those packages available on your private registry? We prioritize the extra index URLs over the index URL, so I think it's correct to use those URLs instead.
+
+---
+
+_Comment by @mazulo on 2024-10-16 15:58_
+
+@charliermarsh wow that was fast, thank you! So I'm not sure. The `uv.lock` is replacing the references for all packages (`pytest` for example). I'm not sure if they would be available in our registry. Also would this be the expected behavior? I might have understood incorrectly it:
+```
+--extra-index-url <EXTRA_INDEX_URL>          Extra URLs of package indexes to use, in addition to `--index-url`
+```
+The _in addition_ makes me think that it will only use it _after_ looking for the packages in the `--index-url`.
+
+Ideally the `uv.lock` should only add/update the metadata given the package's registry. For example, right now this is how our `uv.lock` looks like:
+
+```
+[[package]]
+name = "cachetools"
+version = "4.2.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/69/c457a860456cbf80ecc2e44ed4c201b49ec7ad124d769b71f6d0a7935dca/cachetools-4.2.4.tar.gz", hash = "sha256:89ea6f1b638d5a73a4f9226be57ac5e4f399d22770b92355f92dcb0f7f001693", size = 25487 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ea/c1/4740af52db75e6dbdd57fc7e9478439815bbac549c1c05881be27d19a17d/cachetools-4.2.4-py3-none-any.whl", hash = "sha256:92971d3cb7d2a97efff7c7bb1657f21a8f5fb309a37530537c71b1774189f2d1", size = 10358 },
+]
+
+[[package]]
+name = "my-private-package"
+version = "1.0.0"
+source = { registry = "https://<ommited-registry>/TOKEN/org/pip/python/index/" }
+dependencies = [
+    { name = "boto3" },
+    { name = "cachetools" },
+]
+wheels = [
+    { url = "https://<ommited-registry>/TOKEN/org/pip/python/my-private-package-1.0.0-py3-none-any.whl", hash = "sha256:956d66513a601575465fe6c2a2af60f2d3adb12eaa55471106e25c92f56b2ac5" },
+]
+```
+
+There we can see that `cachetools` has the registry as `"https://pypi.org/simple"` and the private package our registry URL. But now `uv lock` is replacing everything.
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 16:07_
+
+The priority is the order way around -- see here: https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes. If you provide more indexes then, we'll re-do the resolution following those rules, and end up selecting the internally-available versions. What are you trying to do exactly? Why would you want to prefer PyPI over your internal index?
+
+---
+
+_Comment by @mazulo on 2024-10-16 16:16_
+
+I think my confusion is more on why this started happening. Previously if I run `uv add --extra-index-url=<private-registry> my-package` it would only include the package with its specific source. But now `uv.lock` gets all source registry updated. Then having the `uv.lock` respecting the source registry for the would avoid any issues in the future in case, for any reason, the packages cannot be found in our private registry.
+
+A scenario for this would be when the private registry is under maintenance or having any issues. With this all other packages that by default are from `https://pypi.org/simple` would still be available to be installed. Does that make sense?
+
+---
+
+_Comment by @charliermarsh on 2024-10-16 16:25_
+
+I don't think the behavior here has changed recently. Did you see different behavior in a prior version of uv? If so, do you know which version?
+
+It doesn't quite make sense to use the PyPI registry if your private registry is mirroring everything. If you want to use PyPI for all non-private packages, I think you should probably disable PyPI mirroring?
+
+---
+
+_Comment by @mazulo on 2024-10-16 16:35_
+
+Before I started the migration from poetry to uv using uv version 0.4.10. The current `uv.lock` was created using that version. Now I'm using the latest. I see your point but I'm still trying to understand why `uv` now wants to update everything. In this case I believe the best option would be what was done in https://github.com/astral-sh/uv/pull/7481. Would you know when the next release which will include that PR will be out?
+
+---
+
+_Comment by @apollo13 on 2024-10-25 21:07_
+
+I have a similar problem. In CI I have set `UV_INDEX_URL` to point to our internal mirror. Now `uv sync --locked` complains that it would update the lockfile (it wants to rewrite to the mirror urls). I realize this is not exactly the same issue, so if I should open a new issue please let me know.
+
+I might be missing something in the docs, but what I would like to be able to do is the following: Allow a uv.lock file to be generated with URLs pointing to PyPI and sync from that in CI while using an internal mirror. The mirror is here for faster downloads and to not put more strain on PyPI, it is not used to serve private packages.
+
+EDIT:// pdm (which we were using before) has the nice possibility of not putting the whole URL into the lockfile https://pdm-project.org/latest/usage/lockfile/#static-urls 
+
+---
+
+_Comment by @zanieb on 2024-10-25 22:19_
+
+Related discussion on that in https://github.com/astral-sh/uv/issues/6349
+
+---
+
+_Comment by @ctrahey on 2025-07-23 09:02_
+
+> Why would you want to prefer PyPI over your internal index?
+
+Perhaps this is a valid answer - we have a mix of open-source and private projects. So if a developer mostly works on private packages and configures a private extra index in `~/.config/uv/uv.toml`, but then does a `uv sync` in an open source project, the uv.lock file becomes invalid to the public consumers of the project. 
+
+I appreciate the security commentary on [the referenced doc page](https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes). I decided to add an index entry in pyproject.toml for PyPi, which feels mostly "correct" in the sense that it at least sends clear signal. I wonder if the fact this worked is surprising though. 
+
+---

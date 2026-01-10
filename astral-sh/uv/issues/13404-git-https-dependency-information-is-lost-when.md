@@ -1,0 +1,142 @@
+---
+number: 13404
+title: "git+https://dependency information is lost when using uv build with hatchling"
+type: issue
+state: closed
+author: soof-golan
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-12T10:28:39Z
+updated_at: 2025-05-14T07:29:47Z
+url: https://github.com/astral-sh/uv/issues/13404
+synced_at: 2026-01-10T01:25:33Z
+---
+
+# git+https://dependency information is lost when using uv build with hatchling
+
+---
+
+_Issue opened by @soof-golan on 2025-05-12 10:28_
+
+### Summary
+
+Hi!
+For some reason I have not figured out yet, git+https dependency information is lost when consuming wheels or sdist assets produced by `uv build` (by default with hatchling as the build system)
+
+# Reproduction
+
+```bash
+cd $(mktemp -d)
+mkdir uv-build-repro && cd uv-build-repro
+uv init --lib
+# Replace this with any git dependency that is not published to PyPI
+uv add git+https://github.com/soof-golan/uv-build-git-repro-dep
+uv build
+export WHL_LOCATION="$(realpath dist/*.whl)"
+
+cd $(mktemp -d)
+mkdir uv-build-whl-consumer && cd uv-build-whl-consumer
+uv init --lib
+uv add "$WHL_LOCATION"
+```
+
+
+## Results
+
+```plaintext
+cd $(mktemp -d)
+mkdir uv-build-repro && cd uv-build-repro
+uv init --lib
+# Replace this with any git dependency that is not published to PyPI
+uv add git+https://github.com/soof-golan/uv-build-git-repro-dep
+uv build
+export WHL_LOCATION="$(realpath dist/*.whl)"
+
+cd $(mktemp -d)
+mkdir uv-build-whl-consumer && cd uv-build-whl-consumer
+uv init --lib
+uv add "$WHL_LOCATION"
+Initialized project `uv-build-repro`
+Using CPython 3.10.17
+Creating virtual environment at: .venv
+Resolved 2 packages in 209ms
+      Built uv-build-repro @ file:///private/var/folders/hg/00n7d3zd42df09kn6k68y0640000gn/T/tmp.uKO4OvlVg6/uv-build-repro
+Prepared 1 package in 484ms
+Installed 2 packages in 1ms
+ + uv-build-git-repro-dep==0.1.0 (from git+https://github.com/soof-golan/uv-build-git-repro-dep@570790e3fdaf7f73709dd4ba772cf59bf42073cd)
+ + uv-build-repro==0.1.0 (from file:///private/var/folders/hg/00n7d3zd42df09kn6k68y0640000gn/T/tmp.uKO4OvlVg6/uv-build-repro)
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/uv_build_repro-0.1.0.tar.gz
+Successfully built dist/uv_build_repro-0.1.0-py3-none-any.whl
+Initialized project `uv-build-whl-consumer`
+Using CPython 3.10.17
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because uv-build-git-repro-dep was not found in the package registry and uv-build-repro==0.1.0 depends on uv-build-git-repro-dep, we can conclude that uv-build-repro==0.1.0 cannot be used.
+      And because only uv-build-repro==0.1.0 is available and your project depends on uv-build-repro, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+```
+
+
+
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.7.3 (3c413f74b 2025-05-07)
+
+### Python version
+
+Python 3.10.17
+
+---
+
+_Label `bug` added by @soof-golan on 2025-05-12 10:28_
+
+---
+
+_Referenced in [astral-sh/uv#13405](../../astral-sh/uv/issues/13405.md) on 2025-05-12 10:37_
+
+---
+
+_Renamed from "git+https://dependency information is lost when using `uv build` with hatchling" to "wheels built by uv with git+https dependencies wrongly installs a package from PyPI with the same name" by @soof-golan on 2025-05-12 11:34_
+
+---
+
+_Renamed from "wheels built by uv with git+https dependencies wrongly installs a package from PyPI with the same name" to "git+https://dependency information is lost when using uv build with hatchling" by @soof-golan on 2025-05-12 11:35_
+
+---
+
+_Comment by @konstin on 2025-05-13 19:28_
+
+Can you describe what the difference to #13405 is?
+
+---
+
+_Comment by @soof-golan on 2025-05-14 06:38_
+
+Thanks for the reply, both issues are similar
+
+Since the git+http source is out-of-spec, I would assume calling `uv build` would behave in one of 2 ways here:
+
+1. Omit a dependency that has a direct source completely + produce some diagnostic that it has done so.
+2. Produce an error that the project cannot be built as long as there are dependencies that have direct sources.
+
+In any way, a silent _partial omision_ (keep the requirement, omit the source) here is surprising and produces wheels/sdists which are broken.
+
+---
+
+_Comment by @konstin on 2025-05-14 07:29_
+
+This falls under the same reasons as https://github.com/astral-sh/uv/issues/13405#issuecomment-2872702820: https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-sources explains this behavior, and you can use `--raw-sources` if you want the git+ssh source in the `dependencies` table, notably producing a wheel that can't be published to PyPI.
+
+---
+
+_Closed by @konstin on 2025-05-14 07:29_
+
+---

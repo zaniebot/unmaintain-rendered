@@ -1,0 +1,163 @@
+---
+number: 3334
+title: "Feature request: single hash pinning for containerized python environments"
+type: issue
+state: closed
+author: gary-wall-hpe
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-05-01T23:33:17Z
+updated_at: 2025-08-01T03:17:20Z
+url: https://github.com/astral-sh/uv/issues/3334
+synced_at: 2026-01-10T01:23:26Z
+---
+
+# Feature request: single hash pinning for containerized python environments
+
+---
+
+_Issue opened by @gary-wall-hpe on 2024-05-01 23:33_
+
+For containerized python builds only a single hash is in fact correct and accurate, not to mention is more secure with a much cleaner diff. Presently in uv all hashes are put into the resultant output of `uv pip compile --generate-hashes` -- is there a way to get a single hash for this environment? With pip this can be achieved with `pip compile --dry-run ...` or a combination of `pip download` and `pip hash` -- an option to be able to do so in `uv pip compile` would be extremely valuable.
+
+---
+
+_Comment by @vlad-ivanov-name on 2024-05-02 12:45_
+
+Wouldn't piping the output of `uv pip compile` into e. g. `sha256` achieve this?
+
+---
+
+_Comment by @zanieb on 2024-05-02 12:53_
+
+It does sound like you're just looking for a sha of a lockfile e.g. `sha256 requirements.txt`. Is there more that you need?
+
+---
+
+_Label `question` added by @zanieb on 2024-05-02 12:53_
+
+---
+
+_Comment by @gary-wall-hpe on 2024-05-02 13:35_
+
+@vlad-ivanov-name @zanieb not looking for a SHA of the requirements.txt (aka lock file) -- looking for items in the lockfile to have a single SHA pin -- for just the containerized python environment installation. 
+
+---
+
+_Comment by @zanieb on 2024-05-02 13:38_
+
+What does that mean to you / how is it different?
+
+---
+
+_Comment by @gary-wall-hpe on 2024-05-02 13:46_
+
+Today what a hash pinned requirements.txt looks like:
+
+Consider something like this for every single dependency in file.
+
+...
+uv==0.1.39 \
+    --hash=sha256:2333dd52e6734e0da6722bdd7b7257d0f8beeac89623c5cfc3888b4c56bc812e \
+    --hash=sha256:2ae930189742536f8178617c4ec05cb10271cb3886f6039abd36ee6ab511b160 \
+    --hash=sha256:2bda6686a9bb1370d7f53436d34f8ede0fa1b9877b5e152aedd9b22fc3cb33a9 \
+    --hash=sha256:3330bd7ab8a6160d815fdc36f48479edf6db8b58d39d20959555095ea7eb63c5 \
+    --hash=sha256:3365e0631a738a482d2379e565a230b135f7c5665394313829ccabf7c76c1362 \
+    --hash=sha256:388018659e5d73fdeb8ce13c1d812391ec981bf446ab86fb9c0e3d227f727da2 \
+    --hash=sha256:4c6ee1148f23aa5d6edf1a1106cc33c4aa57bdbfe8d4c5068c672105415d3b99 \
+    --hash=sha256:6b2acc907f7a1735dd9ffeb20d8c7aeeb86b1e5ba0a999e09433ad7f2789dc78 \
+    --hash=sha256:7848d703201e6867ae2c70d611e6ffd53d5e5adfc2c9abe89b6d021975e43e81 \
+    --hash=sha256:7ee426e0c5fa048cc44f3ac78e476121ef4365bb8bc9199d3cbffc372a80e55d \
+    --hash=sha256:88f5601ee957f9be2efc7a24d186f9d2641053806e107e0e42c5e522882c89e0 \
+    --hash=sha256:93217578e68a431df235173e390ad7df090499367cd7f5c811520fd4ea3d5047 \
+    --hash=sha256:c131dba5fe5079d9c5f06846649e35662901a9afd9b31de17714c63e042d91d2 \
+    --hash=sha256:c20b9023dac12ee518de79c91df313be7abb052440cb78f8ffb20dea81d3289e \
+    --hash=sha256:cd6d9629ab0e22ab2336b8d6363573ea5a7060ef82ff5d3e6da4b1b30522ef13 \
+    --hash=sha256:ce911087f56edc97a5792c17f682ed7611fedead0ea117f56bb6f3942eb3e7b3 \
+    --hash=sha256:fba96b3049aea5c1394cd360e5900e4af39829df48ed6fc55eba115c00c8195a
+...
+
+Single hash for just the target container example requirements.txt:
+
+...
+
+uv==0.1.39 \
+    --hash=sha256:6b2acc907f7a1735dd9ffeb20d8c7aeeb86b1e5ba0a999e09433ad7f2789dc78
+
+...
+
+
+---
+
+_Comment by @zanieb on 2024-05-02 13:51_
+
+I see. Thanks for clarifying!
+
+---
+
+_Label `question` removed by @konstin on 2024-05-02 13:55_
+
+---
+
+_Label `enhancement` added by @konstin on 2024-05-02 13:55_
+
+---
+
+_Comment by @gary-wall-hpe on 2024-05-06 18:28_
+
+@zanieb with pip to get the hash pin for just the specific environment, one can use `pip install --dry-run --report -r requirements.txt` or a mix of `pip download` and `pip hash` for each requirement -- does uv provide a way to get the pip compliant sha hash of a python module dependency that is resolved for the specific environment? Greatly appreciate any insights.
+
+---
+
+_Referenced in [astral-sh/uv#3516](../../astral-sh/uv/issues/3516.md) on 2024-05-10 21:04_
+
+---
+
+_Comment by @gary-wall-hpe on 2024-05-12 17:19_
+
+This was an approach pip-tools was working on for this if it provides any insights: https://github.com/jazzband/pip-tools/pull/1406
+
+---
+
+_Comment by @notatallshaw on 2024-06-20 16:04_
+
+Has there been any recent thoughts on this or https://github.com/astral-sh/uv/issues/3516?
+
+I would like to add hashes to my out file, but it's important to me that I can review diffs when I update it and go through each dependency and transative dependency that has been updated and at least do a cursory check of their changelogs. At the moment adding hashes adds too much noise, even though it should only be 1 of those hashes they we are using for each dependency we have.
+
+Or perhaps the intention is to move such use cases to the `uv.lock` file? Which I would need to experiment with to see if it fits my works existing workflow or not.
+
+---
+
+_Comment by @gary-wall-hpe on 2025-02-10 17:54_
+
+When dependencies, either direct or transitive, are installed, there is a single SHA version of the package that is selected. Is there a way in uv to get what SHA's would be resolved and installed for the specific environment?
+
+---
+
+_Comment by @EpicWink on 2025-07-31 13:27_
+
+I've created a script which converts `pip install --report` to a pip requirements file `requirements.txt`: [`pip-install-report-to-requirements.py`](https://gist.github.com/EpicWink/a6239a5a5ed8052f1f72f22f745a0a6d)
+
+---
+
+_Comment by @zanieb on 2025-07-31 20:36_
+
+@gary-wall-hpe please don't be snarky, it's reasonable for someone to share their workaround in case it's useful to the community.
+
+I think I'm conceptually fine with this, though I'm not sure if there are any lurking implications. It sounds like Charlie was aligned with the idea in https://github.com/astral-sh/uv/issues/3516. I think the behavior needs to be opt-in for compatibility, but that's my only qualm.
+
+---
+
+_Closed by @gary-wall-hpe on 2025-08-01 03:13_
+
+---
+
+_Comment by @EpicWink on 2025-08-01 03:17_
+
+> their workaround
+
+Not so much of a workaround (although I am using it instead of pip-tools' `compile`), as it is a suggestion towards the implementation of the solution (albeit with a recomputation of the reverse dependencies in the script, which can be skipped if integrated).
+
+---

@@ -1,0 +1,148 @@
+---
+number: 1638
+title: uv fails to build uWSGI when run from inside virtual env
+type: issue
+state: closed
+author: Tonius
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-18T10:15:10Z
+updated_at: 2024-02-19T08:31:05Z
+url: https://github.com/astral-sh/uv/issues/1638
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# uv fails to build uWSGI when run from inside virtual env
+
+---
+
+_Issue opened by @Tonius on 2024-02-18 10:15_
+
+When using `pip`, installing `uWSGI` works:
+
+```
+(.env) $ pip install uWSGI==2.0.24
+
+  Collecting uWSGI==2.0.24
+    Downloading uwsgi-2.0.24.tar.gz (810 kB)
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 810.6/810.6 kB 7.5 MB/s eta 0:00:00
+    Installing build dependencies ... done
+    Getting requirements to build wheel ... done
+    Preparing metadata (pyproject.toml) ... done
+  Building wheels for collected packages: uWSGI
+    Building wheel for uWSGI (pyproject.toml) ... done
+    Created wheel for uWSGI: filename=uWSGI-2.0.24-cp311-cp311-linux_x86_64.whl size=595370 sha256=ce6d03e32afc79de4a29f1dea85ed70e17abca0ca133d982b92797fbf180c119
+    Stored in directory: /home/tonius/.cache/pip/wheels/e0/d0/b6/701d5fb26ab6f65edf139106f9f890a43b7b2cf7979d5171a6
+  Successfully built uWSGI
+  Installing collected packages: uWSGI
+  Successfully installed uWSGI-2.0.24
+```
+
+It also works when using a 'regular' install of `uv`, for example when installed using `pipx`:
+
+```
+(.env) $ ~/.local/bin/uv pip install uWSGI==2.0.24
+
+  Resolved 1 package in 988ms
+     Built uwsgi==2.0.24                                                                                                                                                                                                     
+  Downloaded 1 package in 10.44s
+  Installed 1 package in 0ms
+   + uwsgi==2.0.24
+ ```
+
+But when `uv` is installed inside the virtual env and run from there, it fails with the following error:
+
+```
+(.env) $ python -m uv pip install uWSGI==2.0.24
+
+  Resolved 1 package in 921ms
+  error: Failed to download distributions
+    Caused by: Failed to fetch wheel: uwsgi==2.0.24
+    Caused by: Failed to build: uwsgi==2.0.24
+    Caused by: Build backend failed to build wheel through `build_wheel()`:
+  --- stdout:
+  running bdist_wheel
+  running build
+  running build_py
+  creating build
+  creating build/lib
+  copying uwsgidecorators.py -> build/lib
+  installing to build/bdist.linux-x86_64/wheel
+  running install
+  using profile: buildconf/default.ini
+  detected include path: ['/usr/include', '/usr/local/include']
+  --- stderr:
+  /tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/dist.py:265: UserWarning: Unknown distribution option: 'descriptions'
+    warnings.warn(msg)
+  Traceback (most recent call last):
+    File "/home/tonius/.cache/uv/built-wheels-v0/pypi/uwsgi/2.0.24/1qJiuyeK8BlA1eq0B7wMy/uwsgi-2.0.24.tar.gz/uwsgiconfig.py", line 754, in __init__
+      gcc_version_components = gcc_version.split('.')
+                              ^^^^^^^^^^^^^^^^^
+  AttributeError: 'NoneType' object has no attribute 'split'
+
+  During handling of the above exception, another exception occurred:
+
+  Traceback (most recent call last):
+    File "<string>", line 6, in <module>
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 404, in build_wheel
+      return self._build_with_temp_dir(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 389, in _build_with_temp_dir
+      self.run_setup()
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 480, in run_setup
+      super().run_setup(setup_script=setup_script)
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 311, in run_setup
+      exec(code, locals())
+    File "<string>", line 117, in <module>
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/__init__.py", line 103, in setup
+      return distutils.core.setup(**attrs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/core.py", line 185, in setup
+      return run_commands(dist)
+            ^^^^^^^^^^^^^^^^^^
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/core.py", line 201, in run_commands
+      dist.run_commands()
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/dist.py", line 969, in run_commands
+      self.run_command(cmd)
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/dist.py", line 963, in run_command
+      super().run_command(command)
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/dist.py", line 988, in run_command
+      cmd_obj.run()
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/wheel/bdist_wheel.py", line 403, in run
+      self.run_command("install")
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/cmd.py", line 318, in run_command
+      self.distribution.run_command(command)
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/dist.py", line 963, in run_command
+      super().run_command(command)
+    File "/tmp/.tmpeseF7y/.venv/lib/python3.11/site-packages/setuptools/_distutils/dist.py", line 988, in run_command
+      cmd_obj.run()
+    File "<string>", line 77, in run
+    File "/home/tonius/.cache/uv/built-wheels-v0/pypi/uwsgi/2.0.24/1qJiuyeK8BlA1eq0B7wMy/uwsgi-2.0.24.tar.gz/uwsgiconfig.py", line 762, in __init__
+      raise Exception("you need a C compiler to build uWSGI")
+  Exception: you need a C compiler to build uWSGI
+  ---
+```
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-18 14:58_
+
+---
+
+_Comment by @zanieb on 2024-02-19 00:13_
+
+This looks like it should be fixed by #1667 
+
+---
+
+_Comment by @Tonius on 2024-02-19 08:31_
+
+Tried again with uv 0.1.5 and it appears to be fixed, thanks! :+1:
+
+---
+
+_Closed by @Tonius on 2024-02-19 08:31_
+
+---

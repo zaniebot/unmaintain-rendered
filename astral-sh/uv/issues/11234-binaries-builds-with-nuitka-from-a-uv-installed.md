@@ -1,0 +1,188 @@
+---
+number: 11234
+title: "Binaries builds with Nuitka from a `uv`-installed Python fails on Ubuntu: `libpython3.13.so.1.0` not found"
+type: issue
+state: closed
+author: kdeldycke
+labels: []
+assignees: []
+created_at: 2025-02-05T06:38:46Z
+updated_at: 2025-03-10T19:14:55Z
+url: https://github.com/astral-sh/uv/issues/11234
+synced_at: 2026-01-10T01:25:03Z
+---
+
+# Binaries builds with Nuitka from a `uv`-installed Python fails on Ubuntu: `libpython3.13.so.1.0` not found
+
+---
+
+_Issue opened by @kdeldycke on 2025-02-05 06:38_
+
+Tl;Dr: System Python installed by `actions/setup-python` is working but not the Python installed by `uv`.
+
+I made up a simple project to demonstrate this issue: https://github.com/kdeldycke/nuitka-issue-3325
+
+### Works with `actions/setup-python`
+
+This project is a simple CLI compiled to a standalone binary on all major platforms (Ubuntu, macOS and Windows) and 2 different architectures (`x86_64` and `arm64`).
+
+This is performed by a GitHub workflow available at: https://github.com/kdeldycke/nuitka-issue-3325/blob/main/.github/workflows/system-python.yaml
+
+The process [works perfectly on all platforms](https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107468).
+
+Note that in the logs, Nuitka is [picking the right Python version from the system](https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107468/job/36698572930#step:7:14):
+
+```text
+Nuitka: Starting Python compilation with Nuitka '2.6.4' on Python (flavor GitHub Actions Python), '3.13' commercial grade 'not installed'.
+```
+
+### Issue with `uv`
+
+Now let's modify the working workflow used above, and completely remove the use of `actions/setup-python`. Instead, we will rely on `uv` alone to install our target Python version, by invoking:
+
+```shell-session
+$ uv venv --python 3.13
+```
+
+That new workflow is available at: https://github.com/kdeldycke/nuitka-issue-3325/blob/main/.github/workflows/uv-python.yaml
+
+Here is an explicit highlight of the differences between the two workflows:
+```diff
+$ diff -ru ./.github/workflows/system-python.yaml ./.github/workflows/uv-python.yaml        
+--- ./.github/workflows/system-python.yaml	2025-02-03 10:49:36
++++ ./.github/workflows/uv-python.yaml	2025-02-03 10:49:36
+@@ -6,7 +6,7 @@
+ 
+ jobs:
+ 
+-  system-python:
++  uv-python:
+     strategy:
+       matrix:
+         os:
+@@ -19,15 +19,12 @@
+     continue-on-error: true
+     steps:
+       - uses: actions/checkout@v4.2.2
+-      - uses: actions/setup-python@v5.4.0
+-        with:
+-          python-version: "3.13"
+       - name: Install uv
+         run: |
+           python -m pip install "uv == 0.5.28"
+       - name: Install Nuitka
+         run: |
+-          uv --no-progress venv
++          uv --no-progress venv --python 3.13
+           uv --no-progress pip install "nuitka == 2.6.4"
+ 
+       - name: uv run -m nuitka --version
+```
+
+Despite these differences, I expect no change in the results. But this is not the case as you can see in this run: https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465
+
+All the Ubuntu builds fail. The [binary is still produced on these platforms](https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465/job/36698572940#step:6:24), but running them [ends up with this error message](https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465/job/36698572940#step:8:5):
+
+```text
+my-cli-ubuntu-24.04.bin: error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory
+```
+
+Note that in this case, Nuitka [properly reports the Python 3.13 flavor as sourced from `uv`](https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13151107465/job/36698572940#step:6:6):
+
+```text
+Nuitka: Starting Python compilation with Nuitka '2.6.4' on Python (flavor UV-Python), '3.13' commercial grade 'not installed'.
+```
+
+### Context
+
+This has been tested with:
+- Latest `nuitka`: 2.6.4
+- Latest `uv`: 0.5.28
+- Latest Python: 3.13
+- Latest `actions/setup-python`: 5.4.0
+
+This issue has also been reported at: https://github.com/Nuitka/Nuitka/issues/3325
+
+---
+
+_Referenced in [Nuitka/Nuitka#3325](../../Nuitka/Nuitka/issues/3325.md) on 2025-02-05 06:39_
+
+---
+
+_Comment by @kdeldycke on 2025-02-05 06:45_
+
+I don't know much about the whole Python builds toolchain (that's why I love `uv` and `nuitka` because they make my life easy), but is this possible that this issue is related to:
+- https://github.com/astral-sh/uv/issues/11028
+- https://github.com/astral-sh/python-build-standalone/pull/507
+- https://github.com/astral-sh/uv/issues/6812
+- https://github.com/astral-sh/uv/issues/10674
+- https://github.com/python/cpython/issues/106045
+- https://github.com/astral-sh/uv/issues/10598
+- https://github.com/astral-sh/uv/issues/10555
+
+---
+
+_Comment by @kdeldycke on 2025-02-05 06:48_
+
+Also note this warning from the Nuitka project regarding `uv`-managed Python:
+
+https://github.com/Nuitka/Nuitka/commit/f5e7640c44d765abf78098b4071aa565604d5dec#diff-940a5fc082e89e5397d5015ec587ebed5409309cf2ebe9faad105a9ca74918a7R1740
+
+---
+
+_Assigned to @geofft by @geofft on 2025-02-06 21:46_
+
+---
+
+_Comment by @geofft on 2025-02-06 23:36_
+
+Sigh - this is the `ldd` bug discussed in #6812. Looks like Nuitka uses `ldd` to figure out what libraries are needed. Let me see if I can send Nuitka a PR to work around this....
+
+A kind of terrible workaround is
+```
+LD_LIBRARY_PATH=$(dirname "$(realpath "$(uv python find)")")/../lib uv run nuitka --onefile ...
+```
+which you only need for the Nuitka build step (because that will trick ldd as invoked by Nuitka into doing the right thing (at which point Nuitka will find libpython and embedd it into your `--onefile` binary, so you _don't_ need it when actually running the binary).
+
+---
+
+_Comment by @geofft on 2025-02-07 00:01_
+
+Actually, no, this is Nuitka not knowing we need an rpath (which is probably reasonable, there's not yet a really good way for us to tell a downstream build system that). Let me continue over on Nuitka/Nuitka#3325.
+
+---
+
+_Comment by @kdeldycke on 2025-02-25 09:01_
+
+Despite the latest fixes related to shared library (like https://github.com/Nuitka/Nuitka/commit/2cc95af024294b4f4f8204a3a757ef6a96b2bd6a and https://github.com/Nuitka/Nuitka/pull/3332), I can still reproduce this issue on GitHub with `uv 0.6.3` and `nuitka 2.6.7`:
+```shell-session
+/home/runner/work/nuitka-issue-3325/nuitka-issue-3325/my-cli-ubuntu-24.04.bin: error while loading shared libraries: libpython3.13.so.1.0: cannot open shared object file: No such file or directory
+```
+
+Source: https://github.com/kdeldycke/nuitka-issue-3325/actions/runs/13517179955/job/37768191123
+
+---
+
+_Comment by @qlan3 on 2025-03-06 00:52_
+
+Had the same issue with python 3.10.
+
+---
+
+_Comment by @kdeldycke on 2025-03-10 18:56_
+
+The newly released Nuitka 2.6.8 fixed the issue for me! 🎉
+
+See: https://github.com/Nuitka/Nuitka/issues/3325#issuecomment-2711540520
+
+---
+
+_Closed by @kdeldycke on 2025-03-10 18:56_
+
+---
+
+_Comment by @zanieb on 2025-03-10 19:14_
+
+Thanks!
+
+---

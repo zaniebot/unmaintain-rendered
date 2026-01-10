@@ -1,0 +1,46 @@
+---
+number: 1699
+title: "devise testing strategy for uv's cache"
+type: issue
+state: open
+author: BurntSushi
+labels:
+  - internal
+  - testing
+  - needs-design
+assignees: []
+created_at: 2024-02-19T15:53:01Z
+updated_at: 2024-02-19T16:30:17Z
+url: https://github.com/astral-sh/uv/issues/1699
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# devise testing strategy for uv's cache
+
+---
+
+_Issue opened by @BurntSushi on 2024-02-19 15:53_
+
+At present, we don't really have a good way of testing our cache specifically, other than as part of broader test. We should try to fix this because our caching logic isn't entirely trivial, and issues with it can be difficult to catch. For example, https://github.com/astral-sh/uv/issues/1571 / #1609 is an issue that occurred where `uv`'s internal data structures changed and this caused deserializing older cache data to fail. Catching a bug like this with tests is a little tricky, because it requires injecting intentionally invalid cache data, which isn't something our code really supports right now. The "simplest" path here is probably to just write a test that reaches into the cache directory and writes its own data based on knowledge of what we store there.
+
+---
+
+_Label `internal` added by @BurntSushi on 2024-02-19 15:53_
+
+---
+
+_Label `testing` added by @BurntSushi on 2024-02-19 15:53_
+
+---
+
+_Label `needs-design` added by @BurntSushi on 2024-02-19 15:53_
+
+---
+
+_Referenced in [astral-sh/uv#1707](../../astral-sh/uv/pulls/1707.md) on 2024-02-19 16:59_
+
+---
+
+_Referenced in [astral-sh/uv#16927](../../astral-sh/uv/pulls/16927.md) on 2025-12-02 11:10_
+
+---

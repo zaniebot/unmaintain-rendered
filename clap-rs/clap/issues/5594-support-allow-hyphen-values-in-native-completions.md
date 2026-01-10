@@ -1,0 +1,200 @@
+---
+number: 5594
+title: "Support `allow_hyphen_values` in native completions"
+type: issue
+state: closed
+author: shannmu
+labels:
+  - C-enhancement
+  - A-completion
+  - E-easy
+assignees: []
+created_at: 2024-07-24T05:47:56Z
+updated_at: 2024-09-05T14:17:06Z
+url: https://github.com/clap-rs/clap/issues/5594
+synced_at: 2026-01-10T01:28:14Z
+---
+
+# Support `allow_hyphen_values` in native completions
+
+---
+
+_Issue opened by @shannmu on 2024-07-24 05:47_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+```
+use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = "dynamic", about = "A dynamic command line tool")]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option<CompleteCommand>,
+    /// Output format
+    #[clap(short = 'F', long, value_parser = ["--json", "--yaml", "--toml"], allow_hyphen_values = true)]
+    format: Option<String>,
+    #[clap(long)]
+    json: Option<String>,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&mut Cli::command());
+    }
+    // normal logic continues...
+}
+```
+For the command line:
+```
+dynamic --format --json --js[TAB]
+```
+There is no completion generated.
+it should be:
+```
+dynamic --format --json --json 
+```
+
+This seems to be a very specific use case, but it shows that there is an error in parsing during dynamic completion when the allow_hyphen_values setting is enabled, or that allow_hyphen_values is not being considered.
+
+### Describe the solution you'd like
+
+https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_complete/src/dynamic/completer.rs#L76
+https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_complete/src/dynamic/completer.rs#L79
+https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_complete/src/dynamic/completer.rs#L112
+do something more in these branches
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+There are also user cases related to the mistaken parsing.
+## Case 1
+```
+use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = "dynamic", about = "A dynamic command line tool")]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option<CompleteCommand>,
+    /// Output format
+    #[clap(short = 'F', long, value_parser = ["json", "yaml", "toml"], allow_hyphen_values = true)]
+    format: Option<String>,
+    #[clap(value_parser = ["--pos_a"], index = 1)]
+    positional_a: Option<String>,
+    #[clap(value_parser = ["pos_b"], index = 2)]
+    positional_b: Option<String>,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&mut Cli::command());
+    }
+    // normal logic continues...
+}
+```
+For the command line
+```
+dynamic --format json --pos_a [TAB]
+```
+completions are:
+```
+--format  --help    --pos_a   -F        -h        help
+```
+it should be:
+```
+pos_b --format  --help    -F        -h        help
+```
+
+## Case 2
+```
+use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = "dynamic", about = "A dynamic command line tool")]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option<CompleteCommand>,
+    /// Output format
+    #[clap(short = 'F', long, value_parser = ["json", "yaml", "toml"], allow_hyphen_values = true)]
+    format: Option<String>,
+    #[clap(value_parser = ["-a"], index = 1)]
+    positional_a: Option<String>,
+    #[clap(value_parser = ["pos_b"], index = 2)]
+    positional_b: Option<String>,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&mut Cli::command());
+    }
+    // normal logic continues...
+}
+```
+For the command line
+```
+dynamic --format json -a [TAB]
+```
+completions are:
+```
+--format  --help    -F        -a        -h        help
+```
+it should be:
+```
+pos_b --format  --help    -F        -h        help
+```
+
+---
+
+_Label `C-enhancement` added by @shannmu on 2024-07-24 05:47_
+
+---
+
+_Comment by @shannmu on 2024-07-24 05:50_
+
+Track issue: https://github.com/clap-rs/clap/issues/3166
+- [code](https://github.com/clap-rs/clap/blob/master/clap_complete/src/dynamic)
+- [tests](https://github.com/clap-rs/clap/blob/master/clap_complete/tests/testsuite/dynamic.rs)
+
+---
+
+_Label `A-completion` added by @epage on 2024-07-24 15:19_
+
+---
+
+_Label `E-easy` added by @epage on 2024-07-24 15:19_
+
+---
+
+_Referenced in [clap-rs/clap#5628](../../clap-rs/clap/pulls/5628.md) on 2024-08-06 07:55_
+
+---
+
+_Referenced in [clap-rs/clap#5602](../../clap-rs/clap/pulls/5602.md) on 2024-08-06 08:15_
+
+---
+
+_Comment by @shannmu on 2024-08-06 09:35_
+
+There is a related case https://github.com/clap-rs/clap/pull/5602#discussion_r1705107817.
+
+---
+
+_Closed by @epage on 2024-09-05 14:17_
+
+---

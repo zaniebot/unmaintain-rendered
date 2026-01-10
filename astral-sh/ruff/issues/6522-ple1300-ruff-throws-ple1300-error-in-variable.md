@@ -1,0 +1,65 @@
+---
+number: 6522
+title: "[PLE1300] ruff throws PLE1300 error in variable width string formatting"
+type: issue
+state: closed
+author: SigureMo
+labels:
+  - bug
+assignees: []
+created_at: 2023-08-12T10:30:16Z
+updated_at: 2023-08-12T13:23:13Z
+url: https://github.com/astral-sh/ruff/issues/6522
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# [PLE1300] ruff throws PLE1300 error in variable width string formatting
+
+---
+
+_Issue opened by @SigureMo on 2023-08-12 10:30_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+The minimum reproduction code is as follows:
+
+```python
+# ruff-PLE1300-repro.py
+"{:^{}}".format("string", 10)
+```
+
+The second curly brackets is used to indicate the width of the formatting.
+
+```bash
+$ ruff --version     
+ruff 0.0.284
+
+$ ruff ruff-PLE1300-repro.py --select=PLE1300
+ruff-PLE1300-repro.py:1:1: PLE1300 Unsupported format character '}'
+Found 1 error.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-08-12 13:23_
+
+Thanks — duplicate of https://github.com/astral-sh/ruff/issues/6442.
+
+---
+
+_Closed by @charliermarsh on 2023-08-12 13:23_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-12 13:23_
+
+---

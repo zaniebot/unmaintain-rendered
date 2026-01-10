@@ -1,0 +1,465 @@
+---
+number: 6183
+title: "feat: add command headings feature"
+type: pull_request
+state: open
+author: jerusdp
+labels: []
+assignees: []
+base: master
+head: jerusdp/command-help-headings
+created_at: 2025-11-17T12:11:54Z
+updated_at: 2025-12-03T12:33:05Z
+url: https://github.com/clap-rs/clap/pull/6183
+synced_at: 2026-01-10T01:28:29Z
+---
+
+# feat: add command headings feature
+
+---
+
+_Pull request opened by @jerusdp on 2025-11-17 12:11_
+
+Implementing issue #1553
+
+### Scope of this PR
+
+The objective for this PR is to provide a facility for the user to place their commands under a custom header to allow the grouping of commands such as might be seen in `git --help`. 
+
+The PR will not implement `CommandAction` which would be required to permit the user to replace the `help` command with a custom user `help` command which could be place under a custom header. The user can place `help` under a custom header by amending the default title using `Command::subcommand_help_heading` placing the help command and the updated section at the top of the list of commands. 
+
+The will not change the scope of the  `Command::next_help_heading` to include processing for commands as this is a breaking change. 
+
+## Design Statements
+
+| Statement | Comment |
+| --- | --- |
+| MUST provide API to specify a custom section header for a user command | The key objective of the change |
+| MUST keep commands with the same header together | |
+| MUST display commands with no custom header under the default header | |
+| MUST display help command under the standard header | To amend this the user should change the default header |
+| WILL NOT change scope of `Command::next_help_heading` to include subcommands | | 
+| WILL NOT deprecate `Command::subcommand_help_heading` | It can be used to generate custom section heading for help |
+| WILL NOT implement custom replacement of help | Future solution requiring `CommandAction` 
+<!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+
+---
+
+_@epage reviewed on 2025-11-17 15:34_
+
+---
+
+_Review comment by @epage on `Cargo.toml`:184 on 2025-11-17 15:34_
+
+Why are we starting this off as unstable?
+
+---
+
+_Review comment by @jerusdp on `Cargo.toml`:184 on 2025-11-17 16:21_
+
+I thought that was the convention.  I can rename the the feature flag or remove it if it is unnecessary.
+
+---
+
+_@jerusdp reviewed on 2025-11-17 16:21_
+
+---
+
+_@epage reviewed on 2025-11-17 16:26_
+
+---
+
+_Review comment by @epage on `Cargo.toml`:184 on 2025-11-17 16:26_
+
+That is for big features that we feel we need extensive testing on.  This is relatively minor, particularly because we have the args versions already.
+
+---
+
+_@jerusdp reviewed on 2025-11-17 16:29_
+
+---
+
+_Review comment by @jerusdp on `Cargo.toml`:184 on 2025-11-17 16:29_
+
+So, remove "unstable" or remove the flag entirely?
+
+---
+
+_@epage reviewed on 2025-11-17 16:31_
+
+---
+
+_Review comment by @epage on `Cargo.toml`:184 on 2025-11-17 16:31_
+
+Remove it completely
+
+---
+
+_Review comment by @epage on `clap_builder/src/builder/command.rs`:4322 on 2025-11-18 16:55_
+
+We have `get_help_heading`, we do not need `is_help_heading_set`
+
+---
+
+_@epage reviewed on 2025-11-18 16:55_
+
+---
+
+_@epage reviewed on 2025-11-18 16:56_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:1175 on 2025-11-18 16:56_
+
+This is a pretty thin wrapper, not sure it is providing enough value
+
+---
+
+_@epage reviewed on 2025-11-18 16:58_
+
+---
+
+_Review comment by @epage on `tests/builder/subcommands.rs`:640 on 2025-11-18 16:58_
+
+Our help tests tend to live in `help.rs`
+
+---
+
+_@epage reviewed on 2025-11-18 16:59_
+
+---
+
+_Review comment by @epage on `tests/builder/subcommands.rs`:640 on 2025-11-18 16:59_
+
+Hmm, apparently our subcommands aren't using it
+
+---
+
+_@epage reviewed on 2025-11-18 17:01_
+
+---
+
+_Review comment by @epage on `tests/builder/subcommands.rs`:640 on 2025-11-18 17:01_
+
+What is the intended coverage difference between
+- test_help_header
+- test_help_header_multiple_help_headers
+- test_multiple_commands_mixed_standard_and_custom_headers
+
+---
+
+_@epage reviewed on 2025-11-18 17:05_
+
+---
+
+_Review comment by @epage on `tests/builder/subcommands.rs`:722 on 2025-11-18 17:05_
+
+We don't have a test that defines commands with help headings out of order (e.g. a `First Custom`  following by a `Second Custom` followed by a `First Custom`).
+
+---
+
+_@jerusdp reviewed on 2025-11-18 17:20_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:1175 on 2025-11-18 17:20_
+
+Ok, I will remove.
+
+---
+
+_@jerusdp reviewed on 2025-11-18 17:20_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/builder/command.rs`:4322 on 2025-11-18 17:20_
+
+Ok, I will remove.
+
+---
+
+_@jerusdp reviewed on 2025-11-18 17:21_
+
+---
+
+_Review comment by @jerusdp on `tests/builder/subcommands.rs`:640 on 2025-11-18 17:21_
+
+I will move these tests to help.rs
+
+
+---
+
+_@jerusdp reviewed on 2025-11-19 07:20_
+
+---
+
+_Review comment by @jerusdp on `tests/builder/subcommands.rs`:722 on 2025-11-19 07:20_
+
+Shuffled the order of the user commands in the comprehensive mixed test.
+
+---
+
+_Review comment by @jerusdp on `tests/builder/subcommands.rs`:640 on 2025-11-19 07:20_
+
+Exposes a little of the development of thought - I have removed the first two to make the third a single comprehensive test. 
+
+---
+
+_@jerusdp reviewed on 2025-11-19 07:20_
+
+---
+
+_@epage reviewed on 2025-11-19 21:13_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:990 on 2025-11-19 21:13_
+
+If extracting functions, please do so in a refactor commit before the feature work
+
+---
+
+_@epage reviewed on 2025-11-19 21:13_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:990 on 2025-11-19 21:13_
+
+nm, read too quick and misunderstood the role of this
+
+---
+
+_@epage reviewed on 2025-11-19 21:15_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:1001 on 2025-11-19 21:15_
+
+We should preserve the users order and not force them to be sorted.  We should likely implement this like we do arguments in `write_all_args`
+
+---
+
+_@epage reviewed on 2025-11-19 21:17_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:1001 on 2025-11-19 21:17_
+
+Oh, you are using a tuple to ensure the original order is preserved.  This is still a bit overkill and I'd still recommend mirroring the existing `write_all_args` way of doing this
+
+---
+
+_@epage reviewed on 2025-11-19 21:18_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:1029 on 2025-11-19 21:18_
+
+We should not be re-implementing `write_subcommand`
+
+---
+
+_@epage reviewed on 2025-11-19 21:21_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:1029 on 2025-11-19 21:21_
+
+Correction, it isn't `write_subcommand` that this is re-implementing but the logic at the start of `write_subcommands` for rendering a subcommand
+
+---
+
+_@epage reviewed on 2025-11-19 21:23_
+
+---
+
+_Review comment by @epage on `tests/builder/subcommands.rs`:639 on 2025-11-19 21:23_
+
+unrelated change
+
+---
+
+_@epage reviewed on 2025-11-19 21:24_
+
+---
+
+_Review comment by @epage on `tests/builder/help.rs`:4759 on 2025-11-19 21:24_
+
+In looking at the code again, we also need a test for [`Command::flatten_help`](https://docs.rs/clap/latest/clap/struct.Command.html#method.flatten_help) composing with this.
+
+---
+
+_Review comment by @jerusdp on `tests/builder/help.rs`:4759 on 2025-11-21 08:56_
+
+Implemented a version of the multipe commands with flattening
+
+---
+
+_@jerusdp reviewed on 2025-11-21 08:56_
+
+---
+
+_@jerusdp reviewed on 2025-11-21 09:44_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:1001 on 2025-11-21 09:44_
+
+Adopting the `write_all_args` way of doing this within the write_subcommands() function and removing write_subcommands_with_heading()
+
+---
+
+_@epage reviewed on 2025-11-21 18:12_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:1021 on 2025-11-21 18:12_
+
+dead code was left in
+
+---
+
+_@epage reviewed on 2025-11-21 18:14_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:910 on 2025-11-21 18:14_
+
+This change is overall a lot more complicated than I would have expected and I'll likely need to dig into this a lot further to better understand how inherent the complexity is or isn't before we're able to move forward.
+
+---
+
+_@jerusdp reviewed on 2025-11-24 17:04_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:1021 on 2025-11-24 17:04_
+
+Removed.
+
+---
+
+_@jerusdp reviewed on 2025-11-24 17:06_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:910 on 2025-11-24 17:06_
+
+The objective is to preserve the order in which the flattened commands are set out both in the usage and the commands sections so that commands are grouped within their custom headings.
+
+---
+
+_@epage reviewed on 2025-11-24 20:48_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:910 on 2025-11-24 20:48_
+
+That is a fair point.  If people rely on the help headings to logically group their commands, then consistently using that order elsewhere can make sense.  There can still be room for discussing whether it is worth it or not.  Most likely, we'll need to whittle away at other complexity first to see how much of an impact it really makes.
+
+As for the other complexity, in each case where we are dealing with custom help headings, we are duplicating all of the underlying logic rather than folding the custom and built-in heading cases together, making this more ripe for bugs.  This code also special cases `help` which will make it diverge in order compared to anything else and seems like a potential feature independent of this work.
+
+---
+
+_@jerusdp reviewed on 2025-11-25 07:45_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:910 on 2025-11-25 07:45_
+
+So, two issues here: 
+1. Special casing of help
+2. Need to refactor the similar/same processes to reduce duplication
+
+There is another concern I had last night and that is whether there are any other artefacts that are caused by the feature.  
+
+---
+
+_@epage reviewed on 2025-11-25 21:14_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:910 on 2025-11-25 21:14_
+
+> There is another concern I had last night and that is whether there are any other artefacts that are caused by the feature.
+
+What do you mean?
+
+---
+
+_@jerusdp reviewed on 2025-11-25 22:09_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:910 on 2025-11-25 22:09_
+
+> > There is another concern I had last night and that is whether there are any other artefacts that are caused by the feature.
+> 
+> What do you mean?
+
+That there would be some other interaction from the help_heading API - I produced a more comprehensive set of tests (all the helps tests with subcommand with a help_heading added) and only found a couple of problems with the flattened versions. One fixed and the other I am still working on. 
+
+---
+
+_@epage reviewed on 2025-11-26 22:24_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:392 on 2025-11-26 22:24_
+
+Please put supporting but unrelated changes like this in a commit before to not distract from the actual change
+
+---
+
+_@epage reviewed on 2025-11-26 22:25_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:908 on 2025-11-26 22:25_
+
+If you are extrating logic to functions, please do that in a separate commit before this one
+
+I'm also generally not a fan of functions inside of functions
+
+---
+
+_@jerusdp reviewed on 2025-11-27 07:43_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:908 on 2025-11-27 07:43_
+
+Function inside a function was not intended and I will correct. I will review whether the logic was added as part of this code or was added in the last weeks and present in a separate commit if it is refactoring original code.
+
+---
+
+_@jerusdp reviewed on 2025-11-27 07:45_
+
+---
+
+_Review comment by @jerusdp on `clap_builder/src/output/help_template.rs`:392 on 2025-11-27 07:45_
+
+By a commit before you mean a commit before the change is introduced? i.e.
+commit1 - above change
+commit2 - implementation of help heading
+
+---
+
+_@epage reviewed on 2025-12-01 19:06_
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:392 on 2025-12-01 19:06_
+
+Yes
+
+---

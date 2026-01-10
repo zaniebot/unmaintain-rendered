@@ -1,0 +1,100 @@
+---
+number: 6999
+title: Using uv pip and pip interchangeably
+type: issue
+state: closed
+author: timovp
+labels: []
+assignees: []
+created_at: 2024-09-04T08:39:23Z
+updated_at: 2024-09-04T10:56:45Z
+url: https://github.com/astral-sh/uv/issues/6999
+synced_at: 2026-01-10T01:24:09Z
+---
+
+# Using uv pip and pip interchangeably
+
+---
+
+_Issue opened by @timovp on 2024-09-04 08:39_
+
+Hi, 
+
+Not sure if this is intended behaviour, but if so I'd like to understand it better, if not it might be a bug/feature request.
+First of all, uv seems really nice and I'd like to use it. But without sounding like an old man yelling at the clouds, I observed the following, which I'd like to understand better. 
+
+### set up
+WSL1 Ubuntu 20.04
+python 3.8 regular package repository (shipped by default)
+python 3.11 installed from source
+the pip commands use python3.8/pip3.8 
+
+### steps
+- In an empty folder I installed `uv` into the global python, 3.8, using `pip install uv`. This gives me `uv` version 0.4.4. 
+- `uv pip freeze`  returns nothing, 
+- `pip freeze` results in a list of my globally installed packages (don't judge, I promise I create venvs for every project).
+- When creating a new venv, with `uv venv`, I get a `.venv` folder as expected
+- activate it with `source .venv/bin/activate`. 
+Now this is where the advertised drop-in-replacement catches me off-guard:
+- `uv pip freeze` again returns nothing
+- `pip freeze`  and other regular pip commands, still think there is no venv activated, and thus my global python install.
+
+### The surprising result
+Forgetting to use `uv` in front of my pip commands now, with the uv-`.venv` activated, does not install that package in the venv, but globally in the python version.
+Now you would not notice this, necessarily, when the python version uv references is the same as your global pip lives in, atleast, that's my suspicion. 
+It's a suspicion, because in my case, I don't even get warned that the pip I installed uv with in the first place, uses a different python version then uv will be using, including when creating venv's with `uv venv`. 
+
+Is this result because I am not all-in enough with the `uv` usage? Or would this work interchangeably if I would only have one python version, or if my default python is the same as uv likes to use?
+
+
+---
+
+_Comment by @jooon on 2024-09-04 09:31_
+
+I would say that the first empty `uv pip freeze` is strange, but maybe more undefined? When there is no `.venv` in the current or any parent directory, and there is no virtualenv activated, there is no environment for uv to check, since uv is not connected to a python environment like pip always is. I installed uv with the standalone installer (so it is in my cargo bin directory), while you installed it in your global python environment. For me, `uv pip freeze` actually do list the packages of the first `python` environment in my $PATH. This is consistent with how it behaves inside an activated virtualenv and maybe how it should behave.
+
+The confusing behavior of `pip freeze` after activating the virtualenv is "technically correct", but I agree it is very confusing. Typing `pip install` etc. is in my spine and I have been bitten by this many times even though I understand why it happens. The reason is that `uv venv` DOES NOT install `pip` in its virtualenv, since it is not needed by uv. That however means that `pip` still comes from your global python3.8 installation. 
+
+This is one reason that people advocate for using `python -mpip install` instead of `pip install`. If you try that after activating your virtualenv you will get a correct error message back.
+
+```
+python: No module named pip
+```
+
+I guess uv could install a fake `pip` binary in the virtualenv bin directory that will warn people that the pip module is not installed. Not sure if it is a good idea or not. I guess they have also thought about installing a small shim that just calls `uv pip` with the same arguments, but I am also not sure if that is a good idea.
+
+---
+
+_Comment by @jooon on 2024-09-04 09:45_
+
+Ok, I just installed uv in a small docker container without any python. It actually behaves like I thought it would. It checks if there is a virtual environment. If there is not, it checks the system environment. If no system environment, it fails.
+
+```
+# uv pip freeze
+error: No virtual or system environment found
+```
+
+So, for that first empty `uv pip freeze` you saw, maybe you had typed `uv venv` before and it had already created a `.venv` directory, but you didn't notice?
+
+---
+
+_Comment by @timovp on 2024-09-04 10:56_
+
+Thanks for the reply!
+
+> So, for that first empty uv pip freeze you saw, maybe you had typed uv venv before and it had already created a .venv directory, but you didn't notice?
+
+I suspect this. I tried reproducing again, with everything cleaner, since I also found out I had both a uv-stand alone (which was also on another version etc) and uv installed via the pip command. 
+
+So let's assume that was just a slip-up from my end.
+
+> there is no environment for uv to check, since uv is not connected to a python environment like pip always is. 
+> The reason is that uv venv DOES NOT install pip in its virtualenv, since it is not needed by uv. That however means that pip still comes from your global python3.8 installation.
+
+This absolutely fills the gap in my brain! Thanks, I think my questions are answered now 👍 
+
+---
+
+_Closed by @timovp on 2024-09-04 10:56_
+
+---

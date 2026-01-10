@@ -1,0 +1,65 @@
+---
+number: 11378
+title: outdated command for uv install on landing page
+type: issue
+state: closed
+author: BenediktMaag
+labels:
+  - bug
+  - documentation
+assignees: []
+created_at: 2025-02-10T08:26:19Z
+updated_at: 2025-02-10T20:42:51Z
+url: https://github.com/astral-sh/uv/issues/11378
+synced_at: 2026-01-10T01:25:04Z
+---
+
+# outdated command for uv install on landing page
+
+---
+
+_Issue opened by @BenediktMaag on 2025-02-10 08:26_
+
+### Summary
+
+On https://docs.astral.sh/uv/#installation the installation command says:
+
+- powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+but on https://docs.astral.sh/uv/getting-started/installation/#standalone-installer it says:
+
+- powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+which is actually the command you need to paste unless you have already set the execution policy globally.
+
+Please update the line on the landing patch to that of the installation page.
+
+### Platform
+
+Windows
+
+### Version
+
+-
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @BenediktMaag on 2025-02-10 08:26_
+
+---
+
+_Referenced in [astral-sh/uv#11380](../../astral-sh/uv/pulls/11380.md) on 2025-02-10 09:26_
+
+---
+
+_Label `documentation` added by @konstin on 2025-02-10 09:26_
+
+---
+
+_Closed by @konstin on 2025-02-10 20:42_
+
+---

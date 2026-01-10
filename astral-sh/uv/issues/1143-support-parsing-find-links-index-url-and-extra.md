@@ -1,0 +1,178 @@
+---
+number: 1143
+title: "Support parsing `--find-links`, `--index-url`, and `--extra-index-url` from `requirements.txt`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-01-27T01:22:55Z
+updated_at: 2024-02-20T22:14:34Z
+url: https://github.com/astral-sh/uv/issues/1143
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Support parsing `--find-links`, `--index-url`, and `--extra-index-url` from `requirements.txt`
+
+---
+
+_Issue opened by @charliermarsh on 2024-01-27 01:22_
+
+_No description provided._
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-01-27 01:22_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-27 02:41_
+
+---
+
+_Referenced in [astral-sh/uv#1146](../../astral-sh/uv/pulls/1146.md) on 2024-01-27 03:33_
+
+---
+
+_Closed by @charliermarsh on 2024-01-29 15:06_
+
+---
+
+_Comment by @VictorGob on 2024-02-15 22:47_
+
+I have tried installing the following requirements.txt in two Python 3.11-slim containers, one with uv and the other with regular pip (to see the speed difference). It seems that uv has ignored the `--extra-index-url` and installed the GPU version of PyTorch. (uv also tested with `--index-url`)
+
+> $ cat requirements.txt
+--extra-index-url https://download.pytorch.org/whl/cpu
+pandas
+polars
+numpy
+torch 
+torchvision 
+torchaudio 
+matplotlib
+
+These are the biggest differences when running `pip freeze`:
+> // Packages extra with uv:
+nvidia-cublas-cu12==12.1.3.1
+nvidia-cuda-cupti-cu12==12.1.105
+nvidia-cuda-nvrtc-cu12==12.1.105
+nvidia-cuda-runtime-cu12==12.1.105
+nvidia-cudnn-cu12==8.9.2.26
+nvidia-cufft-cu12==11.0.2.54
+nvidia-curand-cu12==10.3.2.106
+nvidia-cusolver-cu12==11.4.5.107
+nvidia-cusparse-cu12==12.1.0.106
+nvidia-nccl-cu12==2.19.3
+nvidia-nvjitlink-cu12==12.3.101
+nvidia-nvtx-cu12==12.1.105
+// pytorch packages installed with uv, no CPU version
+torch==2.2.0
+torchaudio==2.2.0
+torchvision==0.17.0
+
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 22:49_
+
+I think `uv` is probably finding `pytorch` from PyPI, rather than the extra index. What happens if you use `--index-url` instead?
+
+---
+
+_Comment by @VictorGob on 2024-02-15 22:54_
+
+Same: 
+(In both uv attempts, I ran `uv venv` before installing anything. And both attempts were in separate Python 3.11-slim containers.)
+> $ cat requirements.txt 
+--index-url https://download.pytorch.org/whl/cpu
+pandas
+polars
+numpy
+torch 
+torchvision 
+torchaudio 
+matplotlib
+$ uv pip freeze
+certifi==2024.2.2
+charset-normalizer==3.3.2
+contourpy==1.2.0
+cycler==0.12.1
+filelock==3.13.1
+fonttools==4.48.1
+fsspec==2024.2.0
+idna==3.6
+jinja2==3.1.3
+kiwisolver==1.4.5
+markupsafe==2.1.5
+matplotlib==3.8.3
+mpmath==1.3.0
+networkx==3.2.1
+numpy==1.26.4
+nvidia-cublas-cu12==12.1.3.1
+nvidia-cuda-cupti-cu12==12.1.105
+nvidia-cuda-nvrtc-cu12==12.1.105
+nvidia-cuda-runtime-cu12==12.1.105
+nvidia-cudnn-cu12==8.9.2.26
+nvidia-cufft-cu12==11.0.2.54
+nvidia-curand-cu12==10.3.2.106
+nvidia-cusolver-cu12==11.4.5.107
+nvidia-cusparse-cu12==12.1.0.106
+nvidia-nccl-cu12==2.19.3
+nvidia-nvjitlink-cu12==12.3.101
+nvidia-nvtx-cu12==12.1.105
+packaging==23.2
+pandas==2.2.0
+pillow==10.2.0
+polars==0.20.8
+pyparsing==3.1.1
+python-dateutil==2.8.2
+pytz==2024.1
+requests==2.31.0
+six==1.16.0
+sympy==1.12
+torch==2.2.0
+torchaudio==2.2.0
+torchvision==0.17.0
+triton==2.2.0
+typing-extensions==4.9.0
+tzdata==2024.1
+urllib3==2.2.0
+
+
+---
+
+_Comment by @charliermarsh on 2024-02-15 22:56_
+
+Thanks, will take a look!
+
+---
+
+_Referenced in [astral-sh/uv#1502](../../astral-sh/uv/issues/1502.md) on 2024-02-16 15:34_
+
+---
+
+_Comment by @VictorGob on 2024-02-20 22:14_
+
+Different error now:
+
+```
+$ root@62643bd3bcd0:~/test# uv pip install -r requirement.txt 
+  × No solution found when resolving dependencies:
+  ╰─▶ Because matplotlib was not found in the package registry and you require matplotlib, we can conclude that the
+      requirements are unsatisfiable.
+root@62643bd3bcd0:~/test# cat requirement.txt 
+--index-url https://download.pytorch.org/whl/cpu
+pandas
+polars
+numpy
+torch
+torchvision
+torchaudio
+matplotlib
+$ root@62643bd3bcd0:~/test# uv --version
+uv 0.1.6
+```
+
+---

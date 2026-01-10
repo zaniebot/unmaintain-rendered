@@ -1,0 +1,128 @@
+---
+number: 343
+title: Multi-valued options not working?
+type: issue
+state: closed
+author: mgalgs
+labels:
+  - C-bug
+  - A-parsing
+assignees: []
+created_at: 2015-11-13T18:58:59Z
+updated_at: 2018-08-02T03:29:46Z
+url: https://github.com/clap-rs/clap/issues/343
+synced_at: 2026-01-10T01:26:28Z
+---
+
+# Multi-valued options not working?
+
+---
+
+_Issue opened by @mgalgs on 2015-11-13 18:58_
+
+Maybe I'm missing something, but I can't get multi-valued options working.
+
+``` rust
+#[macro_use]
+extern crate clap;
+
+use clap::{App};
+
+fn main() {
+    let matches = App::new("clap-test")
+        .arg_from_usage("--print=<something>... 'Print stuff'")
+        .get_matches();
+
+    for thing in matches.values_of("something").unwrap() {
+        println!("stuff: {}", thing);
+    }
+}
+```
+
+which outputs:
+
+```
+$ ./target/debug/clap-test --print hello
+error: The following required arguments were not supplied:
+
+USAGE:
+    clap-test [FLAGS] --print <something>...
+
+For more information try --help
+```
+
+Which required arguments is it complaining about?
+
+The help text looks roughly correct:
+
+```
+$ ./target/debug/clap-test --help
+clap-test 
+
+USAGE:
+    clap-test [FLAGS] --print <something>...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --print <something>...    Print stuff
+```
+
+Full repro project here: https://github.com/mgalgs/clap-test
+
+
+---
+
+_Comment by @kbknapp on 2015-11-13 19:03_
+
+Strange, I'll look into this. I think I know where the issue is, and is related to the major refactor we just had. This should be an easy fix, thanks for taking the time to file this! :+1: 
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2015-11-13 19:03_
+
+---
+
+_Label `P1: urgent` added by @kbknapp on 2015-11-13 19:03_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-11-13 19:03_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2015-11-13 19:03_
+
+---
+
+_Label `W: 1.x` added by @kbknapp on 2015-11-13 19:03_
+
+---
+
+_Comment by @kbknapp on 2015-11-13 19:38_
+
+#344 fixes this issue. Once it merges I'll publish 1.5.1 to crates.io :wink:
+
+
+---
+
+_Closed by @kbknapp on 2015-11-13 21:08_
+
+---
+
+_Comment by @kbknapp on 2015-11-13 21:26_
+
+@mgalgs this issue has been fixed, v1.5.1 is out on crates.io. Thanks again for reporting the issue!
+
+
+---
+
+_Comment by @mgalgs on 2015-11-13 23:36_
+
+Wow, thanks for the quick turnaround!  And thanks for the great library.
+
+
+---

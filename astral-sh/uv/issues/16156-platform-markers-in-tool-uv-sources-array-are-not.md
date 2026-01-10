@@ -1,0 +1,117 @@
+---
+number: 16156
+title: "Platform markers in `tool.uv.sources` array are not respected during path resolution"
+type: issue
+state: closed
+author: oryon-dominik
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-07T16:30:27Z
+updated_at: 2025-11-01T20:59:50Z
+url: https://github.com/astral-sh/uv/issues/16156
+synced_at: 2026-01-10T01:26:04Z
+---
+
+# Platform markers in `tool.uv.sources` array are not respected during path resolution
+
+---
+
+_Issue opened by @oryon-dominik on 2025-10-07 16:30_
+
+### Summary
+
+
+When using an array of sources with platform-specific markers in
+`[tool.uv.sources]`, uv attempts to resolve and validate paths even when the
+marker indicates the source should not be used on the current platform. This
+causes failures when a path source is only valid on one platform.
+
+## Current Behavior
+
+With the following configuration:
+
+```toml
+[tool.uv.sources]
+mypackage = [
+  { git = "https://github.com/user/mypackage", branch = "mybranch", marker = "sys_platform != 'win32'"},
+  { path = "../../mypackage", editable = true, marker = "sys_platform == 'win32'"},
+]
+```
+
+On Linux (where `sys_platform != 'win32'` should match and use the Git source):
+
+```bash
+$ python -c "import sys; print(sys.platform)"
+linux
+
+$ uv sync --verbose
+DEBUG Found static `pyproject.toml` for: project @ file:///apps/project/src/application
+DEBUG No workspace root found, using project root
+DEBUG Attempting GitHub fast path for: mypackage @ git+https://****@github.com/user/mypackage@mybranch
+DEBUG Querying GitHub for commit at: https://api.github.com/repos/user/mypackage/commits/mybranch
+error: Distribution not found at: file:///apps/project/mypackage
+```
+
+Despite the marker indicating the path source should not be used on Linux, uv
+still attempts to resolve and validate the local path, causing the sync to
+fail.
+
+## Expected Behavior
+
+When `sys_platform == 'win32'` is false (on Linux), uv should:
+1. Skip the path source entirely
+2. Only use the Git source that matches `sys_platform != 'win32'`
+3. Never attempt to resolve or validate the `../../mypackage` path
+
+The verbose output shows uv correctly attempts the GitHub path first, but then
+falls back to checking the local path even though the marker should prevent
+this.
+
+## Workarounds Attempted
+
+1. ✅ **Switching marker order** - Git source first in array (still fails)
+2. ✅ **Different marker syntax** - Tried `platform_system` instead of `sys_platform` (still fails)
+3. ⚠️  **Cloning repo at path location** - Works but defeats the purpose of markers
+
+## Environment
+
+- **uv version**: 0.8.24
+- **Platform**: Linux (server), Windows 11 (development)
+- **Python**: 3.13.7
+
+## Related Issues
+
+- #10777 - `[tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker` - Similar issue with path normalization, supposedly fixed but still occurring
+- #14289 - `Cannot specify multiple uv.sources which depend on platform markers` - Enhancement request that led to array syntax implementation (which we're using correctly)
+
+
+### Platform
+
+Linux (server), Windows 11 (development)
+
+### Version
+
+0.8.24
+
+### Python version
+
+3.13.7
+
+---
+
+_Label `bug` added by @oryon-dominik on 2025-10-07 16:30_
+
+---
+
+_Comment by @charliermarsh on 2025-11-01 20:59_
+
+In order to create a `uv.lock` file, uv needs to be able to access all of the declared dependencies to extract their metadata -- even those that won't ultimately be installed. So it's correct for uv to look for the `../../mypackage` package even on non-Windows machines, as the lockfile is intended to be used across _all_ platforms.
+
+If you create a `uv.lock` and check it in, you can (e.g.) install on macOS without the local `mypackage` using `uv sync --frozen`. In other words, if the lockfile already exists, uv can use it and doesn't require access to dependencies it won't install; but to _create_ the lockfile, we need access to all of them.
+
+---
+
+_Closed by @charliermarsh on 2025-11-01 20:59_
+
+---

@@ -1,0 +1,151 @@
+---
+number: 4599
+title: "Unexpected behaviour of `default_value_t` when `From<&str>` impl isn't the inverse of `Display` impl"
+type: issue
+state: closed
+author: cyqsimon
+labels:
+  - C-bug
+assignees: []
+created_at: 2023-01-02T18:24:57Z
+updated_at: 2024-12-25T15:34:32Z
+url: https://github.com/clap-rs/clap/issues/4599
+synced_at: 2026-01-10T01:27:58Z
+---
+
+# Unexpected behaviour of `default_value_t` when `From<&str>` impl isn't the inverse of `Display` impl
+
+---
+
+_Issue opened by @cyqsimon on 2023-01-02 18:24_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.66.0
+
+### Clap Version
+
+4.0.32
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+#[derive(Clone, Debug, Parser)]
+struct CliArgs {
+    #[arg(long = "arg", default_value_t)]
+    arg: Foo,
+}
+
+#[derive(Clone, Debug, Default)]
+enum Foo {
+    #[default]
+    A,
+    B,
+    Custom(String),
+}
+impl std::fmt::Display for Foo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Foo::A => write!(f, "Variant A"),
+            Foo::B => write!(f, "Variant B"),
+            Foo::Custom(s) => write!(f, "Custom: {s}"),
+        }
+    }
+}
+impl From<&str> for Foo {
+    fn from(value: &str) -> Self {
+        match value {
+            "A" => Foo::A,
+            "B" => Foo::B,
+            v => Foo::Custom(v.into()),
+        }
+    }
+}
+
+fn main() {
+    let CliArgs { arg } = CliArgs::parse();
+    dbg!(arg);
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+`cargo run`
+
+### Actual Behaviour
+
+`arg` is `Foo::Custom("Variant A")`.
+
+### Expected Behaviour
+
+`arg` is `Foo::A`.
+
+---
+
+I think the main issue here is a gap between user expectation and actual implementation. What I expected (and I think what most users would expect) is that when I use `default_value_t`, `Foo::default` is directly called to fetch the default value.
+
+However in reality, it seems like `clap` is doing a "roundtrip" to string and back when `default_value_t` is used. The default argument goes from `Foo` to `String` via `Display`, then back to `Foo` via `From<&str>`.
+
+The problem with this, is that it assumes `Foo::from::<&str>` is the inverse operation of `Foo::to_string`, when that's not necessarily the case. In which case strange behaviour like this suddenly pop up.
+
+So in my amateur opinion, either:
+- the implementation of `default_value_t` should be changed to use `Foo::default` directly (this is the ideal solution, but I don't know whether this will be difficult to implement),
+- or [the documentation](https://docs.rs/clap/latest/clap/_derive/index.html#arg-attributes) needs to explicitly clarify this requirement that `Foo::from::<&str>` should be the inverse operation of `Foo::to_string`
+
+---
+
+_Label `C-bug` added by @cyqsimon on 2023-01-02 18:24_
+
+---
+
+_Closed by @epage on 2023-01-03 04:37_
+
+---
+
+_Comment by @epage on 2023-01-03 04:38_
+
+With the current architecture, tracking things to handle this isn't ideal.  I've updated the documentation.
+
+---
+
+_Comment by @pronebird on 2024-12-25 12:13_
+
+@epage came here being confused about the behaviour of `default_value_t`. Do you happen to know why is `arg(value_enum)` necessary for argument that conforms to `ValueEnum` or is it the same defect?
+
+```rs
+/// Arg definition
+#[arg(
+    global = true,
+    long,
+    short,
+    required = false,
+    value_enum, // <- necessary
+    default_value_t
+)]
+pub table_style: TableStyle,
+
+/// TableStyle definition
+#[derive(Debug, Default, Copy, Clone, ValueEnum)]
+pub enum TableStyle {
+    #[default]
+    Psql,
+    Ascii, 
+    // [..]
+}
+
+```
+
+---
+
+_Comment by @epage on 2024-12-25 15:34_
+
+`value_enum` is a special case to take advantage of the existing trait, rather than requiring `Display` to be implemented so we can convert the default value to our internal type.
+
+---

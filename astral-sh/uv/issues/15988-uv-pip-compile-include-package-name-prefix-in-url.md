@@ -1,0 +1,110 @@
+---
+number: 15988
+title: "uv pip compile: include package name prefix in URL dependencies"
+type: issue
+state: open
+author: tboddyspargo
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-09-22T16:48:44Z
+updated_at: 2025-11-03T15:21:19Z
+url: https://github.com/astral-sh/uv/issues/15988
+synced_at: 2026-01-10T01:26:02Z
+---
+
+# uv pip compile: include package name prefix in URL dependencies
+
+---
+
+_Issue opened by @tboddyspargo on 2025-09-22 16:48_
+
+### Summary
+
+I'm hoping it might be reasonable to ensure that if my input requirements contain:
+
+```
+# requirements.in
+my_package @ file://../my_package
+```
+
+That `uv` supports the corresponding output `.txt` file entry to look like:
+
+```
+# requirements.txt
+my_package @ ../my_package
+```
+
+The current behavior omits the `my_package @ ` prefix producing a result that includes an "unnamed" URL dependency (which is something that will be rejected when used as a constraints file, for example: `error: Unnamed requirements are not allowed as constraints`).
+
+### Example
+
+My specific use-case involves wanting to use my `requirements.txt` file output from `uv pip compile` as a constraints file.
+
+```
+UV_CONSTRAINTS=requirements.txt uv pip compile dev-requirements.in -o dev-requirements.txt
+```
+
+But the current behavior of `uv pip compile` produces a `.txt` file that, when used as a constraints file, results in:
+
+```
+error: Unnamed requirements are not allowed as constraints
+```
+
+Currently, I have to work around this behavior either by making post-hoc modifications to the requirements.txt file to ensure that the `my_package @ ` part is included before trying to use it as a constraint file OR to separate out my input files so that my constraint requirements file can be created from a subset that doesn't include the URL (local file) dependencies.
+
+---
+
+_Label `enhancement` added by @tboddyspargo on 2025-09-22 16:48_
+
+---
+
+_Comment by @zanieb on 2025-09-22 17:05_
+
+This seems reasonable to me. I want to double check with @charliermarsh though.
+
+---
+
+_Comment by @charliermarsh on 2025-09-22 17:56_
+
+I believe this exists for `pip` compatibility -- pip does not support relative paths like that (`my_package @ ../my_package`).
+
+---
+
+_Comment by @zanieb on 2025-09-22 18:28_
+
+Ah, that'd be a blocker then. I could get behind an opt-in `--emit-...` flag?
+
+---
+
+_Comment by @carl-mastrangelo on 2025-10-01 23:43_
+
+Our team also has this issue (but without the url `file://` portion).  
+
+---
+
+_Comment by @mattjreynolds on 2025-11-03 15:21_
+
+We ran into this same issue using relative paths to another `pyproject.toml`:
+
+In case it's helpful for others, the workaround solution I came up with was to exclude the relative package from the output when creating the constraints file. If you're using a relative path, then usually you have other system in place to ensure that the versions match (like version control via git etc), so it's ok if that package is missing from the constraints file.
+
+e.g `extra/pyproject.toml` with a relative path to a dependency that's installed using `core/pyproject.toml`:
+```
+[project]
+name = "extra-project"
+version = "0.1.0"
+dependencies = [
+    "other-dependency==1.2.3",
+    "core-project",
+]
+
+[tool.uv.sources]
+core-project = { path = "../core" }
+```
+
+`uv pip compile extra/pyproject.toml -o extra/constraints.txt --no-emit-package core-project`
+
+This will generate a `constraints.txt` with all dependencies (and dependencies of dependencies) for both `extra-project` and `core-project`, but it won't include the offending line for `core-project` that would break `uv pip install ./extra -c extra/constraints.txt`. This works because the `extra/pyproject.toml` is used to resolve `core-project` and it's dependencies, so it still gets installed, it's just not constrained to a specific version because it's not included in the `constraints.txt`
+
+---

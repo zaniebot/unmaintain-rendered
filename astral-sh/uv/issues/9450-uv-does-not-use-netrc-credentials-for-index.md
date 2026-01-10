@@ -1,0 +1,81 @@
+---
+number: 9450
+title: "`uv` does not use ~/.netrc credentials for `--index`"
+type: issue
+state: closed
+author: stefanvanburen
+labels: []
+assignees: []
+created_at: 2024-11-26T20:03:07Z
+updated_at: 2024-11-26T20:11:40Z
+url: https://github.com/astral-sh/uv/issues/9450
+synced_at: 2026-01-10T01:24:41Z
+---
+
+# `uv` does not use ~/.netrc credentials for `--index`
+
+---
+
+_Issue opened by @stefanvanburen on 2024-11-26 20:03_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+```console
+$ uv --version
+uv 0.5.4 (Homebrew 2024-11-20)
+```
+
+```console
+$ # add credentials to ~/.netrc
+$ uv add <package> --index <my-index>
+# fails with 401 due to not including credentials
+$ env NETRC=~/.netrc uv add <package> --index <my-index>
+# passes
+```
+
+Based on [the docs](https://docs.astral.sh/uv/configuration/authentication/#http-authentication), I'd expect these invocations to be the same — `uv add` should use the credentials for an index defined in my ~/.netrc file by default, without me needing to specify the file specifically. (Maybe there's a reason for `--index` not to do this, if the intention is to [provide credentials to a particular index in another way](https://docs.astral.sh/uv/configuration/indexes/#providing-credentials), but ISTM that ~/.netrc credentials should be used if they exist, regardless?)
+
+---
+
+_Comment by @charliermarsh on 2024-11-26 20:05_
+
+I don't think we do anything here, other than ask the crate to discover the netrc file:
+
+```rust
+    pub fn get_file() -> Option<PathBuf> {
+        let env_var = std::env::var("NETRC")
+            .map(PathBuf::from)
+            .map(|f| shellexpand::path::tilde(&f).into_owned());
+
+        #[cfg(windows)]
+        let default = std::env::var("USERPROFILE")
+            .into_iter()
+            .flat_map(|home| repeat(home).zip([".netrc", "_netrc"]))
+            .map(|(home, file)| PathBuf::from(home).join(file));
+
+        #[cfg(not(windows))]
+        let default = std::env::var("HOME").map(|home| PathBuf::from(home).join(".netrc"));
+
+        env_var.into_iter().chain(default).find(|f| f.exists())
+    }
+```
+
+---
+
+_Comment by @stefanvanburen on 2024-11-26 20:11_
+
+Possibly a mistake on my end — thanks for looking; I'll close this out and reopen if I have a repro for you.
+
+---
+
+_Closed by @stefanvanburen on 2024-11-26 20:11_
+
+---

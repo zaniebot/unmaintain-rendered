@@ -1,0 +1,337 @@
+---
+number: 2408
+title: Termux on Android
+type: issue
+state: closed
+author: phanirithvij
+labels:
+  - releases
+assignees: []
+created_at: 2024-03-13T11:49:09Z
+updated_at: 2024-11-21T13:20:57Z
+url: https://github.com/astral-sh/uv/issues/2408
+synced_at: 2026-01-10T01:23:17Z
+---
+
+# Termux on Android
+
+---
+
+_Issue opened by @phanirithvij on 2024-03-13 11:49_
+
+I tried installing on termux on Android but build failed.
+Can this platform Android be supported?
+
+
+---
+
+_Comment by @charbeljc on 2024-03-18 19:00_
+
+Hi, we are following the same path, here. From what I see, `rye` is installable with no glitches on Termux, failing at runtime to bootstrap itself due to the unavailability of `uv`.
+
+```bash
+cargo install --path crates/uv
+```
+fails at link stage:
+
+```
+[...] "/data/data/com.termux/files/usr/lib/rustlib/aarch64-linux-android/lib/libcompiler_builtins-d269850cd60e0323.rlib" \
+  "-Wl,-Bdynamic" "-lgcc" "-lz" "-ldl" "-llog" "-lunwind" "-ldl" "-lm" "-lc" \
+  "-Wl,--eh-frame-hdr" "-Wl,-z,noexecstack" \
+  "-L" "/data/data/com.termux/files/usr/lib/rustlib/aarch64-linux-android/lib" "-o" "/data/data/com.termux/files/home/Hack/uv/target/release/deps/uv-e66b0816d4199fc5" \
+  "-Wl,--gc-sections" "-pie" "-Wl,-z,relro,-z,now" "-Wl,-O1" "-nodefaultlibs"
+  = note: ld.lld: error: unable to find library -lgcc
+          cc: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+I guess `cc`is the culprit here...
+
+Regards
+
+---
+
+_Comment by @charliermarsh on 2024-03-18 19:11_
+
+I haven't looked at it at all, but you could try `--no-default-features --features flate2/rust_backend` to reduce some native dependencies.
+
+---
+
+_Comment by @charbeljc on 2024-03-18 20:28_
+
+Hey, I did try another way, and just succeeded installing...
+
+See https://stackoverflow.com/questions/68873570/how-do-i-fix-ld-error-unable-to-find-library-lgcc-when-cross-compiling-rust for details.
+
+```bash
+cd /data/data/com.termux/files/usr/lib
+cat << EOF > libgcc.a
+INPUT(-lunwind)
+EOF
+cd $UV_SOURCES
+cargo install --path crates/uv
+```
+Bingo !
+
+
+
+---
+
+_Comment by @charbeljc on 2024-03-18 20:31_
+
+However, there is still work to be done here...
+```
+❯ uv venv
+  × Querying Python at `/data/data/com.termux/files/usr/bin/python3` did not return the expected
+  │ data: invalid value: integer `-1`, expected u16 with exit status: 0
+  │ --- stdout:
+  │ {"result": "success", "markers": {"implementation_name": "cpython", "implementation_version":
+  │ "3.11.8", "os_name": "posix", "platform_machine": "aarch64", "platform_python_implementation":
+  │ "CPython", "platform_release": "5.4.233-qgki-ge0ae3f4f4643", "platform_system": "Linux",
+  │ "platform_version": "#1 SMP PREEMPT Thu Dec 14 04:24:04 UTC 2023 f2fs-hash:1e2949fb28",
+  │ "python_full_version": "3.11.8", "python_version": "3.11", "sys_platform":
+  │ "linux"}, "base_prefix": "/data/data/com.termux/files/usr", "base_exec_prefix":
+  │ "/data/data/com.termux/files/usr", "prefix": "/data/data/com.termux/files/usr",
+  │ "base_executable": "/data/data/com.termux/files/usr/bin/python3",
+  │ "sys_executable": "/data/data/com.termux/files/usr/bin/python3", "stdlib":
+  │ "/data/data/com.termux/files/usr/lib/python3.11", "scheme": {"platlib":
+  │ "/data/data/com.termux/files/usr/lib/python3.11/site-packages", "purelib":
+  │ "/data/data/com.termux/files/usr/lib/python3.11/site-packages", "include":
+  │ "/data/data/com.termux/files/usr/include/python3.11", "scripts":
+  │ "/data/data/com.termux/files/usr/bin", "data": "/data/data/com.termux/files/usr"},
+  │ "virtualenv": {"purelib": "lib/python3.11/site-packages", "platlib":
+  │ "lib/python3.11/site-packages", "include": "include/site/python3.11", "scripts": "bin",
+  │ "data": ""}, "platform": {"os": {"name": "manylinux", "major": -1, "minor": -1}, "arch":
+  │ "aarch64"}}
+  │ --- stderr:
+
+  │ ---
+```
+
+
+---
+
+_Comment by @charbeljc on 2024-03-18 22:16_
+
+With something like that, `uv` goes further, trying to install `fastapi`.
+```
+diff --git a/crates/uv-interpreter/python/get_interpreter_info.py b/crates/uv-interpreter/python/get_interpreter_info.py
+index a2c1e98b..210c8c6b 100644
+--- a/crates/uv-interpreter/python/get_interpreter_info.py
++++ b/crates/uv-interpreter/python/get_interpreter_info.py
+@@ -440,11 +440,16 @@ def get_operating_system_and_architecture():
+                 "minor": musl_version[1],
+             }
+         elif glibc_version:
+-            operating_system = {
+-                "name": "manylinux",
+-                "major": glibc_version[0],
+-                "minor": glibc_version[1],
+-            }
++            if glibc_version == (-1, -1) and architecture == "aarch64":
++                operating_system = {
++                    "name": "android",
++                }
++            else:
++                operating_system = {
++                    "name": "manylinux",
++                    "major": glibc_version[0],
++                    "minor": glibc_version[1],
++                }
+         else:
+```
+Oh, and it even installed `maturin` from sources  and trying to build `_pydantic_core` with it, right now ...
+
+```bash
+[...]
+DEBUG Writing entrypoints name="pydantic"
+DEBUG No data name="pydantic"
+DEBUG Writing extra metadata name="pydantic"
+DEBUG Writing record name="pydantic"
+Installed 10 packages in 63ms
+ + annotated-types==0.6.0
+ + anyio==4.3.0
+ + fastapi==0.110.0
+ - hello==0.1.0 (from file:///data/data/com.termux/files/home/Hack/hello)
+ + hello==0.1.0 (from file:///data/data/com.termux/files/home/Hack/hello)
+ + idna==3.6
+ + pydantic==2.6.4
+ + pydantic-core==2.16.3
+ + sniffio==1.3.1
+ + starlette==0.36.3
+ + typing-extensions==4.10.0
+
+```
+And python is failing to load `fastapi`.
+```
+❯ python
+Python 3.11.8 (main, Feb 11 2024, 13:05:24) [Clang 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d1 on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import fastapi
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/__init__.py", line 7, in <module>
+    from .applications import FastAPI as FastAPI
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/applications.py", line 16, in <module>
+    from fastapi import routing
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 22, in <module>
+    from fastapi import params
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/params.py", line 5, in <module>
+    from fastapi.openapi.models import Example
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/openapi/models.py", line 4, in <module>
+    from fastapi._compat import (
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/_compat.py", line 20, in <module>
+    from fastapi.exceptions import RequestErrorModel
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/fastapi/exceptions.py", line 3, in <module>
+    from pydantic import BaseModel, create_model
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/pydantic/__init__.py", line 383, in __getattr__
+    module = import_module(module_name, package=package)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/data/com.termux/files/usr/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/data/com.termux/files/home/Hack/hello/.venv/lib/python3.11/site-packages/pydantic/main.py", line 14, in <module>
+    from pydantic_core import PydanticUndefined
+ImportError: cannot import name 'PydanticUndefined' from 'pydantic_core' (unknown location)
+>>>
+```
+
+That's all for tonight :cat2: 
+
+---
+
+_Referenced in [astral-sh/uv#2705](../../astral-sh/uv/issues/2705.md) on 2024-03-28 09:59_
+
+---
+
+_Comment by @indrastorms on 2024-07-30 07:58_
+
+Any progress?
+
+---
+
+_Comment by @Biswa96 on 2024-08-23 14:21_
+
+I have added uv in termux in Android but it shows an error as following.
+
+```
+$ uv python install 3.11
+Searching for Python versions matching: Python 3.11
+error: No download found for request: cpython-3.11-linux-x86_64-none
+
+$ type python
+python is /data/data/com.termux/files/usr/bin/python
+```
+
+The issue is in the uv-python crate.
+
+```
+>>> import sys
+>>> sys.path = ["/data/data/com.termux/files/home/uv-0.3.2/crates/uv-python/"] + sys.path
+>>> from python.get_interpreter_info import main
+>>> main()
+{"result": "error", "kind": "libc_not_found"}
+```
+
+---
+
+_Referenced in [astral-sh/uv#7753](../../astral-sh/uv/issues/7753.md) on 2024-09-29 15:05_
+
+---
+
+_Comment by @zanieb on 2024-09-29 15:06_
+
+I'm not sure there is an upstream Python distribution available yet anyway https://github.com/indygreg/python-build-standalone/issues/176
+
+---
+
+_Label `releases` added by @zanieb on 2024-09-29 15:06_
+
+---
+
+_Comment by @mgedmin on 2024-10-04 12:13_
+
+> I'm not sure there is an upstream Python distribution available yet anyway
+
+I'd be happy if uv would support working with the termux Python installed using `pkg install python`.  (`uv` itself is also already available in the Termux repositories, the only issue is that it doesn't actually work due to this libc version thing.)
+
+---
+
+_Referenced in [astral-sh/uv#7373](../../astral-sh/uv/issues/7373.md) on 2024-10-04 12:13_
+
+---
+
+_Comment by @zanieb on 2024-10-04 13:02_
+
+The problem with the interpreter query is that we can't find a Libc version, which we require on Linux
+
+https://github.com/astral-sh/uv/blob/c7ff70b2814c84fbec1279bb2674bb0f8990a945/crates/uv-python/python/get_interpreter_info.py#L457-L480
+
+What does `_get_glibc_version` return?
+
+---
+
+_Comment by @Biswa96 on 2024-10-04 13:18_
+
+> What does `_get_glibc_version` return?
+
+`(-1, -1)`
+
+---
+
+_Comment by @zanieb on 2024-10-04 13:23_
+
+Unfortunately that's an upstream Python issue then i.e that's what it returns when it cannot determine a version. We can look into it, but I don't understand the nuances of their implementation.
+
+---
+
+_Comment by @konstin on 2024-10-04 13:26_
+
+Do you know if Python on Android links glibc or bionic?
+
+---
+
+_Comment by @Biswa96 on 2024-10-04 13:31_
+
+> Do you know if Python on Android links glibc or bionic?
+
+It is possible to have both.
+
+* python linked with bionic libc https://github.com/termux/termux-packages/tree/master/packages/python
+* python linked with glibc https://github.com/termux/glibc-packages/tree/main/gpkg/python
+
+---
+
+_Label `uv python` added by @zanieb on 2024-10-04 13:35_
+
+---
+
+_Label `uv python` removed by @zanieb on 2024-10-04 13:37_
+
+---
+
+_Comment by @zanieb on 2024-10-04 13:39_
+
+Let's use #7373 to track this interpreter query problem and this issue for broader support — the other issue has more relevant context for what we're discussing now.
+
+---
+
+_Referenced in [astral-sh/uv#7957](../../astral-sh/uv/issues/7957.md) on 2024-10-07 03:56_
+
+---
+
+_Referenced in [astral-sh/uv#9171](../../astral-sh/uv/issues/9171.md) on 2024-11-18 01:21_
+
+---
+
+_Comment by @samypr100 on 2024-11-21 12:50_
+
+I think this can be closed now that https://github.com/astral-sh/uv/issues/7373 is closed.
+
+---
+
+_Closed by @charliermarsh on 2024-11-21 13:20_
+
+---
+
+_Referenced in [astral-sh/uv#13845](../../astral-sh/uv/issues/13845.md) on 2025-06-04 18:29_
+
+---

@@ -1,0 +1,92 @@
+---
+number: 10430
+title: "`without_extras` is slow for lerobot"
+type: issue
+state: closed
+author: konstin
+labels:
+  - performance
+assignees: []
+created_at: 2025-01-09T14:32:59Z
+updated_at: 2025-01-10T16:23:21Z
+url: https://github.com/astral-sh/uv/issues/10430
+synced_at: 2026-01-10T01:24:54Z
+---
+
+# `without_extras` is slow for lerobot
+
+---
+
+_Issue opened by @konstin on 2025-01-09 14:32_
+
+Given [this pyproject.toml](https://gist.github.com/konstin/e9fea6019497159554a77188e212eae6), we spend ~38% of resolver thread time in `without_extras`
+
+![Image](https://github.com/user-attachments/assets/5de4e6ce-235d-451f-814d-7edb66ba2170)
+
+Hot code paths:
+
+https://github.com/astral-sh/uv/blob/0d57d298e68999be63fd0183fd0723686a6ec32a/crates/uv-resolver/src/candidate_selector.rs#L181-L185
+
+https://github.com/astral-sh/uv/blob/bec8468183c7cc1697ad1d34a5eb6087ec5c8a90/crates/uv-pep508/src/marker/tree.rs#L1143
+
+Profiling command, on ubuntu 24.04:
+
+```
+cargo build --profile profiling
+rm -f uv.lock
+samply record --rate 20000 target/profiling/uv lock -p 3.12
+```
+
+We should improve the performance for lerobot.
+
+---
+
+_Label `performance` added by @konstin on 2025-01-09 14:32_
+
+---
+
+_Comment by @BurntSushi on 2025-01-09 14:42_
+
+One simplistic idea is to create a PEP 508 marker once and [store it on `UniversalMarker`](https://github.com/astral-sh/uv/blob/15ec830beab1aa7f7adc13b125e8e2122fa78343/crates/uv-resolver/src/universal_marker.rs#L22). Then the `pep508` method can just return it instead of creating it.
+
+I think the main challenge there is just making sure it gets updated as appropriate since a `UniversalMarker` has `&mut` methods.
+
+This strategy is predicated on the idea that marker mutation is much rarer than calling `m.pep508()`. I think that's probably true, but I'm not certain.
+
+---
+
+_Comment by @BurntSushi on 2025-01-09 14:45_
+
+(It might also be a good time to get rid of the `&mut` methods on all of the marker types completely and just double down on its `Copy` impl.)
+
+---
+
+_Comment by @charliermarsh on 2025-01-09 14:52_
+
+We can maybe also optimize the _caller_ here? It looks like we call `marker.pep508()` twice for each package.
+
+---
+
+_Referenced in [astral-sh/uv#10438](../../astral-sh/uv/issues/10438.md) on 2025-01-09 17:54_
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2025-01-09 18:31_
+
+---
+
+_Referenced in [astral-sh/uv#10453](../../astral-sh/uv/pulls/10453.md) on 2025-01-10 13:10_
+
+---
+
+_Referenced in [astral-sh/uv#10472](../../astral-sh/uv/pulls/10472.md) on 2025-01-10 15:48_
+
+---
+
+_Closed by @BurntSushi on 2025-01-10 16:23_
+
+---
+
+_Closed by @BurntSushi on 2025-01-10 16:23_
+
+---

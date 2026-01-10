@@ -1,0 +1,90 @@
+---
+number: 3173
+title: Unpredictable what derive attributes allow only literals vs expressions
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - A-derive
+  - S-waiting-on-mentor
+assignees: []
+created_at: 2021-12-14T14:38:13Z
+updated_at: 2022-02-11T19:56:14Z
+url: https://github.com/clap-rs/clap/issues/3173
+synced_at: 2026-01-10T01:27:35Z
+---
+
+# Unpredictable what derive attributes allow only literals vs expressions
+
+---
+
+_Issue opened by @epage on 2021-12-14 14:38_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.55.0 (c8dfcfe04 2021-09-06)
+
+### Clap Version
+
+v3.0.0-beta.4
+
+### Minimal reproducible code
+
+N/A
+
+### Steps to reproduce the bug with the above code
+
+Use various attributes without reading the code or documentation
+
+### Actual Behaviour
+
+Some will work as literals while others allow any expression
+
+### Expected Behaviour
+
+Be consistent.  Solving this through documentation will lead to either
+- Users consulting the documentation on each attribute
+- Users keep trying to do things and fail
+- Users using a "safe" subset of the API that avoids the above two
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @epage on 2021-12-14 14:38_
+
+---
+
+_Label `A-derive` added by @epage on 2021-12-14 14:38_
+
+---
+
+_Label `S-waiting-on-mentor` added by @epage on 2021-12-14 14:38_
+
+---
+
+_Referenced in [clap-rs/clap#748](../../clap-rs/clap/issues/748.md) on 2021-12-14 14:38_
+
+---
+
+_Comment by @epage on 2022-02-11 19:56_
+
+I think #3452 ended up fixing this.
+
+---
+
+_Closed by @epage on 2022-02-11 19:56_
+
+---

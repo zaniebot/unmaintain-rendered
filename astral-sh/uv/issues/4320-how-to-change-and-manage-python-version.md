@@ -1,0 +1,50 @@
+---
+number: 4320
+title: How to change and manage python version? 
+type: issue
+state: closed
+author: takan1
+labels:
+  - question
+assignees: []
+created_at: 2024-06-13T23:56:43Z
+updated_at: 2024-06-19T00:31:47Z
+url: https://github.com/astral-sh/uv/issues/4320
+synced_at: 2026-01-10T01:23:36Z
+---
+
+# How to change and manage python version? 
+
+---
+
+_Issue opened by @takan1 on 2024-06-13 23:56_
+
+I switched from rye recently and with rye, I was able to manage python version with `rye pin`. What's the best way to manage the python versions with uv?
+
+---
+
+_Comment by @zanieb on 2024-06-14 00:35_
+
+Hi! We don't support pinning Python versions (though we will soon). Are you using our preview project interface (e.g. `uv run`, `uv lock`) or are you using our pip-compatible interface (`uv venv`, `uv pip install`)?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-06-14 04:02_
+
+---
+
+_Comment by @takan1 on 2024-06-16 02:19_
+
+@zanieb I'm using `uv venv`/`uv pip` and python version management addition would be great. I'll keep using rye for now til uv supports it then! 
+
+---
+
+_Comment by @zanieb on 2024-06-16 03:45_
+
+You can do `uv venv --preview --python <version>` and we'll fetch the version for you if we can't find it. There's going to be a setting to configure it soon (#4198).
+
+---
+
+_Closed by @zanieb on 2024-06-19 00:31_
+
+---

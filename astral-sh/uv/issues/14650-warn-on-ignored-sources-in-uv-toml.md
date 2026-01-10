@@ -1,0 +1,51 @@
+---
+number: 14650
+title: "Warn on ignored `[sources]` in `uv.toml`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - error messages
+assignees: []
+created_at: 2025-07-16T13:29:38Z
+updated_at: 2025-07-16T13:48:18Z
+url: https://github.com/astral-sh/uv/issues/14650
+synced_at: 2026-01-10T01:25:47Z
+---
+
+# Warn on ignored `[sources]` in `uv.toml`
+
+---
+
+_Issue opened by @charliermarsh on 2025-07-16 13:29_
+
+I thought we already warned for ignored `uv.toml` fields, but given:
+
+```toml
+[sources]
+anyio = { git = "https://github.com/agronholm/anyio" }
+```
+
+Then `uv add anyio --config-file ../uv.toml` doesn't warn.
+
+---
+
+_Label `error messages` added by @charliermarsh on 2025-07-16 13:29_
+
+---
+
+_Referenced in [astral-sh/uv#14600](../../astral-sh/uv/issues/14600.md) on 2025-07-16 13:29_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-07-16 13:34_
+
+---
+
+_Referenced in [astral-sh/uv#14653](../../astral-sh/uv/pulls/14653.md) on 2025-07-16 13:34_
+
+---
+
+_Closed by @charliermarsh on 2025-07-16 13:48_
+
+---

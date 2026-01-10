@@ -1,0 +1,48 @@
+---
+number: 9786
+title: Rule for naming functions inside function
+type: issue
+state: open
+author: Greesb
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-02-02T13:22:57Z
+updated_at: 2024-02-05T00:38:38Z
+url: https://github.com/astral-sh/ruff/issues/9786
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Rule for naming functions inside function
+
+---
+
+_Issue opened by @Greesb on 2024-02-02 13:22_
+
+Hello,
+
+Just thought about a potential rule that would be triggered when a function inside a function doesn't have a specific (configurable) prefix, eg:
+```python
+def my_outer_func():
+    # maybe some code maybe not
+    def idk():  # error: function inside function should have the `inner_` prefix
+        pass
+    # maybe some code again maybe not
+    idk()
+    # maybe some code again again maybe not
+```
+
+Would make it more identifiable that the called `idk` is (re)defined inside the function and avoid having to look for it elsewhere.
+
+What do you think ?
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-02-05 00:38_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-02-05 00:38_
+
+---

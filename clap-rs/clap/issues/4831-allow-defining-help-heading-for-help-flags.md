@@ -1,0 +1,155 @@
+---
+number: 4831
+title: Allow defining help heading for help flags
+type: issue
+state: closed
+author: paradigm
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-04-12T10:58:06Z
+updated_at: 2023-04-12T17:48:55Z
+url: https://github.com/clap-rs/clap/issues/4831
+synced_at: 2026-01-10T01:28:02Z
+---
+
+# Allow defining help heading for help flags
+
+---
+
+_Issue opened by @paradigm on 2023-04-12 10:58_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.2
+
+### Describe your use case
+
+My derive-based application has `#[clap(global = true)]` flags placed under `#[clap(help_heading = "Common options")]` and per-subcommand flags placed under per-subcommand `help_heading`s.  The `-h`/`--help` flag should be placed under `#[clap(help_heading = "Common options")]`, as it is available irrelevant of subcommand, but there is no straight forward way to define a heading for this flag other than the default `Options`.
+
+### Describe the solution you'd like
+
+Something like a `#[clap(help_flag_help_heading = "..."]` setting available via clap's derive API to define the help flag's `help_heading`.
+
+### Alternatives, if applicable
+
+`#[clap(disable_help_flag = true)]` paired with a way to manually add `-h`/`--help` via the derive API.  This would in turn require:
+
+- A way to make flag-like subcommands so `::parse()` does not exit with the `'<executable>' requires subcommand but one was not provided` message when `-h`/`--help` is provided rather than a subcommand.
+- A way to `print_help()` via the derive API, both for the application as a whole and per-subcommand.  I could only find ways to do this via the builder API.
+
+### Additional Context
+
+A very similar situation arises with the version flag.  While I do not use it, others who do may benefit from it being taken into consideration here as well, e.g. by adding a `#[clap(version_flag_help_heading = "...")]` or making a `print_version()` accessible via the derive API.
+
+---
+
+_Label `C-enhancement` added by @paradigm on 2023-04-12 10:58_
+
+---
+
+_Comment by @epage on 2023-04-12 13:33_
+
+> #[clap(disable_help_flag = true)] paired with a way to manually add -h/--help via the derive API. This would in turn require:
+
+The simplest way to create a custom help flag is to add  `#[arg(action = clap::ArgAction::Help)]` to a flag field.  Is there a reason your solution requires a help subcommand?
+
+---
+
+_Comment by @epage on 2023-04-12 13:36_
+
+For context, clap v2 had various API settings for customizing the built-in help.  At least by clap v3, we had
+- The above settings
+- `mut_arg("help", |arg| arg)` to force creation of `help` and modify it
+- Auto-detecting of something looking like help and making it act like help
+
+These created a system that "just worked" in some cases but then completely failed in others without a clear reason.  These were also slow at runtime and bloated the binary.  From this, we decided to use the `ArgAction` work to simplify this all down by requiring more explicit action by the user.
+
+---
+
+_Comment by @paradigm on 2023-04-12 16:41_
+
+`#[arg(action = clap::ArgAction::Help)]` indeed works and is a very elegant solution.  Apologies, my research here missed the fact that this was the proper way to go about things now.
+
+I did try that (amongst other things) before making this GitHub issue but tripped on the necessary associated type.  I initially assumed it should be a `bool`, as that's what's typically used for `--help`-like flags that either are or aren't present, but this resulted in a surprising runtime error that the field must be used. [0]  Only after you indicated that this is the correct route did I discover [clap's derive API accepts `()` fields](https://docs.rs/clap/latest/clap/_derive/index.html#arg-types).
+
+I think additional documentation here, perhaps [in the ArgAction documentation](https://docs.rs/clap/latest/clap/enum.ArgAction.html) or in [the derive tutorial](https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html) may help ensure others don't trip on the same issue I did.  That said, I recognize it's a delicate balance; making a tutorial too long may inhibit people's desire to consume its entirety.
+
+Many thanks both for your help here and your work on clap in general.
+
+-----
+
+[0] A minimal example:
+
+```
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(disable_help_flag = true)]
+struct Cli {
+    #[arg(short, long, action = clap::ArgAction::Help, required = false)]
+    help: bool, // flag is bool, similar to other flags which either are or aren't set
+}
+
+fn main() {
+    let _ = Cli::parse();
+    println!("arg parsing succeeded");
+}
+```
+
+resulted in:
+
+```
+$ cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/help-flag`
+error: The following required argument was not provided: help
+
+Usage: help-flag
+```
+
+The solution here appears to be to set the type to `()`, which makes it clear to clap that no value is expected.  Careful reading of the documentation indicates the ArgAction triggers when the argument is _encountered_, irrelevant of its _value_.  This:
+
+```
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(disable_help_flag = true)]
+struct Cli {
+    #[arg(short, long, action = clap::ArgAction::Help, required = false)]
+    help: (), // flag is (), indicating we don't care about the value, only if the arg is encountered
+}
+
+fn main() {
+    let _ = Cli::parse();
+    println!("arg parsing succeeded");
+}
+```
+
+resulted in the expected behavior:
+
+```
+$ cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/help-flag`
+error: The following required argument was not provided: help
+
+arg parsing succeeded
+```
+
+---
+
+_Closed by @paradigm on 2023-04-12 16:41_
+
+---
+
+_Comment by @epage on 2023-04-12 17:48_
+
+Not working with `bool` is being tracked in #4367
+
+---

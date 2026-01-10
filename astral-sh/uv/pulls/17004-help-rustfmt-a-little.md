@@ -1,0 +1,50 @@
+---
+number: 17004
+title: Help rustfmt a little
+type: pull_request
+state: closed
+author: konstin
+labels:
+  - internal
+assignees: []
+base: main
+head: konsti/rustfmt-break
+created_at: 2025-12-05T18:45:00Z
+updated_at: 2025-12-05T19:35:20Z
+url: https://github.com/astral-sh/uv/pull/17004
+synced_at: 2026-01-10T01:26:19Z
+---
+
+# Help rustfmt a little
+
+---
+
+_Pull request opened by @konstin on 2025-12-05 18:45_
+
+Rustfmt gave up on that block due to the trailing functions. This unblocks Rustfmt.
+
+---
+
+_Review requested from @zsol by @konstin on 2025-12-05 18:45_
+
+---
+
+_Label `internal` added by @konstin on 2025-12-05 18:45_
+
+---
+
+_@zanieb approved on 2025-12-05 19:35_
+
+---
+
+_Merged by @zanieb on 2025-12-05 19:35_
+
+---
+
+_Closed by @zanieb on 2025-12-05 19:35_
+
+---
+
+_Branch deleted on 2025-12-05 19:35_
+
+---

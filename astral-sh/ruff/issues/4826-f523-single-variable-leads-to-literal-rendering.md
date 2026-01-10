@@ -1,0 +1,117 @@
+---
+number: 4826
+title: "F523: Single variable leads to literal rendering of newline"
+type: issue
+state: closed
+author: addisoncrump
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-03T05:10:35Z
+updated_at: 2023-06-06T00:44:31Z
+url: https://github.com/astral-sh/ruff/issues/4826
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# F523: Single variable leads to literal rendering of newline
+
+---
+
+_Issue opened by @addisoncrump on 2023-06-03 05:10_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+## Reproduction
+
+The following snippet is a minimal reproduction:
+
+```py
+x = 5
+"\n".format(x)
+```
+
+The fix attempted:
+
+```py
+x = 5
+"
+".format(x)
+```
+
+## Command line
+
+```bash
+ruff check format2.py --fix --isolated
+```
+
+## Version information
+
+Built on e82160a83a76c11d04d727ee2349091351e63b32 (latest, bleeding).
+
+## Misc
+
+Discovered by #4822.
+
+This is potentially a duplicate of #4823, but I couldn't diagnose a root cause. Notably, I chose to open a separate issue because, where #4823 causes an incorrect replacement of single quotes with double quotes, this issue literally renders the content of a string (!) and may have a separate root cause.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-04 02:03_
+
+---
+
+_Comment by @charliermarsh on 2023-06-04 02:04_
+
+I think we should rewrite the F523 fix to use LibCST.
+
+---
+
+_Comment by @dhruvmanila on 2023-06-05 04:34_
+
+This got fixed in d8a6109b698f4a53475926e88efc3907fd0386ad:
+
+```diff
+--- /Users/dhruv/playground/ruff/src/F523.py
++++ /Users/dhruv/playground/ruff/src/F523.py
+@@ -1,2 +1,2 @@
+ x = 5
+-"\n".format(x)
++"\n".format()
+
+Would fix 1 error.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-06-05 16:03_
+
+I think it will still do the wrong thing in some cases, like if we need to rewrite the string to remove positionals, in which case we end up reconstructing from the AST.
+
+---
+
+_Comment by @charliermarsh on 2023-06-05 18:29_
+
+Actually, I don't think we can use LibCST for this. It doesn't include a format-string parser. Instead, we probably need to change the format-string parser to include ranges on the various pieces, so that we can update the string in-place rather than recreate it.
+
+---
+
+_Referenced in [astral-sh/ruff#4883](../../astral-sh/ruff/pulls/4883.md) on 2023-06-05 21:38_
+
+---
+
+_Closed by @charliermarsh on 2023-06-06 00:44_
+
+---
+
+_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 22:04_
+
+---

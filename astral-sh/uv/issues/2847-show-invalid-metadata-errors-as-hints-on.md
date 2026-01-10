@@ -1,0 +1,40 @@
+---
+number: 2847
+title: "Show \"invalid metadata\" errors as hints on resolution failure"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - error messages
+assignees: []
+created_at: 2024-04-05T22:40:04Z
+updated_at: 2024-04-10T03:12:11Z
+url: https://github.com/astral-sh/uv/issues/2847
+synced_at: 2026-01-10T01:23:23Z
+---
+
+# Show "invalid metadata" errors as hints on resolution failure
+
+---
+
+_Issue opened by @charliermarsh on 2024-04-05 22:40_
+
+_No description provided._
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-04-05 22:40_
+
+---
+
+_Referenced in [astral-sh/uv#2850](../../astral-sh/uv/pulls/2850.md) on 2024-04-06 01:11_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-08 19:43_
+
+---
+
+_Closed by @charliermarsh on 2024-04-10 03:12_
+
+---

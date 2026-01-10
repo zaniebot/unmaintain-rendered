@@ -1,0 +1,58 @@
+---
+number: 8961
+title: Include version number in release assets
+type: issue
+state: closed
+author: tobbez
+labels:
+  - release
+assignees: []
+created_at: 2023-12-02T02:53:01Z
+updated_at: 2023-12-05T19:42:12Z
+url: https://github.com/astral-sh/ruff/issues/8961
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# Include version number in release assets
+
+---
+
+_Issue opened by @tobbez on 2023-12-02 02:53_
+
+The assets attached to [releases](https://github.com/astral-sh/ruff/releases) currently use the exact same archive names for every release.
+
+Please consider including the version number in the archive name (for example, `ruff-0.1.6-aarch64-apple-darwin.tar.gz` instead of the current `ruff-aarch64-apple-darwin.tar.gz`), so it's possible to easily tell archives from different releases apart.
+
+---
+
+_Label `release` added by @charliermarsh on 2023-12-02 13:53_
+
+---
+
+_Comment by @MichaReiser on 2023-12-04 00:28_
+
+I don't feel opinionated about whether the version numbers should be included in the release assets or not. Do you know of other tools that include the version numbers? Would you be interested in creating a PR that includes the version number in our release assets?
+
+---
+
+_Comment by @tobbez on 2023-12-04 21:32_
+
+No hard stats to back it up, but in my experience including the version number is the rule (both for source archives and binary archives). A few other tools that include version numbers (the first few that came to mind): [ripgrep](https://github.com/BurntSushi/ripgrep/releases), [hyperfine](https://github.com/sharkdp/hyperfine/releases), [fd](https://github.com/sharkdp/fd/releases).
+
+I suppose I could have a go at updating the workflow to include version numbers in archive names.
+
+---
+
+_Referenced in [astral-sh/ruff#9002](../../astral-sh/ruff/pulls/9002.md) on 2023-12-05 00:11_
+
+---
+
+_Comment by @charliermarsh on 2023-12-05 19:42_
+
+Closed by https://github.com/astral-sh/ruff/pull/9002. Thank you!
+
+---
+
+_Closed by @charliermarsh on 2023-12-05 19:42_
+
+---

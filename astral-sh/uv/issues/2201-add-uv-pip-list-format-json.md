@@ -1,0 +1,51 @@
+---
+number: 2201
+title: "Add `uv pip list --format json`"
+type: issue
+state: closed
+author: Daverball
+labels:
+  - compatibility
+  - cli
+assignees: []
+created_at: 2024-03-05T12:20:38Z
+updated_at: 2024-03-06T05:52:32Z
+url: https://github.com/astral-sh/uv/issues/2201
+synced_at: 2026-01-10T01:23:14Z
+---
+
+# Add `uv pip list --format json`
+
+---
+
+_Issue opened by @Daverball on 2024-03-05 12:20_
+
+This is very helpful for interpreting the output of `pip list` in e.g. shell scripts using `jq` and then further process it to generate follow-up commands.
+
+This in combination with https://github.com/astral-sh/uv/issues/2150 is the last remaining blocker for me to be able to replace `pip` with `uv` in one of my projects (this also happens to be where I'm experiencing the most slowdowns).
+
+---
+
+_Comment by @T-256 on 2024-03-05 12:30_
+
+Already working on it: https://github.com/astral-sh/uv/pull/1998
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-03-05 13:47_
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-03-05 13:47_
+
+---
+
+_Comment by @charliermarsh on 2024-03-06 05:52_
+
+This was added in https://github.com/astral-sh/uv/pull/1998.
+
+---
+
+_Closed by @charliermarsh on 2024-03-06 05:52_
+
+---

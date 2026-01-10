@@ -1,0 +1,60 @@
+---
+number: 15402
+title: Support wheel-variants via pip install
+type: issue
+state: closed
+author: peacefulotter
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-21T08:17:58Z
+updated_at: 2025-08-21T09:06:34Z
+url: https://github.com/astral-sh/uv/issues/15402
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# Support wheel-variants via pip install
+
+---
+
+_Issue opened by @peacefulotter on 2025-08-21 08:17_
+
+Hi, 
+
+Thank you for the [amazing work](https://astral.sh/blog/wheel-variants) on wheel-variants. 
+
+### Context
+
+Currently, as far as I understand, the only way to install uv with wheel variants support is by downloading the build via curl or irm. This makes it impossible to install in environments with restricted network access, for instance in CI pipelines or behind a proxy, where external URLs may be blocked.
+
+### Proposal
+
+It would be helpful if the uv variant-enabled builds could be made available via pip, for example through:
+- `pip install uv[wheel-variants]`, or
+- a dedicated package like `uv-wheel-variants` hosted on PyPI. 
+
+### Example
+
+`pip install uv[wheel-variants]` or `pip install uv-wheel-variants` or something else, instead of curl / irm
+
+---
+
+_Label `enhancement` added by @peacefulotter on 2025-08-21 08:17_
+
+---
+
+_Comment by @konstin on 2025-08-21 08:23_
+
+Wheel variants will eventually be supported in standard uv, this split only exists since the standard is still evolving a lot and we wanted to avoid having this churn in uv itself. We're currently not planning on adding additional distribution channels for the variant build, but to turn the prototype into a standard and ship wheel variants as a preview feature.
+
+---
+
+_Comment by @peacefulotter on 2025-08-21 09:06_
+
+Awesome, thanks for the clarifications. 
+
+---
+
+_Closed by @peacefulotter on 2025-08-21 09:06_
+
+---

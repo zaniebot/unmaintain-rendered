@@ -1,0 +1,353 @@
+---
+number: 1431
+title: Subcommand name without hyphen in help
+type: issue
+state: closed
+author: chriskrycho
+labels:
+  - C-enhancement
+  - A-help
+  - S-blocked
+assignees: []
+created_at: 2019-03-18T18:49:28Z
+updated_at: 2022-05-05T17:02:01Z
+url: https://github.com/clap-rs/clap/issues/1431
+synced_at: 2026-01-10T01:26:53Z
+---
+
+# Subcommand name without hyphen in help
+
+---
+
+_Issue opened by @chriskrycho on 2019-03-18 18:49_
+
+Maintainer's notes
+- We hope #1334 will provide a way to resolve this.  This is being left open to ensure this use case isn't lost in case a minimum or full solution doesn't include this
+---
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+* rustc 1.33.0 (2aa4c46cf 2019-02-28)
+
+### Affected Version of clap
+
+* clap 2.32.0
+
+### Bug or Feature Request Summary
+
+Add a flag which supports printing the name of an app subcommand without the hyphen instead of with a hyphen, for apps which do not use external commands.
+
+### Expected Behavior Summary
+
+Clap apps can output `app subcommand` as the name of a subcommand when running `app subcommand --help`.
+
+### Actual Behavior Summary
+
+Clap apps can only output `app-subcommand` as the name of a subcommand when running `app subcommand --help`.
+
+### Steps to Reproduce the issue
+
+1. `App::new('app').subcommand(Subcommand::with_name('subcommand'))`.
+2. Run `<appname>
+
+### Sample Code or Link to Sample Code
+
+[notion](https://github.com/notion-cli/notion/pulls) is an app where we want subcommands to print like `notion install` *not* `notion-install`.
+
+### Debug output
+
+Compile clap with cargo features `"debug"` such as:
+
+```toml
+[dependencies]
+clap = { version = "2", features = ["debug"] }
+```
+
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+Paste Debug Output Here
+
+</code>
+</pre>
+</details>
+
+
+---
+
+_Comment by @rtucker-mozilla on 2019-11-27 13:22_
+
+Is there a way to disable this output alltogether?
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-02-01 14:58_
+
+---
+
+_Label `C: subcommands` added by @CreepySkeleton on 2020-02-01 14:58_
+
+---
+
+_Label `D: easy` added by @CreepySkeleton on 2020-02-01 14:58_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-02-01 14:58_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-01 14:58_
+
+---
+
+_Added to milestone `3.1` by @CreepySkeleton on 2020-02-01 14:58_
+
+---
+
+_Comment by @pickfire on 2020-03-14 14:24_
+
+@CreepySkeleton If I want to do this, I just need to add a new `global_settings` right like `Subcommand::DisableHyphen`?
+
+---
+
+_Comment by @pksunkara on 2020-03-14 14:27_
+
+Unfortunately it's not that simple. We do `app._build()` before parsing which kind of propagates the app binary name to subcommands and the subcommand binary name becomes this. I have been planning to look at the binary name being used in usage messages for quite a while but it's not a priority for v3.
+
+---
+
+_Comment by @pickfire on 2020-03-14 15:04_
+
+@pksunkara But then it was marked is `D: easy`? I thought it seemed easy but not. T_T
+
+Tests are here:
+```rust
+static ISSUE_1431: &str = "ctest-foo 
+
+USAGE:
+    ctest foo
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information";
+
+#[test] ▶Run Test
+fn help_subcommand_without_hyphen() {
+    let app = App::new("ctest").subcommand(App::new("foo"));
+    assert!(utils::compare_output(
+        app,
+        "ctest foo -h",
+        ISSUE_1431,
+        false
+    ));
+}
+```
+It took me some time to find the trailing space that fails the test, `ctest-foo `. Especially when I cannot see or copy anything correctly:
+
+<details>
+  <summary>Click to expand!</summary>
+
+```
+...
+failures:
+
+---- help_subcommand_without_hyphen stdout ----
+
+--> left
+ctest-foo
+
+USAGE:
+    ctest foo
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+--> right
+ctest-foo
+
+USAGE:
+    ctest foo
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+--
+thread 'help_subcommand_without_hyphen' panicked at 'assertion failed: utils::compare_output(app, "ctest foo -h", ISSUE_1431, false)', tests/help.rs:1667:5
+
+
+failures:
+    help_subcommand_without_hyphen
+
+test result: FAILED. 59 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+```
+</details>
+
+---
+
+_Label `D: easy` removed by @pksunkara on 2020-03-14 15:24_
+
+---
+
+_Label `D: medium` added by @pksunkara on 2020-03-14 15:24_
+
+---
+
+_Comment by @pksunkara on 2021-02-22 09:30_
+
+Related to #1382 
+
+---
+
+_Referenced in [clap-rs/clap#2564](../../clap-rs/clap/issues/2564.md) on 2021-06-22 14:00_
+
+---
+
+_Referenced in [geldata/gel-cli#415](../../geldata/gel-cli/issues/415.md) on 2021-08-02 20:34_
+
+---
+
+_Referenced in [clap-rs/clap#2738](../../clap-rs/clap/pulls/2738.md) on 2021-08-25 22:51_
+
+---
+
+_Referenced in [epage/clapng#115](../../epage/clapng/issues/115.md) on 2021-12-06 18:34_
+
+---
+
+_Label `C: subcommands` removed by @epage on 2021-12-08 20:07_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-08 20:07_
+
+---
+
+_Referenced in [clap-rs/clap#1382](../../clap-rs/clap/issues/1382.md) on 2021-12-08 20:12_
+
+---
+
+_Label `D: medium` removed by @epage on 2021-12-09 19:48_
+
+---
+
+_Label `E-help-wanted` removed by @epage on 2021-12-09 19:48_
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2021-12-09 19:48_
+
+---
+
+_Comment by @epage on 2021-12-09 19:50_
+
+My question is why is `-` present and why shouldn't we remove it?
+
+I see someone commented about external subcommands.  I'd be curious to see for that would look like that justifies putting the `-` in.
+
+---
+
+_Comment by @pksunkara on 2021-12-10 14:19_
+
+I think the standard of treating subcommands name is always `maincommand-subcommand`. For example, `git` does that. If you want to read info about `git commit`, you check `man git-commit` etc..
+
+Also, `git` automatically picks up external commands by doing the same. `git-trim` is picked up by `git trim`.
+
+Another aspect from your comment in #1382 is:
+
+> One other aspect of this is that we can have per-subcommand versions.
+
+`app subcommand` doesn't give the impression that it is one command while `app-subcommand` does. And that command is actually the subcommand.
+
+---
+
+_Renamed from "Feature: subcommand name without hyphen" to "Subcommand name without hyphen in help" by @epage on 2021-12-10 16:43_
+
+---
+
+_Comment by @epage on 2021-12-10 17:06_
+
+So I've only played with git and docker so far. My original assumption when starting to look at commands was that `git` is a bit unique due to its history of being composed of a lot of a pile of scripts, assuming everything was originally external commands.
+
+Neither mentions the command name, only the usage.  The usage does not use `-`.
+
+The man pages do use `-`.
+
+I'd be interested in exploring other examples and considering whether we should reduce some of the boilerplate, not just whitespace in #3096.  That might also help with help2man.
+
+---
+
+_Comment by @abatkin on 2021-12-10 17:33_
+
+I think Git is the exception here. With most other tools, the subcommand is not "part" of the main command. `docker image list`, `aws ec2 describe-instances`, `dnf update`. Even with Git, the safest way of accessing the manpage is `git subcommand --help` because that works on systems without `man` (like Windows, where it opens a browser with the docs instead).
+
+Update: On my system, all the git subcommands (i.e. `git-status`) are hidden away, well outside the user's `PATH`. It is difficult (and discouraged) to run the subcommands directly (i.e. `/usr/libexec/git-core/git-status`) and the fact that `git status` runs that binary is an implementation detail and likely not guaranteed. `git status` is the correct incantation, and all of the documentation (including what it displays if you run something like `git status --blargh`) report the command back as `git status [<options>] ...` not `git-status`.
+
+---
+
+_Referenced in [clap-rs/clap#1334](../../clap-rs/clap/issues/1334.md) on 2022-01-04 14:02_
+
+---
+
+_Comment by @epage on 2022-01-04 14:05_
+
+> I think Git is the exception here. With most other tools, the subcommand is not "part" of the main command. `docker image list`, `aws ec2 describe-instances`, `dnf update`. Even with Git, the safest way of accessing the manpage is `git subcommand --help` because that works on systems without `man` (like Windows, where it opens a browser with the docs instead).
+
+docker doesn't show the "name" but `man docker-image`  is used to access the man page.
+
+apt does show the `apt` name but `man apt-get` works.
+
+---
+
+_Comment by @epage on 2022-01-04 14:08_
+
+On thought I had is in https://github.com/clap-rs/clap/issues/1334 we are looking at allowing opting in to flattening subcommand help output, like `git stash -h`.  When flattening, we would only want to show the parent command (`git-stash` in `git stash -h` and `git-stash pop` in `git stash pop -h`).  Trying to decide whether to bake that into #1334 or offer it as a separate flag.  I'm leaning towards baking-in.
+
+---
+
+_Comment by @kolektiv on 2022-02-01 22:46_
+
+Another "second" for subcommand help being a) potentially slightly more configurable and b) defaulting to non-hyphenated. I'm not sure it's user obvious. In the worst case, it could easily be interpreted as an expectation that the user should type `app-subcommand` to invoke, rather than `app subcommand` and while they might get very lucky with oddities like git, there will be no `app-subcommand` binary on their system with this.
+
+Personally, I'd be more than happy if the title at least only ever showed the top-level app name. The actual subcommand is pretty clear from the usage section, as well as any actual help text that's been written.
+
+---
+
+_Label `S-waiting-on-decision` removed by @epage on 2022-02-03 14:56_
+
+---
+
+_Label `S-blocked` added by @epage on 2022-02-03 14:56_
+
+---
+
+_Comment by @epage on 2022-05-04 21:38_
+
+btw the fix for #1474 will allow users to specify their own display names for commands / subcommands that can be used for help.  Its currently at the phase of explicit opt-in with providing an `help_template` but we plan to make use the display name in the default help
+
+---
+
+_Referenced in [clap-rs/clap#1474](../../clap-rs/clap/issues/1474.md) on 2022-05-04 21:38_
+
+---
+
+_Referenced in [clap-rs/clap#3693](../../clap-rs/clap/pulls/3693.md) on 2022-05-05 01:25_
+
+---
+
+_Closed by @epage on 2022-05-05 17:01_
+
+---
+
+_Comment by @epage on 2022-05-05 17:02_
+
+With #3693, we are putting it in users hands for making the display name in the help how they want it.
+
+In https://github.com/clap-rs/clap/discussions/3695#discussioncomment-2694978 I talk about how to programmatically generate an alternative display name
+
+---

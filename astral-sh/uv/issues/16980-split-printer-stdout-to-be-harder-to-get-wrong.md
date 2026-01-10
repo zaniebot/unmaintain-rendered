@@ -1,0 +1,47 @@
+---
+number: 16980
+title: "Split `Printer::stdout()` to be harder to get wrong"
+type: issue
+state: open
+author: konstin
+labels:
+  - internal
+  - needs-design
+assignees: []
+created_at: 2025-12-04T15:22:02Z
+updated_at: 2025-12-04T15:42:58Z
+url: https://github.com/astral-sh/uv/issues/16980
+synced_at: 2026-01-10T01:26:12Z
+---
+
+# Split `Printer::stdout()` to be harder to get wrong
+
+---
+
+_Issue opened by @konstin on 2025-12-04 15:22_
+
+Currently, multiple locations that have machine readable output use `printer.stdout()`. This means that they don't output when `-q` is set, breaking the interface contract. We should break `stdout` and `stdout_important` into different functions named after their purpose, such as machine-readable output, that react appropriately to `-q`.
+
+---
+
+_Label `internal` added by @konstin on 2025-12-04 15:22_
+
+---
+
+_Label `needs-design` added by @konstin on 2025-12-04 15:22_
+
+---
+
+_Comment by @zanieb on 2025-12-04 15:42_
+
+I think we can split `Printer.stderr` too, generally the goal should be to identify current use-cases and then see how we can group them. Here are some ideas off the top of my head:
+
+- `stream_for_machine_output`
+- `stream_for_progress`
+- `stream_for_status_update`
+- `stream_for_success_summary`
+- `stream_for_failure_summary`
+
+
+
+---

@@ -1,0 +1,58 @@
+---
+number: 10848
+title: SIM300 (Yoda conditions) incorrectly triggered by CAPITAL variable
+type: issue
+state: closed
+author: av223119
+labels: []
+assignees: []
+created_at: 2024-04-09T12:37:24Z
+updated_at: 2024-04-09T13:57:31Z
+url: https://github.com/astral-sh/ruff/issues/10848
+synced_at: 2026-01-10T01:22:50Z
+---
+
+# SIM300 (Yoda conditions) incorrectly triggered by CAPITAL variable
+
+---
+
+_Issue opened by @av223119 on 2024-04-09 12:37_
+
+The following code:
+
+```python
+if CLIENT_IPS != ["127.0.0.1"]:
+    pass
+```
+
+triggers the error from ruff:
+`SIM300 [*] Yoda conditions are discouraged, use `["127.0.0.1"] != CLIENT_IPS` instead`
+
+First, as one can see this is not, in fact, a Yoda condition; but what is more interesting is that renaming the variable to lowercase eliminates the error! The following code does not trigger the SIM300:
+
+```python
+if client_ips != ["127.0.0.1"]:
+    pass
+```
+
+ruff 0.3.5, SIM module enabled is everything needed to trigger the issue.
+
+---
+
+_Comment by @charliermarsh on 2024-04-09 13:57_
+
+Thankfully this is already fixed in preview. You can see here: https://play.ruff.rs/14c4fc15-f25d-450f-9bb3-516c8b07b86c. So running with `--preview` will resolve the issue. Otherwise, we'll likely stabilize this in Ruff v0.4.0.
+
+---
+
+_Closed by @charliermarsh on 2024-04-09 13:57_
+
+---
+
+_Added to milestone `v0.4.0` by @charliermarsh on 2024-04-09 13:57_
+
+---
+
+_Referenced in [astral-sh/ruff#14242](../../astral-sh/ruff/issues/14242.md) on 2024-11-10 08:11_
+
+---

@@ -1,0 +1,124 @@
+---
+number: 5368
+title: clap_derive parsing of PathBuf with default_value of empty string still requires it to be specified on command line
+type: issue
+state: closed
+author: akanalytics
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-02-18T12:12:21Z
+updated_at: 2024-02-19T18:25:42Z
+url: https://github.com/clap-rs/clap/issues/5368
+synced_at: 2026-01-10T01:28:10Z
+---
+
+# clap_derive parsing of PathBuf with default_value of empty string still requires it to be specified on command line
+
+---
+
+_Issue opened by @akanalytics on 2024-02-18 12:12_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.75.0 (82e1608df 2023-12-21)
+
+### Clap Version
+
+4.5.1
+
+### Minimal reproducible code
+
+```rust
+fn main() {
+#[derive(Debug, clap::Parser)]
+struct MyStruct {
+    #[arg(short, long, default_value="")]
+    path: PathBuf,
+}
+
+let cli = clap::Parser::parse_from(args());
+println!("{cli:#?}");
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run
+
+### Actual Behaviour
+
+Despite a default_value being specified, it is still required on the comamnd line 
+error: a value is required for '--path <PATH>' but none was supplied
+An empty PathBuf is a valid PathBuf and should be allowed as a default.
+
+
+### Expected Behaviour
+
+When path is not specified on the command line I expect PathBuf to default to "" (the empty pathbuf) 
+
+### Additional Context
+
+Deafulting to "somefile" etc all works as expected - just empty string fails
+
+### Debug Output
+
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:path
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:path:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:path: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:path: wasn't used
+[clap_builder::parser::parser]Parser::react action=Set, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="path", source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [""]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: a value is required for '--path <PATH>' but none was supplied
+
+---
+
+_Label `C-bug` added by @akanalytics on 2024-02-18 12:12_
+
+---
+
+_Comment by @akanalytics on 2024-02-18 12:21_
+
+Sorry - this is a duplicate of #4746. But I think this is still a bug, that seems to trip people up.
+Paths are such a common command line parameter.
+
+Usecase: lots of code can use an empty pathbuf as an alternative to Option<PathBuf>. Rust explicitly offers a new() constructor which does exactly this, and it reduces the boilerplate in many places. 
+
+Using "." does not have the same meaning. (ls . and ls '' give different results on my linux system).
+
+Although personally Im not a fan of empty PathBufs, Rust clearly does support them, and command line tools such as the Linux 'ls' command does distinguish between empty paths and "." paths.
+ 
+
+---
+
+_Comment by @epage on 2024-02-19 18:25_
+
+Let's move the conversation to #4746 to keep it all in one place
+
+---
+
+_Closed by @epage on 2024-02-19 18:25_
+
+---
+
+_Referenced in [clap-rs/clap#4746](../../clap-rs/clap/issues/4746.md) on 2024-02-19 18:26_
+
+---

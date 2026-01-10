@@ -1,0 +1,120 @@
+---
+number: 3604
+title: "installation of editable package don't work when adding python markers"
+type: issue
+state: closed
+author: ImpSy
+labels:
+  - enhancement
+  - compatibility
+assignees: []
+created_at: 2024-05-15T14:50:46Z
+updated_at: 2024-05-20T21:08:55Z
+url: https://github.com/astral-sh/uv/issues/3604
+synced_at: 2026-01-10T01:23:29Z
+---
+
+# installation of editable package don't work when adding python markers
+
+---
+
+_Issue opened by @ImpSy on 2024-05-15 14:50_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+## UV details
+version: `0.1.44`
+command `uv pip sync requirements.txt`
+
+## What
+ uv currently not work while installing an editable package with python markers
+
+## How to reproduce
+
+for the following requirements.txt
+```
+-e file:///Users/sebastienmaintrot/libs/aws-client ; python_version >= "3.9" and python_version < "3.11"
+```
+
+uv fails with the following error
+```
+error: Failed to build editables
+  Caused by: Source distribution not found at: /Users/sebastienmaintrot/Spot/CP/bigdata-python-services/libs/aws-client ; python_version >= "3.9" and python_version < "3.11"
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-05-15 14:53_
+
+I don't think pip respects these, as far as I can tell they're just ignored?
+
+For example, installing this file _always_ installs the editable:
+
+```
+-e ./scripts/packages/black_editable ; python_version < "3.9"
+```
+
+---
+
+_Comment by @ImpSy on 2024-05-15 14:58_
+
+I think you're right, the marker used will be the one define in the editable package if any
+But in my case, I'm using poetry to generate a cross platform lock and the export to requirements seems to always add them
+
+---
+
+_Comment by @charliermarsh on 2024-05-15 15:05_
+
+I agree we should do something different here (bare minimum: a real error message), but undecided on what. I'm tempted to say we should actually just support them.
+
+See: https://github.com/pypa/pip/issues/8581.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-05-15 15:05_
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-05-15 15:05_
+
+---
+
+_Comment by @charliermarsh on 2024-05-15 16:15_
+
+I think my preference would be to actually support and respect these. Second choice would be to parse them properly, but ignore them and warn.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-15 19:12_
+
+---
+
+_Referenced in [astral-sh/uv#3622](../../astral-sh/uv/pulls/3622.md) on 2024-05-15 19:48_
+
+---
+
+_Comment by @charliermarsh on 2024-05-15 19:49_
+
+Fixed in https://github.com/astral-sh/uv/pull/3622.
+
+---
+
+_Closed by @charliermarsh on 2024-05-16 20:53_
+
+---
+
+_Comment by @charliermarsh on 2024-05-20 21:08_
+
+Out now in [v0.1.45](https://github.com/astral-sh/uv/releases/tag/0.1.45).
+
+---

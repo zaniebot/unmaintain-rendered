@@ -1,0 +1,140 @@
+---
+number: 1174
+title: YAML multiple setting
+type: issue
+state: closed
+author: AndrewGaspar
+labels: []
+assignees: []
+created_at: 2018-02-11T20:28:56Z
+updated_at: 2018-08-02T03:30:18Z
+url: https://github.com/clap-rs/clap/issues/1174
+synced_at: 2026-01-10T01:26:44Z
+---
+
+# YAML multiple setting
+
+---
+
+_Issue opened by @AndrewGaspar on 2018-02-11 20:28_
+
+### Rust Version
+`rustc 1.23.0 (766bd11c8 2018-01-01)`
+
+### Affected Version of clap
+```
+andre@ANDREW-DESKTOP:/mnt/c/Users/andre/Projects/cargo-mpirun$ grep clap Cargo.lock
+ "clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)",
+name = "clap"
+"checksum clap 2.29.4 (registry+https://github.com/rust-lang/crates.io-index)" = "7b8f59bcebcfe4269b09f71dab0da15b355c75916a8f975d3876ce81561893ee"
+```
+
+### Expected Behavior Summary
+Setting multiple settings in cli.yml via `setting` results in each setting being used.
+
+Note: `settings` works as expected
+
+### Actual Behavior Summary
+Setting multiple settings in cli.yml via `setting` results in only the last specified setting being used.
+
+### Steps to Reproduce the issue
+cli.yml
+```yaml
+name: example
+version: "0.1"
+author: Foo B. <foo@bar.com>
+setting: UnifiedHelpMessage
+setting: DeriveDisplayOrder
+args:
+    - z-arg:
+        long: z-arg
+        value_name: Z_VALUE
+    - a-arg:
+        long: a-arg
+        value_name: A_VALUE
+    - z-flag:
+        long: z-flag
+    - a-flag:
+        long: a-flag
+```
+
+main.rs
+```rust
+#[macro_use]
+extern crate clap;
+use clap::App;
+
+fn main() {
+    let cli = load_yaml!("cli.yml");
+    let _matches = App::from_yaml(cli).get_matches();
+}
+```
+
+Expected help output:
+```
+GT C:\Users\andre\Projects\clap-example [master +4 ~0 -0 !]> cargo run -- --help
+   Compiling clap-example v0.1.0 (file:///C:/Users/andre/Projects/clap-example)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.34 secs
+     Running `target\debug\clap-example.exe --help`
+example 0.1
+Foo B. <foo@bar.com>
+
+USAGE:
+    clap-example.exe [OPTIONS]
+
+OPTIONS:
+        --z-arg <Z_VALUE>
+        --a-arg <A_VALUE>
+        --z-flag
+        --a-flag
+    -h, --help               Prints help information
+    -V, --version            Prints version information
+```
+
+Actual help output:
+```
+GT C:\Users\andre\Projects\clap-example [master +4 ~0 -0 !]> cargo run -- --help   Compiling clap-example v0.1.0 (file:///C:/Users/andre/Projects/clap-example)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.33 secs
+     Running `target\debug\clap-example.exe --help`
+example 0.1
+Foo B. <foo@bar.com>
+
+USAGE:
+    clap-example.exe [FLAGS] [OPTIONS]
+
+FLAGS:
+        --z-flag
+        --a-flag
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --z-arg <Z_VALUE>
+        --a-arg <A_VALUE>
+```
+
+---
+
+_Comment by @kbknapp on 2018-02-12 19:19_
+
+Ah yes, you're correct. The fix is to use `settings` (plural), but I know the docs aren't clear on that.
+
+```yaml
+settings:
+    - DeriveDisplayOrder
+    - UnifiedHelpMessage
+```
+
+Although this could be fixed, the fix will be made moot once we move to serde in v3. 
+
+I'm going to close this for now, but using `settings` doesn't work for you please feel free to re-open and we can look into this further.
+
+---
+
+_Closed by @kbknapp on 2018-02-12 19:19_
+
+---
+
+_Referenced in [CachedNerds/Hatch#117](../../CachedNerds/Hatch/pulls/117.md) on 2018-05-12 15:50_
+
+---

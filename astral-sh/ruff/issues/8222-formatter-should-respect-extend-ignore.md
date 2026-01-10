@@ -1,0 +1,189 @@
+---
+number: 8222
+title: Formatter should respect extend-ignore
+type: issue
+state: closed
+author: tinovyatkin
+labels:
+  - needs-info
+assignees: []
+created_at: 2023-10-25T16:59:49Z
+updated_at: 2023-10-28T22:50:05Z
+url: https://github.com/astral-sh/ruff/issues/8222
+synced_at: 2026-01-10T01:22:47Z
+---
+
+# Formatter should respect extend-ignore
+
+---
+
+_Issue opened by @tinovyatkin on 2023-10-25 16:59_
+
+ruff 0.1.2 emits warning `warning: The following rules may cause conflicts when used with the formatter: 'D206', 'ISC001', 'Q000', 'Q001', 'Q002', 'Q003'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the `select` or `extend-select` configuration, or adding then to the `ignore` configuration.` even while I have all those rules in `extend-ignore`
+
+
+---
+
+_Comment by @charliermarsh on 2023-10-25 17:01_
+
+Are you able to post your complete configuration file?
+
+---
+
+_Label `waiting-on-author` added by @charliermarsh on 2023-10-25 18:03_
+
+---
+
+_Comment by @tinovyatkin on 2023-10-26 06:18_
+
+ruff related config part:
+
+```toml
+[tool.ruff]
+line-length = 110
+unfixable = [ ]
+extend-exclude = [ ".egg*", "build", "private" ]
+extend-select = [
+  "B",
+  "C4",
+  "D101",
+  "D106",
+  "D2",
+  "D3",
+  "D400",
+  "D402",
+  "D403",
+  "D412",
+  "D419",
+  "I",
+  "ICN",
+  "N",
+  "PGH",
+  "PIE",
+  "PT",
+  "PTH",
+  "Q",
+  "RUF",
+  "RUF100",
+  "SIM",
+  "TCH",
+  "TID",
+  "UP"
+]
+extend-ignore = [
+  "COM812",
+  "COM819",
+  "D203",
+  "D205",
+  "D206",
+  "D212",
+  "D213",
+  "D214",
+  "D215",
+  "D300",
+  "E111",
+  "E114",
+  "E117",
+  "E731",
+  "ISC001",
+  "ISC002",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "RUF012",
+  "W191"
+]
+
+  [tool.ruff.isort]
+  required-imports = [ "from __future__ import annotations" ]
+  combine-as-imports = true
+  section-order = [
+  "future",
+  "standard-library",
+  "tests",
+  "cdk",
+  "glue",
+  "lambda",
+  "glue-preinstalled",
+  "third-party",
+  "first-party",
+  "local-folder"
+]
+
+    [tool.ruff.isort.sections]
+    glue = [ "awsglue", "pyspark", "ray" ]
+    glue-preinstalled = [
+  "boto3",
+  "botocore",
+  "fsspec",
+  "matplotlib",
+  "mpmath",
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "PyMySQL",
+  "pyparsing",
+  "python-dateutil",
+  "pytz",
+  "PyYAML",
+  "regex",
+  "requests",
+  "s3fs",
+  "sympy"
+]
+    cdk = [ "aws_cdk", "constructs" ]
+    lambda = [ "aws_lambda_powertools", "aws_lambda_typing" ]
+    tests = [ "pytest", "moto", "mock", "unittest", "syrupy" ]
+
+[tool.ruff.flake8-import-conventions.extend-aliases]
+awswrangler = "wr"
+aws_cdk = "cdk"
+
+  [tool.ruff.flake8-type-checking]
+  exempt-modules = [
+  "typing",
+  "typing_extensions",
+  "awsglue",
+  "pyspark",
+  "ray",
+  "aws_cdk",
+  "constructs",
+  "aws_lambda_typing",
+  "aws_lambda_powertools"
+]
+```
+
+---
+
+_Comment by @tinovyatkin on 2023-10-26 06:20_
+
+Ok, I see #8243 - will switch our config to not use `extend-ignore`, but a better error / handling of it in this part would be helpful.
+
+---
+
+_Comment by @charliermarsh on 2023-10-26 15:18_
+
+@tinovyatkin - It actually should work interchangeably. Did changing to `ignore` fix this for you?
+
+---
+
+_Comment by @tinovyatkin on 2023-10-26 15:19_
+
+Yes, changing to `ignore` removing the warning.
+
+---
+
+_Referenced in [astral-sh/ruff#8305](../../astral-sh/ruff/pulls/8305.md) on 2023-10-28 13:59_
+
+---
+
+_Comment by @charliermarsh on 2023-10-28 22:50_
+
+They should be interchangeable -- `extend-ignore` is deprecated but still supported. I've updated the docs, but I did also test your configuration and don't see any warnings locally 🤔 
+
+---
+
+_Closed by @charliermarsh on 2023-10-28 22:50_
+
+---

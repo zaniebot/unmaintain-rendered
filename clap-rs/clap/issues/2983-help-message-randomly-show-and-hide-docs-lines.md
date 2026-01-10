@@ -1,0 +1,482 @@
+---
+number: 2983
+title: "--help message randomly show and hide docs lines"
+type: issue
+state: closed
+author: marcospb19
+labels:
+  - C-bug
+  - E-easy
+  - A-derive
+assignees: []
+created_at: 2021-11-02T17:37:32Z
+updated_at: 2021-12-14T18:04:12Z
+url: https://github.com/clap-rs/clap/issues/2983
+synced_at: 2026-01-10T01:27:30Z
+---
+
+# --help message randomly show and hide docs lines
+
+---
+
+_Issue opened by @marcospb19 on 2021-11-02 17:37_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.58.0-nightly (e249ce6b2 2021-10-30)
+
+### Clap Version
+
+3.0.0-beta.5
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap(version, about)]
+pub struct Opts {
+    #[clap(subcommand)]
+    pub cmd: Subcommand,
+}
+
+// Ouch commands:
+// - `compress`
+// - `decompress`
+// - `list`
+//
+// Clap commands:
+//  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+#[derive(Parser, PartialEq, Eq, Debug)]
+pub enum Subcommand {
+    Compress { output: String },
+}
+
+fn main() {
+    let _ = Opts::parse();
+}
+```
+
+### Steps to reproduce the bug with the above code
+
+`cargo run -q -- --help`
+
+### Actual Behaviour
+
+This is a tricky one, if you copy my code example, here is the --help message:
+
+```
+teste 0.1.0
+
+
+
+USAGE:
+    teste <SUBCOMMAND>
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    compress    
+    help        Print this message or the help of the given subcommand(s)
+```
+
+So, that `Repository` line does not appear in the help message :-1:, but if we change all the `//` comments to be `///` (to three slashes):
+
+```
+teste 0.1.0
+
+Ouch commands: - `compress` - `decompress` - `list`
+
+Clap commands: - `help` Repository: https://github.com/ouch-org/ouch
+
+USAGE:
+    teste <SUBCOMMAND>
+
+OPTIONS:
+    -h, --help
+            Print help information
+
+    -V, --version
+            Print version information
+
+SUBCOMMANDS:
+    compress
+            
+    help
+            Print this message or the help of the given subcommand(s)
+```
+
+Now it appears!! :+1:.
+
+Now try deleting the empty comment `"///\n"`. Does not appear anymore :-1:.
+Now you delete the `#[clap(version, about)]` line. Appears again :+1:.
+
+So, we went :-1: -> :+1: -> :-1: -> :+1: just by making small random changes.
+
+### Expected Behaviour
+
+I assume it should be consistent and always show that repository line.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+With the starter code:
+
+```
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:teste
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Building help subcommand
+[            clap::build::app] 	App::_propagate_global_args:teste
+[            clap::build::app] 	App::_derive_display_order:teste
+[            clap::build::app] 	App::_derive_display_order:compress
+[            clap::build::app] 	App::_derive_display_order:help
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("--help")' ([45, 45, 104, 101, 108, 112])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr("--help")
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::parse_long_arg: Found valid opt or flag '--help'
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str: Checking if --RawOsStr("help") is help or version...
+[         clap::parse::parser] 	Help
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg HelpFlag
+[         clap::parse::parser] 	[         clap::parse::parser] 	Parser::use_long_help
+Parser::help_err: use_long=false
+[         clap::parse::parser] 	Parser::use_long_help
+[          clap::output::help] 	Help::new
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=version
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=teste <SUBCOMMAND>
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::write_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args: Current Longest...2
+[          clap::output::help] 	Help::write_args: New Longest...6
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::write_args: Current Longest...6
+[          clap::output::help] 	Help::write_args: New Longest...9
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=version
+[          clap::output::help] 	Help::spec_vals: a=--version
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=help
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::spec_vals: a=--version
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=version
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommands
+[          clap::output::help] 	Help::write_subcommands longest = 8
+[          clap::output::help] 	Help::sc_spec_vals: a=compress
+[          clap::output::help] 	Help::sc_spec_vals: a=help
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=compress
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=help
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_after_help
+[           clap::output::fmt] 	is_a_tty: stderr=false
+```
+
+---
+
+_Label `T: bug` added by @marcospb19 on 2021-11-02 17:37_
+
+---
+
+_Comment by @marcospb19 on 2021-11-02 17:38_
+
+Sent here by @epage, issue happened in [this piece of code in one of my projects](https://github.com/ouch-org/ouch/blob/cd77b987ac48183fc254862bb0463092233eb8cd/src/opts.rs#L22-L32).
+
+---
+
+_Comment by @epage on 2021-11-02 17:44_
+
+> Now try deleting the empty comment "///\n". Does not appear anymore
+
+Which empty comment?
+
+---
+
+_Comment by @marcospb19 on 2021-11-02 17:47_
+
+(first step)
+```rust
+// Ouch commands:
+// - `compress`
+// - `decompress`
+// - `list`
+//
+// Clap commands:
+//  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+```
+
+(second step)
+```rust
+/// Ouch commands:
+/// - `compress`
+/// - `decompress`
+/// - `list`
+///
+/// Clap commands:
+///  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+```
+
+@epage then you delete that "///" blank line at the middle, leaving this:
+
+(third step)
+```rust
+/// Ouch commands:
+/// - `compress`
+/// - `decompress`
+/// - `list`
+/// Clap commands:
+///  - `help`
+/// Repository: https://github.com/ouch-org/ouch
+```
+
+Sorry for the confusion, this bug has too many steps to reproduce, maybe I even reported more than one bug at the same time.
+
+---
+
+_Comment by @epage on 2021-11-02 18:06_
+
+Ok, let's break down all of the parts
+- We treat everything in the doc comment until the first blank line as part of the `about`, which is why the blank line is important
+- If there is no blank line, we do not populate `long_about` and the last `about` wins, which is from the `Cargo.toml` in this case
+- When there is a blank line, we set `long_about` but nothing after it overrides it, so it wins
+- Ideally, `flatten` and `subcommand` would not cause us to pull in their doc comments (see https://github.com/clap-rs/clap/issues/2894)
+
+Ok, I think I covered it all
+
+The challenge is in solutions because we can't introspect across items
+- #2894 which is big and might have some negative side effects
+- We could always set `long_about` but we do some conditional logic based on if `long_about` is used anywhere.  We'd have to dig in to see what the consequences would be
+- Like with `help_heading`, we could allow users to set `long_about` (and more) to default.  `clap_derive` could do this wherever it currently only sets `about`.
+
+---
+
+_Comment by @epage on 2021-11-02 18:16_
+
+Looks like if we always set `long_about`, it'll just cause long help to show up in errors, which seems pretty easy to do
+```
+    fn help_err(&self, mut use_long: bool) -> ClapError {
+        debug!(
+            "Parser::help_err: use_long={:?}",
+            use_long && self.use_long_help()
+        );
+
+        use_long = use_long && self.use_long_help();
+        ...
+    }
+
+    ...
+
+    fn use_long_help(&self) -> bool {
+        debug!("Parser::use_long_help");
+        // In this case, both must be checked. This allows the retention of
+        // original formatting, but also ensures that the actual -h or --help
+        // specified by the user is sent through. If HiddenShortHelp is not included,
+        // then items specified with hidden_short_help will also be hidden.
+        let should_long = |v: &Arg| {
+            v.long_about.is_some()
+                || v.is_set(ArgSettings::HiddenLongHelp)
+                || v.is_set(ArgSettings::HiddenShortHelp)
+        };
+
+        self.app.long_about.is_some()
+            || self.app.before_long_help.is_some()
+            || self.app.after_long_help.is_some()
+            || self.app.args.args().any(should_long)
+            || self.app.subcommands.iter().any(|s| s.long_about.is_some())
+    }
+```
+- That `&&` is important, it means we will only do this if something else is also requesting long help
+- It looks like the only end-user consequence of `long_about` being set to `about` is the long help cases (like `--help`) we'll have the `about` on the next line rather than doing them all same-line with alignment
+  - All other consequences can only be hit when long about is used, like choosing what is hidden in short vs long
+
+This might be a good enough workaround until we can get a better solution.
+
+---
+
+_Referenced in [ouch-org/ouch#185](../../ouch-org/ouch/issues/185.md) on 2021-11-11 13:07_
+
+---
+
+_Referenced in [clap-rs/clap#3036](../../clap-rs/clap/issues/3036.md) on 2021-11-18 11:33_
+
+---
+
+_Label `C: derive macros` added by @epage on 2021-11-30 19:03_
+
+---
+
+_Referenced in [TeXitoi/structopt#514](../../TeXitoi/structopt/issues/514.md) on 2021-11-30 19:03_
+
+---
+
+_Referenced in [epage/clapng#232](../../epage/clapng/issues/232.md) on 2021-12-06 22:23_
+
+---
+
+_Referenced in [clap-rs/clap#3127](../../clap-rs/clap/issues/3127.md) on 2021-12-10 20:07_
+
+---
+
+_Comment by @epage on 2021-12-13 22:09_
+
+My current proposal is
+- Switch about/long_about to accepting `impl Into<Option>`s.  If its `None`, it resets back to default
+- `clap_derive`s `about`-only call will now also call `long_about(None)`.
+
+---
+
+_Added to milestone `3.0` by @epage on 2021-12-13 22:09_
+
+---
+
+_Label `E-easy` added by @epage on 2021-12-13 22:09_
+
+---
+
+_Comment by @pksunkara on 2021-12-13 22:19_
+
+I am confused by your proposal. How does that solve this issue?
+
+---
+
+_Comment by @epage on 2021-12-14 00:24_
+
+There are two framings for this problem
+
+1. Doc comments from a `flatten` or `subcommand` should not impact what they are being brought into (#2894)
+
+This is bigger and riskier.
+
+2. The inconsistent application of `about` vs `long_about`.  This is what my proposal is meant to solve
+
+We end up with
+```rust
+app
+    .about(subcommand_doc_comment_summary)
+    .long_about(subcommand_doc_comment)
+    .about(parser_doc_comment_summary)
+```
+My proposal is to switch us to
+```rust
+app
+    .about(subcommand_doc_comment_summary)
+    .long_about(subcommand_doc_comment)
+    .about(parser_doc_comment_summary)
+    .long_about(None)  // resets the field to default
+```
+
+By us always pairing them together when applying doc comments, we get a more consistent experience.
+
+Granted, there is still `#[clap(about)]` overriding `parser_doc_comment_summary` but not  `parser_doc_comment`.  Someone could handle that by `#[clap(about, long_about = None)]`.  The main issue is being aware of it to do it.
+
+---
+
+_Comment by @epage on 2021-12-14 16:31_
+
+#3175 shows what I'm talking about.  I even have a distinct commit for the test passing with the broken behavior before I change it so it  passes with the correct behavior.
+
+---
+
+_Referenced in [clap-rs/clap#3175](../../clap-rs/clap/pulls/3175.md) on 2021-12-14 17:08_
+
+---
+
+_Comment by @epage on 2021-12-14 17:20_
+
+From @pksunkara  in #3175 
+> So, my main concern with the proposal (and this PR) is that this would be redundant if we fix #2894. Especially since this contains an API change which doesn't mean anything else after that fix.
+> 
+> I had always the view that #2894 is the root issue we need to concentrate but I never had the time.
+
+Earlier I had commented that #2894 is "This is bigger and riskier.".   As I [mentioned](https://github.com/clap-rs/clap/issues/2894#issuecomment-957992808) in #2894, there are some settings that are coupled to a `Subcommand`s behavior, like `UseLongFormatForHelpSubcommand`, `InferSubcommands`, or help heading defaults, where it would make sense to set these on the `Subcommand` to centralize all of the subcommand policy. 
+
+Similarly, for `Args`, we have some settings on what is flattened, like `help_heading`.   #1887 is one example of where we might extend that.
+
+I'm concerned that trying to manage what can and can't be set in a `Subcommand` or an `Args` is going to take a decent amount of code, will be brittle as we forget to update this as new app settings become available, and when someone creatively comes up with a new idea, they will be blocked until a new clap release loosens the restrictions (looking at you, `clap_derive` inferred vs explicit error reporting that we've been slowly loosening)
+
+So I wonder if we should reject #2894.
+
+We can go on for a while debating and deciding what to do about #2894.  Its a big enough decision to commit to doing #2894 that I don't want to block other improvements on it.
+
+In addition, I'd like to see more of the API become consistent, as I mentioned in the commit message that changed the API.  We already support `Option` for `help_heading`.  This adds it to `about` / `long_about`, `help`, `long_help`.  In #1807 I proposed doing similar for display order.  I don't see this API change necessarily being bad.  I see it as an incremental step towards the future, consistent API which has trade offs that we'll need to address and maybe pivot as we actually get to issues like #2150.
+
+---
+
+_Closed by @epage on 2021-12-14 18:04_
+
+---
+
+_Referenced in [clap-rs/clap#2894](../../clap-rs/clap/issues/2894.md) on 2021-12-14 18:05_
+
+---

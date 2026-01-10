@@ -1,0 +1,131 @@
+---
+number: 13589
+title: using uv workspaces in flat layouts (e.g. monorepos)
+type: issue
+state: open
+author: MartyMcFlyInTheSky
+labels:
+  - question
+assignees: []
+created_at: 2025-05-22T06:16:57Z
+updated_at: 2025-10-24T08:27:35Z
+url: https://github.com/astral-sh/uv/issues/13589
+synced_at: 2026-01-10T01:25:35Z
+---
+
+# using uv workspaces in flat layouts (e.g. monorepos)
+
+---
+
+_Issue opened by @MartyMcFlyInTheSky on 2025-05-22 06:16_
+
+### Question
+
+I get from the [documentation](https://docs.astral.sh/uv/concepts/projects/workspaces/#workspace-layouts) that the recommended workspace layout looks like this:
+
+```
+albatross
+├── packages
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds
+│       ├── pyproject.toml
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── albatross
+        └── main.py
+```
+
+I have used successfully used this approach and was quite pleased with how easy everything was. Now I'm trying to bring workspaces to our monorepo, but the difference here is that we have a flat hierarchy there and still want packages to be able to see each other while there is no real toplevel project. To follow the bird example it would look something like this:
+
+```
+monorepo
+├── albatross
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── src
+│   │   └── albatross
+│   │       └── main.py
+│   └── uv.lock
+├── sandpiper
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── src
+│   │   └── sandpiper
+│   │       └── main.py
+│   └── uv.lock
+└── logger
+    ├── pyproject.toml
+    ├── README.md
+    ├── src
+    │   └── logger
+    │       └── main.py
+    └── uv.lock
+```
+
+Now `logger` is a dependency of both albatross and sandpiper, how can I make sure that both packages see this support library? Is this achievable with workspaces as well?
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @MartyMcFlyInTheSky on 2025-05-22 06:16_
+
+---
+
+_Comment by @konstin on 2025-05-22 18:53_
+
+You can achieve this with a virtual workspace root, a top level `pyproject.toml` that contains no `[project]` table, but a `[tool.uv.workspace]` table.
+
+---
+
+_Comment by @paveldikov on 2025-05-24 12:13_
+
+I have the exact use case you describe and have been able to engineer it at a somewhat lower-level by configuring `[tool.uv.sources]` for the inner projects. This allows each of the leaves to be more or less independent for lockfile & venv purposes, whilst still installing each other in an editable way for development.
+
+(It's not quite as fluent as workspaces -- obviously -- but I have found it to be a good escape-hatch for dealing with internally-inconsistent monorepos -- which is all too common IRL...)
+
+---
+
+_Comment by @ggoggam on 2025-07-29 04:24_
+
+@konstin @paveldikov I have the exact same use case. Is there an example that I can follow?
+
+---
+
+_Comment by @ElliotK-IB on 2025-10-21 18:01_
+
+> You can achieve this with a virtual workspace root, a top level `pyproject.toml` that contains no `[project]` table, but a `[tool.uv.workspace]` table.
+
+Is this reflected in the documentation anywhere? I would expect something like this to be mentioned here: [Using workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/).
+
+It seems that #6511 should be related.
+
+@charliermarsh Would appreciate clarification - maybe I'm missing something.
+
+---
+
+_Comment by @atinary-rdaod on 2025-10-24 08:27_
+
+Hi there! Thanks for opening the issue. I’m also very interested in learning about best practices for using uv in monorepos.
+Currently, I’m using a mix of uv workspaces and packages, depending on how the projects depend on each other.
+I’m wondering if that’s the recommended approach and how releases should ideally be handled.
+An example setup or reference would be super helpful!
+
+---

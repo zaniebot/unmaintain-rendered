@@ -1,0 +1,108 @@
+---
+number: 1248
+title: "Failure to compile when using macro builder argument `possible_values`"
+type: issue
+state: closed
+author: Jarngreipr
+labels: []
+assignees: []
+created_at: 2018-04-17T12:22:15Z
+updated_at: 2018-08-02T03:30:22Z
+url: https://github.com/clap-rs/clap/issues/1248
+synced_at: 2026-01-10T01:26:46Z
+---
+
+# Failure to compile when using macro builder argument `possible_values`
+
+---
+
+_Issue opened by @Jarngreipr on 2018-04-17 12:22_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+rustc 1.25.0 (84203cac6 2018-03-25)
+
+### Affected Version of clap
+
+clap 2.31.2
+
+### Expected Behavior Summary
+
+When using the macro builder as described in #217, I expected `possible_values[fast slow]` to behave 
+like `.possible_values(&["fast", "slow"])`.
+
+### Actual Behavior Summary
+
+when using
+`possible_values[fast slow]`
+Cargo fails to compile the crate with this error:
+
+```
+error[E0308]: mismatched types
+  --> src/main.rs:51:19
+   |
+51 |       let matches = clap_app!(appname =>
+   |  ___________________^
+52 | |         (version: "0.2.1")
+53 | |         (author: "Jarngreipr <other@somewhere.com>")
+54 | |         (about: "descriptive description")
+...  |
+70 | |             )
+71 | |         ).get_matches();
+   | |_________^ expected slice, found str
+   |
+   = note: expected type `&[&str]`
+              found type `&'static str`
+```
+
+### Steps to Reproduce the issue
+
+Add argument to a subcommand that expects two or more possible values.
+Using `possible_value[fast]` works as expected.
+
+### Sample Code or Link to Sample Code
+
+ [example](https://play.rust-lang.org/?gist=542d5592f49013b9a087f53942069421&version=stable)
+
+### Debug output
+
+Sorry, I'm not sure how to include this part.
+
+
+---
+
+_Comment by @kbknapp on 2018-06-05 01:51_
+
+I agree this isn't optimal, however it's mentioned in the [macros shorthand notes](https://docs.rs/clap/2.31.2/clap/macro.clap_app.html#shorthand-syntax-for-args) that you have to use the singular form and a list of values `possible_value[fast slow]`
+
+https://play.rust-lang.org/?gist=c8adeb01ded5c5838fc074193776d07a&version=stable&mode=debug
+
+I'm going to close this for now, however I'd also not say no to making the docs more clear :wink: 
+
+---
+
+_Closed by @kbknapp on 2018-06-05 01:51_
+
+---
+
+_Comment by @Jarngreipr on 2018-06-05 13:20_
+
+You are referring to the last bullet point in the macros shorthand notes, i assume?
+In my opinion it is far from obvious that one must use the singular form from looking at the notes.
+On the first read, one would assume that this is a more ergonomic way of setting a possible value multiple times, not that it is the only way to set multiple values.
+
+Where would it be appropriate to expand on this point in the documentation, if I were to send in a pull request?
+
+---
+
+_Comment by @kbknapp on 2018-06-05 13:41_
+
+I agree it's basically hidden. Unfortunately, it's hard to document macros properly. I'd be all for a better documentation PR if you have some good ideas? The fact that the shorthand version are quite numerous makes it hard to make each one prominent when a particular user only needs a few of them.
+
+This is a somewhat common issue, recently #1253 is another such instance.
+
+---

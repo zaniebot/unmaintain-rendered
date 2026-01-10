@@ -1,0 +1,103 @@
+---
+number: 5082
+title: Ruff fails to detect nonsensical list index
+type: issue
+state: closed
+author: dgjustice
+labels:
+  - good first issue
+  - rule
+  - help wanted
+assignees: []
+created_at: 2023-06-14T13:33:36Z
+updated_at: 2023-07-12T05:23:08Z
+url: https://github.com/astral-sh/ruff/issues/5082
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# Ruff fails to detect nonsensical list index
+
+---
+
+_Issue opened by @dgjustice on 2023-06-14 13:33_
+
+`ruff` is an awesome project! :heart: I saw this in the wild today on a PR to fix a bug that passed through CI (with `ruff check`).
+
+## Python source code
+
+The developer accidentally deleted the dict variable during a refactor resulting in something structurally identical to this:
+
+```python
+foo = ["abc"]["def"]
+```
+
+## Ruff check
+
+```shell
+$ cat foo.py 
+foo = ["abc"]["def"]
+
+$ python foo.py 
+/home/djustice/tmp/foo.py:1: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+  foo = ["abc"]["def"]
+Traceback (most recent call last):
+  File "/home/djustice/tmp/foo.py", line 1, in <module>
+    foo = ["abc"]["def"]
+TypeError: list indices must be integers or slices, not str
+
+$ ruff check foo.py
+
+
+$ echo $status
+0
+
+```
+
+## Ruff version
+
+```shell
+$ ruff --version
+ruff 0.0.264
+
+$
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2023-06-17 14:40_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-06-17 14:40_
+
+---
+
+_Comment by @charliermarsh on 2023-06-22 20:10_
+
+I think this is reasonable but we can probably only support literals (like Python, which raises a syntax warning). This blog post from Adam Johnson is a good explanation of the rule and what we could support: https://adamj.eu/tech/2020/06/21/why-does-python-syntaxwarning-saying-list-indices-must-be-integers-or-slices/.
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-06-22 20:10_
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2023-06-22 20:10_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2023-06-22 20:10_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2023-07-07 18:39_
+
+---
+
+_Referenced in [astral-sh/ruff#5602](../../astral-sh/ruff/pulls/5602.md) on 2023-07-07 22:21_
+
+---
+
+_Closed by @zanieb on 2023-07-12 05:23_
+
+---

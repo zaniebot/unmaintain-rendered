@@ -1,0 +1,98 @@
+---
+number: 9702
+title: Invalid rule violation when import is used only for type hints (flake8-bandit S404)
+type: issue
+state: closed
+author: divaltor
+labels:
+  - rule
+assignees: []
+created_at: 2024-01-30T13:51:13Z
+updated_at: 2024-01-30T16:53:51Z
+url: https://github.com/astral-sh/ruff/issues/9702
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Invalid rule violation when import is used only for type hints (flake8-bandit S404)
+
+---
+
+_Issue opened by @divaltor on 2024-01-30 13:51_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hello, thanks for Ruff again! I noticed that enabling that rule can cause (probably) false-positive violations which I can't say with guarantee they're false-positive, but probably they are
+
+Of course I can just disable that rule in the configuration file, but may be it should be discussed here about ignoring such cases
+
+```py
+from __future__ import annotations
+
+from subprocess import Popen
+
+import ffmpeg
+
+# ffmpeg here is library https://github.com/kkroening/ffmpeg-python
+# Popen here is just type hint
+process: Popen = ffmpeg.run_async(...)
+```
+
+Ruff 0.1.15
+
+```bash
+ruff --isolated --preview --select S404 --target-version py312
+
+> S404 `subprocess` module is possibly insecure
+```
+
+Also it violates on such code
+
+```py
+from subprocess import TimeoutExpired
+
+import ffmpeg
+
+try:
+     ffmpeg.run(...)
+except TimeoutExpired:
+     ...
+```
+
+---
+
+_Comment by @zanieb on 2024-01-30 15:53_
+
+Hm this rule just seems way overzealous but there are a bunch of rules in flake8-bandit that just flag imports like this. I think my best recommendation is to turn it off. I know if we should change it unless the upstream does. I think there are other rules that actually cover _use_ of subprocess.
+
+
+---
+
+_Label `rule` added by @zanieb on 2024-01-30 15:54_
+
+---
+
+_Comment by @divaltor on 2024-01-30 16:03_
+
+> Hm this rule just seems way overzealous but there are a bunch of rules in flake8-bandit that just flag imports like this. I think my best recommendation is to turn it off. I know if we should change it unless the upstream does. I think there are other rules that actually cover _use_ of subprocess.
+
+Thanks for helping, actually I've turned it off, because I didn't find good reason to keep it
+
+---
+
+_Comment by @charliermarsh on 2024-01-30 16:53_
+
+Yeah I'm torn on these. They're _really_ strict, but they're also security-oriented rules, so it feels like it's against the intent to relax them. I'm gonna close for now, though I do empathize with the annoyance.
+
+---
+
+_Closed by @charliermarsh on 2024-01-30 16:53_
+
+---

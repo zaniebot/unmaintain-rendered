@@ -1,0 +1,195 @@
+---
+number: 3194
+title: "Main documentation example doesn't build"
+type: issue
+state: closed
+author: bestouff
+labels:
+  - C-bug
+assignees: []
+created_at: 2021-12-17T15:01:54Z
+updated_at: 2021-12-23T20:40:08Z
+url: https://github.com/clap-rs/clap/issues/3194
+synced_at: 2026-01-10T01:27:35Z
+---
+
+# Main documentation example doesn't build
+
+---
+
+_Issue opened by @bestouff on 2021-12-17 15:01_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.57.0 (f1edd0429 2021-11-29)
+
+### Clap Version
+
+3.0.0-rc.7
+
+### Minimal reproducible code
+
+`cat src/main.rs`
+```rust
+use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[clap(about, version, author)]
+struct Args {
+    /// Name of the person to greet
+    #[clap(short, long)]
+    name: String,
+
+    /// Number of times to greet
+        #[clap(short, long, default_value_t = 1)]
+    count: u8,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    for _ in 0..args.count {
+        println!("Hello {}!", args.name)
+    }
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo build
+
+### Actual Behaviour
+
+```
+   Compiling clap_example v0.1.0 (/home/xav/clap_example)
+error: cannot find derive macro `Parser` in this scope
+ --> src/main.rs:4:10
+  |
+4 | #[derive(Parser, Debug)]
+  |          ^^^^^^
+  |
+note: `Parser` is imported here, but it is only a trait, without a derive macro
+ --> src/main.rs:1:5
+  |
+1 | use clap::Parser;
+  |     ^^^^^^^^^^^^
+
+error: cannot find attribute `clap` in this scope
+ --> src/main.rs:5:3
+  |
+5 | #[clap(about, version, author)]
+  |   ^^^^
+  |
+  = note: `clap` is in scope, but it is a crate, not an attribute
+
+error: cannot find attribute `clap` in this scope
+ --> src/main.rs:8:7
+  |
+8 |     #[clap(short, long)]
+  |       ^^^^
+  |
+  = note: `clap` is in scope, but it is a crate, not an attribute
+
+error: cannot find attribute `clap` in this scope
+  --> src/main.rs:12:11
+   |
+12 |         #[clap(short, long, default_value_t = 1)]
+   |           ^^^^
+   |
+   = note: `clap` is in scope, but it is a crate, not an attribute
+
+error[E0599]: no function or associated item named `parse` found for struct `Args` in the current scope
+  --> src/main.rs:17:22
+   |
+6  | struct Args {
+   | ----------- function or associated item `parse` not found for this
+...
+17 |     let args = Args::parse();
+   |                      ^^^^^ function or associated item not found in `Args`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `parse`, perhaps you need to implement it:
+           candidate #1: `Parser`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `clap_example` due to 5 previous errors
+```
+
+### Expected Behaviour
+
+build ok
+
+### Additional Context
+
+```toml
+[package]
+name = "clap_example"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "3.0.0-rc.7"
+```
+
+### Debug Output
+
+same output
+
+---
+
+_Label `C-bug` added by @bestouff on 2021-12-17 15:01_
+
+---
+
+_Renamed from "Main page example doesn't build" to "Main documentation example doesn't build" by @bestouff on 2021-12-17 15:03_
+
+---
+
+_Comment by @epage on 2021-12-17 15:15_
+
+Below the example is is this comment
+
+> (note: requires feature derive)
+
+You need to update your `Cargo.toml` to
+```toml
+[package]
+name = "clap_example"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "3.0.0-rc.7", features = ["derive"] }
+```
+
+If you have thoughts for how to make this less likely to be missed we are open to input!
+
+---
+
+_Comment by @bestouff on 2021-12-17 15:23_
+
+Something like that ?
+https://github.com/clap-rs/clap/pull/3195
+
+---
+
+_Comment by @epage on 2021-12-23 20:40_
+
+Documentation has improved that led to this, closing out this issue.
+
+---
+
+_Closed by @epage on 2021-12-23 20:40_
+
+---

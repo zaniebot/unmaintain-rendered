@@ -1,0 +1,36 @@
+---
+number: 319
+title: Add default + autofix status to rules table in README
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - documentation
+assignees: []
+created_at: 2022-10-04T12:28:39Z
+updated_at: 2022-10-04T16:30:36Z
+url: https://github.com/astral-sh/ruff/issues/319
+synced_at: 2026-01-10T01:22:37Z
+---
+
+# Add default + autofix status to rules table in README
+
+---
+
+_Issue opened by @charliermarsh on 2022-10-04 12:28_
+
+_No description provided._
+
+---
+
+_Label `documentation` added by @charliermarsh on 2022-10-04 12:28_
+
+---
+
+_Referenced in [astral-sh/ruff#322](../../astral-sh/ruff/pulls/322.md) on 2022-10-04 15:19_
+
+---
+
+_Closed by @charliermarsh on 2022-10-04 16:30_
+
+---

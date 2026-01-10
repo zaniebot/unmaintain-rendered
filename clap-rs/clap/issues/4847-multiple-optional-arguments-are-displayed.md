@@ -1,0 +1,104 @@
+---
+number: 4847
+title: Multiple optional arguments are displayed incorrectly in help output
+type: issue
+state: open
+author: fabianfreyer
+labels:
+  - C-bug
+  - A-help
+  - E-easy
+assignees: []
+created_at: 2023-04-19T17:20:25Z
+updated_at: 2023-04-20T17:31:14Z
+url: https://github.com/clap-rs/clap/issues/4847
+synced_at: 2026-01-10T01:28:02Z
+---
+
+# Multiple optional arguments are displayed incorrectly in help output
+
+---
+
+_Issue opened by @fabianfreyer on 2023-04-19 17:20_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.66.0 (69f9c33d7 2022-12-12)
+
+### Clap Version
+
+v4.2.2
+
+### Minimal reproducible code
+
+```rust
+fn main() {
+        let app = Command::new("issue-4847")
+        .arg(
+            Arg::new("example")
+                .long("example")
+                .num_args(1..=2)
+                .value_names(&["FOO", "BAR"])
+        );
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run -- --help
+
+### Actual Behaviour
+
+The output of `--help` is:
+```
+Usage: issue-4847 [OPTIONS]
+
+Options:
+      --example <FOO> <BAR>  
+  -h, --help                 Print help
+```
+
+As a side-note, there are trailing spaces in the help output.
+
+### Expected Behaviour
+
+The output of `--help` should indicate that the second parameter is optional, i.e.:
+```
+Usage: issue-4847 [OPTIONS]
+
+Options:
+      --example <FOO> [<BAR>]
+  -h, --help                 Print help
+```
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @fabianfreyer on 2023-04-19 17:20_
+
+---
+
+_Label `A-help` added by @epage on 2023-04-20 17:31_
+
+---
+
+_Label `E-easy` added by @epage on 2023-04-20 17:31_
+
+---
+
+_Referenced in [clap-rs/clap#4910](../../clap-rs/clap/pulls/4910.md) on 2023-05-15 18:28_
+
+---

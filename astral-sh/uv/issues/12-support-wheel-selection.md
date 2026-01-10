@@ -1,0 +1,35 @@
+---
+number: 12
+title: Support wheel selection
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2023-10-05T21:30:45Z
+updated_at: 2023-10-06T00:59:59Z
+url: https://github.com/astral-sh/uv/issues/12
+synced_at: 2026-01-10T01:23:03Z
+---
+
+# Support wheel selection
+
+---
+
+_Issue opened by @charliermarsh on 2023-10-05 21:30_
+
+Look at `install_wheel`, along with `WheelFilename` and `compatible_tags` from Monotrail.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-05 21:32_
+
+---
+
+_Referenced in [astral-sh/uv#15](../../astral-sh/uv/pulls/15.md) on 2023-10-06 00:59_
+
+---
+
+_Closed by @charliermarsh on 2023-10-06 00:59_
+
+---

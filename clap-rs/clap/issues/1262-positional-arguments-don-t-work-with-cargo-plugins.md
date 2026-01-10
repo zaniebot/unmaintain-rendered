@@ -1,0 +1,132 @@
+---
+number: 1262
+title: "Positional arguments don't work with cargo plugins"
+type: issue
+state: closed
+author: AdamNiederer
+labels: []
+assignees: []
+created_at: 2018-04-27T23:24:45Z
+updated_at: 2018-08-02T03:30:23Z
+url: https://github.com/clap-rs/clap/issues/1262
+synced_at: 2026-01-10T01:26:47Z
+---
+
+# Positional arguments don't work with cargo plugins
+
+---
+
+_Issue opened by @AdamNiederer on 2018-04-27 23:24_
+
+### Rust Version
+
+`rustc 1.27.0-nightly (056f589fb 2018-04-07)`
+
+### Affected Version of clap
+
+`clap 2.31.2`
+
+### Expected Behavior Summary
+
+The following example works perfectly; I expect invoking this program via `cargo disassemble main` to work in the same way.
+
+```shell
+$ ~/.cargo/bin/cargo-disassemble main
+```
+
+### Actual Behavior Summary
+
+```shell
+$ cargo disassemble main
+error: Found argument 'main' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cargo-disassemble [FLAGS] [OPTIONS] [function]
+
+For more information try --help
+```
+
+### Steps to Reproduce the issue
+
+```shell
+$ cargo install cargo-disassemble
+$ cargo disassemble main # fails
+$ ~/.cargo/bin/cargo-disassemble main # succeeds
+```
+
+Options and Flags work, but Args do not.
+
+### Sample Code or Link to Sample Code
+
+https://github.com/AdamNiederer/cargo-disassemble/blob/master/src/main.rs#L52
+https://github.com/AdamNiederer/cargo-disassemble/blob/master/src/main.rs#L55
+
+### Debug output
+
+(Used via structopt)
+
+---
+
+_Comment by @kbknapp on 2018-06-05 02:02_
+
+I'm going to close this and ping @TeXitoi (structopt author), because I'm not actually 100% sure how cargo subcommands are constructed using structopt short of using the structopt `raw(...)` methods.
+
+Here's you do it with vanilla clap:
+
+```rust
+App::new("cargo-disassemble")
+    .bin_name("cargo")
+    .setting(AppSettings::SubcommandRequiredElseHelp)
+    .subcommand(SubCommand::with_name("disassemble")
+        // add args
+    );
+```
+
+And then it's called `$ cargo disassemble <args>...` or `$ cargo-disassemble disassemble <args>...`
+
+---
+
+_Closed by @kbknapp on 2018-06-05 02:02_
+
+---
+
+_Comment by @TeXitoi on 2018-06-05 12:23_
+
+A good example: https://github.com/sunng87/cargo-release/blob/master/src/main.rs#L312-L374
+
+---
+
+_Comment by @TeXitoi on 2018-06-05 12:36_
+
+Direct translation of @kbknapp example:
+```rust
+#[macro_use]
+extern crate structopt;
+
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+struct Options {
+    #[structopt(help = "The name of the function to be decompiled")]
+    function: Option<String>,
+    // ...
+}
+
+#[derive(StructOpt, Debug)]
+#[structopt(
+    name = "cargo-disassemble",
+    bin_name = "cargo",
+    about = "Easy disassembly of Rust code."
+)]
+enum Cargo {
+    #[structopt(name = "disassemble")]
+    Disassemble(Options)
+}
+
+fn main() {
+    let Cargo::Disassemble(opt) = Cargo::from_args();
+    println!("{:?}", opt);
+}
+```
+
+---

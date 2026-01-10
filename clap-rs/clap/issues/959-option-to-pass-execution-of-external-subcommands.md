@@ -1,0 +1,45 @@
+---
+number: 959
+title: Option to pass execution of external subcommands to implementing binaries.
+type: issue
+state: closed
+author: nicholastmosher
+labels: []
+assignees: []
+created_at: 2017-05-12T18:47:37Z
+updated_at: 2018-08-02T03:30:07Z
+url: https://github.com/clap-rs/clap/issues/959
+synced_at: 2026-01-10T01:26:39Z
+---
+
+# Option to pass execution of external subcommands to implementing binaries.
+
+---
+
+_Issue opened by @nicholastmosher on 2017-05-12 18:47_
+
+I'm trying to create an application with a top-level interface that's extensible by third-party applications, similarly to how `git` and `cargo` work. I've posted a more detailed explanation of my use case on the [users forum](https://users.rust-lang.org/t/using-external-subcommands-with-clap/10753).
+
+I'd like to see if there is any interest in adding machinery to clap such that if the `AllowExternalSubcommands` setting is given, that the application has the option to search the system path for binaries that match the subcommand name [like cargo does](https://github.com/rust-lang/cargo/blob/master/src/bin/cargo.rs#L303-L338) and pass the execution to that binary.
+
+I feel that this feature would add some good value to clap by allowing it to become a subcommand "dispatcher" as well as parser, which would make it much easier to create extensible applications through a hierarchy of independent programs.
+
+This problem is clearly technically feasible, as demonstrated by cargo, so I feel that if this is something that we feel is in the domain of functionality that clap would like to have, that it wouldn't take too much work to add that functionality here.
+
+---
+
+_Comment by @kbknapp on 2017-05-12 19:27_
+
+While I agree it would be nice and ergonomic for end consumers I think it'd be quite hard to actually implement correctly. Unfortunately, that'd be a ton of work to make generic and secure enough for all users and something I just don't have the time to do right now. This would be a great case for something built *on top of* clap that does this, but I don't have the bandwidth to maintain a feature like that personally.
+
+If someone wanted to make an external crate that did this, built on clap, I'd be more than happy to provide assistance or answer questions though.
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-05-12 19:28_
+
+---
+
+_Closed by @kbknapp on 2017-11-06 03:41_
+
+---

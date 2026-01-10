@@ -1,0 +1,95 @@
+---
+number: 12039
+title: Do uv workspaces work with VSCode / Pylance?
+type: issue
+state: open
+author: Timmmm
+labels:
+  - question
+assignees: []
+created_at: 2025-03-07T11:05:43Z
+updated_at: 2025-08-15T00:18:40Z
+url: https://github.com/astral-sh/uv/issues/12039
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# Do uv workspaces work with VSCode / Pylance?
+
+---
+
+_Issue opened by @Timmmm on 2025-03-07 11:05_
+
+### Question
+
+I set up a simple project with two packages using `uv`'s workspaces feature. It works great and was very easy to set up (yeay Python tooling that doesn't suck!).
+
+Here it is:
+
+[uv_issue.zip](https://github.com/user-attachments/files/19125280/uv_issue.zip)
+
+You can run
+
+```
+uv sync
+uv run main
+```
+
+and it works.
+
+The only problem is VSCode / Pylance doesn't seem to understand it, even after I select `.venv/bin/python` as the interpreter. It can't find this import:
+
+![Image](https://github.com/user-attachments/assets/7fea8799-874f-4777-aa78-050915765c25)
+
+Is this supposed to work? 
+
+Maybe related to #9637
+
+### Platform
+
+Linux RHEL 8
+
+### Version
+
+uv 0.6.4
+
+---
+
+_Label `question` added by @Timmmm on 2025-03-07 11:05_
+
+---
+
+_Comment by @Sessional on 2025-03-11 00:00_
+
+There are two settings I had to get some intellisense and imports working with vscode here. Have you tried `python.autoComplete.extraPaths` and `python.analysis.extraPaths`?
+
+---
+
+_Comment by @konstin on 2025-03-11 11:56_
+
+I had to check the following option, but then it works for me:
+
+![Image](https://github.com/user-attachments/assets/1e99fb45-09ae-4011-bbc7-bde1ad2bd0b4)
+
+Given that I can't reproduce it, I assume this is another case of #9637.
+
+---
+
+_Comment by @aabrego on 2025-05-19 02:56_
+
+This fixed it for me:
+<img width="552" alt="Image" src="https://github.com/user-attachments/assets/572f721a-6a42-42c6-8796-e12df608b4ba" />
+
+---
+
+_Comment by @cnydo on 2025-06-13 16:49_
+
+maybe try this solution https://gist.github.com/krisbolton/20159d66f1d919c9c2380c96b6ac3915
+
+---
+
+_Comment by @hualayn on 2025-08-15 00:18_
+
+Pylance cannot find the correct direct of packages.
+try: settings -> search "extra path" -> input ".venv\Lib\site-packages"
+
+---

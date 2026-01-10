@@ -1,0 +1,128 @@
+---
+number: 11942
+title: xcb issues when running tkinter/customtkinter app
+type: issue
+state: closed
+author: ascaron37
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-04T09:01:36Z
+updated_at: 2025-08-11T08:19:28Z
+url: https://github.com/astral-sh/uv/issues/11942
+synced_at: 2026-01-10T01:25:13Z
+---
+
+# xcb issues when running tkinter/customtkinter app
+
+---
+
+_Issue opened by @ascaron37 on 2025-03-04 09:01_
+
+### Summary
+
+I have problems running a customtkinter app with uv. The window pops up and closes immediately. I receive this error:
+```
+[xcb] Extra reply data still left in queue
+[xcb] This is most likely caused by a broken X extension library
+[xcb] Aborting, sorry about that.
+python3: xcb_io.c:673: _XReply: Assertion `!xcb_xlib_extra_reply_data_left' failed.
+```
+When I change the venv to the system python the same error happens. When I execute the code with the system python the program runs without issues. I have also pyenv installed and when I use this python interpreter in the venv the programs runs also. So it seems that I have only issues using interpreters installed from uv and with the system python version, tough the system python version works when called without uv.
+
+This is my main.py:
+```
+import customtkinter
+
+
+class Window(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+
+        pdf_frame = customtkinter.CTkFrame(self)
+        pdf_frame.grid(column=0, row=0)
+
+
+if __name__ == "__main__":
+    window = Window()
+    window.mainloop()
+```
+
+The commands that I used:
+```
+uv init --python x.y.z
+uv add customtkinter
+uv run main.py
+```
+
+Tried with 3.13.2 (system), 3.11.11 (uv) and 3.11.5 (pyenv; works).
+
+Maybe someone has an idea what I can try.
+
+### Platform
+
+Void Linux with X (Linux 6.12.16_1 x86_64 GNU/Linux)
+
+### Version
+
+0.6.3
+
+### Python version
+
+3.13.2, 3.11.11, 3.11.5
+
+---
+
+_Label `bug` added by @ascaron37 on 2025-03-04 09:01_
+
+---
+
+_Referenced in [astral-sh/uv#6893](../../astral-sh/uv/issues/6893.md) on 2025-03-16 15:46_
+
+---
+
+_Comment by @nhasbun on 2025-04-02 05:17_
+
+Can confirm. Situation is also happening here. Tested with python 3.13.2 and 3.9.21.
+
+---
+
+_Comment by @zanieb on 2025-04-02 13:54_
+
+We'll look into this, it's a known quirk with our distributions.
+
+cc @geofft 
+
+---
+
+_Assigned to @geofft by @zanieb on 2025-04-11 14:49_
+
+---
+
+_Comment by @geofft on 2025-08-08 21:10_
+
+Hi - I believe this should be resolved in uv 0.8.7, released just now. Please make sure you've updated both uv and your local Python versions:
+
+```
+uv self update
+uv python install --reinstall --no-bin 3.13.6
+```
+
+If you're using another Python version, use `3.9.23`, `3.10.18`, `3.11.13`, `3.12.11`, and/or `3.14.0rc1` in that command. (This ensures that you're on the latest patch release _and_ you pick up the new build in case you were on an older build of that same patch release.)
+
+Please try it out and let me know if there are remaining issues.
+
+(By the way, if anyone sees _new_ bugs from this, please first open a new issue and at-mention me, and then use `uvx uv@0.8.6 python install --reinstall --no-bin 3.13.6` etc. to roll back to yesterday's builds of Python. I don't expect this to break anything, but it is a pretty significant change in what's in the Python distributions and how things are linked, so it might have some unexpected side effects.)
+
+
+---
+
+_Closed by @geofft on 2025-08-08 21:10_
+
+---
+
+_Comment by @ascaron37 on 2025-08-11 08:19_
+
+I tried the latest uv version 0.8.8 and it works! Thank you very much!
+
+---

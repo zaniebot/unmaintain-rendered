@@ -1,0 +1,57 @@
+---
+number: 1875
+title: Add support for isort remove_redundant_aliases option
+type: issue
+state: closed
+author: nefrob
+labels:
+  - isort
+assignees: []
+created_at: 2023-01-14T20:28:38Z
+updated_at: 2023-01-15T15:39:24Z
+url: https://github.com/astral-sh/ruff/issues/1875
+synced_at: 2026-01-10T01:22:40Z
+---
+
+# Add support for isort remove_redundant_aliases option
+
+---
+
+_Issue opened by @nefrob on 2023-01-14 20:28_
+
+Ref: https://pycqa.github.io/isort/docs/configuration/options.html.
+> Tells isort to remove redundant aliases from imports, such as import os as os. This defaults to False simply because some projects use these seemingly useless aliases to signify intent and change behaviour.
+
+Configuration in ruff:
+```toml
+[tool.ruff.isort]
+remove_redundant_aliases = true
+
+
+---
+
+_Comment by @mkniewallner on 2023-01-14 21:43_
+
+This might be redundant with `PLC0414` check from `pylint`: https://github.com/charliermarsh/ruff#convention-plc.
+
+---
+
+_Comment by @charliermarsh on 2023-01-14 22:33_
+
+Yeah I believe we implement this (with autofix) as `PLC0414`.
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-01-14 22:33_
+
+---
+
+_Comment by @nefrob on 2023-01-15 15:39_
+
+Sweet thanks! Closing this issue.
+
+---
+
+_Closed by @nefrob on 2023-01-15 15:39_
+
+---

@@ -1,0 +1,90 @@
+---
+number: 18811
+title: "[`Pylint`] `PLC1802` fix can cause syntax errors from lack of padding"
+type: issue
+state: closed
+author: MeGaGiGaGon
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2025-06-20T05:35:58Z
+updated_at: 2025-06-23T00:32:59Z
+url: https://github.com/astral-sh/ruff/issues/18811
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# [`Pylint`] `PLC1802` fix can cause syntax errors from lack of padding
+
+---
+
+_Issue opened by @MeGaGiGaGon on 2025-06-20 05:35_
+
+### Summary
+
+The fix for [len-test (PLC1802)](https://docs.astral.sh/ruff/rules/len-test/#len-test-plc1802) can cause a syntax error if the `len` is wrapped in parenthesis so it is next to the `if`. This should be fixable by adding padding. [playground](https://play.ruff.rs/e78f03d1-6817-499d-834d-0f99273cd015)
+```
+PS D:\python_projects> Get-Content issue.py
+```
+```py
+fruits = []
+if(len)(fruits):
+    ...
+```
+```
+PS D:\python_projects> uvx ruff check issue.py --select PLC --fix
+```
+```snap
+
+error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
+
+...quoting the contents of `issue.py`, the rule codes PLC1802, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+issue.py:2:3: PLC1802 `len(fruits)` used as condition without comparison
+  |
+1 | fruits = []
+2 | if(len)(fruits):
+  |   ^^^^^^^^^^^^^ PLC1802
+3 |     ...
+  |
+  = help: Remove `len`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+### Version
+
+ruff 0.12.0 (87f0feb21 2025-06-17) + playground
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-06-20 06:58_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-06-20 06:58_
+
+---
+
+_Comment by @LaBatata101 on 2025-06-20 20:40_
+
+I'm working on this
+
+---
+
+_Assigned to @LaBatata101 by @ntBre on 2025-06-20 20:46_
+
+---
+
+_Referenced in [astral-sh/ruff#18836](../../astral-sh/ruff/pulls/18836.md) on 2025-06-20 21:17_
+
+---
+
+_Closed by @charliermarsh on 2025-06-23 00:32_
+
+---

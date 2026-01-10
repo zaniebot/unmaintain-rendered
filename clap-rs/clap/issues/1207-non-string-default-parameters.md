@@ -1,0 +1,57 @@
+---
+number: 1207
+title: Non string default parameters
+type: issue
+state: closed
+author: jbreitbart
+labels: []
+assignees: []
+created_at: 2018-03-11T11:57:47Z
+updated_at: 2018-08-02T03:30:20Z
+url: https://github.com/clap-rs/clap/issues/1207
+synced_at: 2026-01-10T01:26:45Z
+---
+
+# Non string default parameters
+
+---
+
+_Issue opened by @jbreitbart on 2018-03-11 11:57_
+
+I am not sure if this is a real issue or just me being stupid. I am wondering if it is possible to support non string-default parameters. Currently it seems like I have to do
+
+```
+    let cpus_str = num_cpus::get().to_string();
+    let matches = App::new("heat-rs")
+        .arg(
+            Arg::with_name("threads")
+                .long("threads")
+                .short("t")
+                .help("Number of threads")
+                .default_value(&cpus_str)
+                .required(true),
+        )
+        .get_matches();
+```
+
+but the string looks superfluous. Is there any reason why I cannot set an integer default value?
+
+---
+
+_Comment by @kbknapp on 2018-03-19 18:01_
+
+Not a stupid question at all! Currently clap only handles strings. Strings in, strings out. You can use something like [`structopt`](https://github.com/TeXitoi/structopt) (which uses clap internally) to use Rust types. 
+
+It's not an exact answer to your question, but should help.
+
+Also note that `structopt` is in the process of being merged into clap proper ;)
+
+---
+
+_Closed by @kbknapp on 2018-03-19 18:01_
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2018-03-19 18:02_
+
+---

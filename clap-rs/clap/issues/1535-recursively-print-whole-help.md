@@ -1,0 +1,102 @@
+---
+number: 1535
+title: Recursively print whole help?
+type: issue
+state: closed
+author: dpc
+labels:
+  - C-enhancement
+  - A-help
+  - S-duplicate
+assignees: []
+created_at: 2019-08-26T18:05:16Z
+updated_at: 2022-01-11T18:44:56Z
+url: https://github.com/clap-rs/clap/issues/1535
+synced_at: 2026-01-10T01:26:56Z
+---
+
+# Recursively print whole help?
+
+---
+
+_Issue opened by @dpc on 2019-08-26 18:05_
+
+My app (`cargo-crev`) used `<verb> <subject> <qualifier>` convention. Eg. `cargo crev query id all`. This makes it use a lot of 3-level sub-command nesting, which is tedious for the users to fully discover.
+
+What would be neat is having some form of recursive help, in way similar to how `tree` command prints a filesystem. 
+
+This way user could get long, but full overview of all available commands.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 12:53_
+
+Sounds like a weird corner case, but maybe...
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-02-01 12:53_
+
+---
+
+_Label `W: after v3 release` added by @CreepySkeleton on 2020-02-01 12:53_
+
+---
+
+_Label `W: maybe` added by @CreepySkeleton on 2020-02-01 12:53_
+
+---
+
+_Label `W: after v3 release` removed by @CreepySkeleton on 2020-02-07 07:14_
+
+---
+
+_Comment by @pictographer on 2020-07-08 00:17_
+
+Not a weird corner case. Man pages are essentially this.
+
+---
+
+_Referenced in [clap-rs/clap#2149](../../clap-rs/clap/pulls/2149.md) on 2020-10-04 17:30_
+
+---
+
+_Referenced in [epage/clapng#121](../../epage/clapng/issues/121.md) on 2021-12-06 18:35_
+
+---
+
+_Comment by @epage on 2021-12-09 20:05_
+
+Is this the same request as #1334 ?   Can we close this and add the use case to that one?
+
+---
+
+_Label `S-waiting-on-decision` removed by @epage on 2021-12-09 20:05_
+
+---
+
+_Label `S-waiting-on-author` added by @epage on 2021-12-09 20:05_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-09 20:05_
+
+---
+
+_Comment by @dpc on 2021-12-09 20:25_
+
+Yes. Seems like the same thing though I want to clarify that "recursive" is important here.
+
+---
+
+_Closed by @dpc on 2021-12-09 20:25_
+
+---
+
+_Label `S-waiting-on-author` removed by @epage on 2022-01-11 18:44_
+
+---
+
+_Label `S-duplicate` added by @epage on 2022-01-11 18:44_
+
+---

@@ -1,0 +1,81 @@
+---
+number: 62
+title: Option flags appear in random order in --help
+type: issue
+state: closed
+author: ghost
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2015-04-05T06:33:52Z
+updated_at: 2015-06-18T16:36:24Z
+url: https://github.com/clap-rs/clap/issues/62
+synced_at: 2026-01-10T01:26:22Z
+---
+
+# Option flags appear in random order in --help
+
+---
+
+_Issue opened by @ghost on 2015-04-05 06:33_
+
+Windows 7 64 bit
+Rust 1.0.0-beta 64 bit (9854143cb)
+clap 0.5.11
+
+Invoking --help many times results in randomly ordered flags
+
+
+---
+
+_Comment by @kbknapp on 2015-04-05 19:09_
+
+Yeah this was by design from not sorting the options as I wasn't sure about what performance impact that would have. But since its also been causing issues with #4 I think I'm going to implement it.
+
+Give me a day and I'll push this in 0.5.12 once a have a second to add it. 
+
+Thanks for taking the time to file the issue :)
+
+
+---
+
+_Label `enhancement` added by @kbknapp on 2015-04-05 19:10_
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2015-04-05 19:11_
+
+---
+
+_Comment by @kbknapp on 2015-04-05 20:06_
+
+Just to elaborate a little too, the help info is generated lazily only when `--help` (or by default `-h` unless the dev specifys their own `-h`) is found, so the performance isn't too big of a concern at that point. Once I have this implemented I'll post back. 
+
+
+---
+
+_Referenced in [clap-rs/clap#63](../../clap-rs/clap/pulls/63.md) on 2015-04-06 00:28_
+
+---
+
+_Comment by @kbknapp on 2015-04-06 00:31_
+
+This is closed with #63 (v0.5.12 on crates.io or f4b2bf5 on master).
+
+Arguments are sorted by name, this side steps some of the mess from determining if sorting by shorts, longs, names, or ones that have shorts but no longs and vice-versa, etc. But it allows the help-info to stay constant between runs which will be a big plus for #4 
+
+
+---
+
+_Closed by @kbknapp on 2015-04-06 00:31_
+
+---
+
+_Comment by @ghost on 2015-04-06 01:32_
+
+Thanks :)
+
+The name sort does seem the most reasonable since it allows users of clap to group relevant flags regardless of the short/long flags.
+
+
+---

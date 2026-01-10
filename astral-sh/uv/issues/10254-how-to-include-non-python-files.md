@@ -1,0 +1,51 @@
+---
+number: 10254
+title: How to include non-python files
+type: issue
+state: closed
+author: huyndao
+labels: []
+assignees: []
+created_at: 2024-12-31T16:09:46Z
+updated_at: 2024-12-31T18:21:20Z
+url: https://github.com/astral-sh/uv/issues/10254
+synced_at: 2026-01-10T01:24:51Z
+---
+
+# How to include non-python files
+
+---
+
+_Issue opened by @huyndao on 2024-12-31 16:09_
+
+Apologies if this has been posted somewhere but I could not find in the documentation or from search the issues.
+
+I am using uv to try to package an ML model along dependencies, I'd like to include some model weights in the form of safetensors into the package however could not find the relevant option or syntax, either from command line or to add to pyproject.toml.
+
+I was wondering if someone could help point me to the right direction.  Ideally I'd prefer to use one suite / everything uv to create instead of jumping to another set of tools.
+
+Thank you.
+
+---
+
+_Comment by @FishAlchemist on 2024-12-31 18:02_
+
+``uv build`` relies on the ``build system`` you specify, so you should refer to the documentation of the ``build system`` you are using.
+uv's own ``build system``, ``build backend``, is still in preview mode, if I'm not mistaken.
+
+
+---
+
+_Comment by @huyndao on 2024-12-31 18:21_
+
+Thank you, @FishAlchemist .  That is helpful.
+
+---
+
+_Closed by @huyndao on 2024-12-31 18:21_
+
+---
+
+_Referenced in [astral-sh/uv#10261](../../astral-sh/uv/pulls/10261.md) on 2025-01-02 05:44_
+
+---

@@ -1,0 +1,241 @@
+---
+number: 2618
+title: "Replace `doc(include)` due to feature removal"
+type: issue
+state: closed
+author: rami3l
+labels:
+  - A-docs
+assignees: []
+created_at: 2021-07-24T21:35:58Z
+updated_at: 2021-08-18T09:08:56Z
+url: https://github.com/clap-rs/clap/issues/2618
+synced_at: 2026-01-10T01:27:21Z
+---
+
+# Replace `doc(include)` due to feature removal
+
+---
+
+_Issue opened by @rami3l on 2021-07-24 21:35_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Clap Version
+
+master
+
+### Where?
+
+./src/lib.rs
+
+### What's wrong?
+
+https://github.com/rust-lang/rust/pull/85457 indicates that `doc(include)` has been removed, and thus the following lines in our current codebase needs to be replaced:
+
+https://github.com/clap-rs/clap/blob/8ff68080e65e70929df030fedf94f28c6f7fe06c/src/lib.rs#L6-L9
+
+This will give the following error on Rust `1.54.0+` (see also: https://github.com/elastic/elasticsearch-rs/issues/175):
+
+```
+feature has been removed
+use #[doc = include_str!("filename")] instead, which handles macro invocations
+```
+ 
+
+### How to fix?
+
+The previous lines should be changed to the following to work on Rust version `1.55.0-nightly`:
+
+```rust
+#![doc(html_logo_url = "https://clap.rs/images/media/clap.png")] 
+#![doc(html_root_url = "https://docs.rs/clap/3.0.0-beta.2")] 
+#![cfg_attr(feature = "doc", doc = include_str!("../README.md"))]
+```
+
+Also, the final line of `README.md`:
+
+https://github.com/clap-rs/clap/blob/8ff68080e65e70929df030fedf94f28c6f7fe06c/README.md#L588
+
+should also be replaced by an absolute address to work well with [docs.rs](https://docs.rs).
+
+I have not made a PR yet due to compatibility concerns, since AFAIK the fix will only work on Rust `1.54.0+`. Introducing something like [dtolnay/rustversion](https://github.com/dtolnay/rustversion) is completely possible, but I have to be very careful with the dependencies of `clap`.
+
+---
+
+_Label `C: docs` added by @rami3l on 2021-07-24 21:35_
+
+---
+
+_Renamed from "Remove `doc(include)` due to feature removal" to "Change `doc(include)` due to feature removal" by @rami3l on 2021-07-24 21:59_
+
+---
+
+_Renamed from "Change `doc(include)` due to feature removal" to "Replace `doc(include)` due to feature removal" by @rami3l on 2021-07-24 22:01_
+
+---
+
+_Comment by @epage on 2021-07-25 01:00_
+
+Thanks for catching these issues!  
+
+I believe the use of this is mostly for docs.rs, so the question for compatibility is what is docs.rs approach for nightly versioning.  They don't list their upgrade policy but they are already on [rustc 1.55.0-nightly (67b03007c 2021-07-23)](https://docs.rs/about/builds), so it sounds like we'd be good to switch over, and should before the next beta release.
+
+---
+
+_Comment by @rami3l on 2021-07-25 08:40_
+
+@epage The question is, opting into the new style will cause a hard error on, for example, Rust version `1.53.0-stable`:
+
+```yaml
+error[E0658]: arbitrary expressions in key-value attributes are unstable
+Error:  --> src\lib.rs:8:36
+  |
+8 | #![cfg_attr(feature = "doc", doc = include_str!("../README.md"))]
+  |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: see issue #78835 <https://github.com/rust-lang/rust/issues/78835> for more information
+```
+
+... and that's why I mentioned [dtolnay/rustversion](https://github.com/dtolnay/rustversion). But is it desirable to add a dependency just because of some docstrings? Sorry if I've missed out something about `rustdoc` usage.
+
+Of course, if the `doc` feature set is only used for [docs.rs](https://docs.rs) and is intended to work on nightly only then never mind.
+
+I'll make a PR first anyway.
+
+Update: No wonder it breaks on version `1.46.0-stable`, but I wasn't ready for a parsing error... 🤔
+
+```yaml
+error: unexpected token: `include_str`
+Error:  --> src\lib.rs:8:36
+  |
+8 | #![cfg_attr(feature = "doc", doc = include_str!("../README.md"))]
+  |                                    ^^^^^^^^^^^
+  |
+  = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
+  = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+```
+
+---
+
+_Referenced in [clap-rs/clap#2620](../../clap-rs/clap/pulls/2620.md) on 2021-07-25 10:08_
+
+---
+
+_Comment by @pksunkara on 2021-07-25 13:16_
+
+https://github.com/clap-rs/clap/pull/2568#issuecomment-873483408
+
+I am waiting for 1.54 release so that we can bump the MSRV.
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-07-25 13:16_
+
+---
+
+_Comment by @epage on 2021-07-26 15:10_
+
+I feel I'm missing something.  How does MSRV related to this?  We are currently using an unstable feature only available on nightly compilers.  To make this safe, we hide this behind a feature flag.  We can always put the replacement syntax behind that feature flag and the only thing that has changed is the version of Rust needed to use that feature flag.
+
+For example on stable I get:
+```
+$ cargo check --features doc
+    Checking clap v3.0.0-beta.2 (/home/epage/src/personal/clap)
+error[E0554]: `#![feature]` may not be used on the stable release channel
+ --> src/lib.rs:6:30
+  |
+6 | #![cfg_attr(feature = "doc", feature(external_doc))]
+  |                              ^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+```
+
+From what I understand, the main target audience for this feature flag is `docs.rs`, so what matters is what version of the compiler `docs.rs` uses.
+
+---
+
+_Comment by @epage on 2021-07-26 15:12_
+
+Oh, I assumed `cfg_attr` would allow old Rust versions to use the synax.  #2620 shows this isn't the case.  :(. 
+
+---
+
+_Comment by @pksunkara on 2021-07-27 08:09_
+
+There's a bug with rust versions older than 1.54 as documented [here](https://github.com/rust-lang/rust/issues/82768#issuecomment-803935643). And since I had been planning to bump the MSRV anyway, I decided to just wait for 1.54.
+
+---
+
+_Comment by @rami3l on 2021-07-29 15:54_
+
+@pksunkara Rust 1.54 is out.
+
+---
+
+_Referenced in [clap-rs/clap#2640](../../clap-rs/clap/pulls/2640.md) on 2021-07-29 20:42_
+
+---
+
+_Closed by @pksunkara on 2021-07-31 04:45_
+
+---
+
+_Comment by @JeremyRubin on 2021-08-17 09:14_
+
+just noting that this broke my CI :) https://github.com/sapio-lang/sapio/runs/3348736471, no specific action requested.
+
+seems i'll either also bump my msrv or i'll stay on the earlier beta versions which did not require nightly for my rust version.
+
+---
+
+_Comment by @pksunkara on 2021-08-17 09:17_
+
+None of clap versions require nightly. It's just MSRV bumps and using those new features
+
+---
+
+_Comment by @JeremyRubin on 2021-08-17 09:21_
+
+Yep!
+
+I know it's in beta, so Caveat Emptor, but I think that a MSRV Bump is a breaking change so what i'm remarking on is that this is a semver violation. For future references, I think MSRV bumps (that actually introduce new features prev not supported) need to be major releases.
+
+---
+
+_Comment by @pksunkara on 2021-08-17 09:23_
+
+All prereleases are considered unstable according to semver. Which means we can break anything in them. 
+
+---
+
+_Comment by @pksunkara on 2021-08-17 09:28_
+
+> For future references, I think MSRV bumps (that actually introduce new features prev not supported) need to be major releases.
+
+But yes, once clap 3 is out, MSRV will probably not change.
+
+---
+
+_Comment by @epage on 2021-08-17 16:08_
+
+> But yes, once clap 3 is out, MSRV will probably not change.
+
+Throughout 3.x?  Previously, clap2's official stance is "last two compiler versions".  
+
+While there isn't full consensus on it, generally the Rust community doesn't treat MSRV changes as breaking changes.   Even if clap adopts a stricter semver policy, our dependencies haven't (see past issue with bitflags) and for end-users the result will be the same.
+
+---
+
+_Comment by @pksunkara on 2021-08-18 09:08_
+
+Yeah, I wanted to do some research about this before committing. I agree, throughout the rust community, bumping MSRV means a minor release and not a major. We follow that for clap currently (2.x) and I think this is what we want to follow in the future.
+
+---
+
+_Referenced in [ZcashFoundation/reddsa#10](../../ZcashFoundation/reddsa/pulls/10.md) on 2022-01-18 22:39_
+
+---

@@ -1,0 +1,211 @@
+---
+number: 2754
+title: Compile regression with nested subcommands in 3.0.0-beta.4
+type: issue
+state: closed
+author: asomers
+labels:
+  - C-bug
+assignees: []
+created_at: 2021-09-05T01:11:33Z
+updated_at: 2021-09-05T15:13:14Z
+url: https://github.com/clap-rs/clap/issues/2754
+synced_at: 2026-01-10T01:27:25Z
+---
+
+# Compile regression with nested subcommands in 3.0.0-beta.4
+
+---
+
+_Issue opened by @asomers on 2021-09-05 01:11_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.56.0-nightly (2f662b140 2021-08-29) or rustc 1.54.0 (a178d0322 2021-07-26)
+
+### Clap Version
+
+3.0.0-beta.4
+
+### Minimal reproducible code
+
+Cargo.toml:
+```toml
+[package]
+name = "clap-subsubcommand"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+clap_derive = "=3.0.0-beta.4"
+clap = "=3.0.0-beta.4"
+```
+src/main.rs:
+```rust
+use clap::*;
+
+#[derive(Clap, Clone, Debug)]
+struct First {
+    #[clap(short, long)]
+    verbose: bool
+}
+
+// Fails identically whether we derive Clap or Subcommand
+#[derive(Clap, Clone, Debug)]
+enum MySubSubCommand {
+    First(First),
+    Second
+}
+
+// Fails identically whether we derive Clap or Subcommand
+#[derive(Clap, Clone, Debug)]
+enum MySubCommand {
+    SubSub(MySubSubCommand)
+}
+
+#[derive(Clap, Clone, Debug)]
+struct MyApp {
+    #[clap(subcommand)]
+    cmd: MySubCommand
+}
+
+fn main() {
+    MyApp::parse();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+`cargo check`
+
+### Actual Behaviour
+
+With Clap 3.0.0-beta.4 it fails like this:
+```
+    Checking clap-subsubcommand v0.1.0 (/usr/home/somers/src/rust/clap-subsubcommand)
+error[E0277]: the trait bound `MySubSubCommand: clap::Args` is not satisfied
+   --> src/main.rs:19:12
+    |
+19  |     SubSub(MySubSubCommand)
+    |            ^^^^^^^^^^^^^^^ the trait `clap::Args` is not implemented for `MySubSubCommand`
+    |
+note: required by `augment_args`
+   --> /home/somers/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.0-beta.4/src/derive.rs:213:5
+    |
+213 |     fn augment_args(app: App<'_>) -> App<'_>;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0277]: the trait bound `MySubSubCommand: clap::Args` is not satisfied
+   --> src/main.rs:19:12
+    |
+19  |     SubSub(MySubSubCommand)
+    |            ^^^^^^^^^^^^^^^ the trait `clap::Args` is not implemented for `MySubSubCommand`
+    |
+note: required by `augment_args_for_update`
+   --> /home/somers/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.0-beta.4/src/derive.rs:219:5
+    |
+219 |     fn augment_args_for_update(app: App<'_>) -> App<'_>;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `clap-subsubcommand` due to 2 previous errors
+```
+
+### Expected Behaviour
+
+With clap-3.0.0-beta.2, the build passes and the app works as expected.
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+No change in output when using the `debug` feature.
+
+---
+
+_Label `T: bug` added by @asomers on 2021-09-05 01:11_
+
+---
+
+_Assigned to @epage by @pksunkara on 2021-09-05 04:22_
+
+---
+
+_Comment by @pksunkara on 2021-09-05 06:08_
+
+I think your local dependency has not resolved clap derive to beta.4. try deleting target folder and recompiling
+
+---
+
+_Closed by @pksunkara on 2021-09-05 06:08_
+
+---
+
+_Comment by @asomers on 2021-09-05 13:24_
+
+@pksunkara No, that's not it.  The crates definitely resolve fine, and Clap works as long as I don't use nested subcommands.  Also, it works if I add `#[clap(flatten)]` like this:
+```rust
+#[derive(Clap, Clone, Debug)]
+enum MySubCommand {
+    #[clap(flatten)]
+    SubSub(MySubSubCommand)
+}
+```
+but the resulting CLI is not what I want when I use flatten.
+
+---
+
+_Comment by @epage on 2021-09-05 14:02_
+
+With the latest version of clap, you need `#[subcommand]`
+
+---
+
+_Comment by @asomers on 2021-09-05 14:31_
+
+I used `#[subcommand]` in structs with subcommands before.  Are you saying that with 3.0.0-beta.4 I need it in enums with subcommands, too?
+
+---
+
+_Comment by @pksunkara on 2021-09-05 14:38_
+
+Yup.
+
+On Sun, Sep 5, 2021, 20:01 Alan Somers ***@***.***> wrote:
+
+> I used #[subcommand] in structs with subcommands before. Are you saying
+> that with 3.0.0-beta.4 I need it in enums with subcommands, too?
+>
+> —
+> You are receiving this because you were mentioned.
+> Reply to this email directly, view it on GitHub
+> <https://github.com/clap-rs/clap/issues/2754#issuecomment-913165514>, or
+> unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AABKU3ZS3D4TQC5FSQP5THDUAN5N5ANCNFSM5DN2XVQA>
+> .
+>
+
+
+---
+
+_Comment by @asomers on 2021-09-05 14:44_
+
+Ok.  Thanks for the help.
+
+---
+
+_Comment by @epage on 2021-09-05 15:13_
+
+The old trait that was being derived was a bit of a catch-all, providing functions that did nothing but allowed the derive to implicitly allow mixing of types.  We switched it to be more strict, allowing compile time checking.  This meant we can't infer whether a variant is an `Args` or a `Subcommand` , so we had to mirror how deriving `Args` does it.
+
+This also opens us up to allowing an enum to derive `Args` for creating mutually exclusive arguments,
+
+---

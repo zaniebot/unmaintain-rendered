@@ -1,0 +1,37 @@
+---
+number: 9063
+title: uv + ruff = Python 4.0
+type: issue
+state: closed
+author: sergree
+labels: []
+assignees: []
+created_at: 2024-11-12T16:55:15Z
+updated_at: 2024-11-13T16:00:35Z
+url: https://github.com/astral-sh/uv/issues/9063
+synced_at: 2026-01-10T01:24:36Z
+---
+
+# uv + ruff = Python 4.0
+
+---
+
+_Issue opened by @sergree on 2024-11-12 16:55_
+
+(Not an issue)
+
+`uv` and `ruff` make Python feel like **4.0**. 🤩
+
+Love it, guys! 💗
+
+---
+
+_Comment by @charliermarsh on 2024-11-13 16:00_
+
+Thank you! ❤️ 
+
+---
+
+_Closed by @charliermarsh on 2024-11-13 16:00_
+
+---

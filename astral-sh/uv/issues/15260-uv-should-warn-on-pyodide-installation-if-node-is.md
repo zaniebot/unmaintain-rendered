@@ -1,0 +1,40 @@
+---
+number: 15260
+title: uv should warn on Pyodide installation if Node is not available
+type: issue
+state: open
+author: zanieb
+labels: []
+assignees: []
+created_at: 2025-08-13T20:49:19Z
+updated_at: 2025-08-13T20:49:25Z
+url: https://github.com/astral-sh/uv/issues/15260
+synced_at: 2026-01-10T01:25:54Z
+---
+
+# uv should warn on Pyodide installation if Node is not available
+
+---
+
+_Issue opened by @zanieb on 2025-08-13 20:49_
+
+This installs but fails at runtime
+```
+❯ docker run -it astral/uv:bookworm-slim bash -c "uv python install pyodide && uv python find pyodide"
+Installed Python 3.12.7 in 753ms
+ + pyodide-3.12.7-emscripten-wasm32-musl (python3.12)
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, add the directory to your PATH.
+error: Failed to inspect Python interpreter from managed installations at `/root/.local/share/uv/python/pyodide-3.12.7-emscripten-wasm32-musl/python`
+  Caused by: Querying Python at `/root/.local/share/uv/python/pyodide-3.12.7-emscripten-wasm32-musl/python` failed with exit status exit status: 1
+
+[stderr]
+No node executable found on the path
+```
+
+---
+
+_Comment by @zanieb on 2025-08-13 20:49_
+
+cc @hoodmane 
+
+---

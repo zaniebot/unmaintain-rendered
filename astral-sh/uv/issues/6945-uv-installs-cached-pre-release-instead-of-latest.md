@@ -1,0 +1,146 @@
+---
+number: 6945
+title: Uv installs cached (?) pre-release instead of latest from index
+type: issue
+state: closed
+author: NiklasRosenstein
+labels:
+  - question
+assignees: []
+created_at: 2024-09-02T20:59:29Z
+updated_at: 2024-09-15T23:31:18Z
+url: https://github.com/astral-sh/uv/issues/6945
+synced_at: 2026-01-10T01:24:08Z
+---
+
+# Uv installs cached (?) pre-release instead of latest from index
+
+---
+
+_Issue opened by @NiklasRosenstein on 2024-09-02 20:59_
+
+Hi 👋 
+
+### Synopsis
+
+This may be two, or three bugs in one..? All of these seem wrong on an individual level:
+
+* Uv unexpectedly installs a pre-release (`0.42.1.post0.dev8+gf84dd7e0`) without any `--prerelease` flag
+* It installs this version despite not having specified the `--extra-index-url` that the package version is served from
+* It does not recognize that a newer (final) release is available in the `--index-url` (`0.43.0`)
+
+### Context
+
+At my company we use Artifactory and have two virtual Python repositories:
+
+* `python-all` which contains all tagged, i.e. final, releases as well as "snapshots" (`.post0.devN`  "pre-releases" (which are actually post releases but in the sense of PEP440 should be considered as a prerelease))
+* `python-playground-all` which contains all versions publish during CI of feature branches (version format is something like `x.y.z.post0.devN+gSHA`)
+
+### Observed behaviour
+
+The issue I am having is that the following command ends up installing a pre-release that isn't even served by the specified `--index-url`, and does not install the more recent `0.43.0` release:
+
+```
+❯ curl -s https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-all/simple/hs-infrastructure-kraken-hs/ | grep '0.4[23].0'
+<a href="../../hs-infrastructure-kraken-hs/0.42.0/hs_infrastructure_kraken_hs-0.42.0-py3-none-any.whl#sha256=5fe11d580fcbda79c7300a9f94097b5308233555de61755b662a4f91cf6fbf00" data-requires-python="&gt;=3.10,&lt;3.14" data-yanked="corpnet rollout by default was a bit rushed" rel="internal">hs_infrastructure_kraken_hs-0.42.0-py3-none-any.whl</a>
+<a href="../../hs-infrastructure-kraken-hs/0.42.0.post0.dev1/hs_infrastructure_kraken_hs-0.42.0.post0.dev1-py3-none-any.whl#sha256=b3acaa223febb8bb9ab6a2753d18c872da76fcfe8e49d63a21d6354de20719ca" data-requires-python="&gt;=3.10,&lt;3.14" rel="internal">hs_infrastructure_kraken_hs-0.42.0.post0.dev1-py3-none-any.whl</a>
+<a href="../../hs-infrastructure-kraken-hs/0.42.0.post0.dev1/hs_infrastructure_kraken_hs-0.42.0.post0.dev1.tar.gz#sha256=56502a2145fe1c24d066502f04a8e52562f428a89938ac958dd5c3dc91b3007c" data-requires-python="&gt;=3.10,&lt;3.14" rel="internal">hs_infrastructure_kraken_hs-0.42.0.post0.dev1.tar.gz</a>
+<a href="../../hs-infrastructure-kraken-hs/0.42.0.post0.dev2/hs_infrastructure_kraken_hs-0.42.0.post0.dev2-py3-none-any.whl#sha256=5ab98095215c4855e5d14b3ba29d6d280e8c7fe88d8c420fecb9be5b195376ce" data-requires-python="&gt;=3.10,&lt;3.14" rel="internal">hs_infrastructure_kraken_hs-0.42.0.post0.dev2-py3-none-any.whl</a>
+<a href="../../hs-infrastructure-kraken-hs/0.42.0.post0.dev2/hs_infrastructure_kraken_hs-0.42.0.post0.dev2.tar.gz#sha256=15d5417b823abba3efcceeb8cea3fc90191e7994b2ed1ba01270f3066b8878fb" data-requires-python="&gt;=3.10,&lt;3.14" rel="internal">hs_infrastructure_kraken_hs-0.42.0.post0.dev2.tar.gz</a>
+<a href="../../hs-infrastructure-kraken-hs/0.42.0/hs_infrastructure_kraken_hs-0.42.0.tar.gz#sha256=f74b0ef924ac734b2c458122c54e43f2014e0b111ba567b6f5f3ae530b976dd2" data-requires-python="&gt;=3.10,&lt;3.14" data-yanked="corpnet rollout by default was a bit rushed" rel="internal">hs_infrastructure_kraken_hs-0.42.0.tar.gz</a>
+<a href="../../hs-infrastructure-kraken-hs/0.43.0/hs_infrastructure_kraken_hs-0.43.0-py3-none-any.whl#sha256=b7d3be07c187f473de2848e61234b6e6eb24edf3df0652efe3991476ecf0b5fa" data-requires-python="&gt;=3.10,&lt;3.14" rel="internal">hs_infrastructure_kraken_hs-0.43.0-py3-none-any.whl</a>
+<a href="../../hs-infrastructure-kraken-hs/0.43.0/hs_infrastructure_kraken_hs-0.43.0.tar.gz#sha256=cb37524f27cb4c17275af40b776124cfa84888180712d7c6d72d64deb7a1a689" data-requires-python="&gt;=3.10,&lt;3.14" rel="internal">hs_infrastructure_kraken_hs-0.43.0.tar.gz</a>
+
+❯ VIRTUAL_ENV=test uv pip install --index-url https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-all/simple hs-infrastructure-kraken-hs
+Resolved 50 packages in 4.67s
+Installed 50 packages in 107ms
+ + hs-infrastructure-kraken-hs==0.42.1.post0.dev8+gf84dd7e0
+[ ... shortened ... ]
+```
+
+Before the above command, I explicitly installed that version into another virtual environment:
+
+```
+❯ uv pip install --index-url https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-all/simple --extra-index-url https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-playground-all/simple hs-infrastructure-kraken-hs==0.42.1.post0.dev8+gf84dd7e0
+```
+
+I've tried running `uv cache clear` but it did not help. Even if it did, it would only be a workaround in my opinion.
+
+Uv 0.4.2
+
+---
+
+* _edit_: Added missing `==0.42.1.post0.dev8+gf84dd7e0` to last `uv pip install` example command I included in the last section
+
+---
+
+_Comment by @NiklasRosenstein on 2024-09-02 21:05_
+
+What leaves me puzzled the most is that specifying `==0.43.0` doesn't work either. With `RUST_LOG=debug`, I get:
+
+```
+DEBUG uv 0.4.2
+DEBUG Searching for Python interpreter in system path
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `test/bin/python3` (active virtual environment)
+DEBUG Using Python 3.10.14 environment at test/bin/python3
+DEBUG Acquired lock for `test`
+DEBUG At least one requirement is not satisfied: hs-infrastructure-kraken-hs==0.43.0
+DEBUG Using request timeout of 30s
+⠙ Resolving dependencies...                                                                                                                                                                                                                           DEBUG Solving with installed Python version: 3.10.14
+DEBUG Adding direct dependency: hs-infrastructure-kraken-hs==0.43.0
+INFO add_decision: root @ 0a0.dev0    
+DEBUG Found fresh response for: https://company.jfrog.io/artifactory/api/pypi/python-playground-all/simple/hs-infrastructure-kraken-hs/
+DEBUG Searching for a compatible version of hs-infrastructure-kraken-hs (==0.43.0)
+DEBUG No compatible version found for: hs-infrastructure-kraken-hs
+INFO Start conflict resolution because incompat satisfied:
+   hs-infrastructure-kraken-hs ==0.43.0 is forbidden    
+INFO prior cause: root ==0a0.dev0 is forbidden    
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of hs-infrastructure-kraken-hs==0.43.0 and you require hs-infrastructure-kraken-hs==0.43.0, we can conclude that your requirements are unsatisfiable.
+DEBUG Released lock at `/Users/niklas/Desktop/test/.lock`
+```
+
+What does `hs-infrastructure-kraken-hs ==0.43.0 is forbidden` mean?
+
+---
+
+_Comment by @charliermarsh on 2024-09-02 21:08_
+
+The first thing to note, which I believe explains at least (3), is that if a package exists in `--extra-index-url`, we won't even check `--index-url`, to avoid dependency confusion attacks. You can read about that here (https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes), or just specify `--index-strategy unsafe-best-match` if you want to enable that behavior.
+
+---
+
+_Comment by @charliermarsh on 2024-09-02 21:09_
+
+I think that also explains this part:
+
+> What leaves me puzzled the most is that specifying `==0.43.0` doesn't work either.
+
+
+---
+
+_Comment by @charliermarsh on 2024-09-02 21:10_
+
+> It installs this version despite not having specified the --extra-index-url that the package version is served from.
+
+This part I don't understand though. You're saying that you run `uv pip install --index-url A package`, and it installs a version of `package` that does not exist on `A`? Can you show me the `--verbose` logs for this?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-03 12:53_
+
+---
+
+_Comment by @charliermarsh on 2024-09-15 23:31_
+
+Closing due to lack of follow-up, but let me know if you have other questions.
+
+---
+
+_Closed by @charliermarsh on 2024-09-15 23:31_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-15 23:31_
+
+---

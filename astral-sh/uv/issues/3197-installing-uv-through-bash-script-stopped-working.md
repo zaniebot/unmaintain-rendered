@@ -1,0 +1,45 @@
+---
+number: 3197
+title: Installing uv through bash script stopped working
+type: issue
+state: closed
+author: rodolfolottin
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-04-22T19:50:53Z
+updated_at: 2024-04-22T19:54:04Z
+url: https://github.com/astral-sh/uv/issues/3197
+synced_at: 2026-01-10T01:23:25Z
+---
+
+# Installing uv through bash script stopped working
+
+---
+
+_Issue opened by @rodolfolottin on 2024-04-22 19:50_
+
+Hi! I'm currently unable to install uv through the installation step that utilizes curl.
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+It gives a 404. `curl: (22) The requested URL returned error: 404`
+
+
+---
+
+_Comment by @rodolfolottin on 2024-04-22 19:53_
+
+Closing it in favor of #3196. It's a duplicate.
+
+---
+
+_Closed by @rodolfolottin on 2024-04-22 19:53_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-04-22 19:54_
+
+---

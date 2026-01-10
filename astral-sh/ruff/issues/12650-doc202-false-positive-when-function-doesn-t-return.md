@@ -1,0 +1,61 @@
+---
+number: 12650
+title: "DOC202 false positive when function doesn't return"
+type: issue
+state: closed
+author: NeilGirdhar
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2024-08-02T23:39:08Z
+updated_at: 2024-08-03T12:13:22Z
+url: https://github.com/astral-sh/ruff/issues/12650
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# DOC202 false positive when function doesn't return
+
+---
+
+_Issue opened by @NeilGirdhar on 2024-08-02 23:39_
+
+```python
+class C:
+    def f(self) -> int:
+        """Calculate x.
+
+        Returns:
+            x
+        """
+        raise NotImplementedError
+```
+Raises DOC202
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-02 23:39_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2024-08-02 23:39_
+
+---
+
+_Comment by @charliermarsh on 2024-08-02 23:39_
+
+Thanks! Makes sense.
+
+---
+
+_Referenced in [astral-sh/ruff#12651](../../astral-sh/ruff/pulls/12651.md) on 2024-08-03 00:01_
+
+---
+
+_Closed by @charliermarsh on 2024-08-03 12:13_
+
+---
+
+_Closed by @charliermarsh on 2024-08-03 12:13_
+
+---

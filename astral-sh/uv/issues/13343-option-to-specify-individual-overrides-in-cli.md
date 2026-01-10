@@ -1,0 +1,38 @@
+---
+number: 13343
+title: Option to specify individual overrides in CLI
+type: issue
+state: open
+author: roaldarbol
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-08T09:21:27Z
+updated_at: 2025-05-08T09:21:27Z
+url: https://github.com/astral-sh/uv/issues/13343
+synced_at: 2026-01-10T01:25:32Z
+---
+
+# Option to specify individual overrides in CLI
+
+---
+
+_Issue opened by @roaldarbol on 2025-05-08 09:21_
+
+### Summary
+
+When install a tool with `uv tool install` (or likely also running `uvx`), it would be great to have the option to specify an override without the need to create a `requirements.txt?` file given the global nature of the commands. I imagine something like the current `--with`, but as an override (maybe `--with-override`).
+
+### Example
+
+An example of a tool that fails to install is libretranslate (see https://github.com/LibreTranslate/LibreTranslate/issues/739). Here it would be super helpful if it was possible to run:
+
+```sh
+uv tool install libretranslate --with-override apscheduler==3.9.1.post1
+```
+
+---
+
+_Label `enhancement` added by @roaldarbol on 2025-05-08 09:21_
+
+---

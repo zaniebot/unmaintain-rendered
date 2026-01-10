@@ -1,0 +1,37 @@
+---
+number: 7213
+title: No interpreter found for Python 3.11.10 in managed installations or system path
+type: issue
+state: closed
+author: minmax
+labels: []
+assignees: []
+created_at: 2024-09-09T10:49:33Z
+updated_at: 2024-09-18T13:54:47Z
+url: https://github.com/astral-sh/uv/issues/7213
+synced_at: 2026-01-10T01:24:12Z
+---
+
+# No interpreter found for Python 3.11.10 in managed installations or system path
+
+---
+
+_Issue opened by @minmax on 2024-09-09 10:49_
+
+python was updated in ubuntu repository, but not in uv repos
+
+---
+
+_Comment by @zanieb on 2024-09-09 10:57_
+
+We'll be releasing these today https://github.com/indygreg/python-build-standalone/pull/322
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-09-09 10:57_
+
+---
+
+_Closed by @zanieb on 2024-09-18 13:54_
+
+---

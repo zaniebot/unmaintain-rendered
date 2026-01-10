@@ -1,0 +1,159 @@
+---
+number: 14616
+title: "Unexpected behavior of `--frozen` flag in docker build?"
+type: issue
+state: open
+author: thisisarko
+labels:
+  - question
+assignees: []
+created_at: 2025-07-14T20:37:49Z
+updated_at: 2025-07-16T19:26:31Z
+url: https://github.com/astral-sh/uv/issues/14616
+synced_at: 2026-01-10T01:25:46Z
+---
+
+# Unexpected behavior of `--frozen` flag in docker build?
+
+---
+
+_Issue opened by @thisisarko on 2025-07-14 20:37_
+
+### Project structure:
+
+```
+├── packages
+│   ├── foo
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── foo
+├── pyproject.toml
+```
+
+`foo` is a workspace member. In `foo/pyproject.toml` a private package index is defined but preceeded by standard `pypi` package index to enforce precendence priority.
+
+```toml
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[[tool.uv.index]]
+name = "private"
+url = "..."
+```
+
+Running `uv sync --all-extras --all-groups --all-packages` works on local.
+Running `uv sync --frozen --no-editable --package foo --no-dev --no-install-project` works as expected on local as well.
+
+### Snippet from `Dockerfile`
+
+```Dockerfile
+FROM python:3.12-slim-bookworm AS builder
+
+RUN apt update && apt install -y build-essential
+
+COPY --from=ghcr.io/astral-sh/uv:0.7 /uv /uvx /bin/
+
+WORKDIR /app
+
+COPY packages ./packages/
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=secret,id=aws-access-key-id,env=AWS_ACCESS_KEY_ID \
+    --mount=type=secret,id=aws-secret-access-key,env=AWS_SECRET_ACCESS_KEY \
+    --mount=type=secret,id=aws-session-token,env=AWS_SESSION_TOKEN \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    sh -c ' \
+        DOMAIN_OWNER=123456789; \
+        DOMAIN_NAME=some-domain; \
+        REGION=region; \
+        export UV_INDEX_PRIVATE_USERNAME=aws; \
+        export UV_INDEX_PRIVATE_PASSWORD=$(aws codeartifact get-authorization-token --domain-owner $DOMAIN_OWNER --domain $DOMAIN_NAME --region $REGION --query authorizationToken --output text); \
+        uv sync --frozen --no-editable --package foo --no-dev --no-install-project '
+```
+
+This is giving a `401 Unauthorized` error. The same command with same credentials works on local as mentioned before.
+
+One workaround I found to make the build succeed is to define the private index in the root `pyproject.toml`. 
+
+But this is not desirable, and moreover upon doing this `uv lock --check` starts throwing lockfile not in sync error. Running `uv lock` does not update the lockfile either at this stage.
+
+Am I missing something?
+
+### Platform
+
+macOS 15, python:3.12-slim-bookworm
+
+### Version
+
+ghcr.io/astral-sh/uv:0.7
+
+---
+
+_Label `question` added by @thisisarko on 2025-07-14 20:37_
+
+---
+
+_Comment by @thisisarko on 2025-07-15 03:56_
+
+Update: Narrowed the issue down to the use of `--frozen` flag in the command `uv sync --frozen --no-editable --package foo --no-dev --no-install-project`. But this only affects in the Dockerfile. Strangely, `--locked` works. This feels like a bug.
+
+---
+
+_Renamed from "Authenticating to private package index works on local but fails in docker for a workspace project" to "Unexpected behavior of `--frozen` flag in docker build?" by @thisisarko on 2025-07-15 03:57_
+
+---
+
+_Comment by @zanieb on 2025-07-15 12:34_
+
+I believe AWS Code Artifact uses signed URLs, so you're going to have signed URLs in the lockfile that are no longer valid? That makes `--frozen` fail because during `--frozen` we fetch the artifacts directly without re-resolving
+
+---
+
+_Comment by @zanieb on 2025-07-15 12:35_
+
+Though it seems like maybe something else is going on?
+
+> One workaround I found to make the build succeed is to define the private index in the root pyproject.toml.
+
+I don't see why this would fix it.
+
+>  Running uv lock does not update the lockfile either at this stage.
+
+I think it's always a bug if `uv lock --check` fails but `uv lock` is a no-op.
+
+---
+
+_Comment by @thisisarko on 2025-07-15 18:26_
+
+@zanieb I don't think the CodeArtifact URLs are signed, at least not from what I see in the lockfile. They are the same as they are defined under `tool.uv.index`.
+I have made it work with `--locked` for now.
+
+---
+
+_Closed by @charliermarsh on 2025-07-16 13:42_
+
+---
+
+_Comment by @thisisarko on 2025-07-16 17:22_
+
+@charliermarsh Any reason for closing this? Is this not a bug?
+
+---
+
+_Comment by @charliermarsh on 2025-07-16 18:03_
+
+I thought you had resolved it based on your last comment, I guess I misunderstood.
+
+---
+
+_Reopened by @charliermarsh on 2025-07-16 18:03_
+
+---
+
+_Comment by @thisisarko on 2025-07-16 19:24_
+
+Using `--locked` as a workaround, but this might still indicate an underlying issue. It’s worth investigating to determine whether this is a bug or an expected behavior. If it’s the latter, the documentation particularly around defining package indexes in workspace layouts should reflect that. I’ll defer to the maintainers on whether this issue should be labeled as a bug based on what the investigation reveals.
+
+---

@@ -1,0 +1,101 @@
+---
+number: 5839
+title: "Should `uv run` always create a virtual environment?"
+type: issue
+state: open
+author: zanieb
+labels:
+  - needs-decision
+  - cli
+assignees: []
+created_at: 2024-08-06T22:25:29Z
+updated_at: 2024-08-23T12:57:09Z
+url: https://github.com/astral-sh/uv/issues/5839
+synced_at: 2026-01-10T01:23:53Z
+---
+
+# Should `uv run` always create a virtual environment?
+
+---
+
+_Issue opened by @zanieb on 2024-08-06 22:25_
+
+I think yes, if one cannot be found. Otherwise, a command can mutate the system environment (e.g. `uv run pip install anyio`).
+
+
+
+---
+
+_Label `needs-decision` added by @zanieb on 2024-08-06 22:25_
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-06 22:25_
+
+---
+
+_Comment by @charliermarsh on 2024-08-06 22:27_
+
+Interesting, so like, never run in the base env?
+
+---
+
+_Comment by @zanieb on 2024-08-06 22:43_
+
+Maybe? It seems okay to run in virtual or project environments, but weird for non-virtual environments.
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-07 21:41_
+
+I feel like `uv` creates virtual environments so quickly that it might not be a big deal to always create a virtual environment.
+
+Does that seem like a good default behavior? Lately the python dev community has shifted in the direction of isolating as much as possible, whenever possible.
+
+---
+
+_Referenced in [astral-sh/uv#6285](../../astral-sh/uv/issues/6285.md) on 2024-08-21 17:32_
+
+---
+
+_Comment by @ketozhang on 2024-08-22 02:07_
+
+Not entirely sure about this. I see it as whether or not the _base env_ (I call it _global env_) is still necessary.
+
+`uv tool`[^1] has remove a lot of the need for base env, but I think there are a few key use cases that pipx historically do not support.
+
+A motivating example would be Jupyter where many users treat it as a global tool not belonging to any particular environment. How does `uv run jupyter` work here?
+
+[^1]:  huh, I just learned about `uvx`. What's the difference? Both seems like `pipx` replacement.
+
+---
+
+_Comment by @zanieb on 2024-08-22 03:58_
+
+`uv run jupyter` will fail unless you're in a project that requires `jupyter` or it is otherwise installed on your system, e.g., in the environment of the interpreter that uv finds. `uvx jupyter` will install and run `jupyter` in an isolated environment. There's some [documentation on this](https://docs.astral.sh/uv/concepts/tools/#relationship-to-uv-run).
+
+We can't really get around the base environment. It can be immutable, but we're a Python package tool and we need a Python interpreter for most operations. `uv run` will probably _always_ find a Python interpreter. The question is if we should force you to be isolated from that base environment by creating an empty virtual environment.
+
+---
+
+_Comment by @ketozhang on 2024-08-23 01:22_
+
+Sounds good to me. 
+
+Is the venv created at some temporary directory  (current behavior for `uv run example.py`)?
+
+---
+
+_Comment by @zanieb on 2024-08-23 12:56_
+
+That would be the idea, yeah. Though for `uv run example.py` I think we'll re-use a cached environment.
+
+---
+
+_Referenced in [astral-sh/uv#7215](../../astral-sh/uv/issues/7215.md) on 2024-10-21 21:45_
+
+---
+
+_Referenced in [astral-sh/uv#9585](../../astral-sh/uv/pulls/9585.md) on 2024-12-02 22:13_
+
+---

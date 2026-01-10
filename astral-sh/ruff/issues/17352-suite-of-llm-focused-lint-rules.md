@@ -1,0 +1,85 @@
+---
+number: 17352
+title: Suite of LLM-focused lint rules
+type: issue
+state: open
+author: ezyang
+labels:
+  - rule
+assignees: []
+created_at: 2025-04-11T14:16:12Z
+updated_at: 2025-04-22T09:21:25Z
+url: https://github.com/astral-sh/ruff/issues/17352
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# Suite of LLM-focused lint rules
+
+---
+
+_Issue opened by @ezyang on 2025-04-11 14:16_
+
+### Summary
+
+Hi everyone, I'm wondering if there is some appetite for Ruff natively adding support for lint rules that ordinarily would be too aggressive for human developers, but are good fits for LLM-assisted coding. Here is a small smattering of the ones I would personally use:
+
+- Ban try...except... where the exception is suppressed
+- Ban top-level access to sys.path
+- Ban mocks
+- Ban module imports that are not top level
+
+The general heuristic is to ban things that are "overly defensive", because the LLM is apt to introduce them even when it's unnecessary, and may potentially cover up real problems by doing so.
+
+Some of these I can write externally to Ruff but I am somewhat interested in Ruff being a one stop shop for all the lints I want, so I'm checking the temperature here.
+
+---
+
+_Comment by @ntBre on 2025-04-11 16:17_
+
+A couple of these might already be covered fairly well by existing rules:
+* Ban try...except... where the exception is suppressed
+  * [try-except-pass (S110)](https://docs.astral.sh/ruff/rules/try-except-pass/#try-except-pass-s110)
+  * [try-except-continue (S112)](https://docs.astral.sh/ruff/rules/try-except-continue/#try-except-continue-s112)
+  * [blind-except (BLE001)](https://docs.astral.sh/ruff/rules/blind-except/#blind-except-ble001)
+  * [bare-except (E722)](https://docs.astral.sh/ruff/rules/bare-except/#bare-except-e722)
+  * [useless-try-except (TRY203)](https://docs.astral.sh/ruff/rules/useless-try-except/#useless-try-except-try203)
+* Ban module imports that are not top level
+  * [import-outside-top-level (PLC0415)](https://docs.astral.sh/ruff/rules/import-outside-top-level/#import-outside-top-level-plc0415)
+
+I thought we had one for `sys.path`, but it's only proposed in https://github.com/astral-sh/ruff/issues/15806.
+
+I didn't see anything too promising for mocks.
+
+I think this is an interesting idea in general, though.
+
+---
+
+_Label `rule` added by @ntBre on 2025-04-11 16:17_
+
+---
+
+_Comment by @ezyang on 2025-04-12 00:33_
+
+Good call on existing rules. Something I need to do is go through all the non-default rules in Ruff and figure out a good "LLM" set lol
+
+---
+
+_Comment by @mgaitan on 2025-04-15 02:58_
+
+> I didn't see anything too promising for mocks.
+
+Not a banning but I proposed a set of rules related to mocks in #12850
+
+---
+
+_Comment by @ntBre on 2025-04-15 13:00_
+
+Oops, I missed that one, thank you!
+
+---
+
+_Comment by @MichaReiser on 2025-04-22 09:21_
+
+I see it less likely that we'll add lints that are exclusively for LLMs and aren't useful to "humans" but none of the above fall into that category (They can be useful for some projects regardless of how they're written)
+
+---

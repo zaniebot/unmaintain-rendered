@@ -1,0 +1,203 @@
+---
+number: 5496
+title: "shared uv cache: `metadata.msgpack` gets too restrictive perms for `built-wheels`"
+type: issue
+state: closed
+author: stas00
+labels: []
+assignees: []
+created_at: 2024-07-26T23:14:01Z
+updated_at: 2024-07-27T00:28:09Z
+url: https://github.com/astral-sh/uv/issues/5496
+synced_at: 2026-01-10T01:23:49Z
+---
+
+# shared uv cache: `metadata.msgpack` gets too restrictive perms for `built-wheels`
+
+---
+
+_Issue opened by @stas00 on 2024-07-26 23:14_
+
+we use a shared pip/uv cache and have to use a `umask` for it to work. But we end up with files that prevent sharing.
+
+```
+umask 000
+uv pip install deepspeed
+```
+
+w/ `uv==0.2.15` results in:
+```
+-rw------- 1 stas  stas  3.2K Jul 26 22:56  /data/env/cache/uv/built-wheels-v3/pypi/deepspeed/0.14.4/ot_dfLaltQTYsvOYBuYLl/metadata.msgpack
+```
+w/ `uv==0.2.30` things improve:
+```
+-rw-r--r-- 1 stas  stas  3.2K Jul 26 22:56  /data/env/cache/uv/built-wheels-v3/pypi/deepspeed/0.14.4/ot_dfLaltQTYsvOYBuYLl/metadata.msgpack
+```
+but we are still not there. To work correctly it should be:
+
+```
+-rw-rw-rw- 1 stas  stas  3.2K Jul 26 22:56  /data/env/cache/uv/built-wheels-v3/pypi/deepspeed/0.14.4/ot_dfLaltQTYsvOYBuYLl/metadata.msgpack
+```
+
+As I have dealt with this issue with other packages, usually the culprit is the use of `tempfile` facility, where things are done on `/tmp` and then moved to the target dir but the perms are wrong - as `tempfile` disregards `umask`. So usually the fix is to identify where that file gets moved and restore its perms according to `umask` setting. I don't know if that's the case with `uv`.
+
+Thank you!
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 23:41_
+
+I can look into this, but isn't umask exclusively used to _remove_ permissions? And a umask of `000` would have no effect? I may be misunderstanding.
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 23:49_
+
+I think the issue is just that we aren't creating with the correct default permissions. I'm not sure that the umask itself is relevant though?
+
+---
+
+_Comment by @stas00 on 2024-07-26 23:54_
+
+It sounds like you're correct, @charliermarsh 
+
+It's just usually once a file is created by `tempfile` it ends up having more restrictive perms than it should be, as is the case with `uv==0.2.15` exemplification in the OP. That's why I usually suspect `tempfile` use as the cause of the issue.
+
+So your observation sounds correct and yes, you need to have `0666` perms by default.
+
+Thank you!
+
+---
+
+_Renamed from "umask isn't being respected for built-wheels" to "shared uv cache: `metadata.msgpack` gets too restrictive perms for `built-wheels`" by @stas00 on 2024-07-26 23:55_
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 23:55_
+
+Yeah, this sounds right to me. It's funny because this came up recently in #5457 (but never before).
+
+---
+
+_Comment by @stas00 on 2024-07-26 23:56_
+
+I edited the title / the OP to reflect your corrections, @charliermarsh 
+
+---
+
+_Comment by @stas00 on 2024-07-26 23:58_
+
+> Yeah, this sounds right to me. It's funny because this came up recently in https://github.com/astral-sh/uv/pull/5457 
+
+Ah that explains the update from `-rw-------` to `-rw-r--r--` in `uv==0.2.30`
+
+> (but never before)
+
+More people discover this gem and start using it, so you get more use cases.
+
+---
+
+_Comment by @stas00 on 2024-07-26 23:59_
+
+And I see from PR that indeed you're using tempfile, which is almost always the cause of this issue.
+
+---
+
+_Referenced in [astral-sh/uv#5498](../../astral-sh/uv/pulls/5498.md) on 2024-07-26 23:59_
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 23:59_
+
+For some reason I changed it to 644 rather than 666. I don't know why I did that.
+
+---
+
+_Comment by @stas00 on 2024-07-27 00:01_
+
+may be it'd be good to add a comment, like: 
+> 0666 to support shared cache setups
+
+so someone else won't undo it later, since 0644 is quite common and 0666 is an odd ball (only shared envs).
+
+---
+
+_Comment by @charliermarsh on 2024-07-27 00:06_
+
+👍 I'm pretty sure 0666 is the correct default (and I found it in the Rust source too). It's just that the default umask (at least for me) is 022, which results in 0644... I think.
+
+---
+
+_Closed by @charliermarsh on 2024-07-27 00:08_
+
+---
+
+_Comment by @stas00 on 2024-07-27 00:09_
+
+That's correct, that's how most Unix boxes are setup `022` and if the user and group are the same then `002`.
+
+But in order to be able to share files and everybody write to them `0000` is needed :)
+
+---
+
+_Comment by @charliermarsh on 2024-07-27 00:10_
+
+👍 Thanks for pointing this out.
+
+---
+
+_Comment by @stas00 on 2024-07-27 00:18_
+
+I tried to validate the fix, but I am not able to install from `main`:
+
+```
+uv pip install git+https://github.com/astral-sh/uv.git@main
+ Updated https://github.com/astral-sh/uv.git (4f3dde34)
+error: The project is marked as unmanaged: `/data/env/cache/uv/git-v0/checkouts/5d8dbe36cd6ea14f/4f3dde34`
+```
+I then went back to normal pip and it actually told me what the problem is:
+```
+pip install git+https://github.com/astral-sh/uv.git@main
+Collecting git+https://github.com/astral-sh/uv.git@main
+  Cloning https://github.com/astral-sh/uv.git (to revision main) to /var/tmp/pip-req-build-5hbguc0e
+  Running command git clone --filter=blob:none --quiet https://github.com/astral-sh/uv.git /var/tmp/pip-req-build-5hbguc0e
+  Resolved https://github.com/astral-sh/uv.git to commit 4f3dde34dc7959d697a70bb420fcae687518e11f
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... error
+  error: subprocess-exited-with-error
+
+  × Preparing metadata (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [6 lines of output]
+
+      Cargo, the Rust package manager, is not installed or is not on PATH.
+      This package requires Rust and Cargo to compile extensions. Install it through
+      the system's package manager or via https://rustup.rs/
+
+      Checking for Rust toolchain....
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> See above for output.
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+```
+
+
+
+---
+
+_Comment by @stas00 on 2024-07-27 00:26_
+
+and after `apt install rustc cargo`, my Ubuntu has `rustc-1.76` as the highest, but `uv` builder wants 1.77 or higher, so will have to wait till the next release to validate.
+
+---
+
+_Referenced in [astral-sh/uv#5581](../../astral-sh/uv/issues/5581.md) on 2024-07-30 00:29_
+
+---

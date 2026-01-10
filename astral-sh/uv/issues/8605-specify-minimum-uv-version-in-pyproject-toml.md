@@ -1,0 +1,159 @@
+---
+number: 8605
+title: specify minimum uv version in pyproject.toml
+type: issue
+state: closed
+author: sebhoss
+labels:
+  - configuration
+  - needs-design
+assignees: []
+created_at: 2024-10-27T10:26:04Z
+updated_at: 2024-12-31T15:37:47Z
+url: https://github.com/astral-sh/uv/issues/8605
+synced_at: 2026-01-10T01:24:30Z
+---
+
+# specify minimum uv version in pyproject.toml
+
+---
+
+_Issue opened by @sebhoss on 2024-10-27 10:26_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I recently noticed that the list of available python versions is hardcoded in uv and thus depends on the version of `uv` used. One of my colleagues was using an older version of `uv` and could not install python 3.13 without updating `uv` first. While updating `uv` is not a problem, I wish that there was a way to specify a minimum required version for `uv` itself when working on a project. I think this would improve developer experience because he would immediately have updated `uv` instead of debugging why the latest python version cannot be downloaded.
+
+
+---
+
+_Label `configuration` added by @zanieb on 2024-10-27 13:52_
+
+---
+
+_Label `needs-design` added by @zanieb on 2024-10-27 13:52_
+
+---
+
+_Referenced in [astral-sh/uv#8636](../../astral-sh/uv/issues/8636.md) on 2024-10-28 19:02_
+
+---
+
+_Referenced in [astral-sh/uv#8718](../../astral-sh/uv/issues/8718.md) on 2024-10-31 15:49_
+
+---
+
+_Referenced in [astral-sh/uv#8823](../../astral-sh/uv/issues/8823.md) on 2024-11-05 11:49_
+
+---
+
+_Comment by @nathanjmcdougall on 2024-11-19 06:59_
+
+Just to summarize some of the thinking from the duplicates, more generally we are wanting to set _constraints_ on the version of `uv`, similar to how `project.requires-python` sets constraints on the version of Python.
+
+Aside from a lower bound, I think the most useful constraint would be pinning/equality. I see limited value in upper bounds.
+
+Pinning is useful in a CI pipeline to make sure breaking changes in `uv` don't break a deployment, etc. So for example, in the [setup-uv](https://github.com/astral-sh/setup-uv) GitHub Action (or other CI config), you can pin a version of `uv`. But then there can be inconsistencies between the developer's local `uv` version and the one used on CI (or different developer's local `uv` versions for that matter).
+
+I personally had this situation recently in my organization with the release of v0.5.0 - a whole lot of pipelines failed. Pinning would have prevented this, which is what we're doing now. But now we need a hacky script which re-downloads a hard-coded version of `uv` per project - or some other workaround. If we could specify the version of `uv` in `pyproject.toml`, then this could be avoided.
+
+A similar situation exists in regard to [pre-commit-uv](https://github.com/astral-sh/uv-pre-commit); you need to pin a version of `uv`. Actually, you're pinning the version of `pre-commit-uv` which is synchronized with `uv` itself. In any case, this introduces a similar issue where passing pre-commit depends on using the same version of `uv` as the one pinned in the pre-commit config. In addition, there is a similar issue to the one discussed at https://github.com/astral-sh/uv-pre-commit/issues/23, where the version of e.g. `ruff` needs to be synchronized between the virtual environment and the pre-commit config. In this case, the user's installed uv version can mismatch with the one used by pre-commit. This could potentially be solved by allowing the `pre-commit-uv` implementation to respect a pinned uv version in pyproject.toml.
+
+
+---
+
+_Comment by @dmarcoux on 2024-11-19 08:37_
+
+Regarding pinning uv's version, I have a workaround for this. Maybe in the meantime this can help others, so here's how I do it.
+
+In my git repository, I track uv's version in the file `.uv-version`, like [this](https://github.com/dmarcoux/sports_tracker/blob/cf5288dc303df44536e840fe49b288d85e1dae6c/.uv-version). I generate this file when my development environment is started with this command `uv version | cut --delimiter=' ' --fields=2 > .uv-version`. So this file is updated whenever I update the `uv` package. It's less error-prone since I don't have to remember to manually update the file `.uv-version`, it's just a matter of committing/pushing changes whenever I see them with `git status`.
+
+As for continuous integration, this is how I pin uv's version with GitHub Actions:
+
+```yml
+(...)
+
+jobs:
+  continuous_integration:
+    name: Continuous integration
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fetch uv's version from .uv-version
+        id: uv-version
+        run: echo "uv-version=$(cat .uv-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Install uv with the version in .uv-version
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ steps.uv-version.outputs.uv-version }}
+          enable-cache: true
+
+(...)
+```
+
+You can see the whole workflow [here](https://github.com/dmarcoux/sports_tracker/blob/cf5288dc303df44536e840fe49b288d85e1dae6c/.github/workflows/continuous_integration.yml).
+
+Let me know if something isn't clear.
+
+---
+
+_Comment by @sebhoss on 2024-11-22 15:27_
+
+Just thinking out loud: What if `uv` somehow knows which version of itself introduced a certain feature? It could use that information to automatically calculate the minimal required `uv` version based on the features used in the current project and save the result in `uv.lock` right next to the required python version.
+
+Users could then run something like `uv pin python 3.13` and `uv` would automatically change the minimal required version to the version that first added python 3.13 support. Depending on how well this works, maybe there is no need for a new field in pyproject.toml at all?
+
+---
+
+_Comment by @nathanjmcdougall on 2024-11-22 17:10_
+
+@sebhoss I think you are describing a way to infer a lower bound based on project file contents. The issue with this is that the intended uv behaviour on a project can be _implicit_ - e.g. we might be relying on a new environment variable provided in the latest version of uv, which earlier versions would ignore.
+
+This goes in both directions - there might be a new default incoming in the latest version of uv which I _don't_ want, so I'd want an upper bound to protect from breaking changes.
+
+Another similar issue: I think this would require older versions of uv to identify the presence of future versions' features. Perhaps one could use heuristics like unrecognized `[tool.uv]` fields but in any case this would probably need to be backported functionality? Which I think is out of the question.
+
+I think any solution would need to deal with the complexity of actually _complying_ with the bounds (inferred or otherwise)- what should uv do in the situation where uv has the 'wrong' version? Probably there needs to be some uv installation cache to allow switching between uv versions without re-downloading.
+
+---
+
+_Comment by @sebhoss on 2024-11-22 17:27_
+
+@nathanjmcdougall yeah agreed on all points. I was just a concerned that introducing yet another version might make simple things like switching to a newer python version more annoying than it should be, e.g. consider:
+
+1. Update `project.requires-python` version in pyproject.toml first so that it includes the python version you want
+2. Update `project.requires-uv` (or whatever the name will be) to require a version of `uv` that supports the wanted python version
+3. Update `.python-version` file to finally get the new python version
+
+That said, I don't really want to derail the conversation here and I think usability improvements can be made after introducing version constraints for `uv` itself.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-31 03:12_
+
+---
+
+_Referenced in [astral-sh/uv#10248](../../astral-sh/uv/pulls/10248.md) on 2024-12-31 03:13_
+
+---
+
+_Closed by @charliermarsh on 2024-12-31 15:37_
+
+---
+
+_Referenced in [astral-sh/setup-uv#215](../../astral-sh/setup-uv/issues/215.md) on 2025-01-03 11:40_
+
+---

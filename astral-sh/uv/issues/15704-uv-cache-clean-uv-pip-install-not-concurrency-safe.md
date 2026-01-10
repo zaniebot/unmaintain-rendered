@@ -1,0 +1,113 @@
+---
+number: 15704
+title: uv cache clean / uv pip install not concurrency safe?
+type: issue
+state: closed
+author: tiran
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-06T07:38:09Z
+updated_at: 2025-09-19T08:46:16Z
+url: https://github.com/astral-sh/uv/issues/15704
+synced_at: 2026-01-10T01:25:58Z
+---
+
+# uv cache clean / uv pip install not concurrency safe?
+
+---
+
+_Issue opened by @tiran on 2025-09-06 07:38_
+
+### Summary
+
+Hi,
+
+I'm running into a concurrency problem with uv that suggests that concurrent use of `uv cache clean` can interfere with `uv pip install`. I have not verified my hypothesis, yet. My Rust is a bit ... rusty. :)
+
+I'm working on a project called [Fromager](https://github.com/python-wheel-build/fromager). Fromager is a tool to rebuild a package and all its build-time and run-time dependencies from sources. Simply speaking, Fromager operates in two phases. In the bootstrap phase it downloads sdists and figures out all build system requirements and install requirements recursively, and creates a graph file. In the second phase it builds wheels for all packages in the graph file. The second phase builds wheels in concurrent processes with a thread pool worker. 
+
+We recently switched to `uv` to benefit from its faster `uv pip install` and hardlink caching feature. We sometimes see build failures that suggest a problem with `uv cache clean <pgk>` and concurrent `uv pip install`. The core work loop looks like this:
+
+- unpack sdist for PKG
+- `uv venv`
+- `uv pip install` build system and build dependencies
+- PEP 571 build_wheel hook
+- copy wheel to local simple HTTP PyPI server (`http.server` on localhost)
+- `uv cache clean PKG` to invalidate UV's cache for the package
+
+In rare cases a package is built while another version of the same package is installed. In this particular case, Fromager had built `setuptools_scm-7.1.0` and was invalidating `uv cache clean setuptools_scm` while another task was `uv pip install setuptools-scm==8.2.0`. The error message from uv debug logs suggest that `uv cache clean` removed files that `uv pip install` was expecting:
+
+```
+DEBUG Released lock at `/mnt/work-dir/compressed_tensors-0.10.2/build-3.12.9/.lock`
+error: Failed to install: setuptools_scm-8.2.0-0-py3-none-any.whl (setuptools-scm==8.2.0)
+  Caused by: failed to read directory `/mnt/work-dir/uv-cache/archive-v0/eajHM8DLem6g6TwjOkyU7`: No such file or directory (os error 2)
+```
+
+### Platform
+
+Linux (all arches)
+
+### Version
+
+0.8.15
+
+### Python version
+
+Python 3.12
+
+---
+
+_Label `bug` added by @tiran on 2025-09-06 07:38_
+
+---
+
+_Referenced in [python-wheel-build/fromager#756](../../python-wheel-build/fromager/issues/756.md) on 2025-09-06 08:48_
+
+---
+
+_Comment by @zanieb on 2025-09-06 12:16_
+
+Yeah this is not safe, see https://docs.astral.sh/uv/concepts/cache/#cache-safety
+
+---
+
+_Comment by @tiran on 2025-09-06 14:15_
+
+Ah, now I feel dump for missing the caching section. I only looked at CLI docs https://docs.astral.sh/uv/reference/cli/#uv-cache .
+
+---
+
+_Comment by @SH2282000 on 2025-09-06 19:33_
+
+Why is it not possible to make it safe?
+
+---
+
+_Comment by @konstin on 2025-09-08 16:45_
+
+We would have to acquire an RW-lock on the cache for each uv operation that uses the cache (read), so we can get a write lock for cache cleaning operations. I don't know how well RW-locks on files work cross platforms, or if it's worth it here, given that `uv cache` operations shouldn't run automatically or in the background.
+
+---
+
+_Comment by @zanieb on 2025-09-08 17:35_
+
+> Why is it not possible to make it safe?
+
+Certainly it's possible, it's a matter of complexity and performance. I'm not sure how hard it'd be.
+
+---
+
+_Referenced in [astral-sh/uv#15888](../../astral-sh/uv/pulls/15888.md) on 2025-09-16 08:49_
+
+---
+
+_Closed by @konstin on 2025-09-19 08:21_
+
+---
+
+_Comment by @tiran on 2025-09-19 08:46_
+
+Awesome! Thanks a lot, @konstin . I was not expecting a fix for this problem.
+
+---

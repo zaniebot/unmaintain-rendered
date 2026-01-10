@@ -1,0 +1,48 @@
+---
+number: 13681
+title: Use alternative free-threaded Python for integration test
+type: issue
+state: closed
+author: zanieb
+labels:
+  - good first issue
+  - testing
+assignees: []
+created_at: 2025-05-27T14:36:54Z
+updated_at: 2025-05-28T14:15:04Z
+url: https://github.com/astral-sh/uv/issues/13681
+synced_at: 2026-01-10T01:25:36Z
+---
+
+# Use alternative free-threaded Python for integration test
+
+---
+
+_Issue opened by @zanieb on 2025-05-27 14:36_
+
+i.e., instead of deadsnakes can we use GitHub's now?
+
+See https://github.com/astral-sh/uv/pull/13661#discussion_r2107404679
+            
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-05-27 14:37_
+
+---
+
+_Label `testing` added by @zanieb on 2025-05-27 14:37_
+
+---
+
+_Referenced in [astral-sh/uv#13661](../../astral-sh/uv/pulls/13661.md) on 2025-05-27 14:37_
+
+---
+
+_Referenced in [astral-sh/uv#13700](../../astral-sh/uv/pulls/13700.md) on 2025-05-28 13:23_
+
+---
+
+_Closed by @konstin on 2025-05-28 14:15_
+
+---

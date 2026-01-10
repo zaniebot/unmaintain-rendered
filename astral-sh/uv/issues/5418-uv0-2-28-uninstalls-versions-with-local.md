@@ -1,0 +1,81 @@
+---
+number: 5418
+title: "`uv0.2.28` uninstalls versions with local specifiers even though it satisfies the requirements "
+type: issue
+state: closed
+author: blueraft
+labels:
+  - bug
+assignees: []
+created_at: 2024-07-24T17:28:57Z
+updated_at: 2024-07-24T19:39:23Z
+url: https://github.com/astral-sh/uv/issues/5418
+synced_at: 2026-01-10T01:23:48Z
+---
+
+# `uv0.2.28` uninstalls versions with local specifiers even though it satisfies the requirements 
+
+---
+
+_Issue opened by @blueraft on 2024-07-24 17:28_
+
+I am not entirely sure I diagnosed the problem here correctly but here's an MRE.
+
+`v0.2.28`:
+- `uv pip install "flask @ git+https://github.com/pallets/flask"`
+```
+❯ uv pip install flask-login==0.6
+Resolved 8 packages in 99ms
+Uninstalled 1 package in 2ms
+Installed 2 packages in 4ms
+ - flask==3.1.0.dev0 (from git+https://github.com/pallets/flask@a8956feba1e40105e7bc78fa62ce36c58d1c91e1)
+ + flask==3.0.3
+ + flask-login==0.6.0
+```
+
+`v0.2.27`:
+- `uv pip install "flask @ git+https://github.com/pallets/flask"`
+```
+❯ uv pip install flask-login==0.6
+Resolved 8 packages in 127ms
+Installed 1 package in 2ms
+ + flask-login==0.6.0
+```
+
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-24 18:19_
+
+---
+
+_Comment by @charliermarsh on 2024-07-24 18:32_
+
+Apologies, I see the issue.
+
+---
+
+_Referenced in [astral-sh/uv#5419](../../astral-sh/uv/pulls/5419.md) on 2024-07-24 18:34_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-07-24 18:34_
+
+---
+
+_Closed by @charliermarsh on 2024-07-24 19:23_
+
+---
+
+_Comment by @blueraft on 2024-07-24 19:38_
+
+Thanks for the quick fix! 
+
+---
+
+_Comment by @charliermarsh on 2024-07-24 19:39_
+
+No problem, sorry for the regression. I'll probably release today.
+
+---

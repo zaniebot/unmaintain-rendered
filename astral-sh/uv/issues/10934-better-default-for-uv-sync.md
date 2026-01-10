@@ -1,0 +1,265 @@
+---
+number: 10934
+title: Better default for uv sync
+type: issue
+state: closed
+author: xixixao
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-01-24T10:27:11Z
+updated_at: 2025-03-19T05:38:09Z
+url: https://github.com/astral-sh/uv/issues/10934
+synced_at: 2026-01-10T01:24:59Z
+---
+
+# Better default for uv sync
+
+---
+
+_Issue opened by @xixixao on 2025-01-24 10:27_
+
+### Summary
+
+I'm setting up a monorepo for my team. The main command that my team members have to run is:
+
+```
+uv sync --all-packages --all-extras --all-groups
+```
+
+That's quite a mouthful. Either:
+1. Could we make this the default? (that might be hard when other options are desired)
+2. Make the default configurable in `uv.toml`? (seems that right now only `uv pip` can be configured?)
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @xixixao on 2025-01-24 10:27_
+
+---
+
+_Comment by @zanieb on 2025-01-24 15:53_
+
+We allow configuring the `default-groups`. You can define a dependency group that adds your project with all of your extras.
+
+I'm not sure about the `--all-packages` bit, seems reasonable to have an option for that though, e.g., `default-packages` or `default-workspace-members` or something. Hm.
+
+---
+
+_Comment by @konstin on 2025-01-24 15:56_
+
+`default-packages` packages makes sense to me; I think the reason it hasn't come up much yet is that most projects have a main package that depends on the other packages, so that they implicitly get a correct default.
+
+---
+
+_Comment by @bschoenmaeckers on 2025-01-24 16:40_
+
+What is currently the default set of workspace packages that are installed when not specifying  `--all-packages`?
+
+---
+
+_Comment by @zanieb on 2025-01-24 17:10_
+
+The dependencies of the main package — perhaps you want to add the other workspace members as dependencies?
+
+---
+
+_Comment by @matthewadams on 2025-01-30 13:50_
+
+You might be interested in https://github.com/astral-sh/uv/issues/10960
+
+---
+
+_Comment by @xixixao on 2025-02-03 09:16_
+
+@zanieb I tried to set things up purely via adding the workspace members as dependencies to the main package, but one issue is that the workspace members' dev dependency groups are not installed.
+
+---
+
+_Comment by @zanieb on 2025-02-03 14:02_
+
+Yeah, if you have development requirements for the workspace we'd expect them to be there not in a child project. Can you share more about why you need that?
+
+---
+
+_Comment by @xixixao on 2025-02-03 17:35_
+
+Many workspace member projects, and some of the dev dependencies are specific to that project. It's not a requirement, it's more for organization.
+
+---
+
+_Comment by @rsyring on 2025-02-21 18:23_
+
+Using [mise tasks](https://mise.jdx.dev/tasks/), your users could just run `mise uv-sync` where the uv-sync script would just be `uv sync --all-packages --all-extras --all-groups`.
+
+The benefit being that, if uv or the monorepo layout/commands change in the future, you can just update the task script.  All the devs can keep using `mise uv-sync` which has no doubt become reflexive for them.
+
+---
+
+_Referenced in [astral-sh/uv#11797](../../astral-sh/uv/issues/11797.md) on 2025-02-26 12:01_
+
+---
+
+_Referenced in [astral-sh/uv#11958](../../astral-sh/uv/issues/11958.md) on 2025-03-04 18:34_
+
+---
+
+_Comment by @johnthagen on 2025-03-08 15:31_
+
+I wanted to voice my support for `--all-groups` being the default for `uv sync`. We are looking to migrate from Poetry, Poetry does this, and I've always thought it provided the smoothest, least-surprising experience. We've already had several new team members be surprised that they added some dependencies in a dependency group and they showed up in the lock file, but are not installed with `uv sync` by default.
+
+We split up our development dependencies into nicely named groups. This not only is self documenting, but it allows tools like tox/nox to install only a subset of the dependencies easily into isolated virtual environments.
+
+```toml
+[dependency-groups]
+nox = [
+    "nox-poetry"
+]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-randomly"
+]
+type_check = [
+    "mypy"
+]
+lint = [
+    "ruff"
+]
+docs = [
+    "mkdocs-material",
+    "mkdocs-htmlproofer-plugin"
+]
+```
+
+After reading the docs, a user can learn that the `dev` group is special and you can extend the config with:
+
+```toml
+[tool.uv]
+default-groups = ["nox", "test", "type_check", "lint", "docs"]
+```
+
+But this seems like extra boilerplate in my opinion and suffers from DRY risk of the names getting out of sync (and then dependencies silently not being installed). Given that `--only-group` and `--no-group` exist, to me the least surprising thing would be for `uv sync` to install everything by default and then allow a user to opt back out when needed.
+
+The special cases of `dev` also seems strange now that we have agnostic dependency group names. I could see it making sense back when `uv` had to provide it's legacy
+
+```toml
+[tool.uv]
+dev-dependencies = [
+  "pytest"
+]
+```
+
+But now-adays I think moving forward it would be ideal if `dev` wasn't special and all groups were installed by default.
+
+---
+
+_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2025-03-08 15:32_
+
+---
+
+_Comment by @rsyring on 2025-03-08 15:37_
+
+Related: https://github.com/astral-sh/uv/issues/11691
+
+We also use groups for the precise reason of being able to specify which dependencies I want in tox/nox.  But we just use includes in the dev group so that the default install gets all the installed deps:
+
+```toml
+dev = [
+    {include-group = "tests"},
+    {include-group = "pre-commit"},
+    {include-group = "nox"},
+    "hatch>=1.14.0",
+    "ruff>=0.9.6",
+]
+# Used by nox
+pre-commit = [
+    'pre-commit>=4.1.0',
+    'pre-commit-uv>=4.1.4',
+]
+# Used by nox
+tests = [
+    'pytest>=8.3.4',
+]
+# Used by CI
+nox = [
+    'nox>=2025.2.9',
+]
+```
+
+FWIW, I don't think `--all-groups` makes as much sense as a default when you can easily use includes to make your default dev environment use whatever groups you want.
+
+Not sure what I think on special casing for the dev group.  I like that it's a simpler CLI interface when adding deps from the command line.   It also matches other dependency management tools.  But having the `--dev` concept as a special case of default groups does bring some confusion IMO and gives extra command line arguments as a result.  I'd probably leave `--dev` as a special case, although I would change some things as discussed in #11691.
+
+---
+
+_Referenced in [astral-sh/uv#12067](../../astral-sh/uv/issues/12067.md) on 2025-03-08 15:57_
+
+---
+
+_Comment by @zanieb on 2025-03-08 18:39_
+
+I'd be more in favor of adding a special "all" key to `default-groups` (e.g., `default-groups = list[str] | literal["all"]`) than changing the default here. I think, as we don't sync all `optional-dependencies` by default, it'd feel surprising to sync all `dependency-groups` by default.
+
+---
+
+_Comment by @johnthagen on 2025-03-08 20:59_
+
+> I'd be more in favor of adding a special "all" key 
+
+I like this. 
+
+That would be sufficient for the needs I've seen. It would be explicit and also remove the DRY issues that currently exist with duplicating group names.
+
+---
+
+_Comment by @zanieb on 2025-03-08 21:15_
+
+cc @Gankra curious for your thoughts
+
+---
+
+_Comment by @Gankra on 2025-03-18 15:35_
+
+That seems super reasonable, especially since it's not syntactically ambiguous if someone has a group named "all".
+
+---
+
+_Referenced in [astral-sh/uv#12289](../../astral-sh/uv/pulls/12289.md) on 2025-03-18 16:24_
+
+---
+
+_Comment by @Gankra on 2025-03-18 16:25_
+
+Put up an implementation of that in #12289
+
+---
+
+_Comment by @Gankra on 2025-03-18 19:52_
+
+[`default-groups = "all"` is now available in uv 0.6.8](https://docs.astral.sh/uv/concepts/projects/dependencies/#default-groups)
+
+---
+
+_Closed by @zanieb on 2025-03-18 21:42_
+
+---
+
+_Comment by @Tremeschin on 2025-03-19 05:38_
+
+> @zanieb: _I'm not sure about the `--all-packages` bit (...) e.g., `default-packages` or `default-workspace-members` or something. (...) perhaps you want to add the other workspace members as dependencies?_
+
+I kind of expect all workspace members to be installed by default, as it's already an _explicit_ listing through `members`?
+
+Since the workspace accepts glob patterns, not always one might know all packages that will be installed - my use case is that I have a directory of meta/private/others packages on my monorepo, included as `members = ["meta/*"]`. The names would leak on the public `pyproject.toml` in `dev-dependencies` (DRY issues also) but `--all-packages` fixes it
+
+Can we have the opt-in sugar for it as well? Can open a new issue if you'd like, thanks 🙂
+
+---
+
+_Referenced in [astral-sh/uv#12353](../../astral-sh/uv/issues/12353.md) on 2025-03-20 22:43_
+
+---

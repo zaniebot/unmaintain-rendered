@@ -1,0 +1,95 @@
+---
+number: 15446
+title: 0.8.13 install vllm in cuda env, but install torch with cpu
+type: issue
+state: closed
+author: yang-ybb
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-22T06:41:40Z
+updated_at: 2025-08-22T11:06:24Z
+url: https://github.com/astral-sh/uv/issues/15446
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# 0.8.13 install vllm in cuda env, but install torch with cpu
+
+---
+
+_Issue opened by @yang-ybb on 2025-08-22 06:41_
+
+### Summary
+
+```
++ pip3 install uv
+Looking in indexes: https://bytedpypi.byted.org/simple, https://bytedpypi.byted.org/simple
+Collecting uv
+  Downloading https://bytedpypi.byted.org/packages/uv/uv-0.8.12-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (19.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 19.4/19.4 MB 90.7 MB/s eta 0:00:00
+tiktok-thoth-infer-dev4-76a4a284-ai-64c9dcfb6-6gqvj 2025-08-20 +03:20:11 service isn't ready!
+Installing collected packages: uv
+Successfully installed uv-0.8.12
+```
+
+```
+uv pip install -U vllm --torch-backend=auto --extra-index-url https://wheels.vllm.ai/b2f6c247a9b84556a8ea0e75bb4a2db765ff3315
++ torch==2.7.1+cu128
+ + torchaudio==2.7.1+cu128
+ + torchvision==0.22.1+cu128
+```
+
+
+there are 4 GPUs in my env. firstly, i use uv=**0.8.12**, install vllm, will install torch==**2.7.1+cu128**.
+
+```
++ pip3 install uv
+Looking in indexes: https://bytedpypi.byted.org/simple, https://bytedpypi.byted.org/simple
+Collecting uv
+  Downloading https://bytedpypi.byted.org/packages/uv/uv-0.8.13-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (19.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 19.5/19.5 MB 144.8 MB/s eta 0:00:00
+Installing collected packages: uv
+search-tiktok-tako-response-model-t-550433c0-de-88d7ddfbc-ks44r 2025-08-22 +06:09:29 service isn't ready!
+Successfully installed uv-0.8.13
+```
+
+
+```
+uv pip install -U vllm --torch-backend=auto --extra-index-url https://wheels.vllm.ai/b2f6c247a9b84556a8ea0e75bb4a2db765ff3315
++ torch==2.7.1+cpu
+ + torchaudio==2.7.1+cpu
+ + torchvision==0.22.1+cpu
+```
+
+secondly, i use uv=**0.8.13**, install vllm, will install torch==**2.7.1+cpu**, seem wrong.
+
+
+### Platform
+
+Linux 5.15.120.bsk.2-amd64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.8.13
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @yang-ybb on 2025-08-22 06:41_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-08-22 10:05_
+
+---
+
+_Referenced in [astral-sh/uv#15449](../../astral-sh/uv/pulls/15449.md) on 2025-08-22 10:38_
+
+---
+
+_Closed by @charliermarsh on 2025-08-22 11:06_
+
+---

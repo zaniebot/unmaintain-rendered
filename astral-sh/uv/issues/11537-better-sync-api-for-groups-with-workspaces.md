@@ -1,0 +1,142 @@
+---
+number: 11537
+title: Better sync API for groups with workspaces
+type: issue
+state: open
+author: xixixao
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-15T15:55:47Z
+updated_at: 2025-12-04T19:56:38Z
+url: https://github.com/astral-sh/uv/issues/11537
+synced_at: 2026-01-10T01:25:07Z
+---
+
+# Better sync API for groups with workspaces
+
+---
+
+_Issue opened by @xixixao on 2025-02-15 15:55_
+
+### Summary
+
+If I want to run tests for one workspace member, I'd like to use the following sync in CI:
+
+```
+uv sync --all-extras --no-editable --no-dev --group test --package ${MEMBER}
+```
+
+ideally I want:
+
+The root project to have `test` group with `pytest` in it.
+The member to optionally have additional dependencies needed in its own `test` group only (but I don't have any use case for this atm).
+
+The command
+
+```
+uv sync --all-extras --no-editable --no-dev --group test --package ${MEMBER}
+```
+
+doesn't work because `test` is defined in root, but because I specified `--package`, the group I guess targets only groups in the member's `pyproject.toml`.
+
+An alternative, less optimal solution I tried was:
+
+```
+uv sync --all-extras --no-editable --no-dev --all-groups  --package ${MEMBER}
+```
+
+but this again doesn't work, because only the groups from the package, not from the root, are synced.
+
+I don't think there's a way to target the groups in the root right now?
+
+The workaround that does work right now is to copy the `test` group into each workspace member's `pyproject.toml`.
+
+Side-note: I have spent a ton of time learning by trial and error what sync does. The options are documented at a very high level, but how their combinations work is not documented much at all. Maybe a sort of "sync philosophy" doc is missing. There's Locking and Syncing but that's really about Locking, not about Syncing.
+
+Thanks as always for working on uv!
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @xixixao on 2025-02-15 15:55_
+
+---
+
+_Comment by @T-256 on 2025-02-15 18:02_
+
+The Proposal:
+`--group .[test]` where (`.`) tries to load group from current workspace.
+
+when you do cd into package dir:
+`--group ..[test]` where (`..`) tries to load group from parent dir.
+
+Then `--all-groups` would accept optional values (default: `.`).
+
+Using inter-packages group:
+`uv sync --package member1 --group member2[test]` when run command at workspace root.
+
+When not using these syntaxes, then current behavior will be applied.
+
+---
+
+_Comment by @xixixao on 2025-02-15 18:35_
+
+Note that currently when you do `--group typecheck`, but don't use `--package`, then all groups of that name are synced (from all members and from root).
+
+---
+
+_Comment by @T-256 on 2025-02-15 18:45_
+
+> Note that currently when you do `--group typecheck`, but don't use `--package`, then all groups of that name are synced (from all members and from root).
+
+According to other current behaviors you mentioned above, IMO the expected behavior here is to not include them _implicitly_!
+
+(Current behavior has _selective choose_ between members that declared and not declared that group.)
+
+---
+
+_Comment by @zanieb on 2025-03-20 22:49_
+
+@Gankra this may be interesting to you. Maybe we should add some syntactic sugar for this?
+
+---
+
+_Referenced in [astral-sh/uv#12130](../../astral-sh/uv/issues/12130.md) on 2025-03-20 22:49_
+
+---
+
+_Comment by @Gankra on 2025-03-21 14:28_
+
+Hmm yeah we're already doing a bit of logic like this in the `uv pip --group` stuff. Presumably the desired semantic here is to be similar to the pip approach where you're basically asking for `--only-group` from the workspace? (i.e. you don't want to sync the entire workspace, *just* that workspace-group and that package)
+
+---
+
+_Comment by @zanieb on 2025-03-21 15:56_
+
+We're talking about workspace _packages_ / members here not the workspace as a whole, I think.
+
+Like `uv sync --group member_a:group_x`. I'm not sure about the semantics, i.e., if that member package is already being synced should we exclude it? (I don't think so). If not, should we include non-group dependencies? (I also don't think so).
+
+---
+
+_Comment by @xixixao on 2025-12-04 19:56_
+
+I still think this should be fixed. I consider `sync` to be core (kinda the point of) `uv`, so it ought to avoid these ambiguities.
+
+I ran into it again with the group `docs`, and wanting to install one of the workspace members:
+
+When I do
+
+`uv sync --all-extras --no-editable --no-dev --group docs --all-packages` then the group `docs` in the workspace root is installed, and all the workspace members are.
+
+but when I do
+
+`uv sync --all-extras --no-editable --no-dev --group docs --package foo`
+
+ the sync fails because I don't have a group docs in the workspace member `foo`.
+
+---

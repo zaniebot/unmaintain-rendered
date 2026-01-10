@@ -1,0 +1,61 @@
+---
+number: 2708
+title: "uv makes python fun again!"
+type: issue
+state: closed
+author: mescanne
+labels: []
+assignees: []
+created_at: 2024-03-28T10:50:33Z
+updated_at: 2024-03-29T16:00:48Z
+url: https://github.com/astral-sh/uv/issues/2708
+synced_at: 2026-01-10T01:23:21Z
+---
+
+# uv makes python fun again!
+
+---
+
+_Issue opened by @mescanne on 2024-03-28 10:50_
+
+Please just close this when you read it... I'm not sure where else to put it.
+
+uv is making python fun again where it has been frustrating. I'm not a package maintainer, I'm "just" an app developer. I don't need comprehensive (.. or many) tests, I don't need to test across many versions.
+
+I've taken a very simple approach that is delightful:
+- shell script in the root of the project
+- it initializes a .venv python environment if needed, installing uv and the initial requirements_all.txt
+- it pip compiles requirements_all.txt from pyproject.toml if needed using uv
+- it pip syncs from requirements_all.txt into .venv if needed
+- it then runs whatever command you want in the .venv (like poetry run, pipenv run, etc)
+
+The fact that uv is *so*fast* just makes this delightful -
+- You can rapidly add/remove packages to experiment with ease. I delete .venv and re-create it for fun.
+- I can easily manage the .venv virtual environments and space consumption.
+
+
+---
+
+_Comment by @charliermarsh on 2024-03-28 13:55_
+
+This was really nice to read, thank you for sharing.
+
+---
+
+_Comment by @charliermarsh on 2024-03-29 15:58_
+
+Closing although we will continue to make Python fun.
+
+---
+
+_Closed by @charliermarsh on 2024-03-29 15:58_
+
+---
+
+_Comment by @zanieb on 2024-03-29 16:00_
+
+Yay we did it!
+
+
+
+---

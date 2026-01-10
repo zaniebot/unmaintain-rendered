@@ -1,0 +1,50 @@
+---
+number: 12513
+title: Minimal example of FsatAPI and uv
+type: issue
+state: closed
+author: brunolnetto
+labels:
+  - question
+assignees: []
+created_at: 2025-03-27T18:58:25Z
+updated_at: 2025-03-27T19:26:36Z
+url: https://github.com/astral-sh/uv/issues/12513
+synced_at: 2026-01-10T01:25:20Z
+---
+
+# Minimal example of FsatAPI and uv
+
+---
+
+_Issue opened by @brunolnetto on 2025-03-27 18:58_
+
+### Question
+
+This may be a simple use case, but is instructive for developers of all levels: in case I use uv within Dockerfile, only installing it with command `pip install uv` and running `uv sync` does not enable an environment neither installs the dependencies. How is the proper way to write a Dockerfile with uv for a FastAPI project?
+
+https://github.com/trouchet/fastapi-uv
+
+### Platform
+
+Ubuntu 20.04
+
+### Version
+
+uv 0.5.11
+
+---
+
+_Label `question` added by @brunolnetto on 2025-03-27 18:58_
+
+---
+
+_Comment by @zanieb on 2025-03-27 19:26_
+
+Like https://docs.astral.sh/uv/guides/integration/fastapi/#deployment ?
+
+---
+
+_Closed by @brunolnetto on 2025-03-27 19:26_
+
+---

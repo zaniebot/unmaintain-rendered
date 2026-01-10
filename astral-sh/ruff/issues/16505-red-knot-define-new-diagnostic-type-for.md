@@ -1,0 +1,52 @@
+---
+number: 16505
+title: "[red-knot] define new `Diagnostic` type for representing our diagnostic data model in code"
+type: issue
+state: closed
+author: BurntSushi
+labels:
+  - ty
+  - diagnostics
+assignees: []
+created_at: 2025-03-04T18:07:52Z
+updated_at: 2025-03-05T13:23:03Z
+url: https://github.com/astral-sh/ruff/issues/16505
+synced_at: 2026-01-10T01:22:57Z
+---
+
+# [red-knot] define new `Diagnostic` type for representing our diagnostic data model in code
+
+---
+
+_Issue opened by @BurntSushi on 2025-03-04 18:07_
+
+For this task, we should:
+
+* Move existing (as of 2025-03-04) diagnostic code into "old" sub-module.
+* Define the data model described in #16504 in code centered around a new concrete `Diagnostic` data type.
+
+---
+
+_Label `diagnostics` added by @BurntSushi on 2025-03-04 18:07_
+
+---
+
+_Label `red-knot` added by @BurntSushi on 2025-03-04 18:07_
+
+---
+
+_Referenced in [astral-sh/ruff#16504](../../astral-sh/ruff/issues/16504.md) on 2025-03-04 18:08_
+
+---
+
+_Referenced in [astral-sh/ruff#16503](../../astral-sh/ruff/pulls/16503.md) on 2025-03-04 18:08_
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2025-03-04 18:15_
+
+---
+
+_Closed by @BurntSushi on 2025-03-05 13:23_
+
+---

@@ -1,0 +1,61 @@
+---
+number: 5789
+title: "`uv lock` seems to ignore index-url from `uv.toml`"
+type: issue
+state: closed
+author: tinovyatkin
+labels:
+  - question
+assignees: []
+created_at: 2024-08-05T07:54:26Z
+updated_at: 2024-08-05T14:32:59Z
+url: https://github.com/astral-sh/uv/issues/5789
+synced_at: 2026-01-10T01:23:52Z
+---
+
+# `uv lock` seems to ignore index-url from `uv.toml`
+
+---
+
+_Issue opened by @tinovyatkin on 2024-08-05 07:54_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I'm having `uv.toml` in the current directory with `index-url` and it used by `uv pip install` without any problem. However `uv lock` seems to ignore that file and I need to provide `index-url` via extra CLI param. Is that by design?
+
+```sh
+→ uv --version                                                   
+uv 0.2.33 (b14945a7b 2024-08-01)
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-05 12:50_
+
+Is the `index-url` under `[pip]` or at the top-level? If it's under `[pip]`, it will only be used in the `pip` interface. If it's at the top-level, it will be used everywhere.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-08-05 14:31_
+
+---
+
+_Comment by @tinovyatkin on 2024-08-05 14:32_
+
+@charliermarsh thank you, it was under `pip`, I will try to move it top level.
+
+---
+
+_Closed by @tinovyatkin on 2024-08-05 14:32_
+
+---

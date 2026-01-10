@@ -1,0 +1,128 @@
+---
+number: 8525
+title: Python download retrying
+type: issue
+state: closed
+author: JanLubojacky
+labels:
+  - enhancement
+  - network
+assignees: []
+created_at: 2024-10-24T12:12:51Z
+updated_at: 2024-11-20T14:42:44Z
+url: https://github.com/astral-sh/uv/issues/8525
+synced_at: 2026-01-10T01:24:29Z
+---
+
+# Python download retrying
+
+---
+
+_Issue opened by @JanLubojacky on 2024-10-24 12:12_
+
+uv 0.4.26
+
+on our ec2 for some reason for newer versions of python the download fails, here is an example of both uv and curl failing to download python 3.13 (also the error being reported by uv is not very clear as reported in #8198)
+
+```sh
+> uv venv
+  × Failed to extract archive: cpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  ├─▶ failed to unpack `/root/.local/share/uv/python/.cache/.tmp938SbR/python/lib/python3.13/ensurepip/_bundled/pip-24.2-py3-none-any.whl`
+  ├─▶ failed to unpack `python/lib/python3.13/ensurepip/_bundled/pip-24.2-py3-none-any.whl` into
+  │   `/root/.local/share/uv/python/.cache/.tmp938SbR/python/lib/python3.13/ensurepip/_bundled/pip-24.2-py3-none-any.whl`
+  ╰─▶ unexpected end of file
+ ```
+ ```sh
+ > curl -OL https://github.com/indygreg/python-build-standalone/releases/download/20241016/cp
+ython-3.13.0+20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+ 65 18.1M   65 11.9M    0     0  3088k      0  0:00:06  0:00:03  0:00:03 4692k
+curl: (18) transfer closed with 6491649 bytes remaining to read
+```
+
+would be nice to have retrying like wget does, where it continues the download after it gets interrupted
+
+```sh
+> wget https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.13.0+20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+--2024-10-24 11:56:53--  https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.13.0+20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+Resolving github.com (github.com)... 140.82.114.3
+Connecting to github.com (github.com)|140.82.114.3|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/162334160/a5728c4e-7f3d-4eb4-a394-ec620039da16?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20241024%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241024T115653Z&X-Amz-Expires=300&X-Amz-Signature=28c82fa5ddf8c95926ce9dbb72d23b2833ed666da385e658c46644540d635f38&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dcpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-10-24 11:56:53--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/162334160/a5728c4e-7f3d-4eb4-a394-ec620039da16?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20241024%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241024T115653Z&X-Amz-Expires=300&X-Amz-Signature=28c82fa5ddf8c95926ce9dbb72d23b2833ed666da385e658c46644540d635f38&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dcpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.111.133, 185.199.108.133, 185.199.109.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.111.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 19024698 (18M) [application/octet-stream]
+Saving to: ‘cpython-3.13.0+20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz.1’
+
+cpython-3.13.0+20241016-x86  60%[=======================>                 ]  10.89M  5.28MB/s    in 2.1s    
+
+2024-10-24 11:56:56 (5.28 MB/s) - Read error at byte 11415836/19024698 (Connection reset by peer). Retrying.
+
+--2024-10-24 11:56:57--  (try: 2)  https://objects.githubusercontent.com/github-production-release-asset-2e65be/162334160/a5728c4e-7f3d-4eb4-a394-ec620039da16?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20241024%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241024T115653Z&X-Amz-Expires=300&X-Amz-Signature=28c82fa5ddf8c95926ce9dbb72d23b2833ed666da385e658c46644540d635f38&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dcpython-3.13.0%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&response-content-type=application%2Foctet-stream
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.111.133|:443... connected.
+HTTP request sent, awaiting response... 206 Partial Content
+Length: 19024698 (18M), 7608862 (7.3M) remaining [application/octet-stream]
+Saving to: ‘cpython-3.13.0+20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz.1’
+
+cpython-3.13.0+20241016-x86 100%[++++++++++++++++++++++++================>]  18.14M  --.-KB/s    in 0.06s   
+
+2024-10-24 11:56:57 (122 MB/s) - ‘cpython-3.13.0+20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz.1’ saved [19024698/19024698]
+```
+
+
+
+
+
+---
+
+_Comment by @zanieb on 2024-10-24 12:17_
+
+We stream the download to decompression. I bet we can retry, but I'm not sure how easy it will be.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-10-24 12:18_
+
+---
+
+_Label `network` added by @zanieb on 2024-10-24 12:18_
+
+---
+
+_Comment by @charliermarsh on 2024-10-24 13:55_
+
+Just to confirm @JanLubojacky -- this is something you see occasionally? Or every time?
+
+---
+
+_Comment by @JanLubojacky on 2024-10-24 14:42_
+
+> Just to confirm @JanLubojacky -- this is something you see occasionally? Or every time?
+
+Its every time, only for python versions >=3.12.5 strangely enough older versions are fine, same behavior across different ec2s. My best guess is that something is not agreeing with the way the network is set up for those ec2s (obv our fault but there is not much I can do about that sadly). Downloading python manually and making uv use the downloaded python is simple enough but it is harder to sell my colleagues on uv if there are extra steps required vs something like conda.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-20 05:02_
+
+---
+
+_Referenced in [astral-sh/uv#9274](../../astral-sh/uv/pulls/9274.md) on 2024-11-20 14:05_
+
+---
+
+_Closed by @charliermarsh on 2024-11-20 14:42_
+
+---
+
+_Closed by @charliermarsh on 2024-11-20 14:42_
+
+---
+
+_Referenced in [astral-sh/uv#12149](../../astral-sh/uv/issues/12149.md) on 2025-03-13 11:00_
+
+---

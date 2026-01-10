@@ -1,0 +1,90 @@
+---
+number: 14793
+title: "`RUF046` is doing two things instead of one"
+type: issue
+state: closed
+author: InSyncWithFoo
+labels:
+  - rule
+assignees: []
+created_at: 2024-12-05T16:44:24Z
+updated_at: 2025-01-02T09:00:58Z
+url: https://github.com/astral-sh/ruff/issues/14793
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# `RUF046` is doing two things instead of one
+
+---
+
+_Issue opened by @InSyncWithFoo on 2024-12-05 16:44_
+
+I know that 0.8.2 has just been released and that I did say everything looked fine to me before #14697 was merged, but the more I think about it, the more I find it wrong to handle both `round()` and `int()` in one fell swoop. I probably won't be able to sleep well tonight without first sharing my concerns, so here's the big proposal:
+
+`RUF046` should only handle cases where the `int()` call is unnecessary. The logic to detect `round()` calls with unnecessary second argument should be moved to a new rule.
+
+This will also make it easier to extend `RUF046` to handle expressions more complex than a simple call, as it won't need to care about the exact content.
+
+---
+
+_Label `rule` added by @dylwil3 on 2024-12-05 18:33_
+
+---
+
+_Label `needs-decision` added by @dylwil3 on 2024-12-05 18:33_
+
+---
+
+_Comment by @MichaReiser on 2024-12-06 09:30_
+
+> I probably won't be able to sleep well tonight without first sharing my concerns, so here's the big proposal:
+
+Oh no! Don't worry too much about it. The rule is in preview. We're still allowed to make changes to its intent. 
+
+> RUF046 should only handle cases where the int() call is unnecessary. The logic to detect round() calls with unnecessary second argument should be moved to a new rule.
+
+Can you tell me a bit more about it? Do you mean that the rule fixes `int(round(4, 0))` to `round(4)`? And what you're suggesting is to introduce a new rule that detects *unnecessary-round-call* for `round(int)`. The way `int(round(4))` would then first be fixed to `int(4)` and then to just 4?
+
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2024-12-06 09:31_
+
+---
+
+_Comment by @InSyncWithFoo on 2024-12-06 10:33_
+
+@MichaReiser Yes, that's correct. There will be a `expr_is_strictly_int()` function that checks if an expression is strictly an integer, which can be utilized by both rules to determine fix safety.
+
+---
+
+_Comment by @MichaReiser on 2024-12-06 10:39_
+
+The suggested split makes sense to me. So we'd have two rules:
+
+* unnecessary-cast-to-int (e.g. `int(round(4.0))`)
+* unnecessary-rounding (e.g. `round(4)`)
+
+Do you want to a) first simplify `unnecessary-cast-to-int` and then add a new rule for unnecessary-rounding?
+
+---
+
+_Comment by @InSyncWithFoo on 2024-12-06 10:46_
+
+(It's actually `round(4, 0)`/`round(whatever, None)`.)
+
+I intend to extend `unnecessary-cast-to-int` so that it can detect complex expressions at the same time I introduce `unnecessary-round-ndigits` (already named locally, changing is trivial).
+
+---
+
+_Referenced in [astral-sh/ruff#14828](../../astral-sh/ruff/pulls/14828.md) on 2024-12-07 00:34_
+
+---
+
+_Closed by @MichaReiser on 2025-01-02 09:00_
+
+---
+
+_Referenced in [astral-sh/ruff#15481](../../astral-sh/ruff/issues/15481.md) on 2025-01-14 21:58_
+
+---

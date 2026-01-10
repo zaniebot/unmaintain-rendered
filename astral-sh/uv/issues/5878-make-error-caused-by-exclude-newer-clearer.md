@@ -1,0 +1,73 @@
+---
+number: 5878
+title: "Make error caused by `--exclude-newer` clearer"
+type: issue
+state: open
+author: edgarrmondragon
+labels:
+  - help wanted
+  - error messages
+assignees: []
+created_at: 2024-08-07T17:12:16Z
+updated_at: 2024-08-07T23:04:39Z
+url: https://github.com/astral-sh/uv/issues/5878
+synced_at: 2026-01-10T01:23:53Z
+---
+
+# Make error caused by `--exclude-newer` clearer
+
+---
+
+_Issue opened by @edgarrmondragon on 2024-08-07 17:12_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+I wonder if it's possible to make the reason why a package can't be installed when setting `UV_EXCLUDE_NEWER` a bit clearer. Currently
+
+```
+No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of my-package==0.5.0 and you require
+      my-package==0.5.0, we can conclude that the requirements are
+      unsatisfiable.
+```
+
+is a bit baffling to some users (me!) that might've forgotten to bump the `UV_EXCLUDE_NEWER` date to support the new version of a package.
+
+Thanks!
+
+---
+
+_Renamed from "Make error caused by `--exclude-newer`" to "Make error caused by `--exclude-newer` clearer" by @edgarrmondragon on 2024-08-07 17:12_
+
+---
+
+_Comment by @zanieb on 2024-08-07 17:22_
+
+Hi! Unfortunately this is intentional and a requirement for having the output of the resolver be deterministic.
+
+We could consider moving the reproducible error messages behind a flag, but right now we need it for our test suite.
+
+---
+
+_Label `error messages` added by @zanieb on 2024-08-07 22:53_
+
+---
+
+_Comment by @zanieb on 2024-08-07 22:58_
+
+If someone is interested in taking this on with a separate `UV_TEST_EXCLUDE_NEWER` or something I'd review. Something like #844 is one solution or we can report exclude newer incompatibilities directly as we do for other unusable distributions — I left myself a nice little message about this https://github.com/astral-sh/uv/blob/35b982446d8c4a1a6562f0ffaf8d985916838439/crates/uv-resolver/src/candidate_selector.rs#L493-L507
+
+---
+
+_Label `help wanted` added by @zanieb on 2024-08-07 23:04_
+
+---

@@ -1,0 +1,170 @@
+---
+number: 1813
+title: "Unable to install `scikit-image==0.19.3`"
+type: issue
+state: closed
+author: pngwn
+labels:
+  - bug
+  - installer
+assignees: []
+created_at: 2024-02-21T14:45:09Z
+updated_at: 2024-03-09T11:49:58Z
+url: https://github.com/astral-sh/uv/issues/1813
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# Unable to install `scikit-image==0.19.3`
+
+---
+
+_Issue opened by @pngwn on 2024-02-21 14:45_
+
+When i try to install `scikit-image==0.19.3` (`uv pip install scikit-image==0.19.3`) i get the following error (truncated version) after a very very long time (probably around a minute or two).
+
+```
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: scikit-image==0.19.3
+  Caused by: Failed to build: scikit-image==0.19.3
+  Caused by: Build backend failed to build wheel through `build_wheel()`:
+```
+
+Full logs are very long so I have put them here: https://app.warp.dev/block/aP3dM9N3p6kVKSj5bqOijF
+
+The second time i run it, it fails much more quickly but with the same output.
+
+Platform: macOS
+Version: 0.1.6
+
+
+
+---
+
+_Referenced in [gradio-app/gradio#7457](../../gradio-app/gradio/pulls/7457.md) on 2024-02-21 14:47_
+
+---
+
+_Comment by @rth on 2024-02-21 16:19_
+
+The relevant error message from that log may be,
+```
+clang: error: unsupported option '-fopenmp'
+```
+It's a fairly old scikit-image release, are you sure you are able to rebuild it with pip for Python 3.11, and it's not taking a wheel that was built with pip some time ago from cache?
+
+
+---
+
+_Comment by @pngwn on 2024-02-21 16:44_
+
+I _think_ so, I ran with:
+
+```bash
+install scikit-image==0.19.3 --force-reinstall --no-cache-dir
+```
+
+But the pip cache is a mystery to me, so it could still be picking it up from somewhere.
+
+---
+
+_Comment by @rth on 2024-02-21 17:30_
+
+ Yes, I can reproduce this error on Mac M1 with Python 3.11. Works with pip but not with uv in a new venv. 
+
+---
+
+_Comment by @zanieb on 2024-02-21 19:52_
+
+I reproduced this on my M1 Mac as well.
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-21 19:53_
+
+---
+
+_Label `installer` added by @zanieb on 2024-02-21 19:53_
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 05:12_
+
+@zanieb - Can you see if this was fixed in v0.1.7?
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 20:56_
+
+Can anyone confirm that this is still an issue? Something we can repro?
+
+---
+
+_Comment by @pngwn on 2024-03-08 21:02_
+
+I'll retest with the latest version. 
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 21:09_
+
+Good news! I was able to reproduce by downgrading to Python 3.11, while `python -m pip` succeeded after a long build process in both cases. Will look into it.
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 21:11_
+
+Not immediately clear what could be going wrong, my guess is we're not propagating an environment variable or something.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-08 21:34_
+
+---
+
+_Comment by @charliermarsh on 2024-03-08 21:34_
+
+Assigning to myself.
+
+---
+
+_Comment by @charliermarsh on 2024-03-09 02:29_
+
+Ohhh the build doesn't actually fail, we just can't find the distribution filename because it's not at the end of the stdout...
+
+```
+...
+scikit_image-0.19.3-cp311-cp311-macosx_14_0_arm64.whl
+INFO:
+########### EXT COMPILER OPTIMIZATION ###########
+INFO: Platform      :
+  Architecture: aarch64
+  Compiler    : clang
+
+CPU baseline  :
+  Requested   : 'min'
+  Enabled     : NEON NEON_FP16 NEON_VFPV4 ASIMD
+  Flags       : none
+  Extra checks: none
+
+CPU dispatch  :
+  Requested   : 'max -xop -fma4'
+  Enabled     : ASIMDHP ASIMDDP ASIMDFHM
+  Generated   : none
+INFO: CCompilerOpt.cache_flush[864] : write cache to path -> /private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/.tmp5ZPIbv/built-wheels-v0/pypi/scikit-image/0.19.3/hLW_f7wWeGDOPRlSazQXw/scikit-image-0.19.3.tar.gz/build/temp.macosx-12.6-arm64-3.11/ccompiler_opt_cache_ext.py
+```
+
+---
+
+_Referenced in [astral-sh/uv#2314](../../astral-sh/uv/pulls/2314.md) on 2024-03-09 03:17_
+
+---
+
+_Comment by @charliermarsh on 2024-03-09 03:19_
+
+Fixed in https://github.com/astral-sh/uv/pull/2314.
+
+---
+
+_Closed by @charliermarsh on 2024-03-09 11:49_
+
+---

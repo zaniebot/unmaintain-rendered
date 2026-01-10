@@ -1,0 +1,96 @@
+---
+number: 6061
+title: "PLW0120 false positive: does not count return as a break"
+type: issue
+state: closed
+author: berzi
+labels:
+  - needs-decision
+assignees: []
+created_at: 2023-07-25T10:27:44Z
+updated_at: 2023-07-28T04:33:10Z
+url: https://github.com/astral-sh/ruff/issues/6061
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# PLW0120 false positive: does not count return as a break
+
+---
+
+_Issue opened by @berzi on 2023-07-25 10:27_
+
+Version: `ruff 0.0.278`
+
+I have a piece of code functionally identical to the following:
+```python
+def my_func():
+    retries = 0
+    while retries < MAX_RETRIES:
+        response = send_a_request()
+
+        try:
+            check_for_errors(response)
+        except ErrorThatCanBeRetried:
+            time.sleep(1)
+            continue
+
+        return response
+    else:
+        raise MaxRetriesExceededError()
+```
+
+The intended flow is thus:
+- try sending a request
+- if all goes well, its response is returned
+- if an uncaught error occurs, the exception propagates like usual
+- if an ErrorThatCanBeRetried occurs, then the request is retried after 1 second
+- if the request is retried more than MAX_RETRIES, the loop stops due to the loop condition (so, no explicit break), and the `else` block raises a different exception
+
+I think this is all fairly standard. I believe the rule simply doesn't count a `return` as a form of loop interruption (`break`), but it probably should.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-25 14:06_
+
+---
+
+_Comment by @harupy on 2023-07-26 13:44_
+
+Maybe I'm in the minority but I'd prefer no else because I don't need to wonder how while-else works (I know how it works).
+
+```python
+def my_func():
+    retries = 0
+    # Make some attempts
+    while retries < MAX_RETRIES:
+        response = send_a_request()
+
+        try:
+            check_for_errors(response)
+        except ErrorThatCanBeRetried:
+            time.sleep(1)
+            continue
+
+        return response
+    
+    # All attempts failed -> throw
+    raise MaxRetriesExceededError()
+```
+
+---
+
+_Comment by @harupy on 2023-07-26 13:47_
+
+Is my code above equivalent to the original code?
+
+---
+
+_Comment by @charliermarsh on 2023-07-28 04:33_
+
+I think I agree with @harupy - the `else` only triggers when you break, so it seems unnecessary here, and the rule seems right IMO.
+
+---
+
+_Closed by @charliermarsh on 2023-07-28 04:33_
+
+---

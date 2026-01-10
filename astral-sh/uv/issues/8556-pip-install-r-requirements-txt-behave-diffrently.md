@@ -1,0 +1,120 @@
+---
+number: 8556
+title: pip install - r requirements.txt behave diffrently than uv pip install - r requirements.txt
+type: issue
+state: closed
+author: samuelgarcia
+labels:
+  - question
+assignees: []
+created_at: 2024-10-25T07:46:46Z
+updated_at: 2024-10-27T16:09:34Z
+url: https://github.com/astral-sh/uv/issues/8556
+synced_at: 2026-01-10T01:24:29Z
+---
+
+# pip install - r requirements.txt behave diffrently than uv pip install - r requirements.txt
+
+---
+
+_Issue opened by @samuelgarcia on 2024-10-25 07:46_
+
+In a fresh env created by `python -m venv` or relatively `uv venv`.
+`pip install - r requirements.txt` behave diffrently than `uv pip install - r requirements.txt`
+
+For me, this `requirements.txt` give me differents results:
+
+```
+numpy<2
+jupyterlab
+PySide6<6.8
+numba
+zarr
+hdbscan
+pyqtgraph
+ipywidgets
+ipympl
+ephyviewer
+spikeinterface[full,widgets]
+spikeinterface-gui
+kilosort
+```
+
+with pip + venv I have spikeinterface version 0.101.2 (the latest and what I want)
+with uv pip I have spikeinterface version 0.100.6 (an older version)
+
+
+the work around was to change the requirements.txt to this
+
+```
+spikeinterface[full,widgets]
+numpy<2
+jupyterlab
+PySide6<6.8
+numba
+zarr
+hdbscan
+pyqtgraph
+ipywidgets
+ipympl
+ephyviewer
+spikeinterface-gui
+kilosort
+```
+
+Any idea why ? uv and pip resolve version diffrently for the first case ?
+
+ 
+
+
+
+---
+
+_Comment by @zanieb on 2024-10-25 13:30_
+
+pip and uv have different package resolvers, and can both produce valid resolutions that are different. There's an [example](https://docs.astral.sh/uv/concepts/resolution/#basic-examples) of this in the documentation.
+
+Changing the order of your requirements changes the priority uv uses to determine which package version to solve next.
+
+---
+
+_Label `question` added by @zanieb on 2024-10-25 13:30_
+
+---
+
+_Comment by @zm711 on 2024-10-25 15:19_
+
+Hey @zanieb thanks for the quick answer. I read the example you linked and I couldn't find any explicit line where it mentions that the order of requirements changes the priority. I think that is great information to know as we try to switch over to using `uv` for everything. Maybe I read too fast, which header is that information under? It's great that it's a quick fix :) 
+
+---
+
+_Comment by @samuelgarcia on 2024-10-25 15:27_
+
+Hi @zanieb.
+Thanks at  lot for this anwser. I will read this doc more carfully, I think we can close this issue.
+
+---
+
+_Comment by @hauntsaninja on 2024-10-27 06:36_
+
+A more intuitive workaround is to just add a lower bound to the package in your requirements.txt if you know some version is too old
+
+---
+
+_Comment by @zanieb on 2024-10-27 13:57_
+
+Sorry that document doesn't discuss prioritization, just shows how resolutions can differ but be valid. There's a note about prioritization [here](https://docs.astral.sh/uv/pip/compatibility/#package-priority) but we don't discuss it at length.
+
+As Shantanu suggests, adding a lower bound is best practice. 
+
+---
+
+_Closed by @zanieb on 2024-10-27 13:57_
+
+---
+
+_Comment by @zm711 on 2024-10-27 16:09_
+
+Thanks for the help! We really appreciate it!
+
+---

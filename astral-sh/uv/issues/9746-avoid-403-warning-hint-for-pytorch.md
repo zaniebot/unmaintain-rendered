@@ -1,0 +1,54 @@
+---
+number: 9746
+title: Avoid 403 warning hint for PyTorch
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - good first issue
+  - help wanted
+  - error messages
+assignees: []
+created_at: 2024-12-09T19:24:38Z
+updated_at: 2024-12-09T22:30:26Z
+url: https://github.com/astral-sh/uv/issues/9746
+synced_at: 2026-01-10T01:24:45Z
+---
+
+# Avoid 403 warning hint for PyTorch
+
+---
+
+_Issue opened by @charliermarsh on 2024-12-09 19:24_
+
+We _know_ that PyTorch returns 403 for unavailable packages. I think it's worth special-casing the hint to avoid appearing for PyTorch specifically.
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2024-12-09 19:24_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-12-09 19:24_
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-12-09 19:24_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-09 21:21_
+
+---
+
+_Referenced in [astral-sh/uv#9750](../../astral-sh/uv/pulls/9750.md) on 2024-12-09 21:24_
+
+---
+
+_Closed by @charliermarsh on 2024-12-09 22:30_
+
+---
+
+_Closed by @charliermarsh on 2024-12-09 22:30_
+
+---

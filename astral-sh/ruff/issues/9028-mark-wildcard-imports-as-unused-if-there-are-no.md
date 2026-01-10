@@ -1,0 +1,147 @@
+---
+number: 9028
+title: Mark wildcard imports as unused if there are no possible references
+type: issue
+state: closed
+author: jschippergoauto
+labels:
+  - rule
+assignees: []
+created_at: 2023-12-06T17:05:07Z
+updated_at: 2023-12-08T16:00:27Z
+url: https://github.com/astral-sh/ruff/issues/9028
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# Mark wildcard imports as unused if there are no possible references
+
+---
+
+_Issue opened by @jschippergoauto on 2023-12-06 17:05_
+
+Ruff and Flake8 disagree over F401.
+
+Using Ruff 0.1.7, config:
+```toml
+select = [
+  "ALL",
+]
+
+ignore = [
+  "I",
+  "TD",
+  "FIX",
+  "ANN002",
+  "ANN003",
+  "ANN101",
+  "D100",
+  "E501",
+  "N818",
+  "S101",
+  "TRY003",
+  "FBT001",
+  "FBT002",
+  "EM101",
+]
+
+target-version = "py311"
+
+
+[pydocstyle]
+convention = "google"
+```
+
+Code snippet:
+```python
+from redacted.models import *  # noqa: F401, F403
+```
+
+Flake8 is happy but Ruff complains:
+```
+redacted/shelltools.py:2:32: RUF100 [*] Unused `noqa` directive (unused: `F401`)
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+If I change the code to this:
+```python
+from redacted.models import *  # noqa: F403
+```
+
+Now Ruff is happy but Flake8 complains:
+```
+./redacted/shelltools.py:2:1: F401 'redacted.models.*' imported but not used
+```
+
+---
+
+_Comment by @charliermarsh on 2023-12-06 17:07_
+
+Ah interesting, if there are no undefined references in the file, Flake8 will flag the star import as unused.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-12-06 17:07_
+
+---
+
+_Renamed from "Ruff and Flake8 disagree over F401" to "Mark wildcard imports as unused if there are no possible references" by @charliermarsh on 2023-12-06 17:07_
+
+---
+
+_Comment by @charliermarsh on 2023-12-06 17:07_
+
+Thanks for filing. Makes sense!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-07 01:35_
+
+---
+
+_Referenced in [astral-sh/ruff#9032](../../astral-sh/ruff/pulls/9032.md) on 2023-12-07 01:58_
+
+---
+
+_Comment by @charliermarsh on 2023-12-08 14:40_
+
+We implemented this and ultimately decided not to ship it. Flake8's analysis here is too limited. For example, it will mark the import here as unused, when in theory, `redacted.models` could export `bar`, and thus would lead to a bug:
+
+```python
+from foo import bar
+from redacted.models import *
+
+print(bar)
+```
+
+---
+
+_Closed by @charliermarsh on 2023-12-08 14:40_
+
+---
+
+_Comment by @jschippergoauto on 2023-12-08 15:45_
+
+@charliermarsh Not 100% sure but maybe I didn't explain the problem properly. Basically to make Flake8 be happy I have to add `noqa: F401, F403` but since I have RUF100 enabled in Ruff, it complains about F401 not being used. Maybe RUF100 would need some tweaking for when a line does `from x import *` with F401? Not sure.
+
+I can see how this is a bit of a gray area since whatever `from x import *` imports may or may not be used. If I change the comment to `noqa: F401, F403, RUF100` is does not complain of course :slightly_smiling_face:.
+
+---
+
+_Comment by @charliermarsh on 2023-12-08 15:47_
+
+@jschippergoauto -- Thanks, that makes sense. My suggestion though would be remove from `F401` from the `# noqa`. Ruff isn't guaranteed to _always_ be exactly consistent with Flake8, so trying to use Ruff and Flake8 simultaneously on the codebase can lead to other cases like this where you see small differences.
+
+---
+
+_Comment by @jschippergoauto on 2023-12-08 15:48_
+
+@charliermarsh Fair enough. Thanks for looking into this!
+
+---
+
+_Comment by @charliermarsh on 2023-12-08 16:00_
+
+No worries, thanks for reporting and sorry that we didn't get to the ideal resolution for your project here.
+
+---

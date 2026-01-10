@@ -1,0 +1,257 @@
+---
+number: 8373
+title: "Error adding dependency that uses setup.py & distutils when on Python 3.10"
+type: issue
+state: closed
+author: ntessman-capsule
+labels: []
+assignees: []
+created_at: 2024-10-19T21:04:10Z
+updated_at: 2024-11-19T03:21:42Z
+url: https://github.com/astral-sh/uv/issues/8373
+synced_at: 2026-01-10T01:24:27Z
+---
+
+# Error adding dependency that uses setup.py & distutils when on Python 3.10
+
+---
+
+_Issue opened by @ntessman-capsule on 2024-10-19 21:04_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+I'm not sure if this is an issue with uv specifically or if it's some deadly combination of python versions, but I haven't found anything useful in my searches.
+
+I have a repository pinned at 3.10.14, and I have a dependency that is using setuptools/distutils. When trying to install the dependency, Python is failing to find the distutils package. This is confusing to me for two reasons:
+1. Since I'm on 3.10.14, distutils should exist in the stdlib but be deprecated.
+2. Even if distutils doesn't exist, setuptools is being imported before distutils and should have patched it.
+
+The other issues I've found are along these lines: https://github.com/astral-sh/uv/issues/7183, but I'm not using Python >=3.12 so this feels like a different issue.
+
+I'm in the process of porting the project repository from `pipenv` to `uv`. Pipenv installs the dependency without an issue, which leads me to believe it's something to do with uv. This error happens whether installing the dependency locally or from an index.
+
+I'm using uv 0.4.24 via Homebrew on Apple Silicon.
+
+Steps to reproduce:
+1. Clone the [repro repository](https://github.com/ntessman-capsule/uv-repro)
+4. Run `cd project`
+5. Run `uv add ../dependency --verbose`
+
+Command output:
+```
+~/work/uv-repro/project master ❯ uv add ../dependency --verbose
+DEBUG uv 0.4.24 (Homebrew 2024-10-17)
+DEBUG Found project root: `/Users/ntessman/work/uv-repro/project`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/Users/ntessman/work/uv-repro/project/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.10.14`
+DEBUG Using request timeout of 30s
+DEBUG No static `pyproject.toml` available for: file:///Users/ntessman/work/uv-repro/dependency (MissingPyprojectToml)
+DEBUG Acquired lock for `/Users/ntessman/.cache/uv/sdists-v4/path/eaddab2df3eda492`
+DEBUG Preparing metadata for: file:///Users/ntessman/work/uv-repro/dependency
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.10.14
+DEBUG Solving with target Python version: >=3.10.14
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG No cache entry for: https://pypi.org/simple/setuptools/
+WARN Skipping file for setuptools: setuptools-0.6b1-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6b1-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6b2-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6b2-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6b3-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6b3-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6b4-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6b4-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c1-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c1-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c10-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c10-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c10-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c10-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c10-py2.6.egg
+WARN Skipping file for setuptools: setuptools-0.6c10.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c10.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c10.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c10.win32-py2.6.exe
+WARN Skipping file for setuptools: setuptools-0.6c11-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c11-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c11-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c11-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c11-py2.6.egg
+WARN Skipping file for setuptools: setuptools-0.6c11-py2.7.egg
+WARN Skipping file for setuptools: setuptools-0.6c11.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c11.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c11.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c11.win32-py2.6.exe
+WARN Skipping file for setuptools: setuptools-0.6c11.win32-py2.7.exe
+WARN Skipping file for setuptools: setuptools-0.6c2-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c2-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c3-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c3-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c3-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c4-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c4-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c4-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c4-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c4.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c4.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c4.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c5-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c5-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c5-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c5-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c5.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c5.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c5.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c6-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c6-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c6-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c6-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c6.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c6.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c6.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c7-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c7-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c7-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c7-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c7.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c7.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c7.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c8-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c8-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c8-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c8-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c8.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c8.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c8.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-0.6c9-1.src.rpm
+WARN Skipping file for setuptools: setuptools-0.6c9-py2.3.egg
+WARN Skipping file for setuptools: setuptools-0.6c9-py2.4.egg
+WARN Skipping file for setuptools: setuptools-0.6c9-py2.5.egg
+WARN Skipping file for setuptools: setuptools-0.6c9-py2.6.egg
+WARN Skipping file for setuptools: setuptools-0.6c9.win32-py2.3.exe
+WARN Skipping file for setuptools: setuptools-0.6c9.win32-py2.4.exe
+WARN Skipping file for setuptools: setuptools-0.6c9.win32-py2.5.exe
+WARN Skipping file for setuptools: setuptools-18.3.1-py3.4.egg
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==75.2.0 [compatible] (setuptools-75.2.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/31/2d/90165d51ecd38f9a02c6832198c13a4e48652485e2ccf863ebb942c531b6/setuptools-75.2.0-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG Split specific environment resolution took 0.593s
+DEBUG Installing in setuptools==75.2.0 in /Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0
+DEBUG Requirement already cached: setuptools==75.2.0
+DEBUG Installing build requirement: setuptools==75.2.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+DEBUG Traceback (most recent call last):
+DEBUG   File "<string>", line 14, in <module>
+DEBUG   File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 332, in get_requires_for_build_wheel
+DEBUG     return self._get_build_requires(config_settings, requirements=[])
+DEBUG   File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 302, in _get_build_requires
+DEBUG     self.run_setup()
+DEBUG   File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 516, in run_setup
+DEBUG     super().run_setup(setup_script=setup_script)
+DEBUG   File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 318, in run_setup
+DEBUG     exec(code, locals())
+DEBUG   File "<string>", line 2, in <module>
+DEBUG ModuleNotFoundError: No module named 'distutils.command.upload'
+DEBUG Released lock at `/Users/ntessman/.cache/uv/sdists-v4/path/eaddab2df3eda492/.lock`
+error: Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+[stderr]
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+  File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 302, in _get_build_requires
+    self.run_setup()
+  File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 516, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/Users/ntessman/.cache/uv/builds-v0/.tmpLQrXQ0/lib/python3.10/site-packages/setuptools/build_meta.py", line 318, in run_setup
+    exec(code, locals())
+  File "<string>", line 2, in <module>
+ModuleNotFoundError: No module named 'distutils.command.upload'
+```
+
+
+
+---
+
+_Renamed from "Error adding dependency that uses setup.py & distutils" to "Error adding dependency that uses setup.py & distutils when on Python 3.10" by @ntessman-capsule on 2024-10-19 21:13_
+
+---
+
+_Comment by @ntessman-capsule on 2024-11-19 02:18_
+
+I can confirm this is still an issue as of `0.5.2`.
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 03:10_
+
+Thanks for the clear repro -- it's much appreciated. Candidly I'm not sure that this is a uv problem. I see the same behavior with pip when `--use-pep517` is enabled:
+
+```console
+❯ pip install --use-pep517 ../dependency
+Processing /Users/crmarsh/workspace/uv/uv-repro/dependency
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [17 lines of output]
+      Traceback (most recent call last):
+        File "/Users/crmarsh/.local/share/rtx/installs/python/3.10.14/lib/python3.10/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+          main()
+        File "/Users/crmarsh/.local/share/rtx/installs/python/3.10.14/lib/python3.10/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+        File "/Users/crmarsh/.local/share/rtx/installs/python/3.10.14/lib/python3.10/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 118, in get_requires_for_build_wheel
+          return hook(config_settings)
+        File "/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-ep1ise0j/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File "/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-ep1ise0j/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 304, in _get_build_requires
+          self.run_setup()
+        File "/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-ep1ise0j/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-ep1ise0j/overlay/lib/python3.10/site-packages/setuptools/build_meta.py", line 320, in run_setup
+          exec(code, locals())
+        File "<string>", line 2, in <module>
+      ModuleNotFoundError: No module named 'distutils.command.upload'
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+```
+
+---
+
+_Comment by @ntessman-capsule on 2024-11-19 03:16_
+
+Weird. Thanks for confirming outside of uv, I wasn't able to (probably because I wasn't aware of the pep517 flag).
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 03:16_
+
+No problem. Sorry for the hassle :(
+
+---
+
+_Comment by @ntessman-capsule on 2024-11-19 03:21_
+
+I'm going to close this issue since it appears unlikely to be uv's fault. I'll update this thread if I learn anything more.
+
+---
+
+_Closed by @ntessman-capsule on 2024-11-19 03:21_
+
+---

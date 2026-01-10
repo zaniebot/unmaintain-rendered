@@ -1,0 +1,63 @@
+---
+number: 3190
+title: Provide an API that client programs can use
+type: issue
+state: open
+author: pfmoore
+labels:
+  - wish
+  - rustlib
+assignees: []
+created_at: 2024-04-22T17:04:47Z
+updated_at: 2024-04-22T21:09:48Z
+url: https://github.com/astral-sh/uv/issues/3190
+synced_at: 2026-01-10T01:23:25Z
+---
+
+# Provide an API that client programs can use
+
+---
+
+_Issue opened by @pfmoore on 2024-04-22 17:04_
+
+I've been writing a number of small utilities based around uv, both in Python and in Rust. While the command line interface is mostly fine for this, it can be a bit messy to use (especially if I want to get information *back* from uv, where parsing the command output is clumsy).
+
+Would it be possible to have a programmatic API for uv? Ideally both as a Rust crate, and a Python package wrapping that crate. I realise it might be a longer-term goal, but our experience with pip was that people *will* want a programmable API, and if you don't design for it from early on, it can be really difficult to add one at a later stage.
+
+If a programmatic API isn't realistic, having machine-readable output (something like JSON) for all commands, and a CLI designed for wrapping would be a reasonable fallback. (I can explain this in more detail, but I don't want to distract from the main request for an API at this point).
+
+---
+
+_Comment by @zanieb on 2024-04-22 17:17_
+
+Definitely a long-term goal, we're kind of using this as the basis for the v1.0.0 milestone.
+
+We are supporting a small amount of Rust API changes for use in other tools e.g. `pixi`. Due to stability and maintenance costs, I think we're pretty unlikely to create a Python package in the near future. I share the desire for it, but it takes a lot of resources and we'd rather focus on building out the tooling further.
+
+I think a JSON output format is a really reasonable intermediate goal. We've expressed support for this elsewhere, but I don't know if there's a tracking issue yet. I'd welcome one :)
+
+---
+
+_Label `rustlib` added by @zanieb on 2024-04-22 17:18_
+
+---
+
+_Label `wish` added by @zanieb on 2024-04-22 17:18_
+
+---
+
+_Comment by @pfmoore on 2024-04-22 18:27_
+
+Cool, thanks. I will write up an issue requesting JSON output, and maybe some more details on how to make option flags more "automation friendly" when I get some spare time.
+
+---
+
+_Comment by @pfmoore on 2024-04-22 21:09_
+
+Issue for JSON output: https://github.com/astral-sh/uv/issues/3199
+
+---
+
+_Referenced in [usethis-python/usethis-python#12](../../usethis-python/usethis-python/issues/12.md) on 2024-09-12 10:01_
+
+---

@@ -1,0 +1,58 @@
+---
+number: 11492
+title: uv to convert requirements.txt to pyproject.toml?
+type: issue
+state: closed
+author: laoshaw
+labels:
+  - question
+assignees: []
+created_at: 2025-02-13T20:33:20Z
+updated_at: 2025-02-13T22:15:20Z
+url: https://github.com/astral-sh/uv/issues/11492
+synced_at: 2026-01-10T01:25:06Z
+---
+
+# uv to convert requirements.txt to pyproject.toml?
+
+---
+
+_Issue opened by @laoshaw on 2025-02-13 20:33_
+
+### Question
+
+it's very common to convert requirements.txt to pyproject.toml, is there a way uv supports this?
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @laoshaw on 2025-02-13 20:33_
+
+---
+
+_Comment by @zanieb on 2025-02-13 21:34_
+
+`uv add -r requirements.txt` will do so
+
+---
+
+_Comment by @zanieb on 2025-02-13 21:34_
+
+ref https://docs.astral.sh/uv/concepts/projects/dependencies/#importing-dependencies
+
+---
+
+_Closed by @laoshaw on 2025-02-13 22:15_
+
+---
+
+_Referenced in [astral-sh/uv#10924](../../astral-sh/uv/issues/10924.md) on 2025-05-20 16:02_
+
+---

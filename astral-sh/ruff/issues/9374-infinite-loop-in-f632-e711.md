@@ -1,0 +1,74 @@
+---
+number: 9374
+title: Infinite loop in F632/E711
+type: issue
+state: closed
+author: addisoncrump
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2024-01-03T01:18:07Z
+updated_at: 2024-01-03T03:04:53Z
+url: https://github.com/astral-sh/ruff/issues/9374
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Infinite loop in F632/E711
+
+---
+
+_Issue opened by @addisoncrump on 2024-01-03 01:18_
+
+I just tried this on master (6c0734680ede806cef849d2d8c7105e2ecd785ad).
+
+Consider the following snippet:
+```py
+for x in c > 0 == None:
+ pass
+```
+
+This fails to converge as `==` is replaced with `is` and back over and over.
+
+This appears in real code: https://github.com/CARocha/suco_proga/blob/543eff68a62a4d742a9b956d6127f8f6076c7211/suco/encuesta/views.py#L79
+Though appears to be a bug!
+
+The linked example minimises to:
+```py
+if encuesta2.count() > 0 is not None:
+  pass
+```
+
+Testable with `ruff --fix --unsafe-fixes ...`.
+
+---
+
+_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2024-01-03 01:26_
+
+---
+
+_Comment by @charliermarsh on 2024-01-03 01:27_
+
+Nice, thanks!
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-01-03 01:27_
+
+---
+
+_Label `fuzzer` added by @charliermarsh on 2024-01-03 01:27_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-03 02:50_
+
+---
+
+_Referenced in [astral-sh/ruff#9376](../../astral-sh/ruff/pulls/9376.md) on 2024-01-03 02:52_
+
+---
+
+_Closed by @charliermarsh on 2024-01-03 03:04_
+
+---

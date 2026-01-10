@@ -1,0 +1,263 @@
+---
+number: 9711
+title: "Tracking issue: package without source distribution gets an \"incomplete\" resolution"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-12-07T20:46:40Z
+updated_at: 2025-03-20T18:44:58Z
+url: https://github.com/astral-sh/uv/issues/9711
+synced_at: 2026-01-10T01:24:45Z
+---
+
+# Tracking issue: package without source distribution gets an "incomplete" resolution
+
+---
+
+_Issue opened by @charliermarsh on 2024-12-07 20:46_
+
+Using TensorFlow as an example: if you lock against the CPU index, we choose `2.5.2+cpu`. However, `2.5.2+cpu` doesn't have any macOS wheels. So the resulting resolution doesn't work on macOS at all -- you get something like:
+
+```
+error: distribution torch==2.5.2+cpu @ registry+https://download.pytorch.org/whl/cpu can't be installed because it doesn't have a source distribution or wheel for the current platform
+```
+
+(If a package-version doesn't have _any_ compatible wheels for the Python requirement, then we skip it; but as long as it has at least one compatible wheel, we "accept" it for all Python versions and platforms.)
+
+As a second example: for `markupsafe==3.0.2`, if you use the PyTorch CPU index, they _only_ ship `MarkupSafe-3.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl`. So we might pick that version, but then we'd be lacking wheels for anything other than Python 3.13 on Linux.
+
+Solving this is quite difficult, but as evidenced by the linked issues, it's a common problem.
+
+A solution might involve something like: determine the set of Python versions and platforms (coarsely-defined: Linux, macOS, Windows) covered by the wheels. If some Python versions or platforms aren't satisfied, we have to fork and look for older / other versions.
+
+- https://github.com/astral-sh/uv/issues/9647
+- https://github.com/astral-sh/uv/issues/5182
+- https://github.com/astral-sh/uv/issues/7557
+- https://github.com/astral-sh/uv/issues/7005
+- https://github.com/astral-sh/uv/issues/8536
+- https://github.com/astral-sh/uv/issues/8603
+- https://github.com/astral-sh/uv/issues/9228
+- https://github.com/astral-sh/uv/issues/9988
+- https://github.com/astral-sh/uv/issues/9963
+- https://github.com/astral-sh/uv/issues/9646
+- https://github.com/astral-sh/uv/issues/10059
+- https://github.com/astral-sh/uv/issues/10056
+- https://github.com/astral-sh/uv/issues/10849
+
+---
+
+_Label `resolver` added by @charliermarsh on 2024-12-07 20:46_
+
+---
+
+_Referenced in [astral-sh/uv#9840](../../astral-sh/uv/issues/9840.md) on 2024-12-12 14:20_
+
+---
+
+_Referenced in [astral-sh/uv#9865](../../astral-sh/uv/issues/9865.md) on 2024-12-13 11:05_
+
+---
+
+_Comment by @charliermarsh on 2024-12-15 03:10_
+
+One hard thing here is that it requires us to define a set of "required" environments... Like, if we don't see any macOS wheels, then we need to look for a different version of the package that _does_ have macOS wheels. But do we need to find both macOS ARM and x86 wheels? Or is one of the two sufficient?
+
+(In the case of PyTorch, if we require x86 wheels, we'll always fail!)
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-15 03:10_
+
+---
+
+_Comment by @charliermarsh on 2024-12-15 03:12_
+
+For example, we could say:
+- We need a wheel for each supported Python version...
+- For each platform...
+
+But ignore architecture? (This would be a heuristic, but so would anything.)
+
+Even that first condition seems a little tricky, since we don't know what the "max" Python version is. So maybe we'd do like: look at the latest supported version (in the wheels), and then make sure there are wheels for all prior versions? Or we just ignore Python version entirely and focus on on platform.
+
+
+---
+
+_Referenced in [astral-sh/uv#9907](../../astral-sh/uv/issues/9907.md) on 2024-12-15 13:45_
+
+---
+
+_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
+
+---
+
+_Label `resolver` removed by @charliermarsh on 2024-12-16 03:26_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-16 03:26_
+
+---
+
+_Referenced in [astral-sh/uv#9961](../../astral-sh/uv/issues/9961.md) on 2024-12-17 15:25_
+
+---
+
+_Referenced in [astral-sh/uv#9963](../../astral-sh/uv/issues/9963.md) on 2024-12-17 21:42_
+
+---
+
+_Comment by @konstin on 2024-12-18 13:38_
+
+I've tried to categorize the linked issues:
+
+**old mac torch** <https://github.com/astral-sh/uv/issues/9988> <https://github.com/astral-sh/uv/issues/7557> <https://github.com/astral-sh/uv/issues/8536> <https://github.com/astral-sh/uv/issues/9228>
+
+> The expectation here is that the resolver should pick PyTorch version 2.2.2 for Intel MacOS, and a different version (e.g., 2.5.1) for other platforms. However, the current behavior enforces a single version (2.2.2) across all platforms.
+
+Similarly, **odrive** <https://github.com/astral-sh/uv/issues/8536>, where a user would like older mac os support. <https://github.com/astral-sh/uv/issues/8536#issuecomment-2436213562> is a syntax for solving this, but there's no clear connection between the toml and the problem/solution. For solving this overall, there are two possible intents: I want a separate resolution for `platform_system == 'Darwin' and platform_release <= '20.6.0'`, and i want (ideally) one resolution that has wheels that support `platform_system == 'Darwin' and platform_release <= '20.6.0'`.
+
+https://github.com/astral-sh/uv/issues/8536#issuecomment-2436213562
+
+**torch_scatter** <https://github.com/astral-sh/uv/issues/9646>
+
+From https://data.pyg.org/whl/torch-2.5.1+cpu.html:
+```
+torch_scatter-2.1.2+pt25cpu-cp310-cp310-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp310-cp310-win_amd64.whl
+torch_scatter-2.1.2+pt25cpu-cp311-cp311-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp311-cp311-win_amd64.whl
+torch_scatter-2.1.2+pt25cpu-cp312-cp312-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp312-cp312-win_amd64.whl
+torch_scatter-2.1.2+pt25cpu-cp39-cp39-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp39-cp39-win_amd64.whl
+torch_scatter-2.1.2-cp310-cp310-macosx_10_9_universal2.whl
+torch_scatter-2.1.2-cp311-cp311-macosx_10_9_universal2.whl
+torch_scatter-2.1.2-cp312-cp312-macosx_10_13_universal2.whl
+torch_scatter-2.1.2-cp39-cp39-macosx_10_9_universal2.whl
+```
+
+**torch** <https://github.com/astral-sh/uv/issues/5182>
+
+Similar to `torch_scatter`, except that the wheel tags overlap. Python 3.10 only for simplicity:
+
+```
+torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cpu-cp310-cp310-win_amd64.whl
+torch-2.3.1+cpu.cxx11.abi-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cu118-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cu118-cp310-cp310-win_amd64.whl
+torch-2.3.1+cu121-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cu121-cp310-cp310-win_amd64.whl
+torch-2.3.1+rocm5.7-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+rocm6.0-cp310-cp310-linux_x86_64.whl
+torch-2.3.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+torch-2.3.1-cp310-none-macosx_11_0_arm64.whl
+```
+
+**pyqt5** <https://github.com/astral-sh/uv/issues/7005> <https://github.com/astral-sh/uv/issues/8603>
+
+> I did some digging and found that pyqt5 depends on a package called pyqt5-qt5 which does not support Windows in versions 5.15.11 - 5.15.14, but does support Windows in 5.15.2.
+
+5.15.2 has all binaries except arm mac, which only exist on more recent releases.
+
+**markupsafe** <https://github.com/astral-sh/uv/issues/9647>
+
+The torch index' mirroring is incomplete, <https://pypi.org/project/MarkupSafe/#files> has all versions and a source distribution while  <https://download.pytorch.org/whl/markupsafe/> does not.
+
+---
+
+_Comment by @charliermarsh on 2024-12-18 14:11_
+
+I care (by far) the most about solving the `torch` and `torch_scatter` issues, since they're the most popular by far.
+
+The `markupsafe` issue I feel less strongly about... Even the current PR doesn't really solve it, since it doesn't add _other_ Linux wheels beyond the one that's on the PyTorch index.
+
+The `odrive` and "old" `torch` issue I also feel less strongly about. It'd be nice to have better error messages for this... But I think it's probably "correct" to require some user intervention.
+
+---
+
+_Comment by @charliermarsh on 2024-12-18 14:11_
+
+The idea that @konstin and I are discussing is to only apply this for local versions.
+
+---
+
+_Comment by @charliermarsh on 2024-12-18 14:12_
+
+Sorry, the other example to mention here is https://github.com/astral-sh/uv/pull/9928#issuecomment-2549404134. Our current `transformers[all]` resolution is subtly "wrong" because it chooses a `tensorflow-text` version that doesn't have any Windows wheels. With forking, we select an older version for the entire Windows subtree (not just for `tensorflow-text`, but for `tensorflow` too, since they're coupled). It's not clear if that's desirable.
+
+---
+
+_Referenced in [astral-sh/uv#9988](../../astral-sh/uv/issues/9988.md) on 2024-12-18 17:27_
+
+---
+
+_Referenced in [astral-sh/uv#10059](../../astral-sh/uv/issues/10059.md) on 2024-12-20 16:48_
+
+---
+
+_Referenced in [astral-sh/uv#10056](../../astral-sh/uv/issues/10056.md) on 2024-12-20 16:51_
+
+---
+
+_Comment by @charliermarsh on 2024-12-20 19:16_
+
+We shipped https://github.com/astral-sh/uv/pull/10046 which fixes this for PyTorch and packages in the PyTorch ecosystem (i.e., it's limited to inspecting local versions vs. base versions).
+
+We may return to this to make it more general in the future.
+
+---
+
+_Referenced in [astral-sh/uv#10067](../../astral-sh/uv/pulls/10067.md) on 2024-12-21 04:15_
+
+---
+
+_Referenced in [astral-sh/uv#10085](../../astral-sh/uv/issues/10085.md) on 2024-12-21 23:47_
+
+---
+
+_Referenced in [astral-sh/uv#10849](../../astral-sh/uv/issues/10849.md) on 2025-01-22 12:08_
+
+---
+
+_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
+
+---
+
+_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
+
+---
+
+_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2025-02-28 13:34_
+
+---
+
+_Referenced in [astral-sh/uv#11855](../../astral-sh/uv/issues/11855.md) on 2025-02-28 14:15_
+
+---
+
+_Comment by @sanmai-NL on 2025-03-20 11:43_
+
+@charliermarsh, ad https://github.com/astral-sh/uv/issues/9711#issuecomment-2557584106: this is also an issue with [spaCy](https://pypi.org/project/spacy/#files), another big data science distribution package/ecosystem.
+
+---
+
+_Comment by @konstin on 2025-03-20 13:35_
+
+@sanmai-NL We shipped [required environments](https://docs.astral.sh/uv/reference/settings/#required-environments), do those work for your use case?
+
+---
+
+_Comment by @sanmai-NL on 2025-03-20 18:44_
+
+@konstin Not sure. Problem is there's no binary wheel for one of our supported platforms (aarch64 Linux) either. In that case, we want `no-build` to turn `false` and spaCy to be built from source. We now have to do a lot of trickery to do that out-of-band and get `uv` to live with that (and not try to resolve the spaCy dependency upon about every `uv` invocation).
+
+---
+
+_Referenced in [napari/napari#7744](../../napari/napari/pulls/7744.md) on 2025-03-25 20:28_
+
+---

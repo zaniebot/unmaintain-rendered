@@ -1,0 +1,33 @@
+---
+number: 9588
+title: "Add repository topic \"uv\" or similar"
+type: issue
+state: closed
+author: dbohdan
+labels: []
+assignees: []
+created_at: 2024-12-02T22:40:44Z
+updated_at: 2024-12-02T22:52:39Z
+url: https://github.com/astral-sh/uv/issues/9588
+synced_at: 2026-01-10T01:24:42Z
+---
+
+# Add repository topic "uv" or similar
+
+---
+
+_Issue opened by @dbohdan on 2024-12-02 22:40_
+
+Some GitHub projects that use uv are tagged with the [topic "uv"](https://github.com/topics/uv). Ruff is the top repo for the [topic "ruff"](https://github.com/topics/ruff). Something to consider is that "uv" is also used for software that works with textures. You may also want to come up with a different, unique topic.
+
+---
+
+_Comment by @zanieb on 2024-12-02 22:52_
+
+Thanks! Done
+
+---
+
+_Closed by @zanieb on 2024-12-02 22:52_
+
+---

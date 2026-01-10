@@ -1,0 +1,99 @@
+---
+number: 15514
+title: "`ruff format` output breaks certain f-strings in 0.9"
+type: issue
+state: closed
+author: markjm
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2025-01-15T20:52:48Z
+updated_at: 2025-01-16T11:01:43Z
+url: https://github.com/astral-sh/ruff/issues/15514
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# `ruff format` output breaks certain f-strings in 0.9
+
+---
+
+_Issue opened by @markjm on 2025-01-15 20:52_
+
+Consider the file:
+
+```test.py
+params = {}
+string = "this is my string with " f'"{params.get("mine")}"'
+```
+
+ruff format in 0.9.1 replaces this to
+
+```
+ruff format test.py --diff
+--- test.py
++++ test.py
+@@ -1,2 +1,2 @@
+ params = {}
+-string = "this is my string with " f'"{params.get("mine")}"'
+\ No newline at end of file
++string = f"this is my string with \"{params.get("mine")}\""
+
+1 file would be reformatted
+```
+
+
+This is not valid python due to nested f-string using the same quote character (at least, its not valid before py3.12
+
+```
+python -m compileall test.py
+Compiling 'test.py'...
+***   File "test.py", line 2
+    string = f"this is my string with \"{params.get("mine")}\""
+                                                     ^
+SyntaxError: invalid syntax
+```
+
+It is a very uncommon case and simple enough to just fix up myself, but figured id bug report to make yall aware.
+
+Thanks for the great project!
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-01-15 21:35_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2025-01-15 21:35_
+
+---
+
+_Comment by @MichaReiser on 2025-01-15 21:36_
+
+I'm able to reproduce this but only when using `quote-style = "preserve"`. Using either `single` or `double` works fine ([playground](https://play.ruff.rs/239e5642-ea82-4432-9260-f9f807d73fc4))
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-01-15 21:36_
+
+---
+
+_Comment by @markjm on 2025-01-15 21:48_
+
+Sorry, forgot to include my config!
+
+---
+
+_Comment by @MichaReiser on 2025-01-15 21:53_
+
+No worries. The issue contained enough details that I could figure it out myself. Thanks for reporting 
+
+---
+
+_Referenced in [astral-sh/ruff#15524](../../astral-sh/ruff/pulls/15524.md) on 2025-01-16 07:42_
+
+---
+
+_Closed by @MichaReiser on 2025-01-16 11:01_
+
+---

@@ -1,0 +1,98 @@
+---
+number: 1394
+title: "Subcommands: allow using the shortest substring matching"
+type: issue
+state: closed
+author: ghost
+labels: []
+assignees: []
+created_at: 2018-12-08T19:11:41Z
+updated_at: 2020-02-01T19:15:50Z
+url: https://github.com/clap-rs/clap/issues/1394
+synced_at: 2026-01-10T01:26:51Z
+---
+
+# Subcommands: allow using the shortest substring matching
+
+---
+
+_Issue opened by @ghost on 2018-12-08 19:11_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+* Any
+
+### Affected Version of clap
+
+* any (2.31.2)
+
+### Feature Request Summary
+
+This is a feature from python's argument parsing, as seen for example in mercurial's cli.
+
+For example: if the "hg" binary provides subcommands "commit", "config" and "copy", I can do:  
+
+`> hg comENTER` and it will work as if I digited `> hg commitENTER`, because "com" is the shortest unambiguous substring of the subcommand. Same with "comm" and "commi".
+
+If instead I digit: `> hg cENTER` it will fail with:
+
+```
+hg: command 'c' is ambiguous:
+    cat checkout clone commit config copy
+```
+
+---
+
+_Comment by @sondr3 on 2018-12-18 23:11_
+
+https://docs.rs/clap/2.32.0/clap/enum.AppSettings.html#variant.InferSubcommands is probably what you're looking for.
+
+EDIT: Nevermind, I forgot that `InferSubcommands` requires unambiguous matching.
+
+---
+
+_Comment by @ghost on 2018-12-19 08:33_
+
+@sondr3 yes, it's not quite what I meant
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 15:19_
+
+---
+
+_Reopened by @CreepySkeleton on 2020-02-01 15:19_
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 15:21_
+
+This is *exactly* what you need as far as I see it, feel free to reopen
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 15:21_
+
+---
+
+_Comment by @pksunkara on 2020-02-01 19:15_
+
+@CreepySkeleton What happens when there are 2 options `test` and `temp` and the user tries `te`? What's the error message we are emititng?
+
+---
+
+_Label `C: settings` added by @pksunkara on 2020-02-01 19:15_
+
+---
+
+_Label `C: subcommands` added by @pksunkara on 2020-02-01 19:15_
+
+---
+
+_Label `T: RFC / question` added by @pksunkara on 2020-02-01 19:15_
+
+---

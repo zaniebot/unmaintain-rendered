@@ -1,0 +1,61 @@
+---
+number: 8931
+title: Make uv the official Python package manager
+type: issue
+state: open
+author: max-wittig
+labels: []
+assignees: []
+created_at: 2024-11-08T10:31:25Z
+updated_at: 2025-09-08T11:29:21Z
+url: https://github.com/astral-sh/uv/issues/8931
+synced_at: 2026-01-10T01:24:34Z
+---
+
+# Make uv the official Python package manager
+
+---
+
+_Issue opened by @max-wittig on 2024-11-08 10:31_
+
+I really like `uv` and its approach, but right now its yet another package manager for Python and you have to decide to adapt it.
+
+To make it official, are there efforts to get `uv` into the official Python container image or are there ongoing discussions with the Python steering committee? This tool has such a high quality, would be a small binary in the official Python image and would bring the Python package manager on the level of `cargo` finally.
+
+The discussion about package managers in Python would finally end, if we had `uv` as the default.
+
+Maybe its the wrong place to propose something like this, but maybe it helps to get the spark going.
+Feel free to close
+
+---
+
+_Comment by @my1e5 on 2024-11-08 13:13_
+
+Keeping uv independent has its own advantages. It can evolve quickly and add new features without needing approvals or navigating committee processes. Right now, uv has the freedom to innovate and grow on its own terms, which I think is a huge benefit.
+
+The quality and performance is already there, so with continued community promotion, I do believe it has the potential to reach a very high level of adoption naturally, without necessarily needing official status. Maybe one day it will become 'official', but for now, I think there are real advantages to keeping it independent. And perhaps letting it become widespread by choice rather than by mandate could make it even more impactful. 
+
+---
+
+_Comment by @notatallshaw on 2024-11-08 15:39_
+
+The correct place for this discussion with the Python devs and packaging community would be: https://discuss.python.org/c/packaging/14. Assuming that astral would want that, which I doubt for reasons that include those already outlined by @my1e5.
+
+But, even if astral did want that, I would add some points before trying to start a discussion over there:
+
+ * Pip is not a package manager, it's a package installer, Python has no official package manager
+ * You are likely to get significant push back suggesting CPython should even bundle _any_ package manager
+ * You can read the gory details, but I did once suggest coming up with a list of requirements for a package manager to be bundled: https://discuss.python.org/t/why-doesnt-pip-write-installed-packages-to-pyproject-toml/43657/10
+  * In terms of pip being bundled into CPython, the justification is that it is a bootstrapping tool to let users install their tool of choice, not that it is the blessed tool to interact with packages
+
+
+
+
+---
+
+_Comment by @samypr100 on 2024-11-09 17:26_
+
+Agree with @notatallshaw, I think an ideal starting point would be instead to update something like the [Python Packaging Guide](https://packaging.python.org/) to include `uv` examples.
+
+
+---

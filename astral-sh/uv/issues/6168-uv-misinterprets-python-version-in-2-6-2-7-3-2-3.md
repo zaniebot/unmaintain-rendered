@@ -1,0 +1,61 @@
+---
+number: 6168
+title: "uv misinterprets `python_version in \"2.6 2.7 3.2 3.3\"` marker"
+type: issue
+state: closed
+author: sbidoul
+labels:
+  - bug
+  - compatibility
+assignees: []
+created_at: 2024-08-17T12:15:38Z
+updated_at: 2024-08-17T16:12:29Z
+url: https://github.com/astral-sh/uv/issues/6168
+synced_at: 2026-01-10T01:23:56Z
+---
+
+# uv misinterprets `python_version in "2.6 2.7 3.2 3.3"` marker
+
+---
+
+_Issue opened by @sbidoul on 2024-08-17 12:15_
+
+It seems uv 0.2.37 misinterprets this marker:  `python_version in "2.6 2.7 3.2 3.3"`.
+
+How to reproduce:
+
+`uv pip install pickleshare` installs `pathlib2`, which is declared as `Requires-Dist: pathlib2; python_version in "2.6 2.7 3.2 3.3"` in the `pickleshare` wheel METADATA.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-17 15:54_
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-08-17 15:54_
+
+---
+
+_Comment by @charliermarsh on 2024-08-17 15:54_
+
+Yeah this is known. We should fix it. There’s another issue somewhere.
+
+---
+
+_Comment by @zanieb on 2024-08-17 15:57_
+
+See https://github.com/astral-sh/uv/issues/3683
+
+---
+
+_Referenced in [astral-sh/uv#6169](../../astral-sh/uv/issues/6169.md) on 2024-08-17 16:02_
+
+---
+
+_Closed by @sbidoul on 2024-08-17 16:12_
+
+---
+
+_Referenced in [astral-sh/uv#6172](../../astral-sh/uv/pulls/6172.md) on 2024-08-17 17:44_
+
+---

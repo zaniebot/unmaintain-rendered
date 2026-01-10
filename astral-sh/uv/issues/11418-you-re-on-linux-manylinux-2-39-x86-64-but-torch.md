@@ -1,0 +1,404 @@
+---
+number: 11418
+title: "You're on Linux (`manylinux_2_39_x86_64`),  but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64`"
+type: issue
+state: closed
+author: sglbl
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-02-11T11:44:09Z
+updated_at: 2025-04-03T10:17:28Z
+url: https://github.com/astral-sh/uv/issues/11418
+synced_at: 2026-01-10T01:25:05Z
+---
+
+# You're on Linux (`manylinux_2_39_x86_64`),  but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64`
+
+---
+
+_Issue opened by @sglbl on 2025-02-11 11:44_
+
+### Summary
+
+When I try to install requirements (that has pytorch with cuda) from pyproject.toml, I got this error.
+![Image](https://github.com/user-attachments/assets/22b90f0e-031b-42cf-810d-0cbc667739bd)
+
+```txt
+$ uv sync --extra gpu
+error: Distribution `torch==2.5.1 @ registry+https://download.pytorch.org/whl/cu124` can't be installed 
+because it doesn't have a source distribution or wheel for the current platform
+hint: You're on Linux (`manylinux_2_39_x86_64`), 
+but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64`
+```
+
+No one on other machine has touched to this `pyproject toml / uv.lock` file. I solved the issue by removing `uv.lock`.
+The problem is all the time I have this kind of problems with uv.lock, when I remove it it works. 
+But since I installed torch==2.5.1 before and `uv` added this as `"torch>=2.5.1"` , after removing uv.lock it insalls `torch==2.6.0+cu124`.
+
+Other than this `many_linux` and `linux` uncompatibility bug, is there a way to add a specific version to pyproject.toml with uv (without editing toml file by hand)?
+
+### Platform
+
+Linux Ubuntu 24.04
+
+### Version
+
+uv 0.5.29
+
+### Python version
+
+Python 3.10.12
+
+---
+
+_Label `bug` added by @sglbl on 2025-02-11 11:44_
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 13:29_
+
+You mean like `uv add torch==2.6.0`? Or `uv add torch==2.6.0+cu124`?
+
+(Unfortunately I can't help further without a complete reproduction, like a `pyproject.toml` and a series of commands that reproduces the issue.)
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-02-11 13:29_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-02-11 13:29_
+
+---
+
+_Comment by @zanieb on 2025-02-11 14:36_
+
+Note the `manylinux_2_39_x86_64` tag is `x86_64` while the other is `linux_aarch64` which is `arm64` — that's the incompatibility.
+
+---
+
+_Comment by @ldng on 2025-02-11 20:05_
+
+Same issue.
+
+Archlinux | glibc-2.41+r6+gcf88351b685d-1 | linux-6.13.2.arch1-1 | Arch: X86_64
+
+Minimal pyproject.toml to reproduce :
+```
+[project]
+name = "aarch64-issue"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.10.*"
+dependencies = [
+    "torch",
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm6.2"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
+]
+```
+
+$ uv sync --verbose
+
+```
+DEBUG uv 0.5.30 (ddbc6e315 2025-02-10)
+DEBUG Found project root: `/tmp/aarch64_issue`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/tmp/aarch64_issue`
+DEBUG Reading Python requests from version file at `/tmp/aarch64_issue/.python-version`
+DEBUG Using Python request `3.10` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG Searching for Python 3.10 in managed installations or search path
+DEBUG Searching for managed installations at `~/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.14.0a4-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.12.8-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.11.11-linux-x86_64-gnu`
+DEBUG Found managed installation `cpython-3.10.16-linux-x86_64-gnu`
+DEBUG Found `cpython-3.10.16-linux-x86_64-gnu` at `~/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10` (managed installations)
+Using CPython 3.10.16
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: ~/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10
+DEBUG Using base executable for virtual environment: ~/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10
+DEBUG Released lock at `/tmp/uv-6ac5999c7feb2517.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: aarch64-issue @ file:///tmp/aarch64_issue
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 10 packages in 0.34ms
+error: Distribution `torch==2.0.1 @ registry+https://download.pytorch.org/whl/rocm6.2` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_40_x86_64`), but `torch` (v2.0.1) only has wheels for the following platform: `manylinux2014_aarch64`
+```
+
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 20:08_
+
+You need this:
+
+```toml
+[project]
+name = "aarch64-issue"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.10.*"
+dependencies = [
+    "torch>=2.5.1",
+    "pytorch-triton-rocm",
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm6.2"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
+]
+pytorch-triton-rocm = [
+  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
+]
+```
+
+You're using an explicit index, but `pytorch-triton-rocm` doesn't exist on PyPI at the version you need, so the resolver is backtracking.
+
+---
+
+_Comment by @charliermarsh on 2025-02-11 20:08_
+
+(I don't think your issue is related? OP is asking about the `cu124` index.)
+
+---
+
+_Comment by @sglbl on 2025-02-11 20:27_
+
+This is my toml file.
+```python
+[project]
+name = "ex"
+version = "0.1.0"
+description = "example Project"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "aiohttp>=3.11.11",
+    "fastapi>=0.115.6",
+    "gradio==5.6.0",
+    "gradio-log>=0.0.8",
+    "haystack-ai==2.4.0",
+    "lingua-language-detector==2.0.2",
+    "loguru>=0.7.3",
+    "msal>=1.31.1",
+    "munch>=4.0.0",
+    "ollama-haystack==0.0.7",
+    "openai>=1.59.4",
+    "openpyxl>=3.1.5",
+    "psycopg2>=2.9.10",
+    "pypdf>=5.1.0",
+    "pytest>=8.3.4",
+    "python-dotenv>=1.0.1",
+    "qdrant-haystack>=7.0.0",
+    "ring>=0.10.1",
+    "sentence-transformers>=3.3.1",
+    "sqlalchemy==2.0.31",
+    "sqlitedict>=2.1.0",
+    "tabulate>=0.9.0",
+    "tiktoken>=0.8.0",
+    "transformers>=4.47.1",
+    "unidecode>=1.3.8",
+    "xlsxwriter>=3.2.1",
+]
+
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "pypdf2>=3.0.1",
+]
+
+[project.optional-dependencies]
+cpu = [
+  "torch==2.5.1",
+]
+gpu = [
+  "torch==2.5.1",
+]
+
+[tool.uv]
+conflicts = [ # type:ignore
+  [
+    { extra = "cpu" },
+    { extra = "gpu" },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu", marker = "platform_system != 'Darwin'" },
+  { index = "pytorch-gpu", extra = "gpu" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-gpu"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.pytest.ini_options]
+pythonpath = "." # Add the project root path to the pythonpath [to be able to import the 'src' module]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning", "ignore::PendingDeprecationWarning"]
+```
+
+On the first install everything is fine (always). But when I add a new package and change from gpu to cpu version makes some changes on uv.lock file and then new installations create problem. So I need to remove uv.lock. (Unfortunately I don't remember the exact order of reproducing the issue or if it was because of an exact package(such as lingua..)) But both of my computers that I use for this project is has x86_64 so it shouldn't even have `linux_aarch64`:
+```bash
+~$ uname -m
+x86_64
+```
+
+@charliermarsh My second question was: when I use uv add torch, it will install last version (for example 2.6.0+cu124) and add >=2.6.0+cu124 to toml. But if I remove the lock and some months later if I reinstall from my toml, it might install a uncompatible newer version which I don't want. So is there a way to add it to toml without specifying the version? (This question is not that important for me, just a side question)
+
+
+---
+
+_Comment by @ldng on 2025-02-12 15:51_
+
+> (I don't think your issue is related? OP is asking about the `cu124` index.)
+
+I'll take your word for it. Still, the "aarch64" hint is confusing in both cases.
+
+---
+
+_Comment by @zanieb on 2025-02-12 15:58_
+
+@ldng The hint is just a fact about what wheels are available for that version...
+
+<img width="389" alt="Image" src="https://github.com/user-attachments/assets/7d122a88-8b61-4f5d-ba28-f626ad978c65" />
+
+You're on x86-64, only aarch64 wheels are available for the version in the lockfile — those are incompatible architectures.
+
+The fix is to adjust your dependencies so we do not lock a version that cannot be used on your current platform.
+
+---
+
+_Comment by @zanieb on 2025-02-12 16:06_
+
+I'm happy to improve the hint though, do you have a suggestion that would clarify things for you?
+
+---
+
+_Comment by @sglbl on 2025-02-15 15:13_
+
+@charliermarsh If you cannot reproduce, if you want I can close the issue until somebody else encounters this issue and opens it again
+
+---
+
+_Comment by @charliermarsh on 2025-02-16 01:45_
+
+I think this could plausibly be improved by #11546 which I just merged. If you encounter it again and have a reproduction, I'm always happy to re-open.
+
+---
+
+_Closed by @charliermarsh on 2025-02-16 01:45_
+
+---
+
+_Comment by @TheMrCodes on 2025-04-03 10:17_
+
+Had the same error when using `torch==2.5.1`. Solved it by writing `torch==2.5.1+cu124` into the exta dependencies.
+
+Final and workingpyproject.toml
+``` pyproject.toml
+[project]
+name = "experiments"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.10.4",
+    "setuptools>=75.6.0",
+    "ujson>=5.10.0",
+    "tqdm>=4.67.1",
+    "tensorboard>=2.18.0",
+    "transformers>=4.47.1",
+    "scikit-learn>=1.6.0",
+    "ipykernel>=6.29.5",
+    "einops>=0.8.1",
+    "pillow>=11.1.0",
+    "orjson>=3.10.15",
+    "pandas>=2.2.3",
+    "pyarrow>=18.1.0",
+]
+
+[project.optional-dependencies]
+cpu = [
+    "torch==2.5.1+cpu",
+    "torchvision==0.20.1+cpu",
+]
+cu124 = [
+    "torch==2.5.1+cu124",                 # 'torch==2.5.1' caused the error here and +cu124 solved it
+    "torchvision==0.20.1+cu124",
+]
+
+[tool.uv]
+conflicts = [ [
+    { extra = "cpu" },
+    { extra = "cu124" },
+] ]
+
+
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu124", extra = "cu124" },
+]
+torchvision = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu124", extra = "cu124" },
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/experiments"]
+
+```
+
+---
+
+_Referenced in [astral-sh/uv#12852](../../astral-sh/uv/issues/12852.md) on 2025-04-13 14:17_
+
+---

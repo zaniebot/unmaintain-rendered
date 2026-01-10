@@ -1,0 +1,118 @@
+---
+number: 10319
+title: Shell completion does not work in bash shell on wsl2 linux
+type: issue
+state: open
+author: andersrmr
+labels:
+  - windows
+  - external
+assignees: []
+created_at: 2025-01-06T04:16:30Z
+updated_at: 2025-02-27T16:58:34Z
+url: https://github.com/astral-sh/uv/issues/10319
+synced_at: 2026-01-10T01:24:52Z
+---
+
+# Shell completion does not work in bash shell on wsl2 linux
+
+---
+
+_Issue opened by @andersrmr on 2025-01-06 04:16_
+
+```
+# completion command added to end of script
+tail ~/.bashrc
+```
+
+> . /etc/bash_completion
+> fi
+> fi
+> export PYENV_ROOT="$HOME/.pyenv"
+> [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+> eval "$(pyenv init --path)"
+> eval "$(pyenv init -)"
+> 
+> . "$HOME/.local/bin/env"
+> eval "$(uv generate-shell-completion bash)"
+
+```
+# bash is up to date
+bash --version
+```
+
+> GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)
+> Copyright (C) 2022 Free Software Foundation, Inc.
+> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+```
+# uv is up to date
+uv --version
+```
+
+> uv 0.5.14
+
+
+---
+
+_Comment by @zanieb on 2025-01-06 05:45_
+
+Does it work if you execute `eval "$(uv generate-shell-completion bash)"` directly instead of in your rc file?
+
+---
+
+_Label `windows` added by @zanieb on 2025-01-06 05:45_
+
+---
+
+_Comment by @andersrmr on 2025-01-06 16:29_
+
+No.  This seems to be a known issue ([ref1](https://www.reddit.com/r/bashonubuntuonwindows/comments/hc2vo2/script_thas_makes_tab_completion_usable_in_wslwsl2/), [ref2](https://gist.github.com/Gordin/cb44429a25fd7d4d7ba73b970d68b5ab)).  I just wish it were fixed.
+
+---
+
+_Comment by @zanieb on 2025-01-06 17:02_
+
+So it works it just takes 8+ seconds to appear?
+
+---
+
+_Label `upstream` added by @zanieb on 2025-01-06 17:02_
+
+---
+
+_Comment by @andersrmr on 2025-01-06 17:03_
+
+No, it doesn't work at all for me.
+
+---
+
+_Comment by @zanieb on 2025-01-06 17:28_
+
+That sounds different from the two references you provided then.
+
+---
+
+_Comment by @khenderson20 on 2025-01-15 18:39_
+
+i am having the same exact issue on WSL 2
+
+if anyone has any guidance on how to resolve this please post 
+
+for clarity i am using bash as well and put it in my .bashrc file as told in the docs
+
+<img width="345" alt="Image" src="https://github.com/user-attachments/assets/a1bc9ecd-b733-45c2-a33e-dd92578fb5ed" />
+
+---
+
+_Comment by @hotohoto on 2025-02-27 16:58_
+
+I have specified the uv path in `.bashrc`, and it works. 🤔
+
+```
+...
+
+eval "$($HOME/.local/bin/uv generate-shell-completion bash)"
+```
+
+---

@@ -1,0 +1,56 @@
+---
+number: 17050
+title: Add torch-tensorrt support to uv-torch crate
+type: issue
+state: closed
+author: vient
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-12-09T17:55:43Z
+updated_at: 2025-12-09T20:45:15Z
+url: https://github.com/astral-sh/uv/issues/17050
+synced_at: 2026-01-10T01:26:13Z
+---
+
+# Add torch-tensorrt support to uv-torch crate
+
+---
+
+_Issue opened by @vient on 2025-12-09 17:55_
+
+### Summary
+
+On my Ubuntu 20.04 with CUDA 12.8 (latest available on this OS version) this command
+```sh
+uv pip install --no-index --torch-backend cu128 -f https://download.pytorch.org/whl/torch-tensorrt torch-tensorrt
+```
+installs packages built for CUDA 13.0 so importing torch_tensorrt fails. Specifying version further to `torch-tensorrt==2.9.0+cu128` fixes the issue. As I understand, uv-torch crate already performs automatic flavor choosing for some torch packages but torch-tensorrt is not handled.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @vient on 2025-12-09 17:55_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-12-09 17:56_
+
+---
+
+_Referenced in [astral-sh/uv#17053](../../astral-sh/uv/pulls/17053.md) on 2025-12-09 19:35_
+
+---
+
+_Closed by @charliermarsh on 2025-12-09 20:29_
+
+---
+
+_Comment by @charliermarsh on 2025-12-09 20:45_
+
+Oh yeah, agreed. Not sure how we missed that.
+
+---

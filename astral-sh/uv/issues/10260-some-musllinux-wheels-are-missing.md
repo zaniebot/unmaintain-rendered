@@ -1,0 +1,107 @@
+---
+number: 10260
+title: some musllinux wheels are missing
+type: issue
+state: closed
+author: Freed-Wu
+labels: []
+assignees: []
+created_at: 2025-01-01T07:33:06Z
+updated_at: 2025-05-19T12:07:57Z
+url: https://github.com/astral-sh/uv/issues/10260
+synced_at: 2026-01-10T01:24:51Z
+---
+
+# some musllinux wheels are missing
+
+---
+
+_Issue opened by @Freed-Wu on 2025-01-01 07:33_
+
+https://pypi.org/project/uv/#files
+
+There are 3 archs for musllinux
+
+- uv-0.5.13-py3-none-musllinux_1_1_x86_64.whl (15.1 MB view details)
+- uv-0.5.13-py3-none-musllinux_1_1_i686.whl (14.6 MB view details)
+- uv-0.5.13-py3-none-musllinux_1_1_armv7l.whl (14.2 MB view details) 
+
+However, there are 
+
+uv-0.5.13-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.0 MB view details)
+uv-0.5.13-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl (20.0 MB view details)
+uv-0.5.13-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl (15.2 MB view details)
+uv-0.5.13-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl (15.5 MB view details)
+uv-0.5.13-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl (14.9 MB view details)
+uv-0.5.13-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl (14.2 MB view details)
+uv-0.5.13-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.musllinux_1_1_aarch64.whl (13.6 MB view details) 
+
+Why some muslinux are missing?
+
+---
+
+_Comment by @charliermarsh on 2025-01-01 12:47_
+
+We don't ship musl builds for PPC or S390x. There just isn't demand for them, and it takes work to maintain them unfortunately.
+
+(Note that there _is_ a musl build for aarch64 at the bottom of your list.)
+
+---
+
+_Closed by @charliermarsh on 2025-01-01 12:47_
+
+---
+
+_Comment by @Freed-Wu on 2025-01-01 14:41_
+
+> there is a musl build for aarch64
+
+Thanks.
+
+> There just isn't demand for them
+
+I build https://github.com/pypa/cibuildwheel
+Now I have to skip some platforms because I want to use uv:
+
+```toml
+[tool.cibuildwheel]
+build-frontend = "build[uv]"
+skip = "*_armv7l *-musllinux_s390x *-musllinux_ppc64*"
+```
+
+Otherwise I meet:
+
+```
+Error: Command ['which', 'uv'] failed with code 1.
+```
+
+---
+
+_Comment by @charliermarsh on 2025-01-01 17:49_
+
+Ok. I would say those platforms aren't particularly common. NumPy and SciPy, for example, don't build for any of them. Pydantic has `_armv7l` but neither of the other two.
+
+---
+
+_Comment by @Freed-Wu on 2025-01-01 17:59_
+
+> aren't particularly common
+
+I see however If we want to use uv in cibuildwheel, they are required due to cibuildwheel support it by default, except you use `skip = "..."`.
+
+---
+
+_Comment by @Freed-Wu on 2025-05-19 12:07_
+
+For anyone use uv in cibuildwheel, here is a solution:
+
+```toml
+[tool.cibuildwheel]
+build-frontend = "build[uv]"
+
+[[tool.cibuildwheel.overrides]]
+select = ["*-musllinux_s390x", "*-musllinux_ppc64*"]
+build-frontend = "build"
+```
+
+---

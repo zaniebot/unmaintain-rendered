@@ -1,0 +1,147 @@
+---
+number: 11093
+title: "NPY001 should not replace `np.bool` by `bool` (at least in type hints)"
+type: issue
+state: closed
+author: bersbersbers
+labels:
+  - needs-info
+assignees: []
+created_at: 2024-04-22T20:32:03Z
+updated_at: 2024-06-06T06:31:11Z
+url: https://github.com/astral-sh/ruff/issues/11093
+synced_at: 2026-01-10T01:22:50Z
+---
+
+# NPY001 should not replace `np.bool` by `bool` (at least in type hints)
+
+---
+
+_Issue opened by @bersbersbers on 2024-04-22 20:32_
+
+`bug.py`
+```python
+import numpy as np
+import numpy.typing as npt
+
+bad1: npt.NDArray[np.bool_] = np.array([True])
+good: npt.NDArray[np.bool] = np.array([True])
+bad2: npt.NDArray[bool] = np.array([True])
+```
+
+For `mypy` v1.9.0, only `np.bool` is acceptable:
+```
+bug.py:4: error: Name "np.bool_" is not defined  [name-defined]
+bug.py:6: error: Type argument "bool" of "NDArray" must be a subtype of "generic"  [type-var]
+bug.py:6: note: See https://mypy.rtfd.io/en/stable/_refs.html#code-type-var for more info
+Found 2 errors in 1 file (checked 1 source file)
+```
+
+However, `NPY001` does not like that solution:
+```
+ruff check --isolated --select NPY001 bug.py
+```
+
+```
+bug.py:5:19: NPY001 [*] Type alias `np.bool` is deprecated, replace with builtin type
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+`--fix` gives
+```python
+import numpy as np
+import numpy.typing as npt
+
+bad1: npt.NDArray[np.bool_] = np.array([True])
+good: npt.NDArray[bool] = np.array([True])
+bad2: npt.NDArray[bool] = np.array([True])
+```
+
+Keywords: numpy 2, deprecation, bool, bool_
+
+ruff 0.4.1
+mypy 1.9.0
+numpy 2.0.0rc1
+
+---
+
+_Comment by @bersbersbers on 2024-04-22 20:38_
+
+See also https://github.com/numpy/numpy/pull/25080
+
+---
+
+_Comment by @charliermarsh on 2024-04-22 23:49_
+
+Is this considered "recommended" by NumPy, or is it a bug or limitation in the type definitions?
+
+---
+
+_Comment by @charliermarsh on 2024-04-22 23:49_
+
+\cc @mtsokol if you know!
+
+---
+
+_Label `needs-info` added by @charliermarsh on 2024-04-22 23:49_
+
+---
+
+_Comment by @bersbersbers on 2024-04-23 04:39_
+
+> Is this considered "recommended" by NumPy
+
+This. See https://numpy.org/devdocs/release/2.0.0-notes.html#changes, 5th bullet in "Changes".
+
+---
+
+_Comment by @tmke8 on 2024-04-30 14:45_
+
+So, it seems `np.bool` used to be an alias for built-in `bool` while `np.bool_` was a separate type. The `np.bool` alias was then deprecated in numpy 1.20, which is what NPY001 is about. But then numpy 2.0 renamed `np.bool_` to `np.bool` (while keeping `np.bool_` as an alias for the new `np.bool` for backwards compatibility with numpy 1.x), so now the depreciation from numpy 1.20 conflicts with the new recommended name in numpy 2.0 for `np.bool_`.
+
+---
+
+_Comment by @bersbersbers on 2024-06-03 16:22_
+
+fyi, numpy 2 will not be released until June 16 (https://github.com/numpy/numpy/issues/24300#issuecomment-2125643448).
+
+---
+
+_Comment by @mtsokol on 2024-06-04 08:44_
+
+Right, I'll adjust the NPY001 to NumPy 2.0 changes to avoid a conflict with the NPY201 rule (namely `np.bool` was restored and points to NumPy's bool instead of a bool builtin, and `np.long` is back and points to C's `long` and `unsigned long` instead of a int builtin). 
+
+---
+
+_Referenced in [astral-sh/ruff#11735](../../astral-sh/ruff/pulls/11735.md) on 2024-06-04 09:33_
+
+---
+
+_Comment by @mtsokol on 2024-06-04 09:33_
+
+I opened a PR for it: https://github.com/astral-sh/ruff/pull/11735
+
+---
+
+_Comment by @mtsokol on 2024-06-04 09:36_
+
+@bersbersbers FYI we noticed that the new `np.bool_` alias is missing a typing stub so we readded it (https://github.com/numpy/numpy/pull/26210). If you upgrade to `2.0.0rc2` mypy shouldn't complain. 
+
+---
+
+_Comment by @mtsokol on 2024-06-06 06:28_
+
+I think we can close it as resolved. 
+
+---
+
+_Comment by @bersbersbers on 2024-06-06 06:31_
+
+Yes, verified 0.4.8. Thanks!
+
+---
+
+_Closed by @bersbersbers on 2024-06-06 06:31_
+
+---

@@ -1,0 +1,219 @@
+---
+number: 6584
+title: Group Policy Blocks UV Tool from Accessing Python Interpreter
+type: issue
+state: open
+author: IliasAarab
+labels:
+  - windows
+assignees: []
+created_at: 2024-08-24T14:04:34Z
+updated_at: 2024-09-06T00:23:28Z
+url: https://github.com/astral-sh/uv/issues/6584
+synced_at: 2026-01-10T01:24:03Z
+---
+
+# Group Policy Blocks UV Tool from Accessing Python Interpreter
+
+---
+
+_Issue opened by @IliasAarab on 2024-08-24 14:04_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+**Description:**
+
+I am encountering a persistent issue with the UV tool where it fails to access the Python interpreter due to a group policy restriction. This problem occurs not only when adding packages but also when running scripts.
+
+**Error Details:**
+
+- **Command:** 
+```uv add faker``` and  ```uv run src/uv_prj/__init__.py```
+- **Error Message:**
+
+  ```
+  error: Failed to query Python interpreter at `\\?\C:\Users\aarabil\Desktop\quick_runs\uv_prj\.venv\Scripts\python.exe`
+    Caused by: This program is blocked by group policy. For more information, contact your system administrator. (os error 1260)
+  ```
+
+**Steps to Reproduce:**
+
+1. Create a new virtual environment using `uv`.
+2. Attempt to add a package using `uv add faker`.
+3. Attempt to run a script using `uv run src/uv_prj/__init__.py`.
+
+**Expected Behavior:**
+
+The UV tool should be able to add packages and run scripts without encountering errors related to the Python interpreter.
+
+**Actual Behavior:**
+
+Both operations fail with an error indicating that the Python interpreter is blocked by group policy.
+
+**Environment:**
+
+- **OS:** Windows
+- **UV Tool Version:**  0.3.2 (c5440001c 2024-08-23) (installed with pip within a Conda env)
+- **Python Version:**  3.12 (within a Conda env)
+- **Virtual Environment Location:** `C:\Users\aarabil\Desktop\quick_runs\uv_prj\.venv\`
+
+**Additional Information:**
+
+The error suggests that the group policy settings on the system are preventing the UV tool from accessing the Python interpreter. I am wondering how others deal with this issue within a corporate environment? 
+
+
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-08-25 02:34_
+
+---
+
+_Comment by @samypr100 on 2024-08-25 22:34_
+
+Do you happen to know what is the group policy in effect (e.g. is it a built-in to gpedit.exe) and how it's configured? I could tinker with `gpedit.exe`, but it's hard to reproduce without knowing the exact configuration.
+
+---
+
+_Comment by @IliasAarab on 2024-08-25 23:34_
+
+@samypr100 thank you for the quick response. Unfortunately, I don't know any of the inner details of the policy. What I do know is that is seems that executables can not be executed when they are stored in `c/users/<username>/`. In contrast, I can run `uv` when i create a new project in `c/conda/envs` (although this is obviously not the right place to initialize projects). 
+
+---
+
+_Comment by @samypr100 on 2024-08-25 23:43_
+
+Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like `gpresult /h %USERPROFILE%\gp.html` and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.
+
+---
+
+_Comment by @contang0 on 2024-09-04 11:51_
+
+> Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like `gpresult /h %USERPROFILE%\gp.html` and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.
+
+I have the same issue and you're correct. If, for example, uv created the environment**s** in `C:\Mambaforge\envs`, I believe it would work. I thought setting `UV_PROJECT_ENVIRONMENT` to  `C:\Mambaforge\envs` might work, but unfortunately it still creates the .venv folder next to the project files.
+
+```
+C:\Users\user\Desktop\Projects\test>echo %UV_PROJECT_ENVIRONMENT%
+C:\Mambaforge\envs
+
+C:\Users\user\Desktop\Projects\test>uv init
+Initialized project `test`
+
+C:\Users\user\Desktop\Projects\test>uv run hello.py
+Using Python 3.9.7 interpreter at: C:\Mambaforge\python.exe
+Creating virtualenv at: .venv
+error: Failed to spawn: `python`
+  Caused by: This program is blocked by group policy. For more information, contact your system administrator. (os error 1260)
+
+C:\Users\user\Desktop\Projects\test>dir
+ Volume in drive C is Windows
+
+ Directory of C:\Users\user\Desktop\Projects\test
+
+04/09/2024  02:03 PM    <DIR>          .
+12/08/2024  05:29 PM    <DIR>          ..
+04/09/2024  02:03 PM    <DIR>          .venv
+04/09/2024  02:03 PM                82 hello.py
+04/09/2024  02:03 PM               149 pyproject.toml
+04/09/2024  02:03 PM                 0 README.md
+04/09/2024  02:03 PM               110 uv.lock
+               4 File(s)            341 bytes
+               3 Dir(s)  292,483,772,416 bytes free
+
+```
+
+@zanieb is this the expected behavior once `UV_PROJECT_ENVIRONMENT` is set?
+
+---
+
+_Comment by @zanieb on 2024-09-04 13:40_
+
+@contang0 I couldn't reproduce that on my machine
+
+```
+❯ uv init --no-workspace example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ ls
+README.md	hello.py	pyproject.toml
+❯ UV_PROJECT_ENVIRONMENT=/tmp/foo uv run hello.py
+Using Python 3.11.7
+Creating virtualenv at: /tmp/foo
+Hello from example!
+❯ ls -lah
+total 32
+drwxr-xr-x   7 zb  staff   224B Sep  4 08:40 .
+drwxr-xr-x  57 zb  staff   1.8K Sep  4 08:39 ..
+-rw-r--r--   1 zb  staff     4B Sep  4 08:39 .python-version
+-rw-r--r--   1 zb  staff     0B Sep  4 08:39 README.md
+-rw-r--r--   1 zb  staff    85B Sep  4 08:39 hello.py
+-rw-r--r--   1 zb  staff   153B Sep  4 08:39 pyproject.toml
+-rw-r--r--   1 zb  staff   114B Sep  4 08:40 uv.lock
+```
+
+---
+
+_Comment by @contang0 on 2024-09-04 14:01_
+
+It seems like this is a Windows-specific issue.
+
+---
+
+_Comment by @zanieb on 2024-09-04 14:07_
+
+While I agree for the policy part, that doesn't make sense for the `UV_PROJECT_ENVIRONMENT` behavior — path determination for the environment should not be platform specific (and is tested on Windows in CI).
+
+---
+
+_Comment by @contang0 on 2024-09-04 14:28_
+
+I upgraded to the latest version (0.4.4) and now I see slightly different things. 
+
+Looks like I misunderstood how `UV_PROJECT_ENVIRONMENT` works. It defines one venv for all projects, whereas I need a way to specify the root directory where **separate** venvs for each of my projects will reside. Unless there's a smarter way to get around this group policy.
+
+```
+C:\Users\user\Desktop\Projects\test2>uv --version
+uv 0.4.4 (3d75df6ab 2024-09-04)
+
+C:\Users\user\Desktop\Projects\test2>echo %UV_PROJECT_ENVIRONMENT%
+C:\Mambaforge\envs
+
+C:\Users\user\Desktop\Projects\test2>uv init
+Initialized project `test2`
+
+C:\Users\user\Desktop\Projects\test2>uv run hello.py
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: C:\Mambaforge\envs\Scripts\python.exe
+Using Python 3.9.7 interpreter at: C:\Mambaforge\python.exe
+error: failed to remove directory `C:\Mambaforge\envs`
+  Caused by: Access is denied. (os error 5)
+```
+
+---
+
+_Comment by @zanieb on 2024-09-04 14:34_
+
+@contang0 that is explicitly not supported, please see https://github.com/astral-sh/uv/pull/6834 and #1495 — let's stop talking about unrelated questions in this issue though.
+
+---
+
+_Comment by @IliasAarab on 2024-09-06 00:23_
+
+> Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like `gpresult /h %USERPROFILE%\gp.html` and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.
+
+Thanks! I cannot fully understand the output, but can understand that the policy is blocking executables on certain drives and certain locations. The easiest solution for me, currently, is to constraint new projects that are initialized with `uv` to live within the permitted policy locations. #1495 is an interesting proposal, and as far as I understand, would mimic the current behaviour of `conda`.  
+
+---
+
+_Referenced in [astral-sh/uv#14401](../../astral-sh/uv/issues/14401.md) on 2025-07-01 18:56_
+
+---

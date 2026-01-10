@@ -1,0 +1,107 @@
+---
+number: 16408
+title: "Support `--compile-bytecode` in `uv python install`"
+type: issue
+state: open
+author: konstin
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-10-22T11:22:01Z
+updated_at: 2025-12-11T16:32:54Z
+url: https://github.com/astral-sh/uv/issues/16408
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# Support `--compile-bytecode` in `uv python install`
+
+---
+
+_Issue opened by @konstin on 2025-10-22 11:22_
+
+We should add an `--compile-bytecode` option to `uv python install` that bytecode compiles the standard library.
+
+## Background
+
+See https://github.com/astral-sh/uv/issues/16378 for previous discussion.
+
+`sudo apt install python3` on Ubuntu installs Python with a bytecode compiled standard library (`__pycache__/*.pyc`). The `python` docker images strip `.pyc` files, to save image space (https://github.com/docker-library/python/issues/615#issuecomment-842692129). Python build standalone installations currently aren't bytecode compiled either.
+
+When installing packages with bytecode compilation (default in pip, in uv with `--compile-bytecode`), only installed Python files are compiled, but not the standard library. But when using pip in the `python` docker as the (default) root user in the runtime stage, or when using it with Python build standalone, just running pip imports many standard library packages, which compiles them to bytecode. This primes the cache for faster startup, while running uv doesn't do that.
+
+While the situation with the `python` docker image is more ambiguous (e.g., changing the system installation requires root, and we don't want to recommend running uv as root for faster performance), we can implement faster startup from (Docker) images with Python build standalone by adding an option to bytecode compile the standard library on installation:
+
+```
+uv python install --compile-bytecode
+```
+
+We should also bytecode compile the standard library when `uv sync --compile-bytecode` installs a Python interpreter.
+
+## Benchmarks
+
+**Dockerfile.uv**
+
+```Dockerfile
+FROM ghcr.io/astral-sh/uv:debian-slim
+
+RUN uv python install 3.13.9
+RUN uv venv
+RUN uv pip install --compile-bytecode fastapi==0.119.0
+
+ENV PATH="/.venv/bin:$PATH"
+```
+
+
+**Dockerfile.uv-compile**
+
+```Dockerfile
+FROM ghcr.io/astral-sh/uv:debian-slim
+
+RUN uv python install 3.13.9
+RUN uv venv
+RUN uv pip install --compile-bytecode fastapi==0.119.0
+
+ENV PATH="/.venv/bin:$PATH"
+RUN python -B -m compileall ~/.local/share/uv/python/cpython-3.13.9-linux-x86_64-gnu/lib/python3.13
+```
+
+```
+docker build . -t uv-fastapi -f Dockerfile.uv
+docker build . -t uv-fastapi-compile -f Dockerfile.uv-compile
+hyperfine  --warmup 2 \
+    'docker run --rm uv-fastapi python -c "import fastapi"' \
+    'docker run --rm uv-fastapi-compile python -c "import fastapi"'
+```
+
+```
+$ hyperfine 'docker run --rm uv-fastapi python -c "import fastapi"' 'docker run --rm uv-fastapi-compile python -c "import fastapi"' --warmup 2
+Benchmark 1: docker run --rm uv-fastapi python -c "import fastapi"
+  Time (mean ± σ):     872.7 ms ±  19.8 ms    [User: 7.0 ms, System: 6.0 ms]
+  Range (min … max):   845.7 ms … 914.1 ms    10 runs
+ 
+Benchmark 2: docker run --rm uv-fastapi-compile python -c "import fastapi"
+  Time (mean ± σ):     566.2 ms ±  18.1 ms    [User: 6.4 ms, System: 6.7 ms]
+  Range (min … max):   542.0 ms … 599.9 ms    10 runs
+ 
+Summary
+  docker run --rm uv-fastapi-compile python -c "import fastapi" ran
+    1.54 ± 0.06 times faster than docker run --rm uv-fastapi python -c "import fastapi"
+```
+
+---
+
+_Label `enhancement` added by @konstin on 2025-10-22 11:22_
+
+---
+
+_Referenced in [astral-sh/uv#16378](../../astral-sh/uv/issues/16378.md) on 2025-10-22 11:29_
+
+---
+
+_Assigned to @EliteTK by @EliteTK on 2025-12-11 16:32_
+
+---
+
+_Referenced in [astral-sh/uv#17088](../../astral-sh/uv/pulls/17088.md) on 2025-12-11 16:37_
+
+---

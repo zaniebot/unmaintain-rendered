@@ -1,0 +1,353 @@
+---
+number: 3959
+title: Error with multiple flags and positional arguments
+type: issue
+state: closed
+author: pleshevskiy
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-07-20T20:54:38Z
+updated_at: 2022-07-21T04:44:23Z
+url: https://github.com/clap-rs/clap/issues/3959
+synced_at: 2026-01-10T01:27:49Z
+---
+
+# Error with multiple flags and positional arguments
+
+---
+
+_Issue opened by @pleshevskiy on 2022-07-20 20:54_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.58.1 (db9d1b20b 2022-01-20)
+
+### Clap Version
+
+3.2.13
+
+### Minimal reproducible code
+
+```rust
+use clap::{Arg, ArgAction, Command};
+
+fn main() {
+    let matches = args().get_matches();
+
+    println!(
+        "input: {:?}",
+        matches
+            .get_many::<String>("input")
+            .unwrap()
+            .into_iter()
+            .map(String::from)
+            .collect::<Vec<_>>()
+    );
+    println!("output: {:?}", matches.get_one::<String>("output").unwrap());
+    println!("one: {:?}", matches.get_one::<String>("one"));
+    println!("two: {:?}", matches.get_one::<String>("two"));
+    println!("yes: {:?}", matches.get_one::<bool>("yes"));
+}
+
+fn args<'a>() -> clap::App<'a> {
+    Command::new("Clap test")
+        .version("1.0")
+        .author("Dmitriy Pleshevskiy <dmitriy@ideascup.me>")
+        .about("Error reproduction with multiple parameters")
+        .arg(Arg::new("yes").long("yes").action(ArgAction::SetTrue))
+        .arg(Arg::new("one").long("one").action(ArgAction::Set))
+        .arg(Arg::new("two").long("two").action(ArgAction::Set))
+        .arg(Arg::new("input").multiple_values(true).required(true))
+        .arg(Arg::new("output").required(true))
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- --one 1 --two 2 3 4 5 6 7 8
+```
+
+### Actual Behaviour
+
+```
+error: Found argument '4' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    clap-multi-arg-repro [OPTIONS] <input>... <output>
+```
+
+### Expected Behaviour
+
+```
+input: ["3", "4", "5", "6", "7"]
+output: "8"
+one: Same("1")
+two: Some("2")
+yes: Some(false)
+```
+
+### Additional Context
+
+More examples in repository with error reproduction. https://github.com/pleshevskiy/clap-multi-arg-repro
+
+### Debug Output
+
+```
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name="Clap test"
+[      clap::builder::command] 	Command::_propagate:Clap test
+[      clap::builder::command] 	Command::_check_help_and_version: Clap test
+[      clap::builder::command] 	Command::_propagate_global_args:Clap test
+[      clap::builder::command] 	Command::_derive_display_order:Clap test
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:version
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:yes
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:one
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:two
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:input
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:output
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("--one")' ([45, 45, 111, 110, 101])
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...true
+[        clap::parser::parser] 	Parser::is_new_arg: RawOsStr("1"):"input"
+[        clap::parser::parser] 	Parser::is_new_arg: value
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("1")
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("--one")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--one <one>'
+[        clap::parser::parser] 	Parser::parse_long_arg("one"): Found an arg with value 'None'
+[        clap::parser::parser] 	Parser::parse_opt_value; arg=one, val=None, has_eq=false
+[        clap::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(MULTIPLE_OCC | TAKES_VAL)
+[        clap::parser::parser] 	Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser] 	Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg Opt(one)
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("1")' ([49])
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...1
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...true
+[        clap::parser::parser] 	Parser::is_new_arg: RawOsStr("--two"):"input"
+[        clap::parser::parser] 	Parser::is_new_arg: --<something> found
+[        clap::parser::parser] 	Parser::get_matches_with: Bumping the positional counter...
+[        clap::parser::parser] 	Parser::split_arg_values; arg=one, val=RawOsStr("1")
+[        clap::parser::parser] 	Parser::split_arg_values; trailing_values=false, DontDelimTrailingVals=false
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=one, resolved=0, pending=1
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("--two")' ([45, 45, 116, 119, 111])
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...2
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("--two")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--two <two>'
+[        clap::parser::parser] 	Parser::parse_long_arg("two"): Found an arg with value 'None'
+[        clap::parser::parser] 	Parser::parse_opt_value; arg=two, val=None, has_eq=false
+[        clap::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(MULTIPLE_OCC | TAKES_VAL)
+[        clap::parser::parser] 	Parser::parse_opt_value; Checking for val...
+[        clap::parser::parser] 	Parser::parse_opt_value: More arg vals required...
+[        clap::parser::parser] 	Parser::resolve_pending: id=one
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=1
+[        clap::parser::parser] 	Parser::remove_overrides: id=one
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=one, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=one
+[        clap::parser::parser] 	Parser::push_arg_values: ["1"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[      clap::builder::command] 	Command::groups_for_arg: id=one
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=one, resolved=1, pending=0
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg Opt(two)
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("2")' ([50])
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...2
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::split_arg_values; arg=two, val=RawOsStr("2")
+[        clap::parser::parser] 	Parser::split_arg_values; trailing_values=false, DontDelimTrailingVals=false
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=two, resolved=0, pending=1
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("3")' ([51])
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...2
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("3")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::resolve_pending: id=two
+[        clap::parser::parser] 	Parser::react action=Set, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=3
+[        clap::parser::parser] 	Parser::remove_overrides: id=two
+[   clap::parser::arg_matcher] 	ArgMatcher::start_custom_arg: id=two, source=CommandLine
+[      clap::builder::command] 	Command::groups_for_arg: id=two
+[        clap::parser::parser] 	Parser::push_arg_values: ["2"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=4
+[      clap::builder::command] 	Command::groups_for_arg: id=two
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=two, resolved=1, pending=0
+[        clap::parser::parser] 	Parser::split_arg_values; arg=output, val=RawOsStr("3")
+[        clap::parser::parser] 	Parser::split_arg_values; trailing_values=false, DontDelimTrailingVals=false
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("4")' ([52])
+[        clap::parser::parser] 	Parser::get_matches_with: Positional counter...3
+[        clap::parser::parser] 	Parser::get_matches_with: Low index multiples...false
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("4")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::resolve_pending: id=output
+[        clap::parser::parser] 	Parser::react action=StoreValue, identifier=Some(Index), source=CommandLine
+[        clap::parser::parser] 	Parser::remove_overrides: id=output
+[   clap::parser::arg_matcher] 	ArgMatcher::start_occurrence_of_arg: id=output
+[      clap::builder::command] 	Command::groups_for_arg: id=output
+[        clap::parser::parser] 	Parser::push_arg_values: ["3"]
+[        clap::parser::parser] 	Parser::add_single_val_to_arg: cur_idx:=5
+[      clap::builder::command] 	Command::groups_for_arg: id=output
+[   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: o=output, resolved=1, pending=0
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={input, output}
+[         clap::output::usage] 	Usage::get_required_usage_from:push:input
+[         clap::output::usage] 	Usage::get_required_usage_from:push:output
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val={"<input>...", "<output>"}
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=version
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=yes
+[      clap::builder::command] 	Command::groups_for_arg: id=yes
+[         clap::output::usage] 	Usage::needs_options_tag:iter: [OPTIONS] required
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap-multi-arg-repro [OPTIONS] <input>... <output>
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+```
+
+---
+
+_Referenced in [brxken128/dexios#147](../../brxken128/dexios/pulls/147.md) on 2022-07-20 20:58_
+
+---
+
+_Comment by @epage on 2022-07-20 21:56_
+
+One thing missing the issue is where the expectation comes from.  There is a lot of functionality to clap so its easier to lose track of and that extra context you have is helpful.  For example, is this a regression?
+
+In trying to answer it myself, I first reminded myself of [Command::allow_missing_positional](https://docs.rs/clap/latest/clap/struct.App.html#method.allow_missing_positional)
+
+I then gave it a try and found it interestingly inconsistent
+```console
+$  ./clap-3959.rs 1 2 3 4 5 6 7 8
+input: ["1", "2", "3", "4", "5", "6", "7"]
+output: "8"
+one: None
+two: None
+yes: Some(false)
+
+$  ./clap-3959.rs --one 1 2 3 4 5 6 7 8
+input: ["2", "3", "4", "5", "6", "7"]
+output: "8"
+one: Some("1")
+two: None
+yes: Some(false)
+
+$  ./clap-3959.rs --one 1 --two 2 3 4 5 6 7 8
+error: Found argument '4' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    clap-3959_599c761b77b65bcdaa699e56 [OPTIONS] <input>... <output>
+
+For more information try --help
+
+---
+
+_Comment by @pleshevskiy on 2022-07-20 22:10_
+
+> I then gave it a try and found it interestingly inconsistent
+
+Yes, I described it in the related [repo](https://github.com/pleshevskiy/clap-multi-arg-repro)
+
+> In trying to answer it myself, I first reminded myself of [Command::allow_missing_positional](https://docs.rs/clap/latest/clap/struct.App.html#method.allow_missing_positional)
+
+I'll try other ways tomorrow
+
+---
+
+_Comment by @epage on 2022-07-20 22:15_
+
+> I'll try other ways tomorrow
+
+I tried it and it doesn't help
+
+> Yes, I described it in the related [repo](https://github.com/pleshevskiy/clap-multi-arg-repro)
+
+For me, my expectation for a linked to repo is to be optional and all of the needed content is in the original issue.
+
+---
+
+_Comment by @epage on 2022-07-20 22:20_
+
+I backported to clap 3.0.0 and its still a problem then
+```rust
+#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = "=3.0.0", features = ["derive", "debug"] }
+//! ```
+
+use clap::{App, Arg};
+
+fn main() {
+    let matches = args().get_matches();
+
+    println!(
+        "input: {:?}",
+        matches
+            .values_of("input")
+            .unwrap_or_default()
+            .collect::<Vec<_>>()
+    );
+    println!("output: {:?}", matches.value_of("output"));
+    println!("one: {:?}", matches.value_of("one"));
+    println!("two: {:?}", matches.value_of("two"));
+    println!("yes: {:?}", matches.is_present("yes"));
+}
+
+fn args<'a>() -> clap::App<'a> {
+    App::new("Clap test")
+        .version("1.0")
+        .author("Dmitriy Pleshevskiy <dmitriy@ideascup.me>")
+        .about("Error reproduction with multiple parameters")
+        //.allow_missing_positional(true)
+        .arg(Arg::new("yes").long("yes"))
+        .arg(Arg::new("one").long("one").takes_value(true))
+        .arg(Arg::new("two").long("two").takes_value(true))
+        .arg(Arg::new("input").multiple_values(true).required(true))
+        .arg(Arg::new("output").required(true))
+}
+```
+
+---
+
+_Comment by @epage on 2022-07-20 22:26_
+
+Looking at the log, it looks like we are increasing the positional counter when we shouldn't be.
+
+---
+
+_Referenced in [clap-rs/clap#3960](../../clap-rs/clap/pulls/3960.md) on 2022-07-20 22:47_
+
+---
+
+_Closed by @epage on 2022-07-21 01:12_
+
+---
+
+_Comment by @pleshevskiy on 2022-07-21 04:44_
+
+Thanks for solving the problem so quickly!
+
+---

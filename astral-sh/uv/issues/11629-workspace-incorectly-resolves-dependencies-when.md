@@ -1,0 +1,299 @@
+---
+number: 11629
+title: Workspace incorectly resolves dependencies when they are conditionally excluded
+type: issue
+state: open
+author: potiuk
+labels:
+  - error messages
+assignees: []
+created_at: 2025-02-19T18:21:19Z
+updated_at: 2025-02-20T15:48:48Z
+url: https://github.com/astral-sh/uv/issues/11629
+synced_at: 2026-01-10T01:25:08Z
+---
+
+# Workspace incorectly resolves dependencies when they are conditionally excluded
+
+---
+
+_Issue opened by @potiuk on 2025-02-19 18:21_
+
+### Summary
+
+I believe there is a bug in the way how workspace "sub-package" dependencies are resolved in workspace. Namely - when a dependency is conditionally excluded (for example because of python version), it is still considered as a "workspace dependency" and it might lead to 
+
+```
+workspace's requirements are unsatisfiable.
+````
+
+I made a first - draft attepmt to add Python 3.13 support to Apache Airflow. While I know it will not work out-of-the-box and we have still some fixes to make, the first step I had to do is to conditionally exclude some of dependencies for some of the providers in order to be able to `uv sync` the workspace and get consistent set of dependencies. This worked (eventually) but only after I used a hack and rather than conditionally, I had to exclude some of the dependencies entirely - not only for Python 3.13.
+
+The PR https://github.com/apache/airflow/pull/46891 (awfully red now) shows the changes and allows to easilly replicate the bug.
+
+If you look at the PR you will find in `providers/apache/beam/pyproject.toml` those commented lines:
+
+```toml
+dependencies = [
+    "apache-airflow>=2.9.0",
+    # Apache Beam > 2.53.0 and pyarrow > 14.0.1 fix https://nvd.nist.gov/vuln/detail/CVE-2023-47248.
+    # Apache Beam is for now disabled on Python 3.13 because of pyarrow compatibility issues.
+    # For now commented out due to `uv` workspace issue https://github.com/astral-sh/uv/issues/11629
+    #    'apache-beam>=2.53.0; python_version < "3.12"',
+    #    'apache-beam>=2.57.0; python_version >= "3.12" and python_version < "3.13"',
+    'pyarrow>=14.0.1; python_version < "3.13"',
+    "numpy>=1.26.0; python_version < \"3.13'\"",
+]
+```
+
+With those "apache-beam" lines commented out I can run:  `uv sync --all-extras --python 3.13 --reinstall` (--reinstall to take into account dynamic hatch_build.py in apache-airflow) and it installs airflow nicely:
+
+```text
+Prepared 722 packages in 2.02s
+Uninstalled 722 packages in 1.35s
+Installed 722 packages in 431ms
+```
+
+So far so good - but this  is really "unconditional" remval of apache beam, which i do not want to do because I only want to remove apache-beam and it's dependencies in python 3.13.
+
+So - what happens when you uncomment the lines?
+
+```toml
+dependencies = [
+    "apache-airflow>=2.9.0",
+    # Apache Beam > 2.53.0 and pyarrow > 14.0.1 fix https://nvd.nist.gov/vuln/detail/CVE-2023-47248.
+    # Apache Beam is for now disabled on Python 3.13 because of pyarrow compatibility issues.
+    # For now commented out due to `uv` workspace issue https://github.com/astral-sh/uv/issues/11629
+    'apache-beam>=2.53.0; python_version < "3.12"',
+    'apache-beam>=2.57.0; python_version >= "3.12" and python_version < "3.13"',
+    'pyarrow>=14.0.1; python_version < "3.13"',
+    "numpy>=1.26.0; python_version < \"3.13'\"",
+]
+```
+Not that the conditional there installs:
+* apache-beam > =2.53 when Python < 3.12
+* apache-beam -> 2.5.7 when Python < 3.13
+
+So - for Python 3.13, apache-beam should not be installed.  
+
+Yet, the `uv` workspace resolution somehow thinks that apache-beam should be installed. When I run now `uv sync --all-extras --python 3.13 --reinstall` , I get this error:
+
+```python
+  × No solution found when resolving dependencies for split (python_full_version == '3.12.*'):
+  ╰─▶ Because only the following versions of grpcio-tools are available:
+          grpcio-tools<=1.66.0
+          grpcio-tools==1.66.1
+          grpcio-tools==1.66.2
+          grpcio-tools==1.67.0
+          grpcio-tools==1.67.1
+          grpcio-tools==1.68.0
+          grpcio-tools==1.68.1
+          grpcio-tools==1.69.0
+          grpcio-tools==1.70.0
+      and grpcio-tools>=1.66.0 depends on protobuf>=5.26.1,<6.0.dev0, we can conclude that grpcio-tools>=1.66.0 depends on protobuf>=5.26.1,<6.0.dev0. (1)
+
+      Because only the following versions of apache-beam{python_full_version == '3.12.*'} are available:
+          apache-beam{python_full_version == '3.12.*'}<=2.57.0
+          apache-beam{python_full_version == '3.12.*'}==2.58.0
+          apache-beam{python_full_version == '3.12.*'}==2.58.1
+          apache-beam{python_full_version == '3.12.*'}==2.59.0
+          apache-beam{python_full_version == '3.12.*'}==2.60.0
+          apache-beam{python_full_version == '3.12.*'}==2.61.0
+          apache-beam{python_full_version == '3.12.*'}==2.62.0
+          apache-beam{python_full_version == '3.12.*'}==2.63.0
+      and apache-beam>=2.57.0,<=2.60.0 depends on one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+      we can conclude that apache-beam{python_full_version == '3.12.*'}>=2.57.0,<2.58.0 depends on one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+
+      And because apache-beam>=2.58.0,<=2.60.0 depends on one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+      and one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+      we can conclude that apache-beam{python_full_version == '3.12.*'}>=2.57.0,<2.59.0 depends on one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+
+      And because apache-beam>=2.59.0,<=2.60.0 depends on one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+      and one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+      we can conclude that apache-beam{python_full_version == '3.12.*'}>=2.57.0,<2.61.0 depends on one of:
+          protobuf>=3.20.3,<4.0.dev0
+          protobuf>=4.22.dev0,<4.22.0
+          protobuf>4.22.0,<4.23.dev0
+          protobuf>=4.25.dev0,<4.26.0
+
+      And because we know from (1) that grpcio-tools>=1.66.0 depends on protobuf>=5.26.1,<6.0.dev0, we can conclude that grpcio-tools>=1.66.0 and apache-beam{python_full_version == '3.12.*'}>=2.57.0,<2.61.0 are incompatible.
+      And because apache-beam>=2.60.0 depends xxxxxon one of:
+          grpcio>=1.33.1,<1.48.0
+          grpcio>1.48.0,<1.59.dev0
+          grpcio>=1.62.dev0,<1.62.0
+          grpcio>1.62.1,<1.66.0
+      we can conclude that all of:
+          grpcio<1.33.1
+          grpcio==1.48.0
+          grpcio>=1.59.dev0,<1.62.dev0
+          grpcio>=1.62.0,<=1.62.1
+          grpcio>=1.66.0
+      , grpcio-tools>=1.66.0, apache-beam{python_full_version == '3.12.*'}>=2.57.0,<2.62.0 are incompatible.
+      And because apache-beam==2.63.0 depends on one of:
+          grpcio>=1.33.1,<1.48.0
+          grpcio>1.48.0,<1.59.dev0
+          grpcio>=1.62.dev0,<1.62.0
+          grpcio>1.62.1,<1.66.0
+      and one of:
+          grpcio>=1.33.1,<1.48.0
+          grpcio>1.48.0,<1.59.dev0
+          grpcio>=1.62.dev0,<1.62.0
+          grpcio>1.62.1,<1.66.0
+      we can conclude that all of:
+          grpcio<1.33.1
+          grpcio==1.48.0
+          grpcio>=1.59.dev0,<1.62.dev0
+          grpcio>=1.62.0,<=1.62.1
+          grpcio>=1.66.0
+      , grpcio-tools>=1.66.0, apache-beam{python_full_version == '3.12.*'}>=2.57.0 are incompatible. (2)
+
+      Because only the following versions of grpcio-tools are available:
+          grpcio-tools<=1.66.0
+          grpcio-tools==1.66.1
+          grpcio-tools==1.66.2
+          grpcio-tools==1.67.0
+          grpcio-tools==1.67.1
+          grpcio-tools==1.68.0
+          grpcio-tools==1.68.1
+          grpcio-tools==1.69.0
+          grpcio-tools==1.70.0
+      and grpcio-tools==1.66.0 depends on grpcio>=1.66.0, we can conclude that grpcio-tools>=1.66.0,<1.66.1 depends on grpcio>=1.66.0.
+      And because grpcio-tools==1.66.1 depends on grpcio>=1.66.1 and grpcio>=1.66.2, we can conclude that grpcio-tools>=1.66.0,<1.67.0 depends on grpcio>=1.66.0.
+      And because grpcio-tools==1.67.0 depends on grpcio>=1.67.0 and grpcio>=1.67.1, we can conclude that grpcio-tools>=1.66.0,<1.68.0 depends on grpcio>=1.66.0.
+      And because grpcio-tools==1.68.0 depends on grpcio>=1.68.0 and grpcio>=1.68.1, we can conclude that grpcio-tools>=1.66.0,<1.69.0 depends on grpcio>=1.66.0.
+      And because grpcio-tools==1.69.0 depends on grpcio>=1.69.0 and grpcio>=1.70.0, we can conclude that grpcio-tools>=1.66.0 depends on grpcio>=1.66.0.
+      And because we know from (2) that all of:
+          grpcio<1.33.1
+          grpcio==1.48.0
+          grpcio>=1.59.dev0,<1.62.dev0
+          grpcio>=1.62.0,<=1.62.1
+          grpcio>=1.66.0
+      , grpcio-tools>=1.66.0, apache-beam{python_full_version == '3.12.*'}>=2.57.0 are incompatible, we can conclude that grpcio-tools>=1.66.0 and apache-beam{python_full_version == '3.12.*'}>=2.57.0 are incompatible.
+      And because apache-airflow[all] depends on grpcio-tools>=1.66.0 and apache-airflow-providers-apache-beam depends on apache-beam{python_full_version == '3.12.*'}>=2.57.0, we can conclude that apache-airflow-providers-apache-beam and apache-airflow[all] are incompatible.
+      And because your workspace requires apache-airflow[all] and apache-airflow-providers-apache-beam[common-compat], we can conclude that your workspace's requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `grpcio-tools` in the requested range (e.g., 1.70.0rc1), but pre-releases weren't enabled (try: `--prerelease=allow`)
+
+      hint: Pre-releases are available for `apache-beam` in the requested range (e.g., 2.63.0rc2), but pre-releases weren't enabled (try: `--prerelease=allow`)
+```
+
+Apparently, even if `pyproject.toml` says "effectively I do not need apache-beam"  - workspace resolution still believes it is needed.
+
+
+
+
+
+
+
+
+
+
+
+
+### Platform
+
+Mint 21.3
+
+### Version
+
+uv 0.6.1
+
+### Python version
+
+Python 3.13.2
+
+---
+
+_Label `bug` added by @potiuk on 2025-02-19 18:21_
+
+---
+
+_Comment by @konstin on 2025-02-20 09:44_
+
+The error doesn't occur for installing on Python 3.13 but earlier in the `uv lock` that runs before `uv sync` if the requirements changed. During locking, it happens when trying to resolve the dependencies for Python 3.12.
+
+In this case, apache-beam has a `grpcio<1.66.0` bound, while the `grpcio-tools>=1.66.0` in another provider have a `grpcio>=1.66.0` bound, causing the conflict on Python 3.12.
+
+---
+
+_Comment by @potiuk on 2025-02-20 14:56_
+
+Aaargh...  Thank you and sorry for the hassle.  I missed the 3.12 all over the output !!!
+
+Let me try to fix it. 
+
+BTW. While it makes perfect sens of course, It' s kinda unexpected in this case - when I tried to sync python 3.13 was chosen to sync (especially that like in this case, I modified the dependencies to make Python 3.13 and purely accidentally I broke the 3.12 ones. 
+
+Might be a good idea to add more expicit messaging about it because I think that might be common patterns for others.
+
+---
+
+_Label `bug` removed by @konstin on 2025-02-20 14:58_
+
+---
+
+_Label `error messages` added by @konstin on 2025-02-20 14:58_
+
+---
+
+_Comment by @konstin on 2025-02-20 15:00_
+
+In addition to indicating clearer that this error occurs in a python version disjoint from the install target (and doing the same thing when the platform mismatches), the error message for the conflict could also be a lot more concise, i had to remove a bunch of duplication before i was able to understand what it was trying to tell me.
+
+---
+
+_Comment by @potiuk on 2025-02-20 15:04_
+
+> In addition to indicating clearer that this error occurs in a python version disjoint from the install target (and doing the same thing when the platform mismatches), the error message for the conflict could also be a lot more concise, i had to remove a bunch of duplication before i was able to understand what it was trying to tell me.
+
+Indeed :D. After about 3 years of doing it for airflow, I can quickly decipher those "riddles" (though I missed 3.12 in the output - that caught me by surprise) - but I am pretty much the only one in airlfow who would not jump out of the window seeing the output ;) 
+
+---
+
+_Comment by @potiuk on 2025-02-20 15:44_
+
+> I can quickly decipher those "riddles"
+
+Indeed. It's working as expected now. https://github.com/apache/airflow/pull/46891
+
+BTW. Despite the riddles, it's absolutely uncomparable experience to work out the set of dependnecies needed with `uv sync` - in 90+ projects of Airlfow, comparing to what I did before with `pip`. The sheer speed of iteratio is amazing. I think it would have taken me days before to figure the right set of deps for Python 3.13 and which packages I had to diable. 
+
+Fantastic job, as usual!
+
+Shall I close this one or will you turn it into some doc improvement issue ?
+
+---
+
+_Comment by @konstin on 2025-02-20 15:48_
+
+I'll keep this open to track the this as error message improvement, apache airflow at 21a34cbb1a564c795091a726b1993867c6ff3e8b (https://github.com/konstin/airflow/pull/new/gh11629) is a good reproducible example for an error message we should improve.
+
+---

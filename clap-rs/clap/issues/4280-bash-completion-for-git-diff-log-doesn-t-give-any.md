@@ -1,0 +1,108 @@
+---
+number: 4280
+title: "Bash completion for `git diff log` doesn't give any suggestions"
+type: issue
+state: closed
+author: martinvonz
+labels:
+  - C-bug
+  - A-completion
+  - E-easy
+assignees: []
+created_at: 2022-09-28T20:40:08Z
+updated_at: 2022-09-29T17:07:30Z
+url: https://github.com/clap-rs/clap/issues/4280
+synced_at: 2026-01-10T01:27:52Z
+---
+
+# Bash completion for `git diff log` doesn't give any suggestions
+
+---
+
+_Issue opened by @martinvonz on 2022-09-28 20:40_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+1.63.0
+
+### Clap Version
+
+3.2.22
+
+### Minimal reproducible code
+
+```rust
+use std::io::{stdout, Write};
+use clap;
+use clap::CommandFactory;
+
+#[derive(clap::Parser, Clone, Debug)]
+enum App {
+    Diff(DiffArgs),
+    Log,
+}
+
+#[derive(clap::Args, Clone, Debug)]
+struct DiffArgs {
+    my_flag: bool,
+}
+
+fn main() {
+    let mut app = App::command();
+    let mut buf = vec![];
+    clap_complete::generate(clap_complete::Shell::Bash, &mut app, "git", &mut buf);
+    stdout().write_all(&mut buf).unwrap();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+Run the command and source the generated script. Then enter `git diff log <TAB>`
+
+### Actual Behaviour
+
+`--my-flag` is not suggested
+
+### Expected Behaviour
+
+`--my-flag` should have been suggested
+
+### Additional Context
+
+This has a similar root cause as #4273. Because the Bash completion script puts all commands and subcommands in a single list and builds up a string representing the current command, `git diff log` results in a `$cmd` variable containing `git__diff__log`, which doesn't represent an actual subcommand, so it won't give any suggestions.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @martinvonz on 2022-09-28 20:40_
+
+---
+
+_Label `A-completion` added by @epage on 2022-09-28 21:28_
+
+---
+
+_Label `E-easy` added by @epage on 2022-09-28 21:28_
+
+---
+
+_Referenced in [clap-rs/clap#4284](../../clap-rs/clap/pulls/4284.md) on 2022-09-29 04:44_
+
+---
+
+_Referenced in [clap-rs/clap#4289](../../clap-rs/clap/pulls/4289.md) on 2022-09-29 16:44_
+
+---
+
+_Closed by @epage on 2022-09-29 17:07_
+
+---

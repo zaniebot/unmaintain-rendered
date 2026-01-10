@@ -1,0 +1,66 @@
+---
+number: 13867
+title: "`lock_requires_python` flakes when a new pre-releases version is addeded"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - ci-flake
+assignees: []
+created_at: 2025-06-05T17:16:47Z
+updated_at: 2025-06-06T18:35:21Z
+url: https://github.com/astral-sh/uv/issues/13867
+synced_at: 2026-01-10T01:25:39Z
+---
+
+# `lock_requires_python` flakes when a new pre-releases version is addeded
+
+---
+
+_Issue opened by @zanieb on 2025-06-05 17:16_
+
+```
+    running 1 test
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: lock_requires_python
+    Source: crates/uv/tests/it/lock.rs:3668
+    ────────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ────────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬───────────────────────────────────────────────────────────────────
+       15    15 │           pygls>1.3.0
+       16    16 │        cannot be used, we can conclude that pygls>=1.1.0 cannot be used.
+       17    17 │       And because your project depends on pygls>=1.1.0, we can conclude that your project's requirements are unsatisfiable.
+       18    18 │ 
+       19       │-      hint: Pre-releases are available for `pygls` in the requested range (e.g., 2.0.0a3), but pre-releases weren't enabled (try: `--prerelease=allow`)
+             19 │+      hint: Pre-releases are available for `pygls` in the requested range (e.g., 2.0.0a4), but pre-releases weren't enabled (try: `--prerelease=allow`)
+       20    20 │ 
+       21    21 │       hint: The `requires-python` value (>=3.7) includes Python versions that are not supported by your dependencies (e.g., pygls>=1.1.0,<=1.2.1 only supports >=3.7.9, <4). Consider using a more restrictive `requires-python` value (like >=3.7.9, <4).
+    ────────────┴───────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test lock::lock_requires_python ... FAILED
+```
+
+---
+
+_Referenced in [astral-sh/uv#13866](../../astral-sh/uv/pulls/13866.md) on 2025-06-05 17:16_
+
+---
+
+_Label `ci-flake` added by @zanieb on 2025-06-05 17:17_
+
+---
+
+_Referenced in [astral-sh/uv#13884](../../astral-sh/uv/pulls/13884.md) on 2025-06-06 12:49_
+
+---
+
+_Closed by @konstin on 2025-06-06 18:35_
+
+---
+
+_Closed by @konstin on 2025-06-06 18:35_
+
+---

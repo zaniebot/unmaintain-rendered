@@ -1,0 +1,82 @@
+---
+number: 13400
+title: uv add fails when providing a pylock.toml via stdin
+type: issue
+state: closed
+author: BenediktMaag
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-12T07:58:52Z
+updated_at: 2025-05-13T03:13:51Z
+url: https://github.com/astral-sh/uv/issues/13400
+synced_at: 2026-01-10T01:25:33Z
+---
+
+# uv add fails when providing a pylock.toml via stdin
+
+---
+
+_Issue opened by @BenediktMaag on 2025-05-12 07:58_
+
+### Summary
+
+Im trying to install dependencies from a file that uses the format of pylock.toml
+
+As an example i generate it from 
+❯ : uv export --format pylock.toml | save pylock.toml
+
+I can then pass the pylock file to somebody to use it and install it like:
+❯ : uv add -r pylock.toml
+
+I would expect to be also be able to install from stdin, like:
+❯ : open -r pylock.toml | uv add -r -
+or
+❯ : uv export --format pylock.toml | uv add -r -
+
+But this fails with the following error:
+error: Couldn't parse requirement in `-` at position 99
+  Caused by: no such comparison operator "=", must be one of ~= == != <= >= < > ===
+lock-version = "1.0"
+             ^^^^^^^
+
+
+### Platform
+
+Windows 11
+
+### Version
+
+uv 0.7.3 (3c413f74b 2025-05-07)
+
+### Python version
+
+3.12
+
+---
+
+_Label `bug` added by @BenediktMaag on 2025-05-12 07:58_
+
+---
+
+_Comment by @konstin on 2025-05-12 09:17_
+
+The `-r` in `uv add` expects a `requirements.txt` and (currently) does not support `pylock.toml` files. For installing dependencies, `uv pip install -r pylock.toml` my be more appropriate; `uv add` will the dependencies to `pyproject.toml`, an input format, while `pylock.toml` is an output format.
+
+---
+
+_Comment by @charliermarsh on 2025-05-13 03:01_
+
+Yeah, I don't think we support this at all right now. Even if we did, though, I don't think we would support reading it from `stdin`, because there isn't a clear way to differentiate the input file format without a filename.
+
+---
+
+_Closed by @charliermarsh on 2025-05-13 03:01_
+
+---
+
+_Comment by @charliermarsh on 2025-05-13 03:13_
+
+(Creating a separate bug for this: https://github.com/astral-sh/uv/issues/13420)
+
+---

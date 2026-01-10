@@ -1,0 +1,42 @@
+---
+number: 17042
+title: uv does not support Linux fast completion
+type: issue
+state: open
+author: pengjunfeng11
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-12-09T06:10:19Z
+updated_at: 2025-12-09T13:28:16Z
+url: https://github.com/astral-sh/uv/issues/17042
+synced_at: 2026-01-10T01:26:13Z
+---
+
+# uv does not support Linux fast completion
+
+---
+
+_Issue opened by @pengjunfeng11 on 2025-12-09 06:10_
+
+### Summary
+
+As the title suggests, assuming there is a file named `tool_qa_update.py` in the current folder, when I type `uv run to` and press the `Tab` key, it should support auto-completion to `uv run tool_qa_update.py`.
+
+I can take on the development of this requirement.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @pengjunfeng11 on 2025-12-09 06:10_
+
+---
+
+_Comment by @konstin on 2025-12-09 13:28_
+
+Are you using zsh? In that case this is duplicate of https://github.com/astral-sh/uv/issues/8432
+
+---

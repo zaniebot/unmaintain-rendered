@@ -1,0 +1,92 @@
+---
+number: 16704
+title: Better support for extra package indexes
+type: issue
+state: open
+author: simenhu
+labels:
+  - question
+assignees: []
+created_at: 2025-11-12T12:20:38Z
+updated_at: 2025-12-01T20:02:59Z
+url: https://github.com/astral-sh/uv/issues/16704
+synced_at: 2026-01-10T01:26:09Z
+---
+
+# Better support for extra package indexes
+
+---
+
+_Issue opened by @simenhu on 2025-11-12 12:20_
+
+### Summary
+
+UV is a leap forward in package management in python, but the support for extra package indexes is horrendous.
+
+The only thing holding us back in our company is to support using our privata packages hostet on gcloud in a custom package index. But getting the keyring authentication to work is black magic!
+
+This must be improved, if not then standard pip is unfortunately our only option!
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @simenhu on 2025-11-12 12:20_
+
+---
+
+_Comment by @woutervh on 2025-11-12 13:16_
+
+I have this working,
+but you need to have a prior installation of  keyring, 
+and have in on $PATH, before running  "uv sync"
+
+See https://github.com/astral-sh/uv/issues/16684
+
+
+---
+
+_Comment by @konstin on 2025-11-12 13:36_
+
+Can you share what commands and configuration you tried, and what errors you got?
+
+---
+
+_Label `enhancement` removed by @konstin on 2025-11-12 13:36_
+
+---
+
+_Label `question` added by @konstin on 2025-11-12 13:36_
+
+---
+
+_Comment by @zanieb on 2025-11-12 15:11_
+
+It sounds like you've discovered that using Python keyring plugins is a hacky way to authenticate — we're working on transitioning away from that ecosystem because of that.
+
+We have documentation which may be helpful at:
+
+- https://docs.astral.sh/uv/guides/integration/alternative-indexes/
+- https://docs.astral.sh/uv/concepts/authentication/http/
+
+---
+
+_Comment by @pwongcha on 2025-11-13 03:42_
+
+Does extra index work with `~/.config/uv/uv.toml `or only on  `pyproject.toml` ?
+
+---
+
+_Comment by @charliermarsh on 2025-11-28 17:27_
+
+Both.
+
+---
+
+_Comment by @pwongcha on 2025-12-01 20:02_
+
+Could you please add sample to support multiple indexes on ` ~/.config/uv/uv.toml` at https://docs.astral.sh/uv/concepts/configuration-files/ ?
+
+---

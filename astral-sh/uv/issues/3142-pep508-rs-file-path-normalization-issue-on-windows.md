@@ -1,0 +1,207 @@
+---
+number: 3142
+title: "`pep508_rs` file path normalization issue on windows"
+type: issue
+state: closed
+author: tdejager
+labels:
+  - windows
+assignees: []
+created_at: 2024-04-19T14:47:52Z
+updated_at: 2024-04-22T07:32:43Z
+url: https://github.com/astral-sh/uv/issues/3142
+synced_at: 2026-01-10T01:23:25Z
+---
+
+# `pep508_rs` file path normalization issue on windows
+
+---
+
+_Issue opened by @tdejager on 2024-04-19 14:47_
+
+## Intro
+
+**TLDR** Incorrect normalization when running a windows file path through a `Requirement::from_str(spec_str).unwrap();` **only** on windows.
+
+This is a bit of a strange issue, and perhaps we are doing something wrong :) But we we are using the pep508_rs from the UV project in [pixi](https://github.com/prefix-dev/pixi). We use to test if a lock file is out of date by matching it with the requirements we get back from uv. We've found this strange issue, where there is a difference for absolute file path handling in linux vs windows.
+
+## To reproduce
+Before I explain the issue, here is a reproducer, with a small CI pipeline that set's things up and tests [reproducer](https://github.com/tdejager/pep508-repro/blob/main/src/lib.rs).
+This only is a problem on windows, other platforms have a different normalization codepath. I.e. the problem is probably gated behind a `#[cfg(windows)]`
+
+[Failing test](https://github.com/tdejager/pep508-repro/actions/runs/8755369544/job/24029289515)
+
+
+## Problem
+The problem is that given the following direct-url requirement:
+
+```rust
+let spec_str = "mypkg @ file:///C:/path/to/my_pkg";
+let spec = Requirement::from_str(spec_str).unwrap();
+```
+
+When I read the code, I expect the path to be normalized in windows to: `C:\\path\\to\\my_pkg`.
+
+## Why is this unexpected?
+This because the requirements parsing, gets to the following function:
+
+```rust
+fn parse_url(cursor: &mut Cursor, working_dir: Option<&Path>) -> Result<VerbatimUrl, Pep508Error> {
+// ...✂️✂️✂️ rest of function
+    let url = preprocess_url(url, working_dir, cursor, start, len)?;
+}
+```
+which in turn calls `preprocess_url`.
+
+Which has the following part that I'm insterested in:
+
+```rust
+/// Create a `VerbatimUrl` to represent the requirement.
+fn preprocess_url(
+    url: &str,
+    #[cfg_attr(not(feature = "non-pep508-extensions"), allow(unused))] working_dir: Option<&Path>,
+    cursor: &Cursor,
+    start: usize,
+    len: usize,
+) -> Result<VerbatimUrl, Pep508Error> {
+    // Expand environment variables in the URL.
+    let expanded = expand_env_vars(url);
+
+    if let Some((scheme, path)) = split_scheme(&expanded) {
+        match Scheme::parse(scheme) {
+            // Ex) `file:///home/ferris/project/scripts/...`, `file://localhost/home/ferris/project/scripts/...`, or `file:../ferris/`
+            Some(Scheme::File) => {
+                // Strip the leading slashes, along with the `localhost` host, if present.
+                let path = strip_host(path);
+
+                // Transform, e.g., `/C:/Users/ferris/wheel-0.42.0.tar.gz` to `C:\Users\ferris\wheel-0.42.0.tar.gz`.
+                let path = normalize_url_path(path);
+                // ✂️✂️✂️... rest of function
+
+```
+
+Namely the `strip_host` and `normalize_url_path` functions that, I expect should turn:
+
+```
+///C:/path/to/my_pkg => C:\\path\\to\\my_pkg
+```
+
+The weird thing is that if I call these functions directly
+
+```rust
+uv_fs::normalize_url_path(pep508_rs::strip_host("///C:/path/to/my_pkg")); // Produces:  C:\\path\\to\\my_pkg as expected.
+```
+They do exactly this. However, going through the Requirement parsing e.g: 
+```rust
+let spec = Requirement::from_str(spec_str).unwrap();
+if let Some(VersionOrUrl::Url(url)) = spec.version_or_url {
+    let path = url.path(); // This is: /C:/path/to/my_pkg
+}
+```
+
+it somehow does not, which I don't understand. Sorry for the long write-up, it was pretty hard to explain succinctly. Let me know if you need more information
+
+---
+
+_Label `windows` added by @konstin on 2024-04-19 14:48_
+
+---
+
+_Comment by @charliermarsh on 2024-04-19 14:58_
+
+Have you confirmed that we're actually hitting the `Some(Scheme::File)` branch in this case?
+
+---
+
+_Comment by @ruben-arts on 2024-04-19 15:32_
+
+Using the reproducer and a local version of uv 0.1.32 modified with a `dbg!(path)` in the `Some(Scheme::file)` branch:
+```
+C:/Users/Ruben/.cargo/bin/cargo.exe run --color=always --package pep508_reproducer --bin pep508_reproducer
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target\debug\pep508_reproducer.exe`
+[C:\Users\Ruben\development\uv\crates\pep508-rs\src\lib.rs:1060:17] &path = "C:\\path\\to\\my_pkg"
+thread 'main' panicked at src\main.rs:10:9:
+assertion `left == right` failed
+  left: "/C:/path/to/my_pkg"
+ right: "C:\\path\\to\\my_pkg"
+```
+
+---
+
+_Comment by @charliermarsh on 2024-04-19 16:02_
+
+I can look into this tonight, I still haven't wrapped my head around what the problem is.
+
+Just to clarify, are you running all of these tests _on_ Windows? I think the path normalization probably differs depending on the host platform, not just the paths themselves.
+
+---
+
+_Comment by @tdejager on 2024-04-19 16:35_
+
+Indeed it does, you can check the CI in the reproducer that is failing on windows but succeeding on Linux. I can give you access if you want to modify it directly 😄 
+
+Edit:
+Swapped the words succeeding and failing. Windows fails as is expected.
+
+---
+
+_Comment by @charliermarsh on 2024-04-19 23:56_
+
+I might need to understand the actual problem that it's causing, but isn't this just the difference between a `Path` and `url.path()` (which is just the string after the host etc.)?
+
+```rust
+let url = Url::from_str("file:///C:/path/to/my_pkg").unwrap();
+
+println!("{}", url.path());
+// /C:/path/to/my_pkg
+
+let path = url.to_file_path().unwrap();
+println!("{}", path.display());
+// C:\path\to\my_pkg
+```
+
+
+---
+
+_Comment by @tdejager on 2024-04-20 07:10_
+
+Well not really it's more like what you expect the normalization to be when an absolute file url gets passed into the requirement.
+
+And as you can see the output does not correspond to what the functions in 'preprocess_url' say what they should be doing.
+
+The weird thing is still that calling these functions directly does yield the result that the comments imply.
+
+---
+
+_Comment by @tdejager on 2024-04-20 07:41_
+
+The fact that a different normalization is used per platform makes it hard to do comparisons when serializing on one platform and doing the comparison on another. As re-parsing gives a different result, we could work around that of course :) 
+
+---
+
+_Comment by @tdejager on 2024-04-20 07:57_
+
+Also, sorry for the fact I can't debug it a bit better but I don't have access to a windows machine atm. But will have after the weekend!
+
+---
+
+_Comment by @charliermarsh on 2024-04-20 13:34_
+
+Yeah but the return values of `normalize_url_path` and `url.path()` are not really of the same "type", right? The former is meant to be a string representation of a `Path`. The latter is the path segment of a `Url`.
+
+---
+
+_Comment by @tdejager on 2024-04-20 17:43_
+
+🤦 oh man, you are right: https://github.com/tdejager/pep508-repro (succeeding now)
+
+Got it to succeed now, feel free to close.
+
+Sorry about that, totally missed it!
+
+---
+
+_Closed by @tdejager on 2024-04-22 07:32_
+
+---

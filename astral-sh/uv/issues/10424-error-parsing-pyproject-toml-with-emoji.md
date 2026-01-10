@@ -1,0 +1,136 @@
+---
+number: 10424
+title: Error parsing pyproject.toml with emoji 😮
+type: issue
+state: closed
+author: iwanbolzern
+labels:
+  - external
+assignees: []
+created_at: 2025-01-09T09:00:28Z
+updated_at: 2025-01-09T12:01:14Z
+url: https://github.com/astral-sh/uv/issues/10424
+synced_at: 2026-01-10T01:24:53Z
+---
+
+# Error parsing pyproject.toml with emoji 😮
+
+---
+
+_Issue opened by @iwanbolzern on 2025-01-09 09:00_
+
+uv fails to parse the following pyproject.toml on Windows. The problem seems to be 🔍 in the description:
+
+```
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 181: character maps to <undefined>
+```
+
+pyproject.toml:
+```toml
+[project]
+name = "fastapi-sqlalchemy-monitor"
+dynamic = ["version"]
+description = "Seamlessly track SQLAlchemy performance in FastAPI with plug-and-play monitoring middleware 🔍"
+authors = [
+    { name = "Iwan Bolzern" },
+]
+readme = "README.md"
+urls = { Documentation = "https://github.com/iwanbolzern/fastapi-sqlalchemy-monitor" }
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[all]>=0.115.6",
+    "sqlalchemy[asyncio]>=2.0.36",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[dependency-groups]
+dev = [
+    "aiosqlite>=0.20.0",
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.4",
+    "uv-dynamic-versioning>=0.4.0",
+]
+
+[tool.uv]
+package = true
+python-downloads = "manual"
+default-groups = ["dev"]
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+bump = true
+
+[tool.uv-dynamic-versioning.substitution]
+folders = [
+    { path = "src" }
+]
+
+[tool.ruff]
+line-length = 120
+include = ["src/**.py", "tests/**.py"]
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+]
+ignore = [
+]
+```
+
+Link to project: [fastapi-sqlalchemy-monitor](https://github.com/iwanbolzern/fastapi-sqlalchemy-monitor)
+
+---
+
+_Comment by @iwanbolzern on 2025-01-09 09:01_
+
+Tagging @livioweber
+
+---
+
+_Comment by @konstin on 2025-01-09 09:20_
+
+It looks like this is an error in a python tool, probably hatchling or uv-dynamic-versioning, `UnicodeDecodeError` is a python error not a rust error.
+
+---
+
+_Label `upstream` added by @konstin on 2025-01-09 09:20_
+
+---
+
+_Comment by @iwanbolzern on 2025-01-09 12:01_
+
+True, my bad. It seems the issue comes from hatchling. 
+
+---
+
+_Closed by @iwanbolzern on 2025-01-09 12:01_
+
+---

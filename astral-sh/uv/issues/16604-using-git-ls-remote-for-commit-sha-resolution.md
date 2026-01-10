@@ -1,0 +1,36 @@
+---
+number: 16604
+title: "Using `git ls-remote` for commit SHA resolution"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - performance
+assignees: []
+created_at: 2025-11-05T17:39:24Z
+updated_at: 2025-11-05T17:44:27Z
+url: https://github.com/astral-sh/uv/issues/16604
+synced_at: 2026-01-10T01:26:08Z
+---
+
+# Using `git ls-remote` for commit SHA resolution
+
+---
+
+_Issue opened by @charliermarsh on 2025-11-05 17:39_
+
+This could also work, in theory, for private Git repositories, unlike our use of the GitHub API.
+
+---
+
+_Label `performance` added by @charliermarsh on 2025-11-05 17:39_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-11-05 17:44_
+
+---
+
+_Referenced in [astral-sh/uv#16648](../../astral-sh/uv/pulls/16648.md) on 2025-11-09 04:13_
+
+---

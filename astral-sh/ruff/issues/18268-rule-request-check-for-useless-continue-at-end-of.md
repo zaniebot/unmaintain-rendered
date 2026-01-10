@@ -1,0 +1,69 @@
+---
+number: 18268
+title: "Rule Request: Check for Useless `continue` at end of `for` loop"
+type: issue
+state: open
+author: collinanderson
+labels:
+  - rule
+assignees: []
+created_at: 2025-05-23T02:47:41Z
+updated_at: 2025-05-23T08:36:10Z
+url: https://github.com/astral-sh/ruff/issues/18268
+synced_at: 2026-01-10T01:22:59Z
+---
+
+# Rule Request: Check for Useless `continue` at end of `for` loop
+
+---
+
+_Issue opened by @collinanderson on 2025-05-23 02:47_
+
+### Summary
+
+Rule Request: Check for Useless `continue` at end of `for` or `while` loop.
+
+```
+for a in [1, 2, 3]:
+    print(a)
+    continue
+```
+The continue here is useless and should probably be removed.
+
+---
+
+_Comment by @MichaReiser on 2025-05-23 08:27_
+
+Thanks for the suggestion. I think this makes sense but might be something that we want to combine into a more general unreachable rule. @dylwil3 do we have an issue for unreachable?
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-05-23 08:27_
+
+---
+
+_Comment by @joaoe on 2025-05-23 08:36_
+
+Hi.
+
+> we want to combine into a more general unreachable rule.
+
+It is not unreachable. It is a no-op.
+
+It is the same thing as this
+
+```
+block = "of code"
+... # <- no-op
+pass # <- no-op
+more = "code"
+````
+
+`pass` and `...` statements mixed with other statements in the same block. The latter covered by this rule.
+https://docs.astral.sh/ruff/rules/unnecessary-placeholder/#unnecessary-placeholder-pie790
+
+
+
+
+
+---

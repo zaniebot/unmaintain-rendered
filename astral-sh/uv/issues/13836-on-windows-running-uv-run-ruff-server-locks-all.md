@@ -1,0 +1,180 @@
+---
+number: 13836
+title: "On Windows, Running `uv run ruff server` locks all `ruff.exe` files in ALL virtual environments created by uv."
+type: issue
+state: closed
+author: momostein
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-04T13:52:29Z
+updated_at: 2025-06-04T15:01:49Z
+url: https://github.com/astral-sh/uv/issues/13836
+synced_at: 2026-01-10T01:25:39Z
+---
+
+# On Windows, Running `uv run ruff server` locks all `ruff.exe` files in ALL virtual environments created by uv.
+
+---
+
+_Issue opened by @momostein on 2025-06-04 13:52_
+
+### Summary
+
+## Context 
+
+I use PyCharm with the Ruff plugin on Windows. That plugin runs ruff server in the background. I am currently migrating my projects to uv. We currently use [Nox](https://nox.thea.codes/en/stable/index.html) to test and lint our code against multiple Python versions. It creates a new isolated virtual environment for each session to run the tests or the linter
+
+However, after switching over to uv, the linting Nox sessions would fail because they couldn't clean up their virtual  environments. After inspecting the virtual environment folder, only `Scripts/ruff.exe` was left. After closing PyCharm (and thus terminating the background `ruff server` process), it would work again.
+
+## Steps to Reproduce
+
+You don't need nox to reproduce this bug. You just need uv and powershell.
+To reproduce this bug:
+
+1. Create two folders, `foo` and `bar`
+2. Create a venv in each folder
+3. Install `ruff` in both
+4. Run `ruff server` in the `foo/.venv/` environment
+5. Try to delete `bar/.venv/` while the ruff server is still running
+
+### Powershell Commands
+
+#### `foo`
+
+```ps1
+mkdir foo
+cd foo
+
+uv venv
+uv pip install ruff
+
+uv run ruff server
+```
+
+
+#### `bar` 
+
+```ps1
+mkdir bar
+cd bar
+
+uv venv
+uv pip install ruff
+
+rm -r .venv
+```
+
+### Expected Outcome
+
+I expect `bar/.venv` to be deleted without error. I expect it to be independent of the `foo/.venv/` environment.
+
+### Actual Outcome
+
+I get an error like this:
+
+```
+rm : Cannot remove item foo\.venv\Scripts\ruff.exe: Access to the path 'ruff.exe' is denied.
+```
+
+And only `bar/.venv/Scripts/ruff.exe` remains.
+
+## This only happens with uv Virtual Environments
+
+I've also tried it with the vanilla Python virtual environments and there was no issue.
+
+## Current workaround
+
+Using a global ruff installation with `uv tool install ruff` to then just run `ruff server` does not lock the virtual environment `ruff.exe` files. I can edit my plugin settings to use the global ruff instead of the local ruff.
+
+Another option could be using Windows Subsystem for Linux as this issue does not exist on Linux.
+
+### Platform
+
+Windows 10 x86_64
+
+### Version
+
+uv 0.7.10 (1e5120e15 2025-06-03)
+
+### Python version
+
+Python 3.13.1
+
+---
+
+_Label `bug` added by @momostein on 2025-06-04 13:52_
+
+---
+
+_Renamed from "On Windows, Running `uv run ruff server` locks all `ruff.exe` files in *ALL* virtual environments created by uv." to "On Windows, Running `uv run ruff server` locks all `ruff.exe` files in ALL virtual environments created by uv." by @momostein on 2025-06-04 13:52_
+
+---
+
+_Comment by @konstin on 2025-06-04 14:06_
+
+Thank you for the detailed write-up, this is duplicate of https://github.com/astral-sh/uv/issues/11134. You can use `--link-mode copy` when installing ruff as a workaround.
+
+---
+
+_Comment by @momostein on 2025-06-04 14:18_
+
+The link-mode workaround fixes my issues.
+
+I have added the following line to my global `%AppData%/uv/uv.toml` config file on my Windows environment:
+
+```toml
+link-mode = "copy"
+```
+
+---
+
+_Closed by @konstin on 2025-06-04 14:23_
+
+---
+
+_Comment by @momostein on 2025-06-04 14:29_
+
+On closer inspection of #11134, I concede that my Issue is very closely linked to it but it might not be a duplicate.
+
+In my case, I'm trying to modify a different `ruff.exe` than the one being run as a server. Ok, behind the scenes of uv, they might hard link to the same `ruff.exe` file but I don't see how I shouldn't be able to delete the hard link that's not being run?
+
+The main issue of #11134 is that trying to remove the `ruff.exe` that is actually running, leaves uv in an invalid state because `uv remove` is not *atomic*.
+
+Can you please elaborate why you would still mark this as a duplicate?
+
+Is it because that's just how hard links work on windows and we won't be able to fix this for uv?
+
+---
+
+_Comment by @momostein on 2025-06-04 14:47_
+
+Ok, after messing around myself with hard links and background processes, it seems that you can't delete a hard link to an executable that's running. Even through another hard link.
+
+So yeah, my issue is not really a uv bug, but an issue with hard links themselves...
+
+Therefore, I think that "hardlink" might not be the right default link-mode for Windows to begin with, but it's easily fixed through configuration.
+
+---
+
+_Comment by @konstin on 2025-06-04 14:53_
+
+That's the problem we're tracking in #11134, we may want a different link mode for executables on Windows.
+
+---
+
+_Comment by @momostein on 2025-06-04 15:01_
+
+Thanks for the explanation. `link-mode = "copy"` would probably be the safest in most cases. I'm now trying out `link-mode = "symlink"` and it seems to work quite well. I can even delete the ruff.exe symlink that's actually running at the same time.
+
+But I would not know what man-made horrors lie beyond my comprehension in terms of cache safety...
+
+You're doing great work!
+
+Thank you for bearing with me 👍
+
+---
+
+_Referenced in [astral-sh/uv#11134](../../astral-sh/uv/issues/11134.md) on 2025-06-04 15:38_
+
+---

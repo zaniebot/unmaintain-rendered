@@ -1,0 +1,172 @@
+---
+number: 919
+title: "Better documentation for --(\"hyphenated-name\") longs with clap_app! macro"
+type: issue
+state: closed
+author: robotmay
+labels:
+  - C-enhancement
+  - A-docs
+assignees: []
+created_at: 2017-03-28T12:44:22Z
+updated_at: 2018-08-02T03:30:04Z
+url: https://github.com/clap-rs/clap/issues/919
+synced_at: 2026-01-10T01:26:38Z
+---
+
+# Better documentation for --("hyphenated-name") longs with clap_app! macro
+
+---
+
+_Issue opened by @robotmay on 2017-03-28 12:44_
+
+### Rust Version
+
+1.15.0
+
+### Affected Version of clap
+
+2.22.1
+
+### Expected Behavior Summary
+
+Adding options with similar but unique names separated by hyphens should not throw an error.
+
+### Actual Behavior Summary
+
+Adding multiple options with similar names, like in the example below, causes numerous issues with duplicate long/short flags.
+
+### Sample Code or Link to Sample Code
+
+```
+(@arg power_on_value: -o --power-on-value +takes_value "Value for the pins when power should be on")
+(@arg power_off_value: -f --power-off-value +takes_value "Value for the pins when power should be off")
+```
+
+### Debug output
+
+Here's the output from the definitions as above:
+```
+    Finished debug [unoptimized + debuginfo] target(s) in 2.15 secs
+     Running `target/debug/lightship --pins 18 --http http://www.google.com/teapot`
+thread 'main' panicked at 'Argument long must be unique
+
+        --power is already in use', /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/parser.rs:125
+stack backtrace:
+   1:     0x5624e7c9caba - std::sys::imp::backtrace::tracing::imp::write::h3188f035833a2635
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:42
+   2:     0x5624e7c9f37f - std::panicking::default_hook::{{closure}}::h6385b6959a2dd25b
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:349
+   3:     0x5624e7c9ef7e - std::panicking::default_hook::he4f3b61755d7fa95
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:365
+   4:     0x5624e7c9f827 - std::panicking::rust_panic_with_hook::hf00b8130f73095ec
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:553
+   5:     0x5624e7c9f664 - std::panicking::begin_panic::h6227f62cb2cdaeb4
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:515
+   6:     0x5624e7c9f5d9 - std::panicking::begin_panic_fmt::h173eadd80ae64bec
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:499
+   7:     0x5624e79f14f3 - clap::app::parser::Parser::debug_asserts::h5e3927975f9767bb
+                        at /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/parser.rs:125
+   8:     0x5624e79f2372 - clap::app::parser::Parser::add_arg::h03b60cbb45075aa5
+                        at /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/parser.rs:217
+   9:     0x5624e78e8844 - clap::app::App::arg::he7712f3aae28dd64
+                        at /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/mod.rs:709
+  10:     0x5624e78f9590 - lightship::main::h9a983c637a63540d
+                        at /home/robotmay/Development/piratestudios/lightship/src/main.rs:82
+  11:     0x5624e7ca674a - __rust_maybe_catch_panic
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libpanic_unwind/lib.rs:98
+  12:     0x5624e7c9ff66 - std::rt::lang_start::h65647f6e36cffdae
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:434
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panic.rs:351
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/rt.rs:57
+  13:     0x5624e78fa692 - main
+  14:     0x7fc54017082f - __libc_start_main
+  15:     0x5624e78e4758 - _start
+  16:                0x0 - <unknown>
+```
+
+Here's the output if you modify the two options to be `--poweron-value` and `--poweroff-value`:
+```
+    Finished debug [unoptimized + debuginfo] target(s) in 2.20 secs
+     Running `target/debug/lightship --pins 18 --http http://www.google.com/teapot`
+thread 'main' panicked at 'Argument short must be unique
+
+        -v is already in use', /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/parser.rs:130
+stack backtrace:
+   1:     0x557b8d9a5a7a - std::sys::imp::backtrace::tracing::imp::write::h3188f035833a2635
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:42
+   2:     0x557b8d9a833f - std::panicking::default_hook::{{closure}}::h6385b6959a2dd25b
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:349
+   3:     0x557b8d9a7f3e - std::panicking::default_hook::he4f3b61755d7fa95
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:365
+   4:     0x557b8d9a87e7 - std::panicking::rust_panic_with_hook::hf00b8130f73095ec
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:553
+   5:     0x557b8d9a8624 - std::panicking::begin_panic::h6227f62cb2cdaeb4
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:515
+   6:     0x557b8d9a8599 - std::panicking::begin_panic_fmt::h173eadd80ae64bec
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:499
+   7:     0x557b8d6fa5dc - clap::app::parser::Parser::debug_asserts::h5e3927975f9767bb
+                        at /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/parser.rs:130
+   8:     0x557b8d6fb332 - clap::app::parser::Parser::add_arg::h03b60cbb45075aa5
+                        at /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/parser.rs:217
+   9:     0x557b8d5f1844 - clap::app::App::arg::he7712f3aae28dd64
+                        at /home/robotmay/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.22.1/src/app/mod.rs:709
+  10:     0x557b8d60254a - lightship::main::h9a983c637a63540d
+                        at /home/robotmay/Development/piratestudios/lightship/src/main.rs:82
+  11:     0x557b8d9af70a - __rust_maybe_catch_panic
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libpanic_unwind/lib.rs:98
+  12:     0x557b8d9a8f26 - std::rt::lang_start::h65647f6e36cffdae
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:434
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panic.rs:351
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/rt.rs:57
+  13:     0x557b8d603652 - main
+  14:     0x7f0b5227582f - __libc_start_main
+  15:     0x557b8d5ed758 - _start
+  16:                0x0 - <unknown>
+```
+
+It compiles fine if you swap them both to `poweronvalue` and `poweroffvalue`.
+
+I hope this info helps. I think it's a bug, but I'm not familiar enough with the repo to fix it myself at the moment :)
+
+---
+
+_Comment by @kbknapp on 2017-03-28 18:22_
+
+This is because to use hyphenated longs with the macro, you must use `--("some-hyphenated-name")` due to limitations of the Rust macro system.
+
+I'll keep this open as a docs issue though, as that limitation should be clearly articulated.
+
+---
+
+_Label `C: docs` added by @kbknapp on 2017-03-28 18:22_
+
+---
+
+_Label `C: macros` added by @kbknapp on 2017-03-28 18:22_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-03-28 18:22_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2017-03-28 18:22_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2017-03-28 18:22_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-03-28 18:22_
+
+---
+
+_Renamed from "Issue with similar, but unique, hyphenated options" to "Better documentation for --("hyphenated-name") longs with clap_app! macro" by @kbknapp on 2017-03-28 18:23_
+
+---
+
+_Closed by @homu on 2017-04-05 12:58_
+
+---

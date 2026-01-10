@@ -1,0 +1,197 @@
+---
+number: 13255
+title: Authenticate during HTTP redirects
+type: issue
+state: open
+author: zanieb
+labels:
+  - bug
+  - tracking
+assignees: []
+created_at: 2025-05-01T18:26:46Z
+updated_at: 2025-06-18T08:28:37Z
+url: https://github.com/astral-sh/uv/issues/13255
+synced_at: 2026-01-10T01:25:30Z
+---
+
+# Authenticate during HTTP redirects
+
+---
+
+_Issue opened by @zanieb on 2025-05-01 18:26_
+
+We previously rolled this out in 
+
+- https://github.com/astral-sh/uv/pull/12920
+
+to resolve
+
+- https://github.com/astral-sh/uv/issues/5595
+- https://github.com/astral-sh/uv/issues/11097
+
+but there were regressions with relative URI handling and GCP
+
+- https://github.com/astral-sh/uv/issues/13037
+
+so it was reverted in https://github.com/astral-sh/uv/pull/13041
+
+then fixed and released again in
+
+- https://github.com/astral-sh/uv/pull/13050
+
+but there were regressions with Azure
+
+- https://github.com/astral-sh/uv/issues/13208
+
+so it was reverted again in https://github.com/astral-sh/uv/pull/13215
+
+This issue tracks resolving the outstanding issues before releasing this again. Notably
+
+- The cause of the Azure problem needs to be identified, and fixed
+- We need to carefully test this change for release again
+- We should add automated testing to prevent regressions
+
+---
+
+_Label `tracking` added by @zanieb on 2025-05-01 18:26_
+
+---
+
+_Referenced in [astral-sh/uv#5595](../../astral-sh/uv/issues/5595.md) on 2025-05-01 18:27_
+
+---
+
+_Referenced in [astral-sh/uv#11097](../../astral-sh/uv/issues/11097.md) on 2025-05-01 18:28_
+
+---
+
+_Referenced in [astral-sh/uv#13208](../../astral-sh/uv/issues/13208.md) on 2025-05-01 18:28_
+
+---
+
+_Label `bug` added by @zanieb on 2025-05-01 18:29_
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-05-01 19:00_
+
+---
+
+_Comment by @jenshnielsen on 2025-05-02 07:21_
+
+@zanieb @jtfmumm I am happy to test any new version of this against an azure feed. Please feel free to ping me if you can benefit from extra manual testing
+
+---
+
+_Comment by @joeybenamy on 2025-05-02 19:46_
+
+This issue ended up being the root cause for us when trying to download a package from a private registry.  Rolled `uv` back to `0.6.17` to work around the bug.
+
+---
+
+_Comment by @jenshnielsen on 2025-06-16 12:35_
+
+@jtfmumm tested and seems to work correctly. See commit in #13595 
+
+---
+
+_Comment by @jtfmumm on 2025-06-16 12:54_
+
+We have a new fix for authentication on redirects on #13754 that avoids the problems listed here. It would be very helpful if anyone would be willing to test that PR on their own private index (whether Azure or anything else). You could build that PR or you could also use:
+
+```
+uvx -v --from "uv @ git+https://github.com/astral-sh/uv@jtfm/update-redirect-handling" uv add <pkg-from-private-index> --default-index https://<username>:<password>@<private-index-url>
+```
+
+filling in `<pkg-from-private-index>`, `<username>`, `<password>`, and `<private-index-url>` with your own values.
+
+---
+
+_Comment by @lagamura on 2025-06-16 13:27_
+
+Failed to fetch a package from our private JFROG artifactory with following trace:
+```shell
+...
+File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_client.py", line 825, in request
+          return self.send(request, auth=auth, follow_redirects=follow_redirects)
+                 ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_client.py", line 914, in send
+          response = self._send_handling_auth(
+              request,
+          ...<2 lines>...
+              history=[],
+          )
+        File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+          response = self._send_handling_redirects(
+              request,
+              follow_redirects=follow_redirects,
+              history=history,
+          )
+        File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+          response = self._send_single_request(request)
+        File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_client.py", line 1014, in _send_single_request
+          response = transport.handle_request(request)
+        File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_transports/default.py", line 249, in handle_request
+          with map_httpcore_exceptions():
+               ~~~~~~~~~~~~~~~~~~~~~~~^^
+        File "$HOME/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu/lib/python3.13/contextlib.py", line 162, in __exit__
+          self.gen.throw(value)
+          ~~~~~~~~~~~~~~^^^^^^^
+        File "$HOME/Private/.cache/uv/builds-v0/.tmpVhgdIb/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+          raise mapped_exc(message) from exc
+      httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Authority Key Identifier (_ssl.c:1028)
+```
+
+---
+
+_Comment by @jtfmumm on 2025-06-16 13:38_
+
+Thank you for testing this @lagamura! Does the same command work with JFrog on uv 0.7.13? If it does, would you mind sharing the trace `-vv` logs from the failure case?
+
+---
+
+_Comment by @lagamura on 2025-06-16 15:25_
+
+Changing `--default-index` to `--index` is working as expected both in `0.7.13` and `@jtfm`. In our case, that's due to our pattern pushing to the private index only the private packages with (`explicit = true`) and using pypi for the public ones to accelerate installation. That's why also previously the error occurred.
+
+Trying also adding a public package `numpy` for a private `--default-index` that mirrors pypi works fine too.
+
+
+---
+
+_Comment by @bra-fsn on 2025-06-17 21:09_
+
+> We have a new fix for authentication on redirects on [#13754](https://github.com/astral-sh/uv/pull/13754) that avoids the problems listed here. It would be very helpful if anyone would be willing to test that PR on their own private index (whether Azure or anything else). You could build that PR or you could also use:
+> 
+> ```
+> uvx -v --from "uv @ git+https://github.com/astral-sh/uv@jtfm/update-redirect-handling" uv add <pkg-from-private-index> --default-index https://<username>:<password>@<private-index-url>
+> ```
+> 
+> filling in `<pkg-from-private-index>`, `<username>`, `<password>`, and `<private-index-url>` with your own values.
+
+What I did:
+```
+docker run --rm -ti python:3.12 bash
+pip install 'git+https://github.com/astral-sh/uv@jtfm/update-redirect-handling'
+uv pip install --system --extra-index-url https://codeartifact-proxy/$accid/us-west-2/$repo/python $pkgname
+```
+Still getting the same error as in:
+https://github.com/astral-sh/uv/issues/11097
+
+```
+Using Python 3.12.11 environment at: /usr/local
+  × No solution found when resolving dependencies:
+  ╰─▶ Because $pkgname was not found in the package registry and
+      you require $pkgname, we can conclude that your requirements
+      are unsatisfiable.
+```
+
+`pip install` works just fine.
+
+---
+
+_Comment by @jtfmumm on 2025-06-18 08:28_
+
+Thanks for testing @bra-fsn! I've commented on #11097 and have re-opened that issue, which I will work on separately.
+
+---

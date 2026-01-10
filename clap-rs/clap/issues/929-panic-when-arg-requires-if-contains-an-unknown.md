@@ -1,0 +1,221 @@
+---
+number: 929
+title: "Panic when Arg::requires_if contains an unknown argument"
+type: issue
+state: closed
+author: RazrFalcon
+labels:
+  - C-enhancement
+  - A-docs
+  - E-medium
+  - E-easy
+assignees: []
+created_at: 2017-04-11T15:54:42Z
+updated_at: 2020-04-10T02:00:14Z
+url: https://github.com/clap-rs/clap/issues/929
+synced_at: 2026-01-10T01:26:38Z
+---
+
+# Panic when Arg::requires_if contains an unknown argument
+
+---
+
+_Issue opened by @RazrFalcon on 2017-04-11 15:54_
+
+### Rust Version
+
+rustc 1.16.0 (30cf806ef 2017-03-10)
+
+### Affected Version of clap
+
+clap 2.23.2
+
+### Sample Code
+
+```rust
+extern crate clap;
+use clap::{Arg, App};
+fn main() {
+    let m = App::new("test")
+        .arg(Arg::with_name("test1")
+            .long("test1")
+            .requires_if("test2", "value"))
+        .get_matches();
+}
+```
+
+### Output
+
+```
+% cargo run -- --test1=q --test-args=q
+   Compiling args v0.0.0 (file:///...)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.71 secs
+     Running `target/debug/args --test1=q --test-args=q`
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libcore/option.rs:715
+stack backtrace:
+   1:     0x564f207bee3c - std::sys::imp::backtrace::tracing::imp::write::hf33ae72d0baa11ed
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:42
+   2:     0x564f207c13be - std::panicking::default_hook::{{closure}}::h59672b733cc6a455
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:351
+   3:     0x564f207c0fc4 - std::panicking::default_hook::h1670459d2f3f8843
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:367
+   4:     0x564f207c17fb - std::panicking::rust_panic_with_hook::hcf0ddb069e7beee7
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:555
+   5:     0x564f207c1694 - std::panicking::begin_panic::hd6eb68e27bdf6140
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:517
+   6:     0x564f207c15b9 - std::panicking::begin_panic_fmt::hfea5965948b877f8
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:501
+   7:     0x564f207c1547 - rust_begin_unwind
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:477
+   8:     0x564f207e8e1d - core::panicking::panic_fmt::hc0f6d7b2c300cdd9
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libcore/panicking.rs:69
+   9:     0x564f207e8ead - core::option::expect_failed::h43c73e9bd7dbebbc
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libcore/option.rs:715
+  10:     0x564f205860ea - <core::option::Option<T>>::expect::h474935a2057d9000
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libcore/option.rs:293
+  11:     0x564f20790ea1 - clap::app::usage::get_required_usage_from::{{closure}}::h976429bcd63c354c
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/usage.rs:418
+  12:     0x564f20579e40 - <core::option::Option<T>>::unwrap_or_else::hb293490079019918
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libcore/option.rs:358
+  13:     0x564f2078fcbe - clap::app::usage::get_required_usage_from::he972597b8db0b059
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/usage.rs:415
+  14:     0x564f2078c4d2 - clap::app::usage::create_smart_usage::h633df59a71bd565a
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/usage.rs:163
+  15:     0x564f2078b073 - clap::app::usage::create_usage_no_title::h6bfd4766eab833c5
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/usage.rs:53
+  16:     0x564f2078aab5 - clap::app::usage::create_usage_with_title::h2c19c8dbd10b61e7
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/usage.rs:17
+  17:     0x564f2078ad56 - clap::app::usage::create_error_usage::habf9ad0011a53920
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/usage.rs:42
+  18:     0x564f20757aaf - clap::app::parser::Parser::did_you_mean_error::hb7ea653c4b97d48a
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/parser.rs:1608
+  19:     0x564f2074bb9e - clap::app::parser::Parser::parse_long_arg::h1317d3e6f872c643
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/parser.rs:1365
+  20:     0x564f207386f9 - clap::app::parser::Parser::get_matches_with::h1b055c1455453a10
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/parser.rs:821
+  21:     0x564f20791f8d - clap::app::App::get_matches_from_safe_borrow::hf758b949519b316a
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/mod.rs:1615
+  22:     0x564f207914e1 - clap::app::App::get_matches_from::h5915e7c7dae2ed41
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/mod.rs:1500
+  23:     0x564f207913e7 - clap::app::App::get_matches::h841c40b77359f10b
+                        at /home/razr/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.23.2/src/app/mod.rs:1443
+  24:     0x564f20550fee - args::main::h49dd4b29aab0116c
+                        at /media/data/Programming/Projects/rust/args/src/main.rs:9
+  25:     0x564f207c868a - __rust_maybe_catch_panic
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libpanic_unwind/lib.rs:98
+  26:     0x564f207c1f66 - std::rt::lang_start::hd7c880a37a646e81
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panicking.rs:436
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/panic.rs:361
+                        at /buildslave/rust-buildbot/slave/stable-dist-rustc-linux/build/src/libstd/rt.rs:57
+  27:     0x564f20551102 - main
+  28:     0x7f223c3af78f - __libc_start_main
+  29:     0x564f20548338 - _start
+  30:                0x0 - <unknown>
+```
+
+### Debug output
+
+The `debug` feature didn't change anything.
+
+
+---
+
+_Comment by @kbknapp on 2017-04-18 00:41_
+
+This is a known "issue" or rather by design, but I should add it to a `# Panics` section in the docs for that method. Thanks! #604 is also relevant here.
+
+---
+
+_Label `C: docs` added by @kbknapp on 2017-04-18 00:41_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-04-18 00:41_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2017-04-18 00:41_
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2017-04-18 00:41_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-04-18 00:41_
+
+---
+
+_Comment by @RazrFalcon on 2017-04-18 07:52_
+
+I see.
+
+It says *Please consider filing a bug report* so here I am. 
+
+---
+
+_Comment by @kbknapp on 2017-04-18 10:55_
+
+Yep that's the default internal error message for any panic. In this case it worked too, because you filing the bug report reminded me to add a blurb in the docs and also switch from the default internal error message :-)
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2018-07-22 01:34_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2018-07-22 01:34_
+
+---
+
+_Added to milestone `v3-alpha.1` by @kbknapp on 2018-07-22 01:35_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2018-07-22 01:35_
+
+---
+
+_Label `good first issue` added by @kbknapp on 2018-07-22 01:35_
+
+---
+
+_Comment by @kbknapp on 2018-07-22 01:36_
+
+Relates to #604 and should either happen in debug builds via `debug_asserts` or behind a feature flag.
+
+---
+
+_Comment by @spwitt on 2018-10-07 01:36_
+
+@kbknapp I'm interested in working on this issue.
+
+What exactly does the "mentored" label mean?
+
+---
+
+_Referenced in [TeXitoi/structopt#255](../../TeXitoi/structopt/issues/255.md) on 2019-09-09 14:37_
+
+---
+
+_Comment by @CreepySkeleton on 2019-09-09 21:55_
+
+@Dylan-DPC It seems like it's replaced by another problem in `v3-master`. Snipped above works just fine, i.e. `clap` does not check that `test2` is a valid arg while it should
+
+---
+
+_Removed from milestone `v3-alpha.2` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Added to milestone `v3.0` by @pksunkara on 2020-02-01 07:45_
+
+---
+
+_Label `C: asserts` added by @pksunkara on 2020-04-09 07:32_
+
+---
+
+_Closed by @bors[bot] on 2020-04-10 02:00_
+
+---

@@ -1,0 +1,138 @@
+---
+number: 5579
+title: "Duplicated \"error:\" prefix"
+type: issue
+state: open
+author: d-e-s-o
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-07-10T15:47:04Z
+updated_at: 2024-08-18T17:01:33Z
+url: https://github.com/clap-rs/clap/issues/5579
+synced_at: 2026-01-10T01:28:13Z
+---
+
+# Duplicated "error:" prefix
+
+---
+
+_Issue opened by @d-e-s-o on 2024-07-10 15:47_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.79.0-nightly (129f3b996 2024-06-10) (gentoo)
+
+### Clap Version
+
+4.5.4
+
+### Minimal reproducible code
+
+```rust
+use std::env::args_os;
+use anyhow::Result;
+use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Name of the person to greet
+    #[arg(short, long)]
+    name: String,
+}
+
+fn main() -> Result<()> {
+    let _args = Args::try_parse_from(args_os())?;
+    Ok(())
+}
+```
+
+https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=6221486eaf814c633157f1c9fdf27c12
+
+### Steps to reproduce the bug with the above code
+
+`cargo run`
+
+### Actual Behaviour
+
+Prints:
+```
+Error: error: the following required arguments were not provided:
+  --name <NAME>
+
+Usage: playground --name <NAME>
+
+For more information, try '--help'.
+```
+
+### Expected Behaviour
+
+Prints:
+```
+Error: the following required arguments were not provided:
+  --name <NAME>
+
+Usage: playground --name <NAME>
+
+For more information, try '--help'.
+```
+
+
+### Additional Context
+
+The "error:" prefix is duplicated. I find this behavior irritating. One prefix seems to be added by the standard library, the other [by `clap`](https://github.com/clap-rs/clap/blob/43e73682835653ac48f32cc786514553d697c693/clap_builder/src/error/format.rs#L135) (I don't believe `clap` is alone with such behavior)
+
+In my opinion the standard library's behavior is questionable -- it's just way too opinionated and this is a good example -- but I wanted to get your guys' take and have an issue to reference to make the case for changing it (which I suppose may be a hard sell irrespectively).
+
+In general, though, it also feels as if just the typical wording of "failed to [...]" or similar would be sufficient for convey the issue. Meaning that there is no need for an "error:" at all, even from the `clap` side. It just depends too much on the context how the error is reported whether it makes sense to include such a prefix or not.
+
+Any opinions/comments/thoughts?
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @d-e-s-o on 2024-07-10 15:47_
+
+---
+
+_Comment by @epage on 2024-07-10 17:00_
+
+Is there a reason you are using `try_parse_from`, rather than `parse`?
+
+---
+
+_Comment by @d-e-s-o on 2024-07-10 21:10_
+
+> Is there a reason you are using `try_parse_from`, rather than `parse`?
+
+Yep.
+
+---
+
+_Comment by @epage on 2024-08-13 20:18_
+
+This isn't the only peculiarity about claps' error reporting that doesn't make it work well with policies like `anyhow`.  For example, you likely should condition your exit code based on `er.use_stderr()` (not a great name) or else `--help` is considered an error when its generally recognized as not one.
+
+We need more information to better understand your use case to determine what, if anything, we should be done about this.
+
+---
+
+_Comment by @d-e-s-o on 2024-08-18 17:01_
+
+This has very little if not nothing to do with `anyhow` from what I can tell.
+
+My use case is using regular error reporting paths as every other crate does and have a single program exit path. If every crate thinks it knows best when to exit then I have no control over or idea of what is going on. The same is true (and, to the best I can tell, accepted practice) for panics: you can unwrap or panic on invariants and everything else (certainly everything controllable by a user) shouldn't panic, but report a handleable error.
+
+I assume that is the reason why the `try_parse_from` API exist in the first place, right?
+
+---

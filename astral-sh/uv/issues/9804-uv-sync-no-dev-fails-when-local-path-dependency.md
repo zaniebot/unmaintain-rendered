@@ -1,0 +1,94 @@
+---
+number: 9804
+title: uv sync --no-dev fails when local path dependency defined only in --dev is missing
+type: issue
+state: closed
+author: ddorian
+labels:
+  - question
+assignees: []
+created_at: 2024-12-11T11:07:36Z
+updated_at: 2024-12-11T14:44:57Z
+url: https://github.com/astral-sh/uv/issues/9804
+synced_at: 2026-01-10T01:24:46Z
+---
+
+# uv sync --no-dev fails when local path dependency defined only in --dev is missing
+
+---
+
+_Issue opened by @ddorian on 2024-12-11 11:07_
+
+I added a local package that is only available and needed in dev environment.
+I exclude this package on production, but uv fails to create the env.
+Maybe this is expected?
+
+```toml
+[project]
+name = "uv-test-package"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.32.3",
+]
+
+[dependency-groups]
+dev = [
+    "flask-openapi3",
+]
+
+[tool.uv.sources]
+flask-openapi3 = { path = "flask-openapi3" }
+
+```
+
+```shell
+❯ uv version
+uv 0.5.7
+
+
+❯ uv sync --no-dev
+error: Failed to generate package metadata for `flask-openapi3==4.0.3 @ directory+flask-openapi3`
+  Caused by: Distribution not found at: file:///home/guru/Desktop/stream/uv_test_package/flask-openapi3
+```
+
+Regards,
+Dorian
+
+---
+
+_Comment by @charliermarsh on 2024-12-11 13:42_
+
+We still need to be able to resolve the dependencies in order to lock. In production, you might want to run with `--frozen` to avoid that step?
+
+---
+
+_Label `question` added by @charliermarsh on 2024-12-11 13:42_
+
+---
+
+_Comment by @ddorian on 2024-12-11 14:20_
+
+Makes sense. Thank you.
+
+Can uv run work with --frozen --no-dev using config or env?
+
+---
+
+_Comment by @charliermarsh on 2024-12-11 14:25_
+
+You can set `UV_FROZEN`, yeah.
+
+---
+
+_Comment by @ddorian on 2024-12-11 14:44_
+
+I had an issue that option wasn't recognized but I was using an old version. Thank You.
+
+---
+
+_Closed by @ddorian on 2024-12-11 14:44_
+
+---

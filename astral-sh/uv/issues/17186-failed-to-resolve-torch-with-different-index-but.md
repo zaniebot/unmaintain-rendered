@@ -1,0 +1,585 @@
+---
+number: 17186
+title: Failed to resolve torch with different index but same marker for conflict extras
+type: issue
+state: open
+author: hermeschen1116
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-19T03:12:07Z
+updated_at: 2025-12-22T03:19:54Z
+url: https://github.com/astral-sh/uv/issues/17186
+synced_at: 2026-01-10T01:26:14Z
+---
+
+# Failed to resolve torch with different index but same marker for conflict extras
+
+---
+
+_Issue opened by @hermeschen1116 on 2025-12-19 03:12_
+
+### Summary
+
+I tried to install cpu only version for intel and metal extras and cu130 version for only cuda extra with the configuration below. 
+
+```toml
+[project.optional-dependencies]
+cuda = [
+	"onnx>=1.19.1 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"onnxruntime-gpu>=1.23.2 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"onnxslim>=0.1.73 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torch>=2.9 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torchvision>=0.24.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+intel = [
+	"nncf>=2.18.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"openvino>=2025.3.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torch>=2.9 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torchvision>=0.24.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+metal = [
+	"coremltools>=9.0.0 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"torch>=2.9 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"torchvision>=0.24.0 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+]
+
+[tool.uv]
+preview = true
+conflicts = [
+	[
+		{ extra = "cuda" },
+		{ extra = "intel" },
+		{ extra = "metal" },
+	],
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.pip]
+all-extras = false
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+  { index = "pytorch-cpu", extra = "intel" },
+  { index = "pytorch-cu130", extra = "cuda" },
+]
+torchvision = [
+  { index = "pytorch-cpu", extra = "metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+  { index = "pytorch-cpu", extra = "intel" },
+  { index = "pytorch-cu130", extra = "cuda" },
+]
+```
+
+This config works fine on Apple silicon mac but it keep failed with this error on amd64 linux.
+```shell
+    Updated https://ezgit.ezcon.com.tw/ai/stream-server.git (782c07f171504f98615ea02f9051a6ea9106ff9e)
+    Updated https://ezgit.ezcon.com.tw/ai/utils.git (9463cbc406ff450922d17f31c2da712a11f0085c)
+    Updated https://ezgit.ezcon.com.tw/ai/vlm-utils.git (1455ae16a4d0b120da22ee7d81ca1b3045b4556d)
+    Updated https://ezgit.ezcon.com.tw/ai/yolo-utils.git (4ce177f94dbd44ea253c0f201daa7c7a12fdce6c)
+  × Failed to resolve dependencies for `utils` (v0.1.0)
+  ╰─▶ Requirements contain conflicting indexes for package `torch` in split `platform_machine == 'x86_64' and
+      sys_platform == 'linux'`:
+      - https://download.pytorch.org/whl/cpu
+      - https://download.pytorch.org/whl/cu130
+  help: `utils` (v0.1.0) was included because `tlpr[metal]` (v0.1.0) depends on `vlm-utils` (v0.1.0) which
+        depends on `utils`
+```
+
+### Platform
+
+Linux 6.17.12+deb14-amd64 x86_64 GNU/Linux, Darwin 25.3.0 arm64 Darwin
+
+### Version
+
+uv 0.9.18
+
+### Python version
+
+Python 3.12.12
+
+---
+
+_Label `bug` added by @hermeschen1116 on 2025-12-19 03:12_
+
+---
+
+_Renamed from "Failed to resolve torch with different index for conflict extra but same marker" to "Failed to resolve torch with different index but same marker for conflict extras" by @hermeschen1116 on 2025-12-19 03:12_
+
+---
+
+_Comment by @charliermarsh on 2025-12-19 03:16_
+
+Can you instead try with:
+```toml
+[tool.uv]
+conflicts = [
+    [
+        { extra = "cuda" },
+        { extra = "intel" },
+    ],
+    [
+        { extra = "cuda" },
+        { extra = "metal" },
+    ],
+    [
+        { extra = "intel" },
+        { extra = "metal" },
+    ],
+]
+```
+
+---
+
+_Comment by @hermeschen1116 on 2025-12-19 03:34_
+
+I've tried this but not works.
+
+---
+
+_Comment by @charliermarsh on 2025-12-19 03:35_
+
+Can you share the error that you hit? It resolved without issue for me.
+
+---
+
+_Comment by @hermeschen1116 on 2025-12-19 03:40_
+
+@charliermarsh  The same as I mention in the issue.
+
+```shell
+ × Failed to resolve dependencies for `utils` (v0.1.0)
+  ╰─▶ Requirements contain conflicting indexes for package `torch` in split `platform_machine == 'x86_64' and sys_platform == 'linux'`:
+      - https://download.pytorch.org/whl/cpu
+      - https://download.pytorch.org/whl/cu130
+  help: `utils` (v0.1.0) was included because `tlpr[metal]` (v0.1.0) depends on `vlm-utils` (v0.1.0) which depends on `utils`
+```
+
+---
+
+_Comment by @charliermarsh on 2025-12-19 03:48_
+
+Can you include the full pyproject.toml along with the command you ran to reproduce?
+
+---
+
+_Comment by @hermeschen1116 on 2025-12-19 04:03_
+
+Okay, but it's a bit complicated. I have a main project that relies on two sub-projects which have torch and torchvision as dependencies. And these three projects all have similar extra and conflict configurations. Below are the current configurations. And I use `uv sync --refresh -U --reinstall --extra {{ platform_specific_extra_name }}`. And there's no problem executing the command with sub-project configurations.
+
+Here is the sub project 1
+```toml
+requires-python = ">=3.12"
+dependencies = [
+	"transformers[hf-xet]>=4.55.4",
+	"utils[model,server]",
+]
+
+[dependency-groups]
+dev = [
+	"utils[test]"
+]
+
+[project.optional-dependencies]
+cuda = [
+	"flash-attn>=2.8.3 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torch>=2.9 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torchvision>=0.24.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"unsloth>=2024.8 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+export = [
+	"huggingface-hub[hf-xet]>=0.36.0",
+	"tqdm>=4.67.1",
+]
+intel = [
+	"openvino>=2025.4 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"optimum[nncf,openvino]>=2.0.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"pillow>=12.0.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torch>=2.9 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torchvision>=0.24.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+metal = [
+	"mlx-vlm>=0.3.3 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"torch>=2.9 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"torchvision>=0.24.0 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+]
+
+[project.scripts]
+"vlm_utils.server" = "vlm_utils.server.CLI:launch"
+"vlm_utils.export_mlx" = "vlm_utils.export.MLXConverter:convert"
+"vlm_utils.export_ov" = "vlm_utils.export.OVConverter:convert"
+
+[build-system]
+requires = ["Nuitka[build-wheel]", "toml", "tqdm"]
+build-backend = "nuitka.distutils.Build"
+
+[tool.uv]
+preview = true
+conflicts = [
+	[
+		{ extra = "cuda" },
+		{ extra = "intel" },
+	],
+	[
+		{ extra = "cuda" },
+		{ extra = "metal" },
+	],
+	[
+		{ extra = "intel" },
+		{ extra = "metal" },
+	]
+]
+environments = [
+	"platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+exclude-dependencies = ["opencv-python", "openvino-telemetry", "uvicorn"]
+prerelease = "allow"
+required-environments = [
+	"platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["ninja", "numpy", "packaging", "torch"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.pip]
+all-extras = false
+no-build-isolation-package = ["flash-attn"]
+
+[tool.uv.sources]
+torch = [
+	{ index = "pytorch-cpu", extra = "metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+	{ index = "pytorch-cpu", extra = "intel" },
+	{ index = "pytorch-cu130", extra = "cuda" },
+]
+torchvision = [
+	{ index = "pytorch-cpu", extra = "metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+	{ index = "pytorch-cpu", extra = "intel" },
+	{ index = "pytorch-cu130", extra = "cuda" },
+]
+utils = { git = "https://ezgit.ezcon.com.tw/ai/utils.git", branch = "dev" }
+```
+
+And the sub project 2
+```toml
+requires-python = ">=3.12"
+dependencies = [
+	"ultralytics>=8.3.217",
+	"utils[server]",
+]
+
+[dependency-groups]
+dev = [
+	"utils[test]",
+]
+
+[project.scripts]
+"yolo_utils.server" = "yolo_utils.server.CLI:launch"
+"yolo_utils.tune" = "yolo_utils.train.HyperparameterTuner:tune"
+"yolo_utils.train" = "yolo_utils.train.Trainer:train"
+"yolo_utils.eval" = "yolo_utils.train.Evaluator:eval"
+
+[project.optional-dependencies]
+cuda = [
+	"onnx>=1.19.1 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"onnxruntime-gpu>=1.23.2 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"onnxslim>=0.1.73 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torch>=2.9 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torchvision>=0.24.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+intel = [
+	"nncf>=2.18.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"openvino>=2025.3.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torch>=2.9 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"torchvision>=0.24.0 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+metal = [
+	"coremltools>=9.0.0 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"torch>=2.9 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"torchvision>=0.24.0 ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+]
+train = [
+    "tqdm>=4.67.1",
+    "wandb[media]>=0.23.0",
+]
+
+[build-system]
+requires = ["Nuitka[build-wheel]", "toml", "tqdm"]
+build-backend = "nuitka.distutils.Build"
+
+[tool.setuptools.package-data]
+"yolo_utils" = ["assets/yolo11n.pt"]
+
+[tool.uv]
+preview = true
+conflicts = [
+	[
+		{ extra = "cuda" },
+		{ extra = "intel" },
+	],
+	[
+		{ extra = "cuda" },
+		{ extra = "metal" },
+	],
+	[
+		{ extra = "intel" },
+		{ extra = "metal" },
+	]
+]
+environments = [
+	"platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+exclude-dependencies = ["opencv-python", "openvino-telemetry", "uvicorn"]
+required-environments = [
+	"platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.pip]
+all-extras = false
+
+[tool.uv.sources]
+torch = [
+	{ index = "pytorch-cpu", extra = "metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+	{ index = "pytorch-cpu", extra = "intel" },
+	{ index = "pytorch-cu130", extra = "cuda" },
+]
+torchvision = [
+	{ index = "pytorch-cpu", extra = "metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+	{ index = "pytorch-cpu", extra = "intel" },
+	{ index = "pytorch-cu130", extra = "cuda" },
+]
+utils = { git = "https://ezgit.ezcon.com.tw/ai/utils.git", branch = "dev"}
+```
+
+Then main project
+```toml
+[project.optional-dependencies]
+cuda = [
+	"vlm-utils[cuda] ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"yolo-utils[cuda] ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+intel = [
+	"vlm-utils[intel] ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+	"yolo-utils[intel] ; platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+metal = [
+	"vlm-utils[metal] ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"yolo-utils[metal] ; platform_machine == 'arm64' and sys_platform == 'darwin'",
+]
+
+[project.scripts]
+"tlpr.server" = "tlpr.CLI:launch"
+"tlpr.stream" = "tlpr.CLI:launch_stream_service"
+"tlpr.detection" = "tlpr.CLI:launch_detection_service"
+"tlpr.recognition" = "tlpr.CLI:launch_recognition_service"
+
+[build-system]
+requires = ["Nuitka[build-wheel]", "toml", "tqdm"]
+build-backend = "nuitka.distutils.Build"
+
+[tool.setuptools.package-data]
+"tlpr" = ["templates/*.html", "assets/**/**/*"]
+
+[tool.uv]
+preview = true
+conflicts = [
+	[
+		{ extra = "cuda" },
+		{ extra = "intel" },
+	],
+	[
+		{ extra = "cuda" },
+		{ extra = "metal" },
+	],
+	[
+		{ extra = "intel" },
+		{ extra = "metal" },
+	]
+]
+environments = [
+	"platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+exclude-dependencies = ["opencv-python", "uvicorn"]
+required-environments = [
+	"platform_machine == 'arm64' and sys_platform == 'darwin'",
+	"platform_machine == 'x86_64' and sys_platform == 'linux'",
+]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["ninja", "numpy", "packaging", "torch"]
+
+[tool.uv.pip]
+all-extras = false
+
+[tool.uv.sources]
+stream-server = { git = "https://ezgit.ezcon.com.tw/ai/stream-server.git" }
+utils = { git = "https://ezgit.ezcon.com.tw/ai/utils.git", branch = "dev" }
+vlm-utils = { git = "https://ezgit.ezcon.com.tw/ai/vlm-utils.git", branch = "dev" }
+yolo-utils = { git = "https://ezgit.ezcon.com.tw/ai/yolo-utils.git", branch = "dev" }
+```
+
+
+---
+
+_Comment by @charliermarsh on 2025-12-19 18:37_
+
+Do those three pyproject.toml projects depend on one another?
+
+---
+
+_Comment by @hermeschen1116 on 2025-12-20 00:58_
+
+Main project depends on project 1 and 2. Project 1 and 2 has no problem resolving torch.
+
+---
+
+_Comment by @charliermarsh on 2025-12-20 02:50_
+
+If the main project is `foo`, and it depends on `bar` and `baz`, you need to enumerate all the conflicts:
+```toml
+[tool.uv]
+conflicts = [
+  # foo[cpu] vs foo[cu128]
+  [
+    { extra = "cpu" },
+    { extra = "cu128" },
+  ],
+  # foo[cpu] vs bar[cu128]
+  [
+    { extra = "cpu" },
+    { package = "bar", extra = "cu128" },
+  ],
+  # foo[cu128] vs bar[cpu]
+  [
+    { extra = "cu128" },
+    { package = "bar", extra = "cpu" },
+  ],
+  # foo[cpu] vs baz[cu128]
+  [
+    { extra = "cpu" },
+    { package = "baz", extra = "cu128" },
+  ],
+  # foo[cu128] vs baz[cpu]
+  [
+    { extra = "cu128" },
+    { package = "baz", extra = "cpu" },
+  ],
+  # bar[cpu] vs baz[cu128]
+  [
+    { package = "bar", extra = "cpu" },
+    { package = "baz", extra = "cu128" },
+  ],
+  # bar[cu128] vs baz[cpu]
+  [
+    { package = "bar", extra = "cu128" },
+    { package = "baz", extra = "cpu" },
+  ],
+]
+```
+
+---
+
+_Comment by @hermeschen1116 on 2025-12-22 02:06_
+
+@charliermarsh Hello, I tried to configure the conflict as below but uv can still not resolve the conflict index for different extras on Linux. And I'm not sure if this is enough to cover all the cases as the number of conflict extras is increasing. To make 3 extras which conflict with each other, we need to enumerate 3 cases, but for this case, I think there are 27 cases to enumerate if my calculation is correct.
+
+```toml
+conflicts = [
+	# tlpr[cuda] vs tlpr[intel]
+	[
+		{ extra = "cuda" },
+		{ extra = "intel" },
+	],
+	# tlpr[cuda] vs yolo-utils[intel]
+	[
+		{ extra = "cuda" },
+		{ package = "yolo-utils", extra = "intel" },
+	],
+	# tlpr[cuda] vs vlm-utils[intel]
+	[
+		{ extra = "cuda" },
+		{ package = "vlm-utils", extra = "intel" },
+	],
+	# tlpr[cuda] vs tlpr[metal]
+	[
+		{ extra = "cuda" },
+		{ extra = "metal" },
+	],
+	# tlpr[cuda] vs yolo-utils[metal]
+	[
+		{ extra = "cuda" },
+		{ package = "yolo-utils", extra = "metal" },
+	],
+	# tlpr[cuda] vs vlm-utils[metal]
+	[
+		{ extra = "cuda" },
+		{ package = "vlm-utils", extra = "metal" },
+	],
+	# tlpr[intel] vs tlpr[metal]
+	[
+		{ extra = "intel" },
+		{ extra = "metal" },
+	],
+	# tlpr[intel] vs yolo-utils[metal]
+	[
+		{ extra = "intel" },
+		{ package = "yolo-utils", extra = "metal" },
+	],
+	# tlpr[intel] vs vlm-utils[metal]
+	[
+		{ extra = "intel" },
+		{ package = "vlm-utils", extra = "metal" },
+	]
+]
+```
+
+And the error message.
+
+```shell
+  × Failed to resolve dependencies for `vlm-utils` (v0.1.0)
+  ╰─▶ Requirements contain conflicting indexes for package `torch` in split `platform_machine == 'x86_64' and sys_platform == 'linux'`:
+      - https://download.pytorch.org/whl/cpu
+      - https://download.pytorch.org/whl/cu130
+  help: `vlm-utils` (v0.1.0) was included because `tlpr[intel]` (v0.1.0) depends on `vlm-utils`
+```
+
+---
+
+_Comment by @hermeschen1116 on 2025-12-22 02:37_
+
+I tried to explicitly define torch and torchvision again and set override packages so that I don't need to enumerate all the cases but uv now get torch from pypi not the index I specified.
+
+---

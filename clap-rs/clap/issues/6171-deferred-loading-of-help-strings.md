@@ -1,0 +1,149 @@
+---
+number: 6171
+title: Deferred loading of help strings
+type: issue
+state: open
+author: andreacorbellini
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - S-waiting-on-design
+assignees: []
+created_at: 2025-11-01T01:02:25Z
+updated_at: 2025-11-10T15:00:47Z
+url: https://github.com/clap-rs/clap/issues/6171
+synced_at: 2026-01-10T01:28:23Z
+---
+
+# Deferred loading of help strings
+
+---
+
+_Issue opened by @andreacorbellini on 2025-11-01 01:02_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.51
+
+### Describe your use case
+
+Help messages passed to `Command::about`, `help_template`, `override_usage`, and similar must be fully initialized strings. Those strings however may never be used by the program (in general, these strings are only ever used if the user specifies something like `--help`, or if an error occurs). For programs where generating those strings is relatively expensive (e.g. programs where help messages are translated in multiple languages), this can have a performance hit for all the invocations of the program.
+
+### Describe the solution you'd like
+
+It would be great if methods like `about()` could accept a closure instead of a string. This could be done e.g by changing 
+
+```rust
+pub fn about(self, about: impl IntoResettable<StyledStr>) -> Command
+```
+
+to:
+
+```rust
+pub fn about(self, about: impl Into<StyledStrOption>) -> Command
+```
+
+with:
+
+```rust
+pub enum StyledStrOption {
+    Default, // equivalent to the current Resettable::Reset
+    Value(StyledStr), // equvalent to the current Resettable::Value
+    Callback(Box<dyn Fn() -> StyledStr), // new functionality
+}
+```
+
+(The name of this enum can be improved.)
+
+### Alternatives, if applicable
+
+Alternatively, if you don't want to expose a new type like `StyledStrOption`, we could have two distinct functions:
+
+```rust
+pub fn about(self, about: impl IntoResettable<StyledStr>) -> Command
+pub fn with_about(self, about: impl Fn() -> StyledStr) -> Command
+```
+
+### Additional Context
+
+This issue is a problem for example for Rust coreutils, where utilities like `cat` (which normally don't need to display any message) currently open, read, and parse translation files at each and every invocation, even if these translations are never used (see https://github.com/uutils/coreutils/issues/9103). If you run `cat /dev/null`, there should be no need to load any strings, but currently the Rust version of `cat` does load all relevant translation files to extract help strings and pass them to `clap`.
+
+---
+
+_Label `C-enhancement` added by @andreacorbellini on 2025-11-01 01:02_
+
+---
+
+_Label `S-triage` added by @andreacorbellini on 2025-11-01 01:02_
+
+---
+
+_Referenced in [uutils/coreutils#9103](../../uutils/coreutils/issues/9103.md) on 2025-11-01 02:22_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2025-11-03 20:50_
+
+---
+
+_Label `S-triage` removed by @epage on 2025-11-03 20:50_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2025-11-03 20:50_
+
+---
+
+_Comment by @epage on 2025-11-03 20:56_
+
+Note that we do have [`Command::defer`](https://docs.rs/clap/latest/clap/struct.Command.html#method.defer) which likely could be combined with [`Command::mut_args`](https://docs.rs/clap/latest/clap/struct.Command.html#method.mut_args)  and [`Command::mut_subcommands`](https://docs.rs/clap/latest/clap/struct.Command.html#method.mut_subcommands).  However, this still requires loading the initial command being parsed which, I'm assuming, will still run into your issue.
+
+This seems like a reasonable thing to do but I'm hesitant in doing it in this release, getting all the traits right for this not to break people, and would err on the side of doing it for clap v5.
+
+---
+
+_Comment by @andreacorbellini on 2025-11-04 08:26_
+
+Yes I'm aware of `Command::defer()`, but the problem with `defer` is that it *always* runs *before* the options are parsed. What I would like to have is a way to generate help strings only if `--help` was specified, so this new functionality needs to run *after* option parsing is done, and after `--help` is detected.
+
+I agree that adding this functionality in a minor release may be risky. In fact, I made some attempts at implementing this feature and I think it's not possible to have it without breaking backwards compatibility:
+
+* My first attempt was to implement `StyledStrOption` as shown above, with a `StyledStrOption::get()` method that calls the callback (if specified) and mutates `self` from `StyledStrOption::Callback` to `StyledStrOption::Value`
+  * The problem with this approach is that it requires `StyledStrOption::get()`  to be `&mut self`, but this makes it impossible for methods like `Command::get_about()` (which take a `&self`) to use `StyledStrOption::get()`.
+  * The problem could be solved by using interior mutability, so that `StyledStrOption::get()` can be `&self`, but using interior mutability means that `Command` can no longer be `Sync`.
+  * We could use mutexes/locks inside `StyledStrOption` to have interior mutability and bring back `Sync`, but this would introduce a significant performance overhead, and would defeat the purpose of this feature.
+  * We could use a single mutex to protect a struct that contains all the `StyledStrOption` objects, but returning a reference from that struct requires unsafe code, and I see that unsafe code is explicitly forbidden in clap.
+* I suspect that adding a `Command::defer_help()` method that is similar to `defer()` but only gets invoked when `--help` is detected could be a backward-compatible way to do it, but I haven't experimented with it because it would involve a huge refactor. I also don't like the idea of using `defer()`/`defer_help()` because that would make the code much more verbose and scattered.
+
+Personally, the option that I prefer is to make `Command` not `Sync`. I might be wrong, but I don't think there are many use cases for sharing read-only `&Command` references between threads, so I think it would be ok to drop `Sync` and not many people would notice. Those who do want to share references between threads can always wrap `Command` in a mutex or a rw lock: they would pay a small overhead, but that's expected when using threads.
+
+If any of that sounds acceptable I can contribute a draft PR.
+
+---
+
+_Comment by @epage on 2025-11-04 16:29_
+
+> My first attempt was to implement StyledStrOption as shown above, with a StyledStrOption::get() method that calls the callback (if specified) and mutates self from StyledStrOption::Callback to StyledStrOption::Value
+
+Why do we need to transition from a `Callback` to a `Value`?  We don't generally call the help methods multiple times, so we could just leave it in the `Callback` state
+
+---
+
+_Comment by @andreacorbellini on 2025-11-09 04:26_
+
+> Why do we need to transition from a `Callback` to a `Value`? We don't generally call the help methods multiple times, so we could just leave it in the `Callback` state
+
+Forgot to mention that: methods like `get_about()` return a `&StyledStr`. A `Callback` in order to be as flexible as possible would need to return a `StyledStr`. If that return value is not stored anywhere, there's no reasonable way to return a reference to it (except leaking it so that it gets a `'static` lifetime, but I don't think that's an elegant solution).
+
+---
+
+_Comment by @epage on 2025-11-10 15:00_
+
+If we already need to make a breaking change, we can re-evaluate those getters
+
+---

@@ -1,0 +1,72 @@
+---
+number: 14145
+title: "Do not use ``torch-backend`` and ``*index-url`` and ``*index`` simultaneously."
+type: issue
+state: closed
+author: FishAlchemist
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-06-19T16:07:48Z
+updated_at: 2025-06-19T16:56:20Z
+url: https://github.com/astral-sh/uv/issues/14145
+synced_at: 2026-01-10T01:25:42Z
+---
+
+# Do not use ``torch-backend`` and ``*index-url`` and ``*index`` simultaneously.
+
+---
+
+_Issue opened by @FishAlchemist on 2025-06-19 16:07_
+
+### Summary
+
+Even though I've tested that ``torch-backend`` seems to take precedence over ``index-url`` and ``extra-index-url``, torch-backend ultimately changes the index location.
+
+![Image](https://github.com/user-attachments/assets/fab171ff-ac3b-485c-951a-43ec4998b18a)
+
+![Image](https://github.com/user-attachments/assets/02c89d13-9fdb-4a4d-be30-ed173d8bbb42)
+
+![Image](https://github.com/user-attachments/assets/fcf9ce06-c1f3-42ab-a2e7-c2e54b6a5dd6)
+
+Therefore, I hope that when uv is used, it can directly prevent the user or inform the user which index is currently selected.
+
+The following flags should all be avoided when used with ``torch-backend``:
+![Image](https://github.com/user-attachments/assets/ba1f8187-a720-4d09-a9a0-738b36cfe4ad)
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @FishAlchemist on 2025-06-19 16:07_
+
+---
+
+_Renamed from "Do not use ``torch-backend`` and ``*index-url`` simultaneously." to "Do not use ``torch-backend`` and ``*index-url`` and ``*index`` simultaneously." by @FishAlchemist on 2025-06-19 16:15_
+
+---
+
+_Comment by @zanieb on 2025-06-19 16:46_
+
+Wouldn't `--index` and `--extra-index-url` still apply to non-torch packages?
+
+---
+
+_Comment by @FishAlchemist on 2025-06-19 16:51_
+
+Oh right, I forgot about this use case. It can indeed be applied to specify non-PyTorch sources.
+
+
+---
+
+_Closed by @FishAlchemist on 2025-06-19 16:51_
+
+---
+
+_Comment by @FishAlchemist on 2025-06-19 16:56_
+
+Has it been considered to mention in the documentation that when using the ``torch-backend``, the found indices will be prioritized as the primary search indices? 
+
+---

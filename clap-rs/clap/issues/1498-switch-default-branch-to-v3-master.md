@@ -1,0 +1,57 @@
+---
+number: 1498
+title: Switch default branch to v3-master
+type: issue
+state: closed
+author: erickt
+labels: []
+assignees: []
+created_at: 2019-06-19T16:33:10Z
+updated_at: 2020-02-01T13:26:03Z
+url: https://github.com/clap-rs/clap/issues/1498
+synced_at: 2026-01-10T01:26:55Z
+---
+
+# Switch default branch to v3-master
+
+---
+
+_Issue opened by @erickt on 2019-06-19 16:33_
+
+According to this [comment](https://github.com/clap-rs/clap/pull/1492#issuecomment-503618790), the v2 branch is closed, and all future PRs be submitted against v3-master. Could the default github branch be switched to that to avoid other people working off the wrong base?
+
+---
+
+_Comment by @BurntSushi on 2019-06-19 16:35_
+
+I'm not sure that's a good idea, so long as there isn't a v3 release. Folks using clap are still working with clap 2, and showing them a clap 3 README would potentially be even more confusing. As it stands today, the current setup is only confusing for contributors (as opposed to being confusing for all users if the default branch switched to an unpublished version of clap).
+
+---
+
+_Comment by @erickt on 2019-06-19 16:44_
+
+Good point! It's just a shame it wasn't obvious there was a v3 branch in development, I could have saved some time yesterday doing some cleanup on the v2 branch.
+
+---
+
+_Comment by @BurntSushi on 2019-06-19 16:51_
+
+Yeah, a mention in the README would be nice.
+
+---
+
+_Comment by @Dylan-DPC-zz on 2019-06-21 13:16_
+
+Yeh. Better to merge the branches when we are closer to release. Have made a PR (#1503) for adding a note to the readme. 
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 13:26_
+
+`v3-master` is merged to `master`. Closing.
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 13:26_
+
+---

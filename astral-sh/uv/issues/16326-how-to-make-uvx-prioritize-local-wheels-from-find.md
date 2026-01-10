@@ -1,0 +1,74 @@
+---
+number: 16326
+title: How to make uvx prioritize local wheels from --find-links instead of PyPI?
+type: issue
+state: closed
+author: pratica0044
+labels:
+  - question
+assignees: []
+created_at: 2025-10-16T03:47:45Z
+updated_at: 2025-10-21T17:51:02Z
+url: https://github.com/astral-sh/uv/issues/16326
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# How to make uvx prioritize local wheels from --find-links instead of PyPI?
+
+---
+
+_Issue opened by @pratica0044 on 2025-10-16 03:47_
+
+### Question
+
+I want uvx to prioritize local wheels specified with `--find-links` over PyPI ones,  
+but currently PyPI versions are preferred when the same package name exists on PyPI.
+
+Using `--no-index` works for the main package but fails to resolve dependencies from the local wheel folder.
+
+Is there any way to make uvx prefer local wheels while still resolving other dependencies from PyPI?
+
+### Platform
+
+Windows 11
+
+### Version
+
+uv 0.9.3
+
+---
+
+_Label `question` added by @pratica0044 on 2025-10-16 03:47_
+
+---
+
+_Comment by @konstin on 2025-10-20 09:04_
+
+You can use a `uv.toml` file like this:
+
+```toml
+[[index]]
+name = "local-packages"
+url = "/home/ferris/packages"
+format = "flat"
+
+[[index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+```
+
+---
+
+_Comment by @pratica0044 on 2025-10-21 09:22_
+
+Thank you! It worked perfectly when I ran:
+
+```bash
+uvx --config-file uv.toml mypkg
+```
+
+---
+
+_Closed by @pratica0044 on 2025-10-21 09:22_
+
+---

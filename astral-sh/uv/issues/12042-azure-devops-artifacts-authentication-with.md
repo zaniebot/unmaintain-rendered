@@ -1,0 +1,115 @@
+---
+number: 12042
+title: Azure Devops Artifacts authentication with artifacts-keyring not working from within active venv
+type: issue
+state: open
+author: JakobRemmers
+labels:
+  - bug
+assignees: []
+created_at: 2025-03-07T12:58:31Z
+updated_at: 2025-12-09T18:16:23Z
+url: https://github.com/astral-sh/uv/issues/12042
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# Azure Devops Artifacts authentication with artifacts-keyring not working from within active venv
+
+---
+
+_Issue opened by @JakobRemmers on 2025-03-07 12:58_
+
+### Summary
+
+Hey guys,
+
+first wanna leave my gratitude for this project in general. Stumbled upon `uv` while randomly [youtubing](https://www.youtube.com/watch?v=gSKTfG1GXYQ) around a couple months ago and we are now about to complete migrating all our python repos to it. Such a timesaver!
+
+## Issue Description
+As to the issue, my use case is the following:
+I am working on a python repo **depending on other proprietary python repos**, which are in turn **accessed via a private Azure Devops Artifacts** feed. 
+
+`uv` is configured to do so in `pyproject.toml` like this:
+
+```pyproject.toml
+[tool.uv]
+package = true
+keyring-provider = "subprocess"
+
+[[tool.uv.index]]
+name = "<my_feed>"
+url = "https://VssSessionToken@pkgs.dev.azure.com/<company>/_packaging/<my_feed>/pypi/simple/"
+```
+
+As instructed [here](https://docs.astral.sh/uv/guides/integration/alternative-indexes/#authenticate-with-keyring-and-artifacts-keyring),  `keyring` installed globally with `artifacts-keyring` plugin like so:
+
+```bash
+uv tool install keyring --with artifacts-keyring
+```
+
+This is generally working just fine. 
+
+The problem occurs, when I try to e.g. run `uv sync` from WITHIN an active virtual environment, that does not have the `artifacts-keyring` plugin installed.  I then get an issue with authentication:
+
+```text
+hint: An index URL (https://pkgs.dev.azure.com/greenventory/_packaging/greenventory_general_feed/pypi/simple/) could not be queried due to a lack of valid authentication credentials (401
+      Unauthorized).
+```
+> see [johannes-uv-bug-verbose-20250307.txt](https://github.com/user-attachments/files/19126637/johannes-uv-bug-verbose-20250307.txt) for full verbose log
+
+Now, this can of course be easily fixed by simply deactivating the active virtual environment or not entering it in the first place. The thing is, in many IDEs (`VSCode` in our case) its common that the local venv is detected and then **automatically activated for every new integrated terminal session**, which is quite useful to be able to run commands like `flake8` or starting debug sessions, so I dont wanna disable it entirely.
+
+I also thought this behaviour of the active venv **mattering** was a bit inconsistent with the behaviour from `uv venv` which, when ran from within an active venv, issues an explicit warning the active venv being ignored.
+
+Aside from just keeping in mind to deactivate any venv before running any `uv` commands, one rather obvious solution we found was simply to add `artifacts-keyring` to the dev dependencies in `pyproject.dependency-groups.dev`, which works fine.
+
+So issue is not critical at all.
+
+What do you guys think? Am I maybe even overlooking something in the recommended workflow?
+
+Thanks in advance,
+
+Jakob
+
+
+### Platform
+
+Ubuntu 24; Linux 6.11.0-17-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.5.16
+
+### Python version
+
+Python 3.11.11
+
+---
+
+_Label `bug` added by @JakobRemmers on 2025-03-07 12:58_
+
+---
+
+_Comment by @jenshnielsen on 2025-03-10 14:01_
+
+@JakobRemmers I have run into a similar issue. In my case keyring but not artifacts-keyring was installed into the active environment. This causes the keyring CLI executable from the active environment to be selected over the one from the uv tool. In my case I settled for adding artifacts-keyring as a dependency where I had keyring as a dependency. In my case I only need library functionality of keyring and not the CLI so I would prefer if I could install keyring without the CLI as this would resolve the issue. IMHO the issue is more that the keyring package and python packaging in general does not really make this easy. 
+
+---
+
+_Comment by @zanieb on 2025-03-10 17:03_
+
+cc @konstin who is working on a design for a better keyring integration.
+
+---
+
+_Comment by @GuillaumeLafreniere on 2025-03-19 23:38_
+
+I have run into a similar issue. While working inside a virtual environment, I was unable to authenticate to Azure DevOps using `uv` built-in tool (`uv tool install keyring --with artifacts-keyring`) or even using `uv` to download it (`uv pip install artifacts-keyring`). However, I was able to make it work if I downloaded the package from outside a virtual environment (with regular old `pip`), without reinstalling it once inside the virtual environment.
+
+---
+
+_Comment by @FreyGeospatial on 2025-08-20 14:51_
+
+I have been encountering a similar issue as well
+
+---

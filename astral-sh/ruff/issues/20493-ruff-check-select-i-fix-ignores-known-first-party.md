@@ -1,0 +1,166 @@
+---
+number: 20493
+title: "\"ruff check --select I --fix\" ignores \"known-first-party\" configuration"
+type: issue
+state: closed
+author: MorganStair
+labels:
+  - question
+assignees: []
+created_at: 2025-09-21T14:35:21Z
+updated_at: 2025-09-22T10:37:16Z
+url: https://github.com/astral-sh/ruff/issues/20493
+synced_at: 2026-01-10T01:23:01Z
+---
+
+# "ruff check --select I --fix" ignores "known-first-party" configuration
+
+---
+
+_Issue opened by @MorganStair on 2025-09-21 14:35_
+
+### Summary
+
+`ruff check --select I --fix` ignores `known-first-party` configuration
+
+## Summary
+`ruff check` with import sorting enabled does not respect the `known-first-party` setting in pyproject.toml.
+
+## Expected Behavior
+`ruff check --select I --fix` should respect the `known-first-party` configuration and place known first-party imports before other local imports.
+
+## Actual Behavior
+`ruff check --select I --fix` ignores `known-first-party` config and sorts imports alphabetically instead.
+
+## Test Script
+[test_ruff_sort.py](https://github.com/user-attachments/files/22452314/test_ruff_sort.py)
+
+## Reproduction Steps
+
+1. Create a project structure:
+```
+project/
+├── pyproject.toml
+└── python/
+    ├── knownfirstparty/
+    │   └── __init__.py
+    ├── undeclaredfirstparty/
+    │   └── __init__.py
+    └── misc/
+        └── test.py
+```
+
+2. Add to `pyproject.toml`:
+```toml
+[tool.ruff.lint]
+select = ["I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["knownfirstparty"]
+```
+
+3. Add to `python/knownfirstparty/__init__.py`:
+```python
+KNOWN_SYMBOL = 'known'
+```
+
+4. Add to `python/undeclaredfirstparty/__init__.py`:
+```python
+UNDECLARED_SYMBOL = 'undeclared'
+```
+
+5. Add to `python/misc/test.py`:
+```python
+import os
+from knownfirstparty import KNOWN_SYMBOL
+from undeclaredfirstparty import UNDECLARED_SYMBOL
+```
+
+6. Run the command:
+```bash
+ruff check --select I --fix python/misc/test.py
+```
+
+7. Observe that `undeclaredfirstparty` import appears before `knownfirstparty` import, despite the configuration specifying `knownfirstparty` should be prioritized.
+
+Note: `ruff format` correctly respects this configuration for comparison.
+
+## Environment
+- Ruff version: ruff 0.13.0
+- Python version: 3.13.7
+- OS: Windows 11
+
+### Version
+
+ruff 0.13.0
+
+---
+
+_Comment by @MorganStair on 2025-09-21 14:46_
+
+## Problem Clarification
+
+**Issue**: `ruff check --select I --fix` ignores `known-first-party` configuration
+
+**Details**: 
+- The command consistently sorts imports alphabetically instead of respecting the `known-first-party = ["knownfirstparty"]` setting
+- This occurs regardless of working directory or input method (file vs stdin)
+- Expected behavior: known-first-party imports should appear before other local imports
+- Actual behavior: imports are sorted purely alphabetically
+
+---
+
+_Comment by @MichaReiser on 2025-09-22 08:08_
+
+Thanks for the detailed write up. This helped me reproduce this easily. 
+
+I ran `ruff check` with `-v` to understand Ruff's categorization choices and this is the output:
+
+```
+ruff check --select I --fix python/misc/test.py -v
+[2025-09-22][10:04:55][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/micha/astral/test/project/pyproject.toml
+[2025-09-22][10:04:55][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2025-09-22][10:04:55][ruff::commands::check][DEBUG] Identified files to lint in: 3.373333ms
+[2025-09-22][10:04:55][ruff::diagnostics][DEBUG] Checking: /Users/micha/astral/test/project/python/misc/test.py
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'undeclaredfirstparty' as Known(ThirdParty) (NoMatch)
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'knownfirstparty' as Known(FirstParty) (KnownFirstParty)
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'undeclaredfirstparty' as Known(ThirdParty) (NoMatch)
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'knownfirstparty' as Known(FirstParty) (KnownFirstParty)
+[2025-09-22][10:04:55][ruff::commands::check][DEBUG] Checked 1 files in: 576.459µs
+Found 1 error (1 fixed, 0 remaining).
+```
+
+The interesting line here is:
+
+```
+[2025-09-22][10:04:55][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'undeclaredfirstparty' as Known(ThirdParty) (NoMatch)
+```
+
+The issue is that Ruff can't resolve `knownthirdparty` because it only checks if such folder exists in the root (in `project`)`.
+
+You can fix this by either:
+
+* Moving your `pyproject.toml` to the `python` directory
+* Adding `tool.ruff.src = ["python"]` to your `pyproject.toml` (see https://docs.astral.sh/ruff/settings/#src). 
+
+---
+
+_Label `question` added by @MichaReiser on 2025-09-22 08:08_
+
+---
+
+_Comment by @MorganStair on 2025-09-22 10:17_
+
+Thanks. I'll test it further, today if I have time. There may be more to this, but I can submit a separate issue if there is.
+
+It sounds like --config "src=python" should be a workaround.
+
+Since src discovery based on the target file might be out of scope, you can probably close this.
+
+---
+
+_Closed by @MichaReiser on 2025-09-22 10:37_
+
+---

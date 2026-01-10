@@ -1,0 +1,36 @@
+---
+number: 514
+title: "D207 autofix shouldn't add indentation to blank lines"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2022-10-29T23:32:13Z
+updated_at: 2022-10-30T13:43:52Z
+url: https://github.com/astral-sh/ruff/issues/514
+synced_at: 2026-01-10T01:22:38Z
+---
+
+# D207 autofix shouldn't add indentation to blank lines
+
+---
+
+_Issue opened by @charliermarsh on 2022-10-29 23:32_
+
+_No description provided._
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-10-29 23:32_
+
+---
+
+_Referenced in [astral-sh/ruff#517](../../astral-sh/ruff/pulls/517.md) on 2022-10-30 13:41_
+
+---
+
+_Closed by @charliermarsh on 2022-10-30 13:41_
+
+---

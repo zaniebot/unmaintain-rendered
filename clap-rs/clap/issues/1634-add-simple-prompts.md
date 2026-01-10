@@ -1,0 +1,358 @@
+---
+number: 1634
+title: Add simple prompts
+type: issue
+state: open
+author: mayabyte
+labels:
+  - C-enhancement
+  - A-parsing
+  - S-blocked
+assignees: []
+created_at: 2020-01-10T20:18:11Z
+updated_at: 2023-12-19T06:41:16Z
+url: https://github.com/clap-rs/clap/issues/1634
+synced_at: 2026-01-10T01:27:00Z
+---
+
+# Add simple prompts
+
+---
+
+_Issue opened by @mayabyte on 2020-01-10 20:18_
+
+Maintainer's notes
+- Blocked on #4793 and the general move to https://github.com/clap-rs/clap/discussions/2832
+---
+## Why?
+Let's say you want to write a CLI program that requires the user to log in with a username and password, e.g. a CLI API for some web service. This is perfectly doable with arguments, but it may be preferred to prompt the user to supply these when they start the program, as follows:
+```
+$ example_program
+> username: beepboop
+> password: 
+Successfully logged in!
+```
+Or, let's say you have an option that can be dangerous to enable in certain circumstances, and you want to ask the user if they're sure (like `rm -rf` does):
+```
+$ example_program --danger
+> Are you sure you want to do the dangerous thing? [y/N] 
+```
+It's not hard to write this logic on your own, but given that these are rather common use-cases, it would be convenient to include this functionality within Clap.
+
+## What?
+I propose adding a few simple prompting functions for handling common prompting situations. Here's a rough list:
+- `prompt_if_absent(prompt: &str)`: Asks the user to supply a value for this argument if they didn't at run time. Displays `prompt` on the line where they type; in the first example above, the `prompt`s would have been `"> username: "` and `"> password: "` respectively.
+- `suggest_if_absent(prompt: &str, default: Fn() -> Option<String>)`: Like `prompt_if_absent`, but takes a function that can try to find a sensible default to suggest to the user, which can then be chosen by pressing enter without typing. Useful when you're not sure the default makes sense (e.g. if it's found from an envar or something), so you want to run it by the user to make sure.
+- `ensure_if(prompt: &str, arg_id: Key, val: &str, default: Yes/No/None)` and similar `ensure_ifs`: Asks the user if they're sure when they've set `val`(s) with a `[y/n]` prompt. The user can select the default option by just pressing enter.
+- `prompt_secret(prompt: &str)`: like `prompt_if_absent` but doesn't show what you're typing
+
+These can all be gated behind a `prompts` feature or something to keep the core functionality simple. 
+
+I realise there's been a little pushback on stuff like this in the past (~a few years ago?), but I do genuinely think it would be a nice addition. A lot of great CLI building tools in other languages include prompting functionality, so adding a few convenience methods for it reduces the friction required to port existing things over to Rust.
+
+I'm happy to implement this myself if there's interest.
+
+(Note: I'm aware of https://github.com/clap-rs/clap/issues/1471, but the changes they suggest are much more significant and have potentially quite wide implications, so I consider it a separate matter. I'd love to see that get added though :P)
+
+---
+
+_Comment by @danieleades on 2020-01-11 13:22_
+
+actually i think this is proposing a much more significant change than #1471.
+you could resolve #1471 simply by adding a hook that takes a closure-
+```
+Arg::default_with<F, S>(mut self, fun: F) -> Self
+    where
+    F: FnOnce -> S,
+    S: AsRef<str>,
+```
+
+then parsing your prompt function into this method
+
+---
+
+_Comment by @mayabyte on 2020-01-11 13:38_
+
+Ah, that's true I suppose. Their suggestion of adding a `get_matches_from_fns` is definitely larger though.
+
+Something like `default_with` would be pretty nice to have as well. You can kinda already fudge something like that with `default_value` and a closure full of prompting (or whatever else) code, but `default_with` could be lazily-evaluated which makes it nicer imo.
+
+---
+
+_Comment by @danieleades on 2020-01-11 13:41_
+
+if you're prompting for user input it *must* be lazily evaluated, right?
+
+---
+
+_Comment by @mayabyte on 2020-01-11 14:06_
+
+Yeah, but `default_with` could be used for other things besides prompting. I was porting a tool the other day that set the default of a field with the output of another program, so in that case `default_with` would be noticeably better than `default_value` due to laziness
+
+---
+
+_Comment by @pksunkara on 2020-01-18 10:20_
+
+Copying my response from #1471 
+
+I have worked on https://github.com/termapps/enquirer this week. Either a hook fn or a matches fn, this library can easily provide them. IMO, the prompts shouldn't be in the core. Hooks? yes but not prompts.
+
+#### Implementation plan
+
+* If a required option is missing, and a `default_with` exists, then prompt happens.
+* If a flag is marked `confirm_with`, then when the flag is used, the prompt can confirm
+
+It should cover all the use cases @mayabyte wanted since the type of prompts are irrelevant when we abstract them out as hooks.
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-18 12:11_
+
+Also, should we decide to go on the way of hooks, they would be impossible to serialize/deserialize since... well, how do you serialize a function 😄 ?
+
+---
+
+_Comment by @danieleades on 2020-01-18 14:25_
+
+> Also, should we decide to go on the way of hooks, they would be impossible to serialize/deserialize since... well, how do you serialize a function  ?
+
+Yeah it's not the easiest...
+
+This exists- https://docs.rs/serde_closure/0.2.9/serde_closure/
+But I suppose in general you could only use these hooks with programmatic argument building.
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-18 14:43_
+
+> This exists- https://docs.rs/serde_closure/0.2.9/serde_closure/
+
+...which generally serializes/deserializes the code as **plain text**. It  brings in all the problems of `eval` in some languages, let alone the fact it allows a malicious user/attacker **inject arbitrary code and execute it**!
+
+I'm really, totally, absolutely not OK with this approach.
+
+> But I suppose in general you could only use these hooks with programmatic argument building.
+
+This sounds good.
+
+---
+
+_Label `T: new feature` added by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Label `P2: need to have` added by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Label `C: args` added by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Label `D: intermediate` added by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Label `C: parsing` added by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Label `W: 3.x` added by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-02-01 07:56_
+
+---
+
+_Referenced in [clap-rs/clap#1471](../../clap-rs/clap/issues/1471.md) on 2020-02-01 13:50_
+
+---
+
+_Referenced in [clap-rs/clap#1453](../../clap-rs/clap/issues/1453.md) on 2020-02-01 19:27_
+
+---
+
+_Comment by @Dylan-DPC-zz on 2020-02-02 01:12_
+
+I think this is beyond the scope of clap. You could use `enquirer` or I'd tackled a similar problem in `clim` which I never completed 😄
+
+---
+
+_Comment by @pksunkara on 2020-02-02 05:59_
+
+Definitely, I am just keeping this issue open as a placeholder for hooks feature.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-02 06:08_
+
+> I think this is beyond the scope of clap. 
+
+I wouldn't be so categorical. Maybe not *hooks*, but some sort of prompt support would be pretty useful.
+
+---
+
+_Comment by @pksunkara on 2020-02-02 06:20_
+
+I would say *prompts* are beyond the scope of main clap.
+
+---
+
+_Referenced in [clap-rs/clap#1777](../../clap-rs/clap/issues/1777.md) on 2020-04-07 15:54_
+
+---
+
+_Comment by @pksunkara on 2020-04-29 08:44_
+
+Wanted to note that I am now a maintainer of https://github.com/mitsuhiko/dialoguer which means it will be easy to add compatibility for clap if needed.
+
+---
+
+_Comment by @kbknapp on 2020-04-29 16:29_
+
+I'd second the prompts being too far out of scope for clap. A hook I think is OK.
+
+As for the serialization problem, I'm fine with just saying, "This one feature can't be serialized" to avoid the `eval` type issues, just like validators.
+
+---
+
+_Comment by @tech6hutch on 2020-05-19 21:54_
+
+Is there currently any way to make prompts in Clap, manually if necessary? I just don't want to repeat myself with arg parsing and error messages.
+
+---
+
+_Comment by @danieleades on 2020-05-20 06:03_
+
+> Is there currently any way to make prompts in Clap, manually if necessary? I just don't want to repeat myself with arg parsing and error messages.
+
+Negative. But it looks like there's a reasonable concensus as to how to fit the pieces together.
+
+Clap can add hooks which allow you to populate fields using a function. Then crates like `dialoguer` can handle the prompt. This might involve some interior mutability to lazily populate the value.
+
+But then you run into questions like
+- if interactive prompts, why not config files too?
+- what is the *precedence* of config values (and how can I customise it)?
+
+The design probably needs to consider these extensions.
+
+---
+
+_Comment by @danieleades on 2020-05-20 06:10_
+
+@tech6hutch if you absolutely *must* have interactive prompts, you can try an approach I used. (I used [structopt](https://github.com/TeXitoi/structopt)).
+
+- define an `Args` struct
+- define a `PartialArgs` struct (derive `StructOpt`) which is the same as the `Args` struct, but with `Option`al fields
+- implement `From<PartialArgs> for Args` with a bunch of `unwrap_or_else(|| //prompt user)` calls
+
+---
+
+_Referenced in [clap-rs/clap#2570](../../clap-rs/clap/issues/2570.md) on 2021-07-06 11:10_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Comment by @pksunkara on 2021-11-17 21:39_
+
+This can be made a plugin when #3008 is done.
+
+---
+
+_Referenced in [epage/clapng#132](../../epage/clapng/issues/132.md) on 2021-12-06 18:39_
+
+---
+
+_Label `C: args` removed by @epage on 2021-12-08 20:28_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-08 20:28_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:15_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:15_
+
+---
+
+_Label `P2: need to have` removed by @epage on 2021-12-09 20:26_
+
+---
+
+_Label `D: medium` removed by @epage on 2021-12-09 20:26_
+
+---
+
+_Label `S-blocked` added by @epage on 2021-12-09 20:26_
+
+---
+
+_Comment by @cbzehner on 2022-02-28 05:05_
+
+~I recently wanted this functionality in a CLI tool and built on top of the suggestion @danieleades made above.~
+
+~Here's a [greeting example](https://gist.github.com/cbzehner/dede31dc0b4617fd4abaff9e03b15f9e) that uses the `default_value_t` from `clap_derive` to prompt the user when a value is missing.~
+
+---
+
+_Comment by @epage on 2022-02-28 13:45_
+
+A recent discussion [explores a potential API to allow designing prompt support](https://github.com/clap-rs/clap/discussions/3476#discussioncomment-2185709).
+
+> Here's a [greeting example](https://gist.github.com/cbzehner/dede31dc0b4617fd4abaff9e03b15f9e) that uses the default_value_t from clap_derive to prompt the user when a value is missing.
+
+That works?  We should be evaluating `default_value_t` independent of whether a default value is needed or not.
+
+---
+
+_Comment by @cbzehner on 2022-02-28 14:20_
+
+Nope 🙃 Thanks Ed, Ah, I didn't realize we were evaluating it regardless - you're right that it doesn't work. It seems like it does from a happy-path example but it just evaluates every time rather than taking into account the arguments actually passed into Clap.
+
+Back to the drawing board!
+
+_Edit: Here's a [an example](https://gist.github.com/cbzehner/dede31dc0b4617fd4abaff9e03b15f9e) of the workaround using exactly the pattern suggested above_
+
+---
+
+_Referenced in [clap-rs/clap#4395](../../clap-rs/clap/issues/4395.md) on 2022-10-17 16:56_
+
+---
+
+_Referenced in [clap-rs/clap#4793](../../clap-rs/clap/issues/4793.md) on 2023-03-27 18:20_
+
+---
+
+_Comment by @beautyfree on 2023-10-09 22:51_
+
+I really miss this kind of functionality https://typer.tiangolo.com/tutorial/options/prompt/
+
+---
+
+_Comment by @beautyfree on 2023-10-09 23:46_
+
+Also prompts it's a better way to ask credentials/passwords (which with clap will be saved in history now)
+
+---
+
+_Referenced in [jj-vcs/jj#2621](../../jj-vcs/jj/issues/2621.md) on 2023-11-23 04:14_
+
+---
+
+_Comment by @gabry-lab on 2023-12-19 06:41_
+
+any updates here?
+
+---
+
+_Referenced in [clap-rs/clap#6036](../../clap-rs/clap/issues/6036.md) on 2025-06-16 20:01_
+
+---

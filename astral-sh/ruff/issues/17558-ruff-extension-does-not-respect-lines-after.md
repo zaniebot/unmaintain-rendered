@@ -1,0 +1,146 @@
+---
+number: 17558
+title: Ruff extension does not respect lines-after-imports from ruff.toml
+type: issue
+state: open
+author: rjwalters
+labels:
+  - documentation
+  - isort
+  - formatter
+  - help wanted
+  - incompatibility
+assignees: []
+created_at: 2025-04-15T19:55:14Z
+updated_at: 2025-04-22T17:36:19Z
+url: https://github.com/astral-sh/ruff/issues/17558
+synced_at: 2026-01-10T01:22:59Z
+---
+
+# Ruff extension does not respect lines-after-imports from ruff.toml
+
+---
+
+_Issue opened by @rjwalters on 2025-04-15 19:55_
+
+For a `ruff.toml` file at the root of my repo:
+
+```
+line-length = 120
+target-version = "py311"
+[lint.isort]
+lines-after-imports = 1
+```
+
+... it appears that the setting to use a single line after the imports is ignored by the extension, resulting in the file that is formatted on save having errors according to the command line tool
+
+I am fairly sure the file is being loaded because I am able to change the line-length parameter, restart the extension, and see matching fixes being applied.
+
+
+
+
+
+---
+
+_Referenced in [Metta-AI/metta#144](../../Metta-AI/metta/pulls/144.md) on 2025-04-15 20:01_
+
+---
+
+_Comment by @ntBre on 2025-04-17 14:06_
+
+Thanks for the report! I think I can reproduce this with both `formatOnSave` and `codeActionsOnSave` enabled but need to double check. Just wanted to let you know we are looking into it :) 
+
+---
+
+_Comment by @dhruvmanila on 2025-04-17 20:11_
+
+@rjwalters can you provide additional details for us to reproduce this? I'm looking for a minimal code snippet where you're observing this behavior and the server logs. You can also checkout the settings that will be used for a specific document using the "Ruff: Print debug information" command (refer to the [troubleshooting](https://github.com/astral-sh/ruff-vscode#troubleshooting) guide).
+
+<img width="1728" alt="Image" src="https://github.com/user-attachments/assets/8390303a-0135-48db-a349-20a18f6c06ad" />
+
+---
+
+_Label `needs-mre` added by @dhruvmanila on 2025-04-17 20:13_
+
+---
+
+_Label `needs-mre` removed by @dhruvmanila on 2025-04-17 20:28_
+
+---
+
+_Label `bug` added by @dhruvmanila on 2025-04-17 20:28_
+
+---
+
+_Comment by @dhruvmanila on 2025-04-17 20:29_
+
+I'm currently looking into this, I can reproduce it but seems a bit tricky to discover the root cause. I think I have a hunch of what might be going on, will verify it.
+
+---
+
+_Comment by @dhruvmanila on 2025-04-17 20:44_
+
+So, what I've found (and what @ntBre also noticed) is that the `lines-after-imports` config option is incompatible with the formatter when set to any non-default value. The default value is `-1` so the custom value `1` is incompatible with the formatter. Refer to https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules. We've also noticed that the docs for the config option (https://docs.astral.sh/ruff/settings/#lint_isort_lines-after-imports) says "When using the formatter, only the values -1, 1, and 2 are compatible..." but that seems incorrect (cc @MichaReiser). Micha is currently on PTO and is going to be back on the coming Monday.
+
+---
+
+_Label `bug` removed by @dhruvmanila on 2025-04-17 20:45_
+
+---
+
+_Label `question` added by @dhruvmanila on 2025-04-17 20:45_
+
+---
+
+_Comment by @MichaReiser on 2025-04-22 17:35_
+
+Yes, I think your finding is correct. `lines-after-imports=1` is only compatible if what comes after the imports isn't a function or class. 
+
+For example, this is fine:
+
+```py
+import os
+import sys
+
+a = 1
+ 
+def test():
+    pass
+
+```
+
+But this isn't:
+
+```py
+import os
+import sys
+
+def test():
+    pass
+```
+
+---
+
+_Label `question` removed by @MichaReiser on 2025-04-22 17:36_
+
+---
+
+_Label `documentation` added by @MichaReiser on 2025-04-22 17:36_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2025-04-22 17:36_
+
+---
+
+_Label `incompatibility` added by @MichaReiser on 2025-04-22 17:36_
+
+---
+
+_Label `isort` added by @MichaReiser on 2025-04-22 17:36_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-04-22 17:36_
+
+---

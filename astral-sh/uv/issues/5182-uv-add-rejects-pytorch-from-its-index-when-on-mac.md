@@ -1,0 +1,384 @@
+---
+number: 5182
+title: "`uv add` rejects pytorch from its index when on mac"
+type: issue
+state: closed
+author: baggiponte
+labels:
+  - bug
+  - lock
+assignees: []
+created_at: 2024-07-18T12:25:05Z
+updated_at: 2025-04-10T16:32:30Z
+url: https://github.com/astral-sh/uv/issues/5182
+synced_at: 2026-01-10T01:23:46Z
+---
+
+# `uv add` rejects pytorch from its index when on mac
+
+---
+
+_Issue opened by @baggiponte on 2024-07-18 12:25_
+
+I am trying to use `uv` to add torch to my project's dependencies, but it fails. I am on macOS14.4.1 (ARM).
+
+Here is a  minimal repro.
+
+```toml
+[project]
+name = "test"
+version = "0.1.0"
+requires-python = ">=3.10"
+```
+
+Then run:
+
+```bash
+uv python pin 3.10
+uv add --extra-index-url="https://download.pytorch.org/whl/cpu" -- torch
+```
+
+Error:
+
+```
+warning: `uv add` is experimental and may change without warning.
+Using Python 3.10.14 interpreter at: /Users/luca/Library/Application Support/uv/python/cpython-3.10.14-macos-aarch64-none/install/bin/python3
+Creating virtualenv at: .venv
+Resolved 13 packages in 1.69s
+error: distribution torch==2.3.1+cpu @ registry+https://download.pytorch.org/whl/cpu can't be installed because it doesn't have a source distribution or wheel for the current platform
+```
+
+If I use `uv pip install` then everything works smoothly:
+
+```
+uv pip install --extra-index-url="https://download.pytorch.org/whl/cpu" -- torch
+Resolved 9 packages in 1.73s
+Installed 9 packages in 369ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.3.1
+ + typing-extensions==4.9.0
+```
+
+---
+
+_Label `bug` added by @konstin on 2024-07-18 12:56_
+
+---
+
+_Comment by @charliermarsh on 2024-07-18 13:24_
+
+This is already resolved on main but not released.
+
+---
+
+_Closed by @charliermarsh on 2024-07-18 13:24_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-18 13:24_
+
+---
+
+_Reopened by @charliermarsh on 2024-07-18 13:24_
+
+---
+
+_Comment by @charliermarsh on 2024-07-18 13:24_
+
+Sorry, misread the last part of the error.
+
+---
+
+_Comment by @charliermarsh on 2024-07-18 14:33_
+
+Can you include the `uv.lock` that is generated?
+
+---
+
+_Label `lock` added by @zanieb on 2024-07-18 15:09_
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 01:42_
+
+This one is pretty tricky... Basically, `2.3.1+cpu` includes Windows and Linux wheels, but not macOS wheels. Separately, `2.3.1` (without the local version) has macOS wheels. We choose `2.3.1+cpu` because we don't evaluate platform compatibility during a universal install. But then we don't end up including macOS wheels.
+
+One path forward: if the user selects `2.3.1`, always choose the non-local version. That at least gives users some more control.
+
+I don't know what other options we have. Try to sniff platform compatibility on the wheel tags, at least for macOS / Windows / Linux?
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 01:42_
+
+\cc @konstin 
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 01:48_
+
+I'd suggest using a direct URL for now while we figure out how to support this @baggiponte.
+
+---
+
+_Comment by @charliermarsh on 2024-07-19 01:49_
+
+I've confirmed that Poetry has the same problem. It also chooses:
+
+```toml
+[[package]]
+name = "torch"
+version = "2.3.1+cpu"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+optional = false
+python-versions = ">=3.8.0"
+files = [
+    {file = "torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl", hash = "sha256:d679e21d871982b9234444331a26350902cfd2d5ca44ce6f49896af8b3a3087d"},
+    {file = "torch-2.3.1+cpu-cp310-cp310-win_amd64.whl", hash = "sha256:500bf790afc2fd374a15d06213242e517afccc50a46ea5955d321a9a68003335"},
+    {file = "torch-2.3.1+cpu-cp311-cp311-linux_x86_64.whl", hash = "sha256:a272defe305dbd944aa28a91cc3db0f0149495b3ebec2e39723a7224fa05dc57"},
+    {file = "torch-2.3.1+cpu-cp311-cp311-win_amd64.whl", hash = "sha256:d2965eb54d3c8818e2280a54bd53e8246a6bb34e4b10bd19c59f35b611dd9f05"},
+    {file = "torch-2.3.1+cpu-cp312-cp312-linux_x86_64.whl", hash = "sha256:2141a6cb7021adf2f92a0fd372cfeac524ba460bd39ce3a641d30a561e41f69a"},
+    {file = "torch-2.3.1+cpu-cp312-cp312-win_amd64.whl", hash = "sha256:6acdca2530462611095c44fd95af75ecd5b9646eac813452fe0adf31a9bc310a"},
+    {file = "torch-2.3.1+cpu-cp38-cp38-linux_x86_64.whl", hash = "sha256:cab92d5101e6db686c5525e04d87cedbcf3a556073d71d07fbe7d1ce09630ffb"},
+    {file = "torch-2.3.1+cpu-cp38-cp38-win_amd64.whl", hash = "sha256:dbc784569a367fd425158cf4ae82057dd3011185ba5fc68440432ba0562cb5b2"},
+    {file = "torch-2.3.1+cpu-cp39-cp39-linux_x86_64.whl", hash = "sha256:a3cb8e61ba311cee1bb7463cbdcf3ebdfd071e2091e74c5785e3687eb02819f9"},
+    {file = "torch-2.3.1+cpu-cp39-cp39-win_amd64.whl", hash = "sha256:df68668056e62c0332e03f43d9da5d4278b39df1ba58d30ec20d34242070955d"},
+]
+```
+
+And then `poetry install` fails after `poetry lock` succeeds.
+
+---
+
+_Comment by @baggiponte on 2024-07-19 07:42_
+
+> Can you include the `uv.lock` that is generated?
+
+Ops, sorry for the delay. Here it is (sorry for the .txt format, github does not support it).
+
+[uv.lock.txt](https://github.com/user-attachments/files/16308854/uv.lock.txt)
+
+> I'd suggest using a direct URL for now while we figure out how to support this @baggiponte.
+
+i.e. from pypi, right?
+
+Thank you very much for the prompt support! 
+
+
+---
+
+_Comment by @dimbleby on 2024-07-19 19:35_
+
+FWIW over in poetry I have mostly come to think that this is a torch problem and not a poetry problem at all.  (And therefore also not a uv problem).  
+
+Specifically I reckon that https://github.com/pytorch/pytorch/issues/110004 is the right request to make, and the right place to make it.  "Closing as implemented" seems not correct, perhaps someone would like to try again.
+
+More generally... pytorch does lots of unusual things with its multiple indexes and playing games with local version identifiers and suchlike.  If you want a taste of the sort of fun uv is likely to have trying to accommodate all of this - and if you have plenty of time to spare - then see https://github.com/python-poetry/poetry/issues/6409.  
+
+If uv - either deliberately or accidentally - were to make choices that somehow made sense of all of that, then there are plenty of folk in that thread who would likely be pleased to see it!
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2024-07-30 16:11_
+
+---
+
+_Comment by @baggiponte on 2024-08-03 15:05_
+
+Uhm as an FYI: today I tried `uv add torch` on M3 mac and it correctly installed the version w/o CUDA (which was brought me to use `uv add --extra-index-url="https://download.pytorch.org/whl/cpu" -- torch` in the first place).
+
+---
+
+_Referenced in [astral-sh/uv#7005](../../astral-sh/uv/issues/7005.md) on 2024-09-04 13:27_
+
+---
+
+_Referenced in [astral-sh/uv#7557](../../astral-sh/uv/issues/7557.md) on 2024-09-19 18:21_
+
+---
+
+_Comment by @dimbleby on 2024-09-19 22:19_
+
+https://github.com/pytorch/pytorch/issues/136275
+
+---
+
+_Referenced in [astral-sh/uv#8536](../../astral-sh/uv/issues/8536.md) on 2024-10-24 19:52_
+
+---
+
+_Referenced in [astral-sh/uv#8603](../../astral-sh/uv/issues/8603.md) on 2024-10-27 18:56_
+
+---
+
+_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-30 20:52_
+
+---
+
+_Referenced in [astral-sh/uv#8746](../../astral-sh/uv/issues/8746.md) on 2024-11-01 13:23_
+
+---
+
+_Referenced in [owid/etl#3518](../../owid/etl/pulls/3518.md) on 2024-11-08 16:04_
+
+---
+
+_Referenced in [astral-sh/uv#9209](../../astral-sh/uv/issues/9209.md) on 2024-11-18 18:15_
+
+---
+
+_Referenced in [astral-sh/uv#9228](../../astral-sh/uv/issues/9228.md) on 2024-11-19 15:10_
+
+---
+
+_Referenced in [google/magika#801](../../google/magika/issues/801.md) on 2024-11-19 17:29_
+
+---
+
+_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2024-11-25 14:17_
+
+---
+
+_Referenced in [astral-sh/uv#9425](../../astral-sh/uv/issues/9425.md) on 2024-11-25 21:40_
+
+---
+
+_Referenced in [astral-sh/uv#9514](../../astral-sh/uv/issues/9514.md) on 2024-11-29 16:44_
+
+---
+
+_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
+
+---
+
+_Comment by @charliermarsh on 2024-12-20 19:14_
+
+Fixed by https://github.com/astral-sh/uv/pull/10046.
+
+---
+
+_Closed by @charliermarsh on 2024-12-20 19:14_
+
+---
+
+_Comment by @meliz19 on 2025-01-22 14:44_
+
+I'm seeing a similar error when trying to install the Pantsbuild libraries via `uv add` or `uv pip install`. I'm on a MacOS 14.7.1 ARM machine. Full error message below.
+
+```
+margaretblack test-project % uv add https://github.com/pantsbuild/pants/releases/download/release_2.23.1/pantsbuild.pants-2.23.1-cp39-cp39-macosx_11_0_arm64.whl
+Resolved 25 packages in 2.49s
+error: distribution `pantsbuild-pants==2.23.1 @ direct+https://github.com/pantsbuild/pants/releases/download/release_2.23.1/pantsbuild.pants-2.23.1-cp39-cp39-macosx_11_0_arm64.whl` can't be installed because the binary distribution is incompatible with the current platform
+
+margaretblack test-project % uv add https://github.com/pantsbuild/pants/archive/refs/tags/release_2.23.1.tar.gz
+error: Failed to parse metadata from built wheel
+  Caused by: Metadata field Name not found
+
+margaretblack test-project % uv add https://github.com/pantsbuild/pants/archive/refs/tags/release_2.23.1.zip
+error: Failed to parse metadata from built wheel
+  Caused by: Metadata field Name not found
+
+margaretblack test-project % uv pip install git+https://github.com/pantsbuild/pants.git@release_2.23.0
+ Updated https://github.com/pantsbuild/pants.git (6fad8c66e)
+error: Failed to parse metadata from built wheel
+  Caused by: Metadata field Name not found
+```
+
+---
+
+_Referenced in [TechnologyBrewery/pants-uv-lifecycle-plugin#6](../../TechnologyBrewery/pants-uv-lifecycle-plugin/issues/6.md) on 2025-01-22 14:47_
+
+---
+
+_Comment by @charliermarsh on 2025-01-22 14:55_
+
+Are you sure that you're using Python 3.9? Does `uv add --python 3.9 https://github.com/pantsbuild/pants/releases/download/release_2.23.1/pantsbuild.pants-2.23.1-cp39-cp39-macosx_11_0_arm64.whl` fail in the same way?
+
+As for those other failures, I'm not quite sure what to do with them -- it seems like that's not a properly structured Python package...? Running `python -m build` in those source directories creates invalid wheels.
+
+---
+
+_Comment by @meliz19 on 2025-01-22 15:10_
+
+> Are you sure that you're using Python 3.9? Does `uv add --python 3.9 https://github.com/pantsbuild/pants/releases/download/release_2.23.1/pantsbuild.pants-2.23.1-cp39-cp39-macosx_11_0_arm64.whl` fail in the same way?
+> 
+> As for those other failures, I'm not quite sure what to do with them -- it seems like that's not a properly structured Python package...? Running `python -m build` in those source directories creates invalid wheels.
+
+Running `uv add --python 3.9 https://github.com/pantsbuild/pants/releases/download/release_2.23.1/pantsbuild.pants-2.23.1-cp39-cp39-macosx_11_0_arm64.whl` resolved this issue! Thank you so much for the quick response @charliermarsh! 
+
+---
+
+_Comment by @charliermarsh on 2025-01-22 15:13_
+
+No prob!
+
+---
+
+_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
+
+---
+
+_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
+
+---
+
+_Comment by @szethh on 2025-03-21 22:39_
+
+Hi! I am still running into this issue. I'm also on macos (intel). `uv add torch` results in:
+
+```
+error: Distribution `torch==2.6.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on macOS (`macosx_14_0_x86_64`), but `torch` (v2.6.0) only has wheels for the following platform: `macosx_11_0_arm64`
+```
+
+I also tried with the pytorch cpu index, but no dice:
+
+```
+error: Distribution `torch==2.6.0 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on macOS (`macosx_14_0_x86_64`), but `torch` (v2.6.0) only has wheels for the following platform: `macosx_11_0_arm64`
+```
+
+My version of uv is `0.6.8`
+
+---
+
+_Comment by @charliermarsh on 2025-03-21 23:05_
+
+You need to declare macOS x86 as a required environment: https://docs.astral.sh/uv/concepts/resolution/#required-environments (it’s actually the example we use in the docs, so you can copy the configuration at the bottom there)
+
+---
+
+_Comment by @szethh on 2025-03-22 13:38_
+
+that worked, thanks @charliermarsh!
+
+---
+
+_Comment by @Mathemmagician on 2025-04-10 16:32_
+
+Just wanted to spell out the Intel x86_64 macOS solution that worked for me
+
+1. In pyproject.toml, add:
+```
+[tool.uv]
+required-environments = [
+    "sys_platform == 'darwin' and platform_machine == 'x86_64'"
+]
+```
+
+2. Downgrade NumPy to below 2.0.0:
+```
+"numpy<2.0.0",
+```
+
+3. Run `uv sync`
+
+---

@@ -1,0 +1,86 @@
+---
+number: 4414
+title: "[Feature request] Allow specifying a custom path to `clap`"
+type: issue
+state: closed
+author: richard-uk1
+labels:
+  - C-enhancement
+  - A-derive
+assignees: []
+created_at: 2022-10-22T11:35:35Z
+updated_at: 2022-10-26T12:42:38Z
+url: https://github.com/clap-rs/clap/issues/4414
+synced_at: 2026-01-10T01:27:54Z
+---
+
+# [Feature request] Allow specifying a custom path to `clap`
+
+---
+
+_Issue opened by @richard-uk1 on 2022-10-22 11:35_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+master
+
+### Describe your use case
+
+I have a crate where I want to wrap `clap` along with some other common utilities in a 'batteries-included' extras crate for personal use (also on crates.io as `qu`). Currently, users of the crate have to depend on `qu` and `clap`, because I cannot ask `clap::Parser` to use an alternative path to `clap`.
+
+`serde` get round this by having a `crate` attribute that is used instead of `::serde` when present. This allows users to do `#[serde(crate = ::mycrate::serde)]` and generate serde derives without the user having serde as a dependency.
+
+### Describe the solution you'd like
+
+I'd like clap to support the `crate` attribute on the top level, and use that as the path to `clap` if present.
+
+### Alternatives, if applicable
+
+Do nothing - in which case the paper-cut of having to add `clap` when using libs that generate `clap::Parser` derives.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @richard-uk1 on 2022-10-22 11:35_
+
+---
+
+_Referenced in [clap-rs/clap#4415](../../clap-rs/clap/pulls/4415.md) on 2022-10-22 15:01_
+
+---
+
+_Label `A-derive` added by @epage on 2022-10-22 16:14_
+
+---
+
+_Comment by @epage on 2022-10-22 16:17_
+
+In #2921 and #2258, we had decided to take a different re-export approach and not fully qualify the clap name.
+
+If we are to switch our approach or support both, we should have more details of the trade offs between each.
+
+---
+
+_Comment by @richard-uk1 on 2022-10-22 18:28_
+
+I see, thanks for the links, sorry I missed them when searching.
+
+So I *think* that using the approach in #2921 covers all the use cases I had in mind, apart from pathological clashes where the downstream user chooses the name `clap` for something. I'll experiment with this for a few days then close the issue/pr.
+
+---
+
+_Closed by @richard-uk1 on 2022-10-26 12:42_
+
+---
+
+_Closed by @richard-uk1 on 2022-10-26 12:42_
+
+---

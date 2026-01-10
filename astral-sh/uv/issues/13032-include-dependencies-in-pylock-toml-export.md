@@ -1,0 +1,292 @@
+---
+number: 13032
+title: "Include dependencies in `pylock.toml` export"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-04-21T23:12:03Z
+updated_at: 2025-09-07T00:46:04Z
+url: https://github.com/astral-sh/uv/issues/13032
+synced_at: 2026-01-10T01:25:28Z
+---
+
+# Include dependencies in `pylock.toml` export
+
+---
+
+_Issue opened by @charliermarsh on 2025-04-21 23:12_
+
+Right now, we omit `dependencies`, which is optional. But it seems useful to include, for auditing purposes. The spec does _not_ define the format, so we can write whatever we want in that field.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2025-04-21 23:12_
+
+---
+
+_Comment by @so-rose on 2025-04-26 13:01_
+
+Some 2c I hope can be helpful: This would be incredibly enabling, I think. Though my needs may not be "standard": I'm currently parsing `uv.lock` directly to enable platform-specific pre-packaging of wheels for [Blender 3D](https://www.blender.org/) extensions.
+
+_30,000ft Overview of What I'm Doing: I first derive the Python environment from the theoretical end-user's OS and CPU arch, but also from their Blender version, which ships with a specific Python interpreter and vendors some `site-packages`. Then, I parse `uv.lock` and build a `networkx` graph with markers on edges. Since versions of of Blender 3D vendor different package versions, my tool auto-injects conflicting dependency groups with package versions by-Blender version. By putting it together, `uv` perfectly and universally resolves a lockfile from which I can do a correct platform-specific traversal of the dependency graph by-target-environment, using the derived Python environment to check markers as I go. From there, I just pick wheels to put into each output extension `.zip`, depending on which platforms/Blender versions it should support._
+
+**With the nicheness in mind**, I would advocate for:
+- Marking the presence of `uv`-specific schema in `dependencies` apparent via a [`[tool.uv]`](https://peps.python.org/pep-0751/#tool) table (entry) in `pylock.toml`.
+    - In my mind, it would also be nice to replace the auto-generated header with ex. a `command` and `run_on` entry in `[tool.uv]`, [as shown in the referenced example of the PEP](https://peps.python.org/pep-0751/#example). This would also make automated reproduction of the command that produced the lockfile computationally accessible, easing certain kinds of audits.
+    - Versioning the `[tool.uv]` schema of the `pylock.toml` would be nice, so that `pylock.toml` files "in the wild" can enjoy static semantic meaning.
+- A direct transcription of the `uv.lock` dependency format ([mentioned as an inspiration](https://peps.python.org/pep-0751/#packages-dependencies) in the PEP 751 entry), which is already exquisite.
+    - If nothing else, the inclusion of `marker` is very important to my use case (and I suspect any kind of auditing use case). Since dependency group conflicts resolve to markers, this is the entire foundation of my use case.
+    - Whatever it is, a well-documented schema to assist this kind of parsing.
+- A nice to have would be the additional recording of direct dependents: <https://peps.python.org/pep-0751/#recording-dependents>.
+- A _very_ specific nice-to-have would be recording which of the end-user requested dependencies it is that caused the inclusion of this particular dependency.
+    - This information is, admittedly, something that can be solved for if one already has the universally resolved dependency information available. Still, not having to spin up `networkx` would ease the audit use case.
+
+I may hot-patch this in anyway via my tool. But I can't be the only one doing this kind of thing (right?) 😃 Anywhos, that's the 2c.
+
+_For reference, here's the code from my project: <https://codeberg.org/so-rose/blext/src/commit/fb5b93e3df85f55f3bbe8fe6acd73d27dfd41fcf/blext/pydeps/blext_deps.py>. Main repo: <https://codeberg.org/so-rose/blext>_
+
+---
+
+_Referenced in [astral-sh/uv#13383](../../astral-sh/uv/issues/13383.md) on 2025-05-10 22:39_
+
+---
+
+_Comment by @jsirois on 2025-05-10 22:42_
+
+FWIW, the spec does define at least an outer bounds for the format: https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-dependencies
+> Each entry is a table which contains the minimum information required to tell which other package entry it corresponds to where doing a key-by-key comparison would find the appropriate package with no ambiguity (e.g. if there are two entries for the spam package, then you can include the version number like {name = "spam", version = "1.0.0"}, or by source like {name = "spam", vcs = { url = "..."}).
+
+Presumably that could lead to multiple different valid ways to "find the appropriate package with no ambiguity ", but the format isn't totally unconstrained at any rate.
+
+---
+
+_Referenced in [owenlamont/uv-secure#43](../../owenlamont/uv-secure/issues/43.md) on 2025-05-18 04:14_
+
+---
+
+_Comment by @jsirois on 2025-05-21 03:28_
+
+Fwiw, here's how Pex decided to interpret the dependencies spec wrt matching dependencies when trying to subset a PEP-751 lock: https://github.com/pex-tool/pex/blob/aa641c0a6102548a3f1baaeb8cc20b1b622e8cc0/pex/resolve/lockfile/pep_751.py#L778-L808
+
+---
+
+_Referenced in [pantsbuild/pants#22201](../../pantsbuild/pants/issues/22201.md) on 2025-05-21 03:47_
+
+---
+
+_Referenced in [astral-sh/uv#14469](../../astral-sh/uv/pulls/14469.md) on 2025-07-10 18:21_
+
+---
+
+_Referenced in [pex-tool/pex#2815](../../pex-tool/pex/issues/2815.md) on 2025-07-11 16:28_
+
+---
+
+_Comment by @owenlamont on 2025-07-13 03:15_
+
+Hi @brettcannon - did you have more specific examples of the dependencies property format for pylock.toml in PEP 751? Apologies if there was a more appropriate forum to ask about this on. I'd definitely like to be able to parse to pylock.toml file and be able to distinguish direct dependencies from transitive dependencies for some of the tools I'm working on.
+
+---
+
+_Referenced in [astral-sh/uv#14783](../../astral-sh/uv/pulls/14783.md) on 2025-07-21 09:14_
+
+---
+
+_Comment by @brettcannon on 2025-07-22 19:04_
+
+> did you have more specific examples of the dependencies property format for pylock.toml in PEP 751?
+
+The [example in the spec](https://packaging.python.org/en/latest/specifications/pylock-toml/#example) includes `packages.dependencies`. There's also the example in the [entry for `packages.dependencies`](https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-dependencies) itself.
+
+Basically you copy what you need from the relevant `[[packages]]` entry in order to make sure there's enough details that it's unambiguous which entry in `[[packages]]` you're after. In the vast majority of cases that will just be `name`, maybe `name` and `version`. If you need to include something like `packager.vcs.url` or something. But the key thing is you're copying the data from the relevant `[[packages]]` and keeping the structure.
+
+---
+
+_Comment by @jsirois on 2025-07-22 20:20_
+
+@brettcannon although very unlikely to be a distinguishing factor in selecting a dependency uniquely, the case of list-valued-attributes does not seem crystal clear, at least to me. I made a choice (on the consumer side) and documented a rationale, but: https://github.com/pex-tool/pex/blob/aa641c0a6102548a3f1baaeb8cc20b1b622e8cc0/pex/resolve/lockfile/pep_751.py#L790-L804
+
+---
+
+_Comment by @brettcannon on 2025-07-23 19:15_
+
+> the case of list-valued-attributes does not seem crystal clear, at least to me.
+
+What list-valued attributes do you think would be necessary to distinguish from another entry that you have come across? Taking wheels as an example, in what scenario is the same project and version split into separate entries where they only differ by what wheels are listed?
+
+But it's also not that critical since this is documentation for users and not something that influences installation. So you won't break anyone's install with your decision if I'm understanding what you did.
+
+---
+
+_Comment by @jsirois on 2025-07-23 19:38_
+
+> What list-valued attributes do you think would be necessary to distinguish from another entry that you have come across? 
+
+I have 0 clues. That said, I imagined this in the linked code comment:
+
+> `# As such, we consider the list matches if any of its contained tables matches each of the`
+> `# spec tables. This allows a dependency spec like so to match the torch cpu wheel in a lock`
+> `# that also includes torch-2.7.0-cp311-none-macosx_11_0_arm64.whl (cuda 12.8):`
+> `# {name = "torch", wheels = [{ name = "torch-2.7.0+xpu-cp39-cp39-win_amd64.whl" }]}`
+
+I think sophisticated lockers like uv actually support complex forked lock scenarios vaguely like this.
+
+> But it's also not that critical since this is documentation for users and not something that influences installation. So you won't break anyone's install with your decision if I'm understanding what you did.
+
+It is critical, because Pex supports sub-setting a lock and must pick the the right set of sub-dependencies for which this information is critical. Now I'm fully aware you had to punt on this and several other aspects of locking to get a spec out the door, but my tool must support this; so I need to grapple with the details of what Pex might be presented in `dependencies`.
+
+---
+
+_Comment by @jsirois on 2025-07-23 21:01_
+
+@brettcannon to be more concrete ... and this is relevant to #14783 and @charliermarsh's analysis of that PR (I think the PR has it wrong):
+
+In the abstract:
+
+A non-PEP-751 locker may use criteria external to the PEP-751 format to create the original lock and it might be these very criteria that select amongst dependencies. It may be necessary to use _any_ attributes of a package in order to meet "no ambiguity", let alone the list-valued attributes in question when the non-PEP-751 lock is converted to PEP-751 form:
+> Each entry is a table which contains the minimum information required to tell which other package entry it corresponds to where doing a key-by-key comparison would find the appropriate package with no ambiguity
+
+In the concrete - following https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-environment-markers:
+
+```toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "torch>=2.7.0",
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", marker = "sys_platform != 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+```
+
+This nets me the following in `uv.lock`:
+```toml
+...
+dependencies = [
+    { name = "torch", version = "2.7.1", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'darwin'" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux'" },
+    { name = "torch", version = "2.7.1+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform != 'darwin' and sys_platform != 'linux'" },
+]
+...
+```
+
+So two dependencies with the same version, but from different registries. Those look like:
+```toml
+...
+[[package]]
+name = "torch"
+version = "2.7.1"
+source = { registry = "https://download.pytorch.org/whl/cpu" }
+resolution-markers = [
+    "sys_platform == 'darwin'",
+]   
+...
+wheels = [
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.7.1-cp312-none-macosx_11_0_arm64.whl", hash = "sha256:7b4f8b2b83bd08f7d399025a9a7b323bdbb53d20566f1e0d584689bb92d82f9a" },
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.7.1-cp313-cp313t-macosx_14_0_arm64.whl", hash = "sha256:95af97e7b2cecdc89edc0558962a51921bf9c61538597dbec6b7cc48d31e2e13" },
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.7.1-cp313-none-macosx_11_0_arm64.whl", hash = "sha256:7ecd868a086468e1bcf74b91db425c1c2951a9cfcd0592c4c73377b7e42485ae" },
+]
+...
+[[package]]
+name = "torch"
+version = "2.7.1"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+]
+...
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/93/fb505a5022a2e908d81fe9a5e0aa84c86c0d5f408173be71c6018836f34e/torch-2.7.1-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:27ea1e518df4c9de73af7e8a720770f3628e7f667280bce2be7a16292697e3fa", size = 98948276, upload-time = "2025-06-04T17:39:12.852Z" },
+    { url = "https://files.pythonhosted.org/packages/56/7e/67c3fe2b8c33f40af06326a3d6ae7776b3e3a01daa8f71d125d78594d874/torch-2.7.1-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:c33360cfc2edd976c2633b3b66c769bdcbbf0e0b6550606d188431c81e7dd1fc", size = 821025792, upload-time = "2025-06-04T17:34:58.747Z" },
+    { url = "https://files.pythonhosted.org/packages/66/81/e48c9edb655ee8eb8c2a6026abdb6f8d2146abd1f150979ede807bb75dcb/torch-2.7.1-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:03563603d931e70722dce0e11999d53aa80a375a3d78e6b39b9f6805ea0a8d28", size = 98946649, upload-time = "2025-06-04T17:38:43.031Z" },
+    { url = "https://files.pythonhosted.org/packages/3a/24/efe2f520d75274fc06b695c616415a1e8a1021d87a13c68ff9dce733d088/torch-2.7.1-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:d632f5417b6980f61404a125b999ca6ebd0b8b4bbdbb5fbbba44374ab619a412", size = 821033192, upload-time = "2025-06-04T17:38:09.146Z" },
+    { url = "https://files.pythonhosted.org/packages/69/6a/67090dcfe1cf9048448b31555af6efb149f7afa0a310a366adbdada32105/torch-2.7.1-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:e08d7e6f21a617fe38eeb46dd2213ded43f27c072e9165dc27300c9ef9570934", size = 99028857, upload-time = "2025-06-04T17:37:50.956Z" },
+    { url = "https://files.pythonhosted.org/packages/90/1c/48b988870823d1cc381f15ec4e70ed3d65e043f43f919329b0045ae83529/torch-2.7.1-cp313-cp313t-manylinux_2_28_x86_64.whl", hash = "sha256:30207f672328a42df4f2174b8f426f354b2baa0b7cca3a0adb3d6ab5daf00dc8", size = 821098066, upload-time = "2025-06-04T17:37:33.939Z" },
+]
+...
+```
+Or, when exported to PEP-751 via `uv export --format pylock.toml`:
+```toml
+...
+[[packages]]
+name = "torch"
+version = "2.7.1"
+marker = "sys_platform == 'darwin'"
+index = "https://download.pytorch.org/whl/cpu"
+wheels = [
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.7.1-cp312-none-macosx_11_0_arm64.whl", hashes = { sha256 = "7b4f8b2b83bd08f7d399025a9a7b323bdbb53d20566f1e0d584689bb92d82f9a" } },
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.7.1-cp313-cp313t-macosx_14_0_arm64.whl", hashes = { sha256 = "95af97e7b2cecdc89edc0558962a51921bf9c61538597dbec6b7cc48d31e2e13" } },
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.7.1-cp313-none-macosx_11_0_arm64.whl", hashes = { sha256 = "7ecd868a086468e1bcf74b91db425c1c2951a9cfcd0592c4c73377b7e42485ae" } },
+]
+
+[[packages]]
+name = "torch"
+version = "2.7.1"
+marker = "sys_platform == 'linux'"
+index = "https://pypi.org/simple"
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/93/fb505a5022a2e908d81fe9a5e0aa84c86c0d5f408173be71c6018836f34e/torch-2.7.1-cp312-cp312-manylinux_2_28_aarch64.whl", upload-time = 2025-06-04T17:39:12Z, size = 98948276, hashes = { sha256 = "27ea1e518df4c9de73af7e8a720770f3628e7f667280bce2be7a16292697e3fa" } },
+    { url = "https://files.pythonhosted.org/packages/56/7e/67c3fe2b8c33f40af06326a3d6ae7776b3e3a01daa8f71d125d78594d874/torch-2.7.1-cp312-cp312-manylinux_2_28_x86_64.whl", upload-time = 2025-06-04T17:34:58Z, size = 821025792, hashes = { sha256 = "c33360cfc2edd976c2633b3b66c769bdcbbf0e0b6550606d188431c81e7dd1fc" } },
+    { url = "https://files.pythonhosted.org/packages/66/81/e48c9edb655ee8eb8c2a6026abdb6f8d2146abd1f150979ede807bb75dcb/torch-2.7.1-cp313-cp313-manylinux_2_28_aarch64.whl", upload-time = 2025-06-04T17:38:43Z, size = 98946649, hashes = { sha256 = "03563603d931e70722dce0e11999d53aa80a375a3d78e6b39b9f6805ea0a8d28" } },
+    { url = "https://files.pythonhosted.org/packages/3a/24/efe2f520d75274fc06b695c616415a1e8a1021d87a13c68ff9dce733d088/torch-2.7.1-cp313-cp313-manylinux_2_28_x86_64.whl", upload-time = 2025-06-04T17:38:09Z, size = 821033192, hashes = { sha256 = "d632f5417b6980f61404a125b999ca6ebd0b8b4bbdbb5fbbba44374ab619a412" } },
+    { url = "https://files.pythonhosted.org/packages/69/6a/67090dcfe1cf9048448b31555af6efb149f7afa0a310a366adbdada32105/torch-2.7.1-cp313-cp313t-manylinux_2_28_aarch64.whl", upload-time = 2025-06-04T17:37:50Z, size = 99028857, hashes = { sha256 = "e08d7e6f21a617fe38eeb46dd2213ded43f27c072e9165dc27300c9ef9570934" } },
+    { url = "https://files.pythonhosted.org/packages/90/1c/48b988870823d1cc381f15ec4e70ed3d65e043f43f919329b0045ae83529/torch-2.7.1-cp313-cp313t-manylinux_2_28_x86_64.whl", upload-time = 2025-06-04T17:37:33Z, size = 821098066, hashes = { sha256 = "30207f672328a42df4f2174b8f426f354b2baa0b7cca3a0adb3d6ab5daf00dc8" } },
+]
+...
+```
+
+So to pick out the correct dependency the `pylock.toml` exported from this `uv.lock` either needs to select a wheel from the list of `wheels` or else use the `marker` or the `index`. The pylock.toml spec just says the determination must be unique, it does not say which fields to use to pick out the unique dependency. Thus, as a pylock.toml consumer needing to understand a dependency graph correctly, I must be prepared to deal with matching items in lists since uv, for example, may not choose to write down marker as its way of specifying the dependency unambiguously.
+
+PS: This particular example is actually very relevant to me as a Pex maintainer since one of my largest users (afaict) is Pants and Pants users that also use Python use torch extensively and it's a particularly thorny case in the Python ecosystem that leads to many problems, questions and support-hours.
+
+---
+
+_Comment by @brettcannon on 2025-07-24 18:52_
+
+I would key on name and index in this example since those are unique.
+
+But as I have said, the list of dependencies isn't used in any semantic way by installers, so the spec doesn't stress about how you write it out as long as a person reading the data can make out which entry in `project.dependencies` maps to an entry in `[[packages]]`. If you want more clarity to be added to the spec you know what I'm going to say (and I know you don't like): bring up a topic on discuss.python.org and we can see if some clarity can be added w/o bumping the version number on the lock file spec.
+
+---
+
+_Comment by @jsirois on 2025-07-24 21:00_
+
+> ... as long as a person reading the data can make out which entry in project.dependencies maps to an entry in [[packages]]
+
+Well, brain algorithm, program algorithm, they should amount to same to meet the spec requirement of "with no ambiguity". That said, as you expected I do not wish to engage the PyPA via Discourse; so I'll just leave all this analysis here for what its worth.
+
+---
+
+_Referenced in [pex-tool/pex#2885](../../pex-tool/pex/issues/2885.md) on 2025-08-25 12:42_
+
+---
+
+_Comment by @jsirois on 2025-09-06 19:24_
+
+Ok, I just realized I require less than the spec requires when sub-setting the lock. I can always just grab all dependencies by `name`, even if 1 `name` maps to multiple packages since the spec guarantees those multiple packages will unambiguously filter down to 1 package (via markers) at install time via rule 5 in https://packaging.python.org/en/latest/specifications/pylock-toml/#installation.
+
+This realization does not help this issue or https://github.com/astral-sh/uv/pull/14783 since the spec requires dependencies to have redundant specificity information for the sake of human readers only, but it does answer my questions by saying - don't worry!, just include all instances of the dependency `name` in the subset - it'll all work out at install time later.
+
+... except that `name` is not required @#$%!, just uniqueness of the dependency pointer (an implementer could just use the artifact URL for example). I sorta give up. I'll expect `name` and just error with fairly explicit instructions in the unlikely case I ever run across a technically spec-compliant pylock that has dependencies and yet some of those are not identified by at least `name`.
+
+---
+
+_Referenced in [aquasecurity/trivy#9632](../../aquasecurity/trivy/pulls/9632.md) on 2025-10-22 08:04_
+
+---

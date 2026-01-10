@@ -1,0 +1,64 @@
+---
+number: 2126
+title: "Add `uv-virtualenv` tests for a wide range of Pythons"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - help wanted
+  - internal
+assignees: []
+created_at: 2024-03-02T01:48:58Z
+updated_at: 2024-04-14T16:19:03Z
+url: https://github.com/astral-sh/uv/issues/2126
+synced_at: 2026-01-10T01:23:12Z
+---
+
+# Add `uv-virtualenv` tests for a wide range of Pythons
+
+---
+
+_Issue opened by @charliermarsh on 2024-03-02 01:48_
+
+`virtualenv` has a nice setup for this: https://github.com/pypa/virtualenv/blob/main/.github/workflows/check.yml.
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-03-02 01:49_
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-03-02 01:49_
+
+---
+
+_Referenced in [astral-sh/uv#2139](../../astral-sh/uv/pulls/2139.md) on 2024-03-03 17:05_
+
+---
+
+_Comment by @zanieb on 2024-03-08 18:26_
+
+Charlie has a good start on this with the `system-install.yaml` GitHub Actions workflow.
+
+I think the major downside of that approach is that it cannot be run locally.
+
+Running cross-platform tests locally is going to be quite challenging as we need a VM or remote runner to execute Windows tests on Linux or vice-versa.
+
+In the long run, I imagine using BuildKit with multi-node build daemons so we can run containerized tests on Windows and Linux. However, they [just recently](https://github.com/moby/buildkit/blob/master/docs/windows.md#experimental-windows-containers-support) added support for Windows and I'm hesitant to try to build on top of it. If we wait, we might be able to take advantage of tools that extend BuildKit (like Earthly) to avoid implementing much of the infrastructure.
+
+In the short term, I think we should containerize the `system-install` test suite and split it into "host" platforms. We can run everything in CI by making use of GitHub Action's multiplatform hosts. Locally, developers will be limited to the subset matching their current host. We can explore using Vagrant to run VMs for local cross-platform tests, but I don't think it's critical at this time.
+
+
+---
+
+_Comment by @zanieb on 2024-04-14 16:19_
+
+cc @konstin here I talk a bit about vagrant and buildkit dreams.
+
+I'm going to close this because we have lots of system install tests now.
+
+---
+
+_Closed by @zanieb on 2024-04-14 16:19_
+
+---

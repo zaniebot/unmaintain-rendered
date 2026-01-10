@@ -1,0 +1,62 @@
+---
+number: 82
+title: Implement smart usage
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2015-04-29T01:52:34Z
+updated_at: 2018-08-02T03:29:38Z
+url: https://github.com/clap-rs/clap/issues/82
+synced_at: 2026-01-10T01:26:23Z
+---
+
+# Implement smart usage
+
+---
+
+_Issue opened by @kbknapp on 2015-04-29 01:52_
+
+Usage strings, if possible should be re-generated upon error for the current usage case. For example if you have a non-required by default argument which requires another argument, and the user fails to supply the third argument (which is required by proxy), the usage string is generic - yet the error message says a required argument is missing...which argument?
+
+``` rust
+let m = App::new("app")
+                .arg(Arg::from_usage("--reqs").requires("input"))
+                .arg_from_usage("[input] 'some input'")
+                .get_matches();
+```
+
+Run with `app --reqs` and the usage does not identify `[input]` as a requirement, yet states a generic "required argument missing"
+
+Now this _does_ happen in certain instances, but I want to implement it in _all_ instances.
+
+
+---
+
+_Label `enhancement` added by @kbknapp on 2015-04-29 01:52_
+
+---
+
+_Referenced in [clap-rs/clap#88](../../clap-rs/clap/issues/88.md) on 2015-04-29 18:46_
+
+---
+
+_Comment by @kbknapp on 2015-04-30 15:16_
+
+Closed with #90 
+
+
+---
+
+_Closed by @kbknapp on 2015-04-30 15:16_
+
+---
+
+_Comment by @kbknapp on 2015-05-01 02:26_
+
+Usage strings are now recalculated on errors, so that the current usage attempt is a template and all requirements/conflicts are spelled out in the usage string.
+
+
+---

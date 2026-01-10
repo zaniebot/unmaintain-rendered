@@ -1,0 +1,42 @@
+---
+number: 15323
+title: Cloudsmith publish integration test is failing
+type: issue
+state: closed
+author: zanieb
+labels:
+  - ci-flake
+assignees: []
+created_at: 2025-08-16T12:42:10Z
+updated_at: 2025-08-18T19:14:41Z
+url: https://github.com/astral-sh/uv/issues/15323
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# Cloudsmith publish integration test is failing
+
+---
+
+_Issue opened by @zanieb on 2025-08-16 12:42_
+
+See https://github.com/astral-sh/uv/actions/runs/17001407277/job/48203823438
+
+---
+
+_Assigned to @konstin by @zanieb on 2025-08-16 12:42_
+
+---
+
+_Label `ci-flake` added by @zanieb on 2025-08-16 12:42_
+
+---
+
+_Comment by @konstin on 2025-08-18 18:38_
+
+The test is passing again, maybe an outage on their end? https://github.com/astral-sh/uv/actions/runs/17048417885/job/48330133220
+
+---
+
+_Closed by @zanieb on 2025-08-18 19:14_
+
+---

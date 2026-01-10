@@ -1,0 +1,46 @@
+---
+number: 17111
+title: tool.ruff.lint.flake8-type-checking not working
+type: issue
+state: closed
+author: chaush-server
+labels:
+  - question
+assignees: []
+created_at: 2025-04-01T09:41:52Z
+updated_at: 2025-04-08T11:07:59Z
+url: https://github.com/astral-sh/ruff/issues/17111
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# tool.ruff.lint.flake8-type-checking not working
+
+---
+
+_Issue opened by @chaush-server on 2025-04-01 09:41_
+
+### Summary
+
+tool.ruff.lint.flake8-type-checking not working but lint.flake8-type-checking does (pyproject.toml)
+![Image](https://github.com/user-attachments/assets/905cb866-e851-4ce0-ac92-71ed6bc9efb1)
+
+![Image](https://github.com/user-attachments/assets/dc485928-83c8-496b-ae5c-36f2eb8acdce)
+
+### Version
+ruff                    0.4.2
+
+---
+
+_Label `question` added by @MichaReiser on 2025-04-01 11:09_
+
+---
+
+_Comment by @MichaReiser on 2025-04-01 11:09_
+
+Can you share your entire configuration? I suspect that Ruff simply disables `TCH001` when you don't use `tool.ruff`. Can you also try using a more recent version of ruff?
+
+---
+
+_Closed by @chaush-server on 2025-04-08 11:08_
+
+---

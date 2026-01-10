@@ -1,0 +1,329 @@
+---
+number: 1761
+title: Allow positional arguments from ArgGroup take value separately
+type: issue
+state: closed
+author: EverlastingBugstopper
+labels:
+  - C-enhancement
+  - A-parsing
+  - S-wont-fix
+assignees: []
+created_at: 2020-03-25T17:37:22Z
+updated_at: 2022-11-08T17:21:36Z
+url: https://github.com/clap-rs/clap/issues/1761
+synced_at: 2026-01-10T01:27:04Z
+---
+
+# Allow positional arguments from ArgGroup take value separately
+
+---
+
+_Issue opened by @EverlastingBugstopper on 2020-03-25 17:37_
+
+### What are you trying to do?
+
+I'm trying to create positional command line arguments that are exclusive, you can either set one or the other. I'd like to be able to use clap_derive with this so that they are boiled down to a single `expiration: std::time::Duration` field in an opt struct.
+
+set expiration to 60 seconds
+
+```bash
+$ app set key value EX 60
+```
+
+set expiration to 6000 milliseconds
+
+```bash
+$ app set key value PX 6000
+```
+
+### What have you tried already?
+
+I haven't been sure what to try or if this is even supported :)
+
+---
+
+_Label `T: RFC / question` added by @EverlastingBugstopper on 2020-03-25 17:37_
+
+---
+
+_Referenced in [tokio-rs/mini-redis#11](../../tokio-rs/mini-redis/pulls/11.md) on 2020-03-25 20:28_
+
+---
+
+_Comment by @pksunkara on 2020-03-25 21:10_
+
+You can use [conflicts](https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.conflicts_with) function.
+
+---
+
+_Closed by @pksunkara on 2020-03-25 21:10_
+
+---
+
+_Comment by @CreepySkeleton on 2020-03-26 07:48_
+
+I'm under impression that `conflicts` is not what he was asking about.
+
+This is pretty interesting question. What he's asking for (or so I get it) is:
+* Allow one of the given set of options: `PX, EX`. Only one of them can be present at a time. 
+
+  These two conditions can be implemented via [`ArgGroup`](https://docs.rs/clap/2.33.0/clap/struct.ArgGroup.html).
+
+  
+
+* Each of them takes value. **This cannot be implemented via `ArgGroup`**.
+  ```rust
+  use clap::{App, ArgGroup, Arg};
+
+  fn main() {
+      let m = App::new("app")
+          .arg(Arg::with_name("PX").takes_value(true))
+          .arg(Arg::with_name("EX").takes_value(true))
+          .group(ArgGroup::with_name("expiration").args(&["PX", "EX"]))
+          .get_matches();
+
+      println!("{:?}", m.value_of("EX"));
+  }
+  ```
+  ```
+  $ cargo run -- EX 666
+     Compiling probe v0.2.0 (D:\workspace\probe)
+      Finished dev [unoptimized + debuginfo] target(s) in 10.46s
+       Running `target\debug\probe.exe EX 666`
+  error: The argument '<EX>' cannot be used with one or more of the other specified arguments
+
+  USAGE:
+      probe.exe <PX|EX>
+
+  For more information try --help
+  error: process didn't exit successfully: `target\debug\probe.exe EX 666` (exit code: 1)
+  ```
+
+  This could be implemented if `EX` and `PX` were *non-positional* options:
+  ```rust
+  use clap::{App, ArgGroup, Arg};
+
+  fn main() {
+      let m = App::new("app")
+          .arg(Arg::with_name("PX").takes_value(true).long("PX"))
+          .arg(Arg::with_name("EX").takes_value(true).long("EX"))
+          .group(ArgGroup::with_name("expiration").args(&["PX", "EX"]))
+          .get_matches();
+
+      println!("{:?}", m.value_of("EX"));
+  }
+  ```
+  ```
+  $ cargo run -- --EX 600
+      Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+       Running `target\debug\probe.exe --EX 600`
+  Some("600")
+  ```
+
+But non-positional options must start with `-`.
+
+I'll take liberty to rename this issue, transforming it into feature request.
+
+Until the, @EverlastingBugstopper , you can make use of subcommands:
+```rust
+use clap::{App, Arg, SubCommand};
+
+fn main() {
+    let m = App::new("app")
+        .subcommand(SubCommand::with_name("PX")
+          .arg(Arg::with_name("value").takes_value(true).required(true)))
+        .subcommand(SubCommand::with_name("EX")
+          .arg(Arg::with_name("value").takes_value(true).required(true)))
+        .get_matches();
+
+    println!("{:#?}", m);
+}
+```
+```
+$ cargo run -- EX 600
+   Compiling probe v0.2.0 (D:\workspace\probe)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.77s
+     Running `target\debug\probe.exe EX 600`
+ArgMatches {
+    args: {},
+    subcommand: Some(
+        SubCommand {
+            name: "EX",
+            matches: ArgMatches {
+                args: {
+                    "value": MatchedArg {
+                        occurs: 1,
+                        indices: [
+                            1,
+                        ],
+                        vals: [
+                            "600",
+                        ],
+                    },
+                },
+                subcommand: None,
+                usage: Some(
+                    "USAGE:\n    probe.exe EX <value>",
+                ),
+            },
+        },
+    ),
+    usage: Some(
+        "USAGE:\n    probe.exe [SUBCOMMAND]",
+    ),
+}
+```
+
+The only thing is that the error message might not appear what you want:
+```
+$ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+     Running `target\debug\probe.exe --help`
+app
+
+USAGE:
+    probe.exe [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    EX
+    PX
+    help    Prints this message or the help of the given subcommand(s)
+```
+
+---
+
+_Reopened by @CreepySkeleton on 2020-03-26 07:48_
+
+---
+
+_Renamed from "Exclusive or argument? usage: [expiration EX seconds|PX milliseconds]" to "Allow positional arguments from ArgGroup take value separately" by @CreepySkeleton on 2020-03-26 07:49_
+
+---
+
+_Label `T: RFC / question` removed by @CreepySkeleton on 2020-03-26 07:49_
+
+---
+
+_Label `P4: nice to have` added by @CreepySkeleton on 2020-03-26 07:49_
+
+---
+
+_Label `T: new feature` added by @CreepySkeleton on 2020-03-26 07:49_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-03-26 07:49_
+
+---
+
+_Added to milestone `3.1` by @CreepySkeleton on 2020-03-26 07:49_
+
+---
+
+_Comment by @EverlastingBugstopper on 2020-03-26 15:06_
+
+Hey @CreepySkeleton - thanks for the thoughtful response! 
+
+When y'all implement new features like this is it automatically provided in `clap_derive` or does that require extra work as well? My mental model of how `clap_derive` actually works is a bit shaky, it seems like most things are supported but the patterns aren't always obvious to me (how would I go about creating an ArgGroup in `clap_derive`?
+
+---
+
+_Comment by @CreepySkeleton on 2020-03-26 17:06_
+
+> (how would I go about creating an ArgGroup in clap_derive?
+
+[Example](https://github.com/clap-rs/clap/blob/master/clap_derive/examples/group.rs)
+
+> When y'all implement new features like this is it automatically provided in clap_derive or does that require extra work as well?
+
+Most things are immediately available through `#[clap(method = value)]` attributes. Some things, like subcommands, require dedicated features.
+
+I am inclined to remind you that `clap_derive` is still in alpha stage and API may change. You can play with it, but expect sudden breakages. For production, use `structopt`.
+
+---
+
+_Comment by @EverlastingBugstopper on 2020-03-26 18:37_
+
+Awesome! Yeah - this is something I'm working on the side, not released or intended to be released soon so it's ok that it's still in alpha. Thanks for the help :)
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Referenced in [epage/clapng#145](../../epage/clapng/issues/145.md) on 2021-12-06 19:14_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:13_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:13_
+
+---
+
+_Label `P4: nice to have` removed by @epage on 2021-12-09 21:13_
+
+---
+
+_Label `S-triage` added by @epage on 2021-12-09 21:13_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-13 16:26_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-13 22:44_
+
+---
+
+_Comment by @epage on 2022-11-08 04:44_
+
+#1334 would be one way to improve the subcommand help output.
+
+@EverlastingBugstopper The thing that isn't too clear to me is what in the example commands are meant to be literals vs place holders.
+
+```console
+$ app set key value EX 60
+```
+
+One workaround discussed earlier was subcommands which means `EX` and `PX` are literals.  A proposed way of this working was using a `EX` and `PX` positional argument but that would have different behavior unless we also limited them with possible values to being just the literals `EX` and `PX`.  At that point, someone can define a single positional argument with `EX` and `PX` possible values.  The value name could be set to `EX|PX` to make it display nicely.
+
+If this is about skipping them based on values, this reminds me of
+- #2122
+
+---
+
+_Comment by @EverlastingBugstopper on 2022-11-08 16:16_
+
+I opened this issue a while back when I was working on [`mini-redis`](https://github.com/tokio-rs/mini-redis). Upon looking at this again a few years later, I don't think I would ever want to design a CLI with usage like this 😆 
+
+It looks like when they implemented support for setting expiration that it's just a number and there's no way to specify a difference between seconds and milliseconds. (I'd probably implement this today using something like [humantime](https://docs.rs/humantime/latest/humantime/) to parse the length of time rather than archaic EX/PX literals that the [actual redis implementation uses](https://redis.io/commands/set/))
+
+---
+
+_Label `S-triage` removed by @epage on 2022-11-08 17:21_
+
+---
+
+_Label `S-wont-fix` added by @epage on 2022-11-08 17:21_
+
+---
+
+_Closed by @epage on 2022-11-08 17:21_
+
+---
+
+_Comment by @epage on 2022-11-08 17:21_
+
+Thanks for the reply!
+
+---

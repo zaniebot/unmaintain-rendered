@@ -1,0 +1,92 @@
+---
+number: 7958
+title: cache-dir in configfiile should be relative to that configfile
+type: issue
+state: closed
+author: woutervh
+labels:
+  - bug
+assignees: []
+created_at: 2023-10-14T10:03:20Z
+updated_at: 2023-10-14T19:00:24Z
+url: https://github.com/astral-sh/ruff/issues/7958
+synced_at: 2026-01-10T01:22:47Z
+---
+
+# cache-dir in configfiile should be relative to that configfile
+
+---
+
+_Issue opened by @woutervh on 2023-10-14 10:03_
+
+using ruff 0.0.292
+
+in my projects's pyproject.toml, I configure the _cache-dir_
+
+```
+[tool.ruff]
+# ruff searches for settings in the target-dir and up
+# https://beta.ruff.rs/docs/configuration/
+cache-dir = "var/cache/ruff"  # relative to $PWD
+```
+
+when setting a relative path in pyproject.toml,
+ the setting should be relative to that pyproject.toml-file.
+
+however, ruff takes it relative to the $PWD,  which does not make sense in a configfile.
+
+when I run ruff from my project-directory,  it creates cache-dirs in every location I run ruff from:
+
+
+```
+pyproject.toml
+
+docs/
+    conf.py
+    var/cache/ruff/
+src/
+    foo/
+         var/cache/ruff
+        __init__
+
+tests/
+    conftest.py
+    var/cache/ruff/
+
+var/cache/ruff/
+```
+
+
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2023-10-14 18:34_
+
+I don't think it should be relative to the configuration file in all cases (though it's probably not worth going into why), but it should be relative to the "project root" which is _typically_ the directory containing the configuration file.
+
+In the above case, we _should_ be choosing the top-level directory as the project root in all cases, and so using that same top-level `var/cache/ruff/`, so seems like a bug.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-14 18:48_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-10-14 18:48_
+
+---
+
+_Referenced in [astral-sh/ruff#7962](../../astral-sh/ruff/pulls/7962.md) on 2023-10-14 18:51_
+
+---
+
+_Closed by @charliermarsh on 2023-10-14 19:00_
+
+---
+
+_Referenced in [python/mypy#7967](../../python/mypy/issues/7967.md) on 2025-10-07 12:44_
+
+---

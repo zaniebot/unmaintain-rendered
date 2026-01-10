@@ -1,0 +1,56 @@
+---
+number: 4355
+title: "Support glob patterns for `extend-immutable-calls` configuration "
+type: issue
+state: open
+author: MicaelJarniac
+labels:
+  - configuration
+assignees: []
+created_at: 2023-05-10T18:36:20Z
+updated_at: 2023-05-10T20:13:05Z
+url: https://github.com/astral-sh/ruff/issues/4355
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# Support glob patterns for `extend-immutable-calls` configuration 
+
+---
+
+_Issue opened by @MicaelJarniac on 2023-05-10 18:36_
+
+## Description
+
+Currently, the configuration of [`extend-immutable-calls`](https://beta.ruff.rs/docs/settings/#extend-immutable-calls) in `pyproject.toml` supports specifying individual functions or attributes, like this:
+
+```toml
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = ["betterproto.string_field"]
+```
+
+However, it would be beneficial if the tool could also support using glob patterns to match multiple attributes or functions at once. For example:
+
+```toml
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = ["betterproto.*"]
+```
+
+In this case, the `*` would act as a wildcard, representing any attribute or function within the `betterproto` module.
+
+## Use case
+
+Supporting glob patterns in the configuration would allow users to more easily and concisely specify multiple attributes or functions that they would like to extend with immutable calls. This feature would be particularly useful when a module has many attributes or functions that need to be included in the configuration.
+
+## Proposed solution
+
+Enhance the configuration parser to support glob patterns in the `extend-immutable-calls` list, expanding them to match any applicable attributes or functions within the specified module.
+
+---
+
+Thank you for considering this feature request. I believe it would greatly improve the usability and flexibility of the configuration options.
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-05-10 20:13_
+
+---

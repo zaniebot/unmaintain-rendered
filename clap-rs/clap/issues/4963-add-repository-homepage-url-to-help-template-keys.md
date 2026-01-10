@@ -1,0 +1,84 @@
+---
+number: 4963
+title: "Add repository / homepage URL to `help_template` keys"
+type: issue
+state: open
+author: ajeetdsouza
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2023-06-10T15:02:27Z
+updated_at: 2023-06-10T15:39:24Z
+url: https://github.com/clap-rs/clap/issues/4963
+synced_at: 2026-01-10T01:28:04Z
+---
+
+# Add repository / homepage URL to `help_template` keys
+
+---
+
+_Issue opened by @ajeetdsouza on 2023-06-10 15:02_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.3.2
+
+### Describe your use case
+
+It would be great if I could add the application homepage URL to the help page via a template key, eg.:
+
+```
+{before-help}<bold><underline>{name} {version}</underline></bold>
+{author}
+{repository}
+
+...
+```
+
+An example - `ripgrep` uses the following format for the start of the help page:
+
+```
+ripgrep 13.0.0
+Andrew Gallant <jamslam@gmail.com>
+
+ripgrep (rg) recursively searches the current directory for a regex pattern.
+By default, ripgrep will respect gitignore rules and automatically skip hidden
+files/directories and binary files.
+
+Use -h for short descriptions and --help for more details.
+
+Project home page: https://github.com/BurntSushi/ripgrep
+```
+
+### Describe the solution you'd like
+
+A key for `{homepage}` and `{repository}` would fix this.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+I want to use the repository variable in [zoxide](https://github.com/ajeetdsouza/zoxide)'s help page, so that users can report issues more easily.
+
+---
+
+_Label `C-enhancement` added by @ajeetdsouza on 2023-06-10 15:02_
+
+---
+
+_Comment by @epage on 2023-06-10 15:39_
+
+clap can't look this information up directly.  `CARGO_PKG_REPOSITORY` and `CARGO_PKG_HOMEPAGE` would need to be looked up within your code and passed in.  Even with the derive API, we prefer to at least opt-in for inferred fields to be passed in (`#[command(name)]`).  We'd need to add a `Command::homepage` or something for users / the derive to pass this in that would only exist for the sake of the help template which to me is questionable value for the cost that everyone would be paying.
+
+However, we are (slowly) working on a plugin system to clap. The easiest example is that clap should know nothing about `ValueHint` but instead it should be in `clap_complete` but we allow users to attach state like that to an `Arg` without caring what it is.  So a user could set `clap_complete::ValueHint` and `clap_complete` can read it when needed.
+
+We could have help-template specific plugins that would make it so only the people using them would be paying the cost for them.
+
+---

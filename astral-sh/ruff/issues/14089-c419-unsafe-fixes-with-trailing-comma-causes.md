@@ -1,0 +1,91 @@
+---
+number: 14089
+title: "C419 unsafe fixes with trailing comma causes syntax error: \"Generator expression must be parenthesized\""
+type: issue
+state: closed
+author: ROCKTAKEY
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2024-11-04T10:14:06Z
+updated_at: 2024-11-04T20:33:32Z
+url: https://github.com/astral-sh/ruff/issues/14089
+synced_at: 2026-01-10T01:22:54Z
+---
+
+# C419 unsafe fixes with trailing comma causes syntax error: "Generator expression must be parenthesized"
+
+---
+
+_Issue opened by @ROCKTAKEY on 2024-11-04 10:14_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hello, thanks for such a great package!
+
+When fixing C419 with `--unsafe-fixes` on `.py` file with trailing comma, the fixed code sometimes causes syntax error, because the trailing comma is not removed.
+
+# A minimal code snippet that reproduces the bug. 
+1. Save the following contents to `example.py`:
+```python
+any([i for i in [1, 2]],)
+```
+2. Execute the following contents:
+```shell
+ruff check example.py --select C419 --isolated --unsafe-fixes --fix
+```
+3. Now, `example.py` has the following contents: 
+```python
+any(i for i in [1, 2],)
+```
+4. Then, `python example.py` causes syntax error:
+```
+  File "/path/to/example.py", line 1
+    any(i for i in [1, 2],)
+        ^^^^^^^^^^^^^^^^^
+SyntaxError: Generator expression must be parenthesized
+```
+
+# Additional information
+## List of keywords you searched for before creating this issue. 
+  * C419
+## The current Ruff settings
+  * No `pyproject.toml`
+## The current Ruff version
+```
+ruff 0.7.2
+```
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-11-04 11:11_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-11-04 11:11_
+
+---
+
+_Label `fixes` added by @MichaReiser on 2024-11-04 11:12_
+
+---
+
+_Referenced in [astral-sh/ruff#14097](../../astral-sh/ruff/pulls/14097.md) on 2024-11-04 19:14_
+
+---
+
+_Closed by @MichaReiser on 2024-11-04 20:33_
+
+---

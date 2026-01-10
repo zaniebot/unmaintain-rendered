@@ -1,0 +1,66 @@
+---
+number: 4739
+title: "Connection retry support for `uv pip install`"
+type: issue
+state: closed
+author: dannysepler
+labels:
+  - duplicate
+  - question
+assignees: []
+created_at: 2024-07-02T20:47:43Z
+updated_at: 2024-07-02T21:10:52Z
+url: https://github.com/astral-sh/uv/issues/4739
+synced_at: 2026-01-10T01:23:41Z
+---
+
+# Connection retry support for `uv pip install`
+
+---
+
+_Issue opened by @dannysepler on 2024-07-02 20:47_
+
+`pip install` supports the `--retries` command. According to `pip install --help`...
+
+```
+--retries <retries>         Maximum number of retries each connection should attempt (default 5 times).
+```
+
+I currently develop within an internal package index that can flake when fetching packages. It'd be great for `uv pip install` to support retrying on a per-connection basis as well. I don't have a preference for if it should retry by default.
+
+---
+
+command invoked: `RUN UV_SYSTEM_PYTHON=1 NO_SQLITE=1 uv pip install -r requirements.txt --no-cache`
+platform: docker
+uv --version: `uv 0.2.17`
+
+
+---
+
+_Comment by @zanieb on 2024-07-02 20:53_
+
+I think we already support network retries, there's more discussion at https://github.com/astral-sh/uv/issues/3514 which should cover what you're looking for. We also added some logging around retries:
+
+- #3933 
+- https://github.com/astral-sh/uv/pull/4725
+
+
+---
+
+_Closed by @zanieb on 2024-07-02 20:53_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-07-02 20:53_
+
+---
+
+_Label `question` added by @zanieb on 2024-07-02 20:53_
+
+---
+
+_Comment by @zanieb on 2024-07-02 21:10_
+
+(Feel free to let me know if you have any more questions though!)
+
+---

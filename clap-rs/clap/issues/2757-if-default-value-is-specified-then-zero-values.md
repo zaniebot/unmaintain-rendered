@@ -1,0 +1,172 @@
+---
+number: 2757
+title: If default_value is specified then zero values are treated as one value
+type: issue
+state: closed
+author: egrimley-arm
+labels:
+  - C-bug
+assignees: []
+created_at: 2021-09-07T12:50:25Z
+updated_at: 2021-09-08T12:55:36Z
+url: https://github.com/clap-rs/clap/issues/2757
+synced_at: 2026-01-10T01:27:25Z
+---
+
+# If default_value is specified then zero values are treated as one value
+
+---
+
+_Issue opened by @egrimley-arm on 2021-09-07 12:50_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.54.0 (a178d0322 2021-07-26)
+
+### Clap Version
+
+2.33.3
+
+### Minimal reproducible code
+
+```rust
+use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new("prog")
+        .arg(
+            Arg::with_name("a")
+                .short("a")
+                .default_value("a_default"),
+        )
+        .arg(
+            Arg::with_name("b")
+                .short("b")
+                .number_of_values(2)
+                .default_value("b_default"),
+        )
+        .get_matches();
+    println!("a: {:?}", matches.value_of("a").unwrap());
+    println!("b: {:?}", matches.value_of("b").unwrap());
+}
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- -a -b 1 2
+cargo run -- -a 1 -b
+```
+
+### Actual Behaviour
+
+```
+$ cargo run -- -a -b 1 2
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/prog -a -b 1 2`
+a: "a_default"
+b: "1"
+$ cargo run -- -a 1 -b
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/prog -a 1 -b`
+error: The argument '-b <b> <b>' requires 2 values, but 1 was provided
+
+USAGE:
+    prog -a <a> -b <b> <b>
+
+For more information try --help
+```
+
+### Expected Behaviour
+
+In the first case it should be an error that no value was provided for `-a`.
+
+In the second case the error message should not claim that 1 value was provided for `-b` when no values were provided.
+
+### Additional Context
+
+The work-around is not to use `default_value`: use `unwrap_or` instead.
+
+A minimal fix would be to modify the documentation for `default_value` to say: don't use this because it's broken.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `T: bug` added by @egrimley-arm on 2021-09-07 12:50_
+
+---
+
+_Assigned to @ldm0 by @ldm0 on 2021-09-07 19:10_
+
+---
+
+_Comment by @pksunkara on 2021-09-08 09:20_
+
+@ldm0 If you are looking at this, can you paste what's happening with current master?
+
+---
+
+_Comment by @ldm0 on 2021-09-08 12:55_
+
+Current master:
+```rust
+use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new("prog")
+        .arg(
+            Arg::new("a")
+                .short('a')
+                .default_value("a_default"),
+        )
+        .arg(
+            Arg::new("b")
+                .short('b')
+                .number_of_values(2)
+                .default_value("b_default"),
+        )
+        .get_matches();
+    println!("a: {:?}", matches.value_of("a").unwrap());
+    println!("b: {:?}", matches.value_of("b").unwrap());
+}
+```
+```bash
+% cargo run -- -a -b 1 2
+   Compiling rust_test2 v0.1.0 (/Users/bytedance/code/rust_test2)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.76s
+     Running `target/debug/rust_test2 -a -b 1 2`
+error: The argument '-a <a>' requires a value but none was supplied
+
+USAGE:
+    rust_test2 [OPTIONS]
+
+For more information try --help
+% cargo run -- -a 1 -b
+
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/rust_test2 -a 1 -b`
+error: The argument '-b <b> <b>' requires a value but none was supplied
+
+USAGE:
+    rust_test2 [OPTIONS]
+
+For more information try --help
+```
+
+This has already been fixed on current master.
+
+---
+
+_Closed by @ldm0 on 2021-09-08 12:55_
+
+---

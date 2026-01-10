@@ -1,0 +1,197 @@
+---
+number: 16613
+title: "uv reports false dependency conflict for pywin32; sys_platform == 'win32' on Linux with private PyPI"
+type: issue
+state: closed
+author: FlyingHeNanman
+labels:
+  - question
+assignees: []
+created_at: 2025-11-06T12:47:31Z
+updated_at: 2025-11-08T16:27:25Z
+url: https://github.com/astral-sh/uv/issues/16613
+synced_at: 2026-01-10T01:26:08Z
+---
+
+# uv reports false dependency conflict for pywin32; sys_platform == 'win32' on Linux with private PyPI
+
+---
+
+_Issue opened by @FlyingHeNanman on 2025-11-06 12:47_
+
+### **Title**
+
+False dependency conflict when resolving conditional dependency `pywin32; sys_platform == 'win32'` with private PyPI repository on Linux
+
+---
+
+### **Description**
+
+I'm using **uv 0.8.22** in a **Linux** environment, and I'm encountering a false dependency resolution failure when building with a **private PyPI repository (Nexus)** inside a Docker build.
+
+My project depends on `docker`, which has a conditional dependency:
+
+```
+pywin32; sys_platform == 'win32'
+```
+
+However, since I’m on Linux and my private repository only contains Linux packages, there is **no `pywin32` package** available.
+Despite this, uv still fails to resolve dependencies, reporting that `pywin32>=304` cannot be found — even though that dependency should not apply on Linux.
+
+If I upload a dummy `pywin32` package to my private PyPI, the problem disappears.
+This suggests that uv’s resolver may incorrectly treat “missing platform-specific dependencies” as hard conflicts when using a private mirror that returns an empty response.
+
+---
+
+### **Steps to Reproduce**
+
+1. Use a **private PyPI mirror** (e.g., Nexus) with Linux-only packages.
+2. Create a minimal project:
+
+   ```toml
+   [project]
+   name = "mini-container-service"
+   version = "0.1.0"
+   dependencies = ["docker"]
+   ```
+3. Run:
+
+   ```bash
+   uv sync -v
+   ```
+4. Observe the dependency resolution failure.
+
+---
+
+### **Expected Behavior**
+
+uv should **ignore conditional dependencies** like `pywin32; sys_platform == 'win32'` on non-Windows systems, even if the private PyPI returns no package for them.
+
+---
+
+### **Actual Behavior**
+
+uv fails with a false dependency conflict:
+
+```
+× No solution found when resolving dependencies:
+╰─▶ Because only pywin32{sys_platform == 'win32'}<304 is available and docker==7.1.0 depends on pywin32{sys_platform == 'win32'}>=304, we can conclude that docker==7.1.0 cannot be used.
+    And because only docker==7.1.0 is available and your project depends on docker, we can conclude that your project's requirements are unsatisfiable.
+```
+
+Full verbose log excerpt:
+
+<details>
+<summary>Click to expand</summary>
+
+```
+DEBUG uv 0.8.22
+DEBUG Found project root: `/home/mini-container-service`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Solving with installed Python version: 3.13.7
+DEBUG Solving with target Python version: >=3.13
+DEBUG Adding direct dependency: docker*
+DEBUG Adding transitive dependency for docker==7.1.0: pywin32{sys_platform == 'win32'}>=304
+DEBUG No cache entry for: http://10.10.100.21:8081/repository/pypi-hosted/simple/pywin32/
+DEBUG Searching for a compatible version of pywin32{sys_platform == 'win32'} (>=304)
+DEBUG No compatible version found for: pywin32{sys_platform == 'win32'}
+× No solution found when resolving dependencies:
+╰─▶ Because only pywin32{sys_platform == 'win32'}<304 is available and docker==7.1.0 depends on pywin32{sys_platform == 'win32'}>=304, we can conclude that docker==7.1.0 cannot be used.
+```
+
+</details>
+
+---
+
+### **Environment**
+
+* **uv version:** 0.8.22
+* **Python version:** 3.13.7
+* **OS:** Linux (Docker environment)
+* **Private PyPI:** Nexus Repository Manager
+* **Network setup:** Air-gapped / internal mirror (no access to pypi.org)
+
+---
+
+### **Workaround**
+
+Uploading a dummy `pywin32` wheel (or any `pywin32` version) to the private repository resolves the problem, which confirms this is not a real dependency conflict.
+
+---
+
+### **Possible Cause**
+
+uv’s resolver may not properly skip platform-specific dependencies when a private repository responds with an empty “simple index” for that package.
+This causes the solver to incorrectly register a conflict instead of ignoring the irrelevant dependency.
+
+---
+
+### **Question**
+
+Is this expected behavior, or a known limitation of uv’s resolver when using private PyPI mirrors?
+If not, I believe this should be treated as a **bug**.
+
+### Platform
+
+Linux 5.15.0-119-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.8.22
+
+### Python version
+
+3.13.7
+
+---
+
+_Label `bug` added by @FlyingHeNanman on 2025-11-06 12:47_
+
+---
+
+_Comment by @charliermarsh on 2025-11-06 14:37_
+
+In order to create, update, or validate a `uv.lock` file, uv needs to be able to access all of the declared dependencies to extract their metadata -- even those that won't ultimately be installed. So it's correct for uv to look in the internal registry even on non-Windows machines, as the lockfile is intended to be used across _all_ platforms.
+
+If you create a `uv.lock` and check it in, you can (e.g.) install on a non-Windows machine using `uv sync --frozen` and we won't hit that index. In other words, if the lockfile already exists, uv can use it and doesn't require access to dependencies it won't install; but to _create_ (or update, or validate) the lockfile, we need access to all of them.
+
+You could also tell uv that you don't need to resolve on Windows at all with:
+
+```toml
+[tool.uv]
+environments = [
+    "sys_platform == 'linux'",
+]
+```
+
+(See: https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments)
+
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-11-06 14:37_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-11-06 14:37_
+
+---
+
+_Comment by @FlyingHeNanman on 2025-11-08 14:51_
+
+Thank you very much for the detailed explanation!
+It’s clear now — I misunderstood how uv handles dependency resolution across environments. I should have read the documentation on limited resolution environments more carefully.
+
+Appreciate your time and clarification! I’m closing this issue. 🙏
+
+---
+
+_Closed by @FlyingHeNanman on 2025-11-08 14:51_
+
+---
+
+_Comment by @charliermarsh on 2025-11-08 16:27_
+
+No worries, glad I could help, thank you for following up!
+
+---

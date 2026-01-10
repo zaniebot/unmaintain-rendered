@@ -1,0 +1,112 @@
+---
+number: 888
+title: "Support hash checking against `RECORD`"
+type: issue
+state: open
+author: charliermarsh
+labels:
+  - enhancement
+  - wish
+  - security
+assignees: []
+created_at: 2024-01-11T17:27:33Z
+updated_at: 2025-12-02T12:40:16Z
+url: https://github.com/astral-sh/uv/issues/888
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Support hash checking against `RECORD`
+
+---
+
+_Issue opened by @charliermarsh on 2024-01-11 17:27_
+
+We should validate the hash of each individual file in the wheel against the hash recorded in `RECORD`. (This is distinct from the hash-checking mode described in https://github.com/astral-sh/puffin/issues/131 and https://github.com/astral-sh/puffin/issues/474.)
+
+
+---
+
+_Comment by @konstin on 2024-01-11 17:29_
+
+During installation or for an existing venv?
+
+install-wheel-rs can do during installation, but it's turned off by default for perf reason (sha256 is slow) and because pip also didn't validate last time i checked.
+
+For an existing venv, https://github.com/konstin/poc-monotrail/blob/main/crates/monotrail/src/verify_installation.rs implements this.
+
+---
+
+_Comment by @charliermarsh on 2024-01-11 17:30_
+
+For us, installation is _linking_, so it should really happen when unzipping into the cache.
+
+
+---
+
+_Comment by @charliermarsh on 2024-01-11 17:30_
+
+Or we could do it after-the-fact as part of our venv validation...
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2024-01-11 17:30_
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-01-11 17:30_
+
+---
+
+_Added to milestone `Initial release` by @charliermarsh on 2024-01-11 17:30_
+
+---
+
+_Removed from milestone `Initial release` by @charliermarsh on 2024-01-11 17:30_
+
+---
+
+_Added to milestone `Feature complete` by @charliermarsh on 2024-01-11 17:30_
+
+---
+
+_Label `wish` removed by @charliermarsh on 2024-01-11 17:31_
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-01-11 17:31_
+
+---
+
+_Label `security` added by @zanieb on 2024-02-17 04:18_
+
+---
+
+_Referenced in [astral-sh/uv#1572](../../astral-sh/uv/issues/1572.md) on 2024-02-17 16:57_
+
+---
+
+_Referenced in [CycloneDX/cyclonedx-conda#1](../../CycloneDX/cyclonedx-conda/issues/1.md) on 2024-04-27 03:22_
+
+---
+
+_Comment by @vors on 2024-08-13 19:21_
+
+Related topic (let me know if I should create a separate issue):
+
+Currently most python packaging tooling doesn't have any kind of guardrails against the clobbering of files in one whl from another whl. This is basically undefined behavior -- depending on the order the final venv will be different. There are packages in the wild that include things like empty `__init__.py` files that do clobber each other and it's not a problem in practice (most notably google cloud family of packages). There are also cases when people put `README.md` into the top-level folder so it ends up in `site-packages/README.md` and conflicts.
+
+@hauntsaninja proposed that we could do a hash check against the `RECORD` file entry and maybe have a flag to fail loudly in case of violation -- that should simultaneously allow clobbering of empty `__init__.py` files and prevent undefined behaviors.
+
+What do you think about this idea? Maybe there is a better way to achieve more strict semantic?
+
+---
+
+_Referenced in [astral-sh/uv#16816](../../astral-sh/uv/pulls/16816.md) on 2025-12-02 10:02_
+
+---
+
+_Comment by @konstin on 2025-12-02 12:40_
+
+Given that hash checking against RECORD wasn't implemented in pip nor uv, the security features weren't use (https://discuss.python.org/t/discouraging-deprecating-pep-427-style-signatures/94968), it's slow and new security feature such as hashes in the simple API and attestations work on a whole-file basis, I suggest we close this as not planned and focus on whole-archive hash checking.
+
+---

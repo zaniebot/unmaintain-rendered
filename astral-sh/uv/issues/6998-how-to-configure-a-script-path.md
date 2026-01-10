@@ -1,0 +1,69 @@
+---
+number: 6998
+title: How to configure a script path? 
+type: issue
+state: closed
+author: TiansuYu
+labels:
+  - question
+assignees: []
+created_at: 2024-09-04T07:54:40Z
+updated_at: 2024-09-04T17:16:32Z
+url: https://github.com/astral-sh/uv/issues/6998
+synced_at: 2026-01-10T01:24:09Z
+---
+
+# How to configure a script path? 
+
+---
+
+_Issue opened by @TiansuYu on 2024-09-04 07:54_
+
+I am building a CLI tool and tries to bind the script path to cli name. e.g. in Poetry this is https://python-poetry.org/docs/pyproject/#scripts. However, I could not find any instructions on how to do this in UV. Could you enlighten me please? 
+
+---
+
+_Comment by @bwt-sloanj on 2024-09-04 09:16_
+
+With uv this can just be done via the normal `[project]` table in the `pyproject.toml` file. https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
+
+---
+
+_Label `question` added by @zanieb on 2024-09-04 12:35_
+
+---
+
+_Referenced in [astral-sh/uv#7010](../../astral-sh/uv/pulls/7010.md) on 2024-09-04 12:43_
+
+---
+
+_Comment by @TiansuYu on 2024-09-04 14:55_
+
+I have a project that i want to add a script entrypoint to run `src/xyz/main.py:main` (`main()` function inside `src/xyz/main.py`), and my section in `pyproject.toml` looks like this
+```toml
+[project.scripts]
+xyz = "src.xyz.main:main"
+```
+`uv` errors out with 
+```shell
+-> % uv run xyz
+error: Failed to spawn: `xyz`
+  Caused by: No such file or directory (os error 2)
+```
+The error messages looks a bit cryptic for me to understand how have I configured the path wrong. 
+
+---
+
+_Comment by @zanieb on 2024-09-04 14:58_
+
+Do you have a `[build-system]` defined for your project? (https://docs.astral.sh/uv/concepts/projects/#build-systems)
+
+---
+
+_Closed by @zanieb on 2024-09-04 17:16_
+
+---
+
+_Referenced in [astral-sh/uv#7420](../../astral-sh/uv/pulls/7420.md) on 2024-09-16 10:02_
+
+---

@@ -1,0 +1,167 @@
+---
+number: 688
+title: Unexpected help text formatting with possible_values and default_value functions
+type: issue
+state: closed
+author: volks73
+labels:
+  - C-bug
+  - A-help
+assignees: []
+created_at: 2016-10-15T13:41:39Z
+updated_at: 2018-08-02T03:29:54Z
+url: https://github.com/clap-rs/clap/issues/688
+synced_at: 2026-01-10T01:26:34Z
+---
+
+# Unexpected help text formatting with possible_values and default_value functions
+
+---
+
+_Issue opened by @volks73 on 2016-10-15 13:41_
+
+I believe I have found an issue with the automatic formatting for an option using the `possible_values` function.
+
+If the following code is used:
+
+``` Rust
+let filter_values = ["Nearest", "Linear", "Cubic", "Gaussian", "Lanczos3"];
+
+let matches = App::new("example")
+    .arg(Arg::with_name("filter")
+        .help("Sets the filter, or sampling method, to use for interpolation when resizing the particle images. The default is Linear (Bilinear).")
+        .long("filter")
+        .possible_values(&filter_values)
+        .takes_value(true)
+)
+
+// Rest of code
+```
+
+The following output is created for the help text:
+
+``` text
+ --filter <filter>
+            Sets the filter, or sampling method, to use for interpolation when resizing the particle images. The default is Linear
+            (Bilinear). [values: Nearest, Linear, Cubic, Gaussian, Lanczos3]
+```
+
+A new line appears to be inserted and the indention is off. This might be the intended behavior as it looks like the code is attempting to keep the possible values list on the same line. If the following code is used instead, i.e. manually create the bracketed list of possible values and turn off the automatic generation with the `hide_possible_values` function:
+
+``` Rust
+let filter_values = ["Nearest", "Linear", "Cubic", "Gaussian", "Lanczos3"];
+
+let matches = App::new("example")
+    .arg(Arg::with_name("filter")
+        .help("Sets the filter, or sampling method, to use for interpolation when resizing the particle images. The default is Linear (Bilinear). [values: Nearest, Linear, Cubic, Gaussian, Lanczos3]")
+        .long("filter")
+        .possible_values(&filter_values)
+        .hide_possible_values(true)
+        .takes_value(true)
+)
+
+// Rest of code
+```
+
+The following output is created for the help text:
+
+``` text
+--filter <filter>                    Sets the filter, or sampling method, to use for interpolation when resizing the particle
+                                     images. The default is Linear (Bilinear). [values: Nearest, Linear, Cubic, Gaussian, and
+                                     Lanczos3]
+```
+
+The help text is properly wrapped and on the same line as the option description. Note, I have omitted the rest of the help text and code in the examples for clarity, but the rest of the help text is causing the relatively large gap between the option description and the help text and it is expected.
+
+This is in Terminal.app on Mac OSX El Captian with a MacBookPro Retina. I have not confirmed it for other systems, but I believe I saw a similar behavior on a Windows machine. It is not a huge issue as the workaround can be setting the values manually and turning off automatic generation as in the second example, but the same problem also appears to occur with the `default_value` function and there is no `hide_default_value` function equivalent to the `hide_possible_values` function.
+
+
+---
+
+_Comment by @kbknapp on 2016-10-16 03:08_
+
+Thanks for putting in all these details!
+
+What width is your terminal? And was the terminal the same width/size for both of the above tests?
+
+I'm asking because clap automatically does some calculations with terminal width, and decides if the help message is too long for the current line, or would wrap "too much" and therefore adds a newline and indents just past the flags/options (a la, something like `git` help message styles, or other long form help messages).
+
+This could also be a bug you found; in that clap is doing the math differently if possible values are hidden or not (shouldn't be the case, and would be a bug).
+
+I don't want to tag with the bug label until it's confirmed :wink:
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-10-16 03:08_
+
+---
+
+_Comment by @kbknapp on 2016-10-16 03:11_
+
+Also, some of the math that goes into determining when to wrap and indent like this is determined by the length of the longest flag/option in comparison with your terminal width, so it may be helpful to see the wrest of the help message.
+
+Another thing you could try, and might provide even better info is to compile clap with the `debug` feature, then past the output here.
+
+i.e.
+
+``` toml
+[dependencies]
+clap = {version = "2.14.0", features = ["debug"]}
+```
+
+Then past the output when running `$ program --help`
+
+
+---
+
+_Comment by @volks73 on 2016-10-16 13:48_
+
+The previous examples were run in Terminal.app in fullscreen mode with 141 columns and 36 lines (based on output from the `tput cols` and `tput lines` commands). Both examples were run with this terminal configuration.
+
+I have turned on debugging, compiled the application and clap, and attached the output for both conditions. The `possible-values-shown.txt` file is the output when the help text is on the new line and indented from the option. The `possible-values-hidden.txt` is the output when the possible values are hidden with the `hide_possible_values` function but the possible values are added manually to the help text. The same terminal size (141x36) is used for both outputs and the full help text is included at the end.
+
+[possible-values-hidden.txt](https://github.com/kbknapp/clap-rs/files/531850/possible-values-hidden.txt)
+[possible-values-shown.txt](https://github.com/kbknapp/clap-rs/files/531851/possible-values-shown.txt)
+
+
+---
+
+_Added to milestone `2.14.1` by @kbknapp on 2016-10-18 14:51_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-10-18 14:52_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-10-18 14:52_
+
+---
+
+_Label `C: help message` added by @kbknapp on 2016-10-18 14:52_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-10-18 14:52_
+
+---
+
+_Label `T: RFC / question` removed by @kbknapp on 2016-10-18 14:52_
+
+---
+
+_Referenced in [clap-rs/clap#697](../../clap-rs/clap/pulls/697.md) on 2016-10-20 02:55_
+
+---
+
+_Comment by @kbknapp on 2016-10-20 02:55_
+
+@volks73 this should be fixed in #697 :wink:
+
+
+---
+
+_Closed by @homu on 2016-10-21 14:09_
+
+---

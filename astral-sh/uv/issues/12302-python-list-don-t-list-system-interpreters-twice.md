@@ -1,0 +1,172 @@
+---
+number: 12302
+title: "python list: don't list system interpreters twice when directories are symlinked"
+type: issue
+state: closed
+author: gotmax23
+labels:
+  - bug
+  - needs-decision
+assignees: []
+created_at: 2025-03-18T22:49:29Z
+updated_at: 2025-04-03T16:13:08Z
+url: https://github.com/astral-sh/uv/issues/12302
+synced_at: 2026-01-10T01:25:18Z
+---
+
+# python list: don't list system interpreters twice when directories are symlinked
+
+---
+
+_Issue opened by @gotmax23 on 2025-03-18 22:49_
+
+### Summary
+
+``` console
+$ cpython-3.13.2-linux-x86_64-gnu     /usr/bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu     /bin/python3.13
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python3.12
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python3 -> python3.12
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python -> ./python3
+cpython-3.12.9-linux-x86_64-gnu     /bin/python3.12
+cpython-3.12.9-linux-x86_64-gnu     /bin/python3 -> python3.12
+cpython-3.12.9-linux-x86_64-gnu     /bin/python -> ./python3
+cpython-3.11.11-linux-x86_64-gnu    /usr/bin/python3.11
+cpython-3.11.11-linux-x86_64-gnu    /bin/python3.11
+cpython-3.10.16-linux-x86_64-gnu    /usr/bin/python3.10
+cpython-3.10.16-linux-x86_64-gnu    /bin/python3.10
+cpython-3.9.21-linux-x86_64-gnu     /usr/bin/python3.9
+cpython-3.9.21-linux-x86_64-gnu     /bin/python3.9
+cpython-3.8.20-linux-x86_64-gnu     /usr/bin/python3.8
+cpython-3.8.20-linux-x86_64-gnu     /bin/python3.8
+cpython-3.7.9-linux-x86_64-gnu      .local/share/uv/python/cpython-3.7.9-linux-x86_64-gnu/bin/python3.7 -> python3.7m
+pypy-3.10.16-linux-x86_64-gnu       /usr/bin/pypy3 -> pypy3.10
+pypy-3.10.16-linux-x86_64-gnu       /bin/pypy3 -> pypy3.10
+$ ls -ald /bin
+lrwxrwxrwx. 1 root root 7 Jan 23  2024 /bin -> usr/bin
+```
+
+### Platform
+
+Linux 6.13.6-100.fc40.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.5.4
+
+### Python version
+
+Python 3.12.9
+
+---
+
+_Label `bug` added by @gotmax23 on 2025-03-18 22:49_
+
+---
+
+_Comment by @zanieb on 2025-03-18 23:07_
+
+Related
+
+- https://github.com/astral-sh/uv/issues/5308
+- https://github.com/astral-sh/uv/issues/6690#issuecomment-2312752199
+
+This is intentional, though this duplicate directory case is a fairly compelling one to de-duplicate (or a case to change the default).
+
+---
+
+_Label `needs-decision` added by @zanieb on 2025-03-18 23:07_
+
+---
+
+_Comment by @gotmax23 on 2025-03-18 23:23_
+
+Got it. Not that on some distributions `/bin`, `/sbin`, and `/usr/sbin` are all symlinks to `/usr/bin`.
+
+---
+
+_Comment by @zanieb on 2025-03-18 23:29_
+
+Yeah that seems far too noisy.
+
+---
+
+_Comment by @gotmax23 on 2025-03-20 23:05_
+
+> Yeah that seems far too noisy.
+
+Yup. For the record, this is what it looks like in a Fedora Rawhide container (that has the bin-sbin merge) with all the available Pythons installed:
+
+```
+cpython-3.14.0a6-linux-x86_64-gnu    /usr/sbin/python3.14
+cpython-3.14.0a6-linux-x86_64-gnu    /usr/bin/python3.14
+cpython-3.14.0a6-linux-x86_64-gnu    /sbin/python3.14
+cpython-3.14.0a6-linux-x86_64-gnu    /bin/python3.14
+cpython-3.13.2-linux-x86_64-gnu      /usr/sbin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/sbin/python3 -> python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/sbin/python -> ./python3
+cpython-3.13.2-linux-x86_64-gnu      /usr/bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/bin/python3 -> python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/bin/python -> ./python3
+cpython-3.13.2-linux-x86_64-gnu      /sbin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /sbin/python3 -> python3.13
+cpython-3.13.2-linux-x86_64-gnu      /sbin/python -> ./python3
+cpython-3.13.2-linux-x86_64-gnu      /bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /bin/python3 -> python3.13
+cpython-3.13.2-linux-x86_64-gnu      /bin/python -> ./python3
+cpython-3.12.9-linux-x86_64-gnu      /usr/sbin/python3.12
+cpython-3.12.9-linux-x86_64-gnu      /usr/bin/python3.12
+cpython-3.12.9-linux-x86_64-gnu      /sbin/python3.12
+cpython-3.12.9-linux-x86_64-gnu      /bin/python3.12
+cpython-3.11.11-linux-x86_64-gnu     /usr/sbin/python3.11
+cpython-3.11.11-linux-x86_64-gnu     /usr/bin/python3.11
+cpython-3.11.11-linux-x86_64-gnu     /sbin/python3.11
+cpython-3.11.11-linux-x86_64-gnu     /bin/python3.11
+cpython-3.10.16-linux-x86_64-gnu     /usr/sbin/python3.10
+cpython-3.10.16-linux-x86_64-gnu     /usr/bin/python3.10
+cpython-3.10.16-linux-x86_64-gnu     /sbin/python3.10
+cpython-3.10.16-linux-x86_64-gnu     /bin/python3.10
+cpython-3.9.21-linux-x86_64-gnu      /usr/sbin/python3.9
+cpython-3.9.21-linux-x86_64-gnu      /usr/bin/python3.9
+cpython-3.9.21-linux-x86_64-gnu      /sbin/python3.9
+cpython-3.9.21-linux-x86_64-gnu      /bin/python3.9
+pypy-3.11.11-linux-x86_64-gnu        /usr/sbin/pypy3 -> pypy3.11
+pypy-3.11.11-linux-x86_64-gnu        /usr/bin/pypy3 -> pypy3.11
+pypy-3.11.11-linux-x86_64-gnu        /sbin/pypy3 -> pypy3.11
+pypy-3.11.11-linux-x86_64-gnu        /bin/pypy3 -> pypy3.11
+```
+
+Indeed very noisy.
+
+
+---
+
+_Comment by @zanieb on 2025-03-20 23:08_
+
+I think we can handle this with `is_same_file` on directories during `PATH` iteration — that's quadratic though 🤔. I can't think of why we'd want to discover these all as separate interpreters in _any_ case? 
+
+@BurntSushi random but perhaps you have an intuition for how to do that well?
+
+---
+
+_Comment by @BurntSushi on 2025-03-21 11:58_
+
+@zanieb If I'm understanding correctly here, I believe that's where [`same-file::Handle`](https://docs.rs/same-file/latest/same_file/struct.Handle.html) should come in handy. You can get one of those for each path you want to consider and stuff them in a `HashSet`. This would avoid needing to do pairwise equality checks for all pairs of paths.
+
+The downside is that they all need to be open file handles. Depending on how many you have, this can run afoul of max open file descriptor limits (which will vary from system to system).
+
+---
+
+_Comment by @zanieb on 2025-03-21 13:42_
+
+Cool thanks, that's exactly the kind of thing I was looking for.
+
+---
+
+_Referenced in [astral-sh/uv#12367](../../astral-sh/uv/pulls/12367.md) on 2025-03-21 14:22_
+
+---
+
+_Closed by @zanieb on 2025-04-03 16:13_
+
+---

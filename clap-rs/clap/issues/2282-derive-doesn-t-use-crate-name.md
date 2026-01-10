@@ -1,0 +1,148 @@
+---
+number: 2282
+title: "Derive doesn't use crate name"
+type: issue
+state: closed
+author: kotovalexarian
+labels:
+  - A-derive
+  - ":money_with_wings: $5"
+assignees: []
+created_at: 2021-01-01T04:00:14Z
+updated_at: 2021-01-02T14:27:56Z
+url: https://github.com/clap-rs/clap/issues/2282
+synced_at: 2026-01-10T01:27:15Z
+---
+
+# Derive doesn't use crate name
+
+---
+
+_Issue opened by @kotovalexarian on 2021-01-01 04:00_
+
+By `derive`ing `Clap`, the `about`, `author` and `version` options can be automatically extracted from crate's `Cargo.toml`, but this doesn't work for `name`, so I have to specify it manually:
+
+```rust
+use clap::{Clap};
+
+const CRATE_NAME: &str = env!("CARGO_PKG_NAME");
+
+#[derive(Clap)]
+#[clap(about, author, name = CRATE_NAME, version)]
+struct Options {}
+```
+
+Creation of `clap::App` doesn't have such limitation: there are macros [`clap::app_from_crate`](https://github.com/clap-rs/clap/blob/master/src/macros.rs#L169-L209) and [`clap::crate_name`](https://github.com/clap-rs/clap/blob/master/src/macros.rs#L148-L167).
+
+```rust
+#[macro_use]
+extern crate clap;
+
+fn main() {
+    let app = app_from_crate!();
+}
+```
+
+```rust
+#[macro_use]
+extern crate clap;
+
+fn main() {
+    let app = clap::App::new(crate_name!());
+}
+```
+
+
+---
+
+_Label `T: new feature` added by @kotovalexarian on 2021-01-01 04:00_
+
+---
+
+_Comment by @pksunkara on 2021-01-01 05:05_
+
+Yeah, because name is default to the name of the struct/enum. One thing we can do is use the `crate_name()` if only `name` is written but without any value so that users don't have to do `env!`
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-01-01 05:05_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-01-01 05:05_
+
+---
+
+_Label `:money_with_wings: $5` added by @pksunkara on 2021-01-01 05:05_
+
+---
+
+_Referenced in [clap-rs/clap#2283](../../clap-rs/clap/pulls/2283.md) on 2021-01-01 09:21_
+
+---
+
+_Comment by @pksunkara on 2021-01-01 13:58_
+
+> By deriveing Clap, the about, author and version options can be automatically extracted from crate's Cargo.toml, but this doesn't work for name
+
+I am sorry but I misunderstood your question. What do you mean it doesn't work for `name`? We always use `CARGO_PKG_NAME` if you don't set `name`.
+
+---
+
+_Comment by @kotovalexarian on 2021-01-02 09:27_
+
+> We always use `CARGO_PKG_NAME` if you don't set `name`.
+
+Really? It isn't obvious. So I can skip `about`, `author`, `version` and `name` at all?
+
+**UPD:** No, I only can skip `name`. This API is inconsistent.
+
+---
+
+_Comment by @pksunkara on 2021-01-02 09:41_
+
+It's not inconsistent. `name` of a `clap::App` is required but the others are not. That is what the API represents.
+
+---
+
+_Closed by @pksunkara on 2021-01-02 09:41_
+
+---
+
+_Comment by @kotovalexarian on 2021-01-02 13:20_
+
+> It's not inconsistent. `name` of a `clap::App` is required but the others are not. That is what the API represents.
+
+These are two different APIs. The `clap::App` API is ok, because required option is a parameter of constructor, while optional parameters are specified with builder methods. But `derive(Clap)` API has single way to specify options and this way is inconsistent.
+
+---
+
+_Comment by @pksunkara on 2021-01-02 13:25_
+
+Derive clap's API should and will be always in sync with normal api. Especially this situation is something that was a complete mess in structopt and if you check the corresponding implementation prs you can see that this is the best solution since name is required.
+
+---
+
+_Comment by @kotovalexarian on 2021-01-02 14:25_
+
+Why not just allow to explicitly specify `name` without value? For now this wouldn't compile. This is not useful, but removes inconsistency.
+
+```rust
+use clap::{Clap};
+
+#[derive(Clap)]
+#[clap(about, author, name, version)]
+struct Options {}
+```
+
+---
+
+_Comment by @pksunkara on 2021-01-02 14:27_
+
+ I have already answered that because name is always default. As I said, please read the original discussion. We had considered this.
+
+---
+
+_Locked by @clap-rs on 2021-01-02 14:27_
+
+---

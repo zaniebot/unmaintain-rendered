@@ -1,0 +1,458 @@
+---
+number: 3034
+title: Allow literal and dynamic values for version in clap_derive
+type: issue
+state: closed
+author: gibfahn
+labels:
+  - C-enhancement
+  - A-derive
+  - ":money_with_wings: $10"
+assignees: []
+created_at: 2021-11-16T22:26:30Z
+updated_at: 2021-11-19T00:27:12Z
+url: https://github.com/clap-rs/clap/issues/3034
+synced_at: 2026-01-10T01:27:31Z
+---
+
+# Allow literal and dynamic values for version in clap_derive
+
+---
+
+_Issue opened by @gibfahn on 2021-11-16 22:26_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.56.1 (59eed8a2a 2021-11-01)
+
+### Clap Version
+
+3.0.0-beta.5
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+fn main() {
+    Opts::parse();
+}
+
+#[derive(Parser)]
+// Doesn't work unless you uncomment this line:
+// #[clap(version = env!("CARGO_PKG_VERSION"))]
+pub struct Opts {}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+By default the version in the Cargo.toml is not picked up. The `--help` command doesn't show the version, and the `--version` command fails.
+
+```console
+❯ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --help`
+clap_repro 
+
+USAGE:
+    clap_repro
+
+OPTIONS:
+    -h, --help    Print help information
+```
+
+```console
+❯ cargo run -- --version
+
+Running `target/debug/clap_repro --version`
+error: Found argument '--version' which wasn't expected, or isn't valid in this context
+
+	If you tried to supply `--version` as a value rather than a flag, use `-- --version`
+
+USAGE:
+    clap_repro
+
+For more information try --help
+```
+
+If you uncomment the version line below things start to work.
+
+
+### Actual Behaviour
+
+Version must be manually set.
+
+### Expected Behaviour
+
+With structopt the version is picked up automatically:
+
+```rust
+use structopt::StructOpt;
+
+fn main() {
+    Opts::from_args();
+}
+
+#[derive(StructOpt)]
+pub struct Opts {}
+```
+
+```console
+❯ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --help`
+clap_repro 0.1.0
+
+USAGE:
+    clap_repro
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+
+```console
+❯ cargo run -- --version
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --version`
+clap_repro 0.1.0
+```
+
+### Additional Context
+
+Sorry if this was an intentional change, I didn't see anything in the docs about it.
+
+### Debug Output
+
+<details><summary>Debug output of <code>--version</code></summary>
+
+```console
+❯ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --help`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:clap_repro
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Removing generated version
+[            clap::build::app] 	App::_propagate_global_args:clap_repro
+[            clap::build::app] 	App::_derive_display_order:clap_repro
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("--help")' ([45, 45, 104, 101, 108, 112])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr("--help")
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::parse_long_arg: Found valid opt or flag '--help'
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str: Checking if --RawOsStr("help") is help or version...
+[         clap::parse::parser] 	Help
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg HelpFlag
+[         clap::parse::parser] 	[         clap::parse::parser] 	Parser::use_long_help
+Parser::help_err: use_long=false
+[         clap::parse::parser] 	Parser::use_long_help
+[          clap::output::help] 	Help::new
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap_repro
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args: Current Longest...2
+[          clap::output::help] 	Help::write_args: New Longest...6
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=help
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_after_help
+[           clap::output::fmt] 	is_a_tty: stderr=false
+clap_repro 
+
+USAGE:
+    clap_repro
+
+OPTIONS:
+    -h, --help    Print help information
+```
+
+</details>
+
+<details><summary>Debug output of <code>--version</code></summary>
+
+```console
+❯ cargo run -- --version
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --version`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:clap_repro
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Removing generated version
+[            clap::build::app] 	App::_propagate_global_args:clap_repro
+[            clap::build::app] 	App::_derive_display_order:clap_repro
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("--version")' ([45, 45, 118, 101, 114, 115, 105, 111, 110])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr("--version")
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::possible_long_flag_subcommand: arg=RawOsStr("version")
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg NoMatchingArg { arg: "version" }
+[         clap::parse::parser] 	Parser::did_you_mean_error: arg=version
+[         clap::parse::parser] 	Parser::did_you_mean_error: longs=["help"]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap_repro
+[           clap::output::fmt] 	is_a_tty: stderr=true
+error: Found argument '--version' which wasn't expected, or isn't valid in this context
+
+	If you tried to supply `--version` as a value rather than a flag, use `-- --version`
+
+USAGE:
+    clap_repro
+
+For more information try --help
+```
+
+</details>
+
+---
+
+_Label `T: bug` added by @gibfahn on 2021-11-16 22:26_
+
+---
+
+_Comment by @gibfahn on 2021-11-16 22:29_
+
+Put the above into a repo in case a full repro is more useful: https://github.com/gibfahn/clap_repro
+
+---
+
+_Comment by @mkayaalp on 2021-11-16 22:57_
+
+I think it works with `#[clap(version)]` instead of `#[clap(version = env!("CARGO_PKG_VERSION"))]`. But isn't that supposed to be the default?
+
+---
+
+_Comment by @gibfahn on 2021-11-18 11:13_
+
+Ahh, you're right @mkayaalp , that does work.
+
+But yeah, same question, isn't this supposed to be the default?
+
+---
+
+_Renamed from "clap_derive doesn't pick up the version from the Cargo.toml" to "clap_derive doesn't pick up the version from the Cargo.toml by default" by @gibfahn on 2021-11-18 11:20_
+
+---
+
+_Comment by @epage on 2021-11-18 14:27_
+
+In structopt, the way you opt-out of automatic version detection is with a `no_version` attribute.
+
+Looks like this was changed in `clap_derive` in https://github.com/clap-rs/clap/pull/1676 but unfortunately there isn't an explanation as to why.
+
+My guesses
+- Avoid special cased opt-out attributes
+- Do what the user says rather than guess
+- Some weird behavior between (what are now called) `clap::Parser` and `#[flatten]`, `#[subcommand]` or in defining the subcommand itself.
+
+I am personally torn on this.  Being more explicit has its benefits but requiring everyone to know a set of attributes they need to se is a pain (e.g. see the [discussion on changing App defaults](https://github.com/clap-rs/clap/discussions/2627)).
+
+---
+
+_Comment by @epage on 2021-11-18 14:29_
+
+Even if we keep this, we should make all example code specify `version`, etc like with #3028  to raise visibility
+
+---
+
+_Comment by @mkayaalp on 2021-11-18 19:30_
+
+I think I like the following snippet from that commit. Maybe it should be in the `README.md` example:
+```rust
+#[derive(Clap, Debug)]
+#[clap(author, about, version)]
+//     ^^^^^^                   <- derive author from Cargo.toml
+//             ^^^^^            <- derive description from Cargo.toml
+//                    ^^^^^^^   <- derive version from Cargo.toml
+struct Opt {}
+``` 
+
+---
+
+_Comment by @epage on 2021-11-18 19:39_
+
+Probably too detailed for high level examples but we should defintely talk about it where we break down all of the "magic" methods (methods derived from attributes after some post-processing by us)
+
+---
+
+_Comment by @mkayaalp on 2021-11-18 19:45_
+
+There is already an example with explicit version and author attributes (for top-level and subcommand). Top-level could be changed to show `Cargo.toml` is used by default. Current one:
+```rs
+#[derive(Parser)]
+#[clap(version = "1.0", author = "Kevin K. <kbknapp@gmail.com>")]
+struct Opts {
+    //...
+    #[clap(subcommand)]
+    subcmd: SubCommand,
+}
+
+#[derive(Parser)]
+enum SubCommand {
+    #[clap(version = "1.3", author = "Someone E. <someone_else@other.com>")]
+    Test(Test),
+}
+```
+
+---
+
+_Comment by @pksunkara on 2021-11-18 21:00_
+
+> In structopt, the way you opt-out of automatic version detection is with a `no_version` attribute.
+> 
+> Looks like this was changed in `clap_derive` in #1676 but unfortunately there isn't an explanation as to why.
+
+I think the discussion was a lot fragmented, some of it happening on structopt and some of it on clap.
+
+> 
+> My guesses
+> 
+> * Avoid special cased opt-out attributes
+
+Yup. Especially when we had `author` and `about`. `no_version` looks inconsistent.
+
+> * Do what the user says rather than guess
+
+Exactly this too. Even in normal API, we explicitly ask the author to specify `author`, `about` and `version`. We should be doing the same in derive API.
+
+> * Some weird behavior between (what are now called) `clap::Parser` and `#[flatten]`, `#[subcommand]` or in defining the subcommand itself.
+
+Also this, Apparently it had some issues with parsing and stuff in structopt. But I am not exactly clear on what they were.
+
+> requiring everyone to know a set of attributes they need to use is a pain (e.g. see the [discussion on changing App defaults](https://github.com/clap-rs/clap/discussions/2627)).
+
+I think this can be solved by what you said in the other comment regarding documentation.
+
+> but we should defintely talk about it where we break down all of the "magic" methods (methods derived from attributes after some post-processing by us)
+
+---
+
+I am tagging this for 3.1 milestone because we want to support literal and dynamic values for this method too. Similar to subcommand name in #2751 
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2021-11-18 21:00_
+
+---
+
+_Label `T: bug` removed by @pksunkara on 2021-11-18 21:00_
+
+---
+
+_Label `:money_with_wings: $10` added by @pksunkara on 2021-11-18 21:00_
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-11-18 21:00_
+
+---
+
+_Label `D: easy` added by @pksunkara on 2021-11-18 21:00_
+
+---
+
+_Label `T: enhancement` added by @pksunkara on 2021-11-18 21:00_
+
+---
+
+_Renamed from "clap_derive doesn't pick up the version from the Cargo.toml by default" to "Allow literal and dynamic values for version in clap_derive" by @pksunkara on 2021-11-18 21:01_
+
+---
+
+_Comment by @mkayaalp on 2021-11-18 23:31_
+
+> I am tagging this for 3.1 milestone because we want to support literal and dynamic values for this method too. Similar to subcommand name in #2751
+
+I was with you until the end there. The issue was not that `#[clap(version = env!("CARGO_PKG_VERSION"))]` did not work. You *can* use dynamic values for `version` unlike in #2751. 
+
+The issue was the version not being set without the `version` attribute. It seems there is agreement that it should be explicit. So, I would suggest closing the issue instead.
+
+I think the "magic" about the `version` attribute handling is that it defaults to `${CARGO_PKG_VERSION}`.
+
+---
+
+_Comment by @pksunkara on 2021-11-19 00:27_
+
+You are right. I misunderstood part of the issue being that dynamic values not working right now. My bad.
+
+---
+
+_Closed by @pksunkara on 2021-11-19 00:27_
+
+---
+
+_Referenced in [informalsystems/hermes#1576](../../informalsystems/hermes/pulls/1576.md) on 2021-11-23 23:02_
+
+---
+
+_Referenced in [clap-rs/clap#3051](../../clap-rs/clap/pulls/3051.md) on 2021-11-25 19:10_
+
+---
+
+_Referenced in [clap-rs/clap#5529](../../clap-rs/clap/issues/5529.md) on 2024-06-12 21:09_
+
+---

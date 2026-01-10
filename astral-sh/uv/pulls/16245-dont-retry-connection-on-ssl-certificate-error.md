@@ -1,0 +1,329 @@
+---
+number: 16245
+title: Dont retry connection on SSL certificate error
+type: pull_request
+state: open
+author: assadyousuf
+labels: []
+assignees:
+  - konstin
+base: main
+head: fix/16235-dont-retry-on-SSL-cert-errors
+created_at: 2025-10-11T00:18:06Z
+updated_at: 2025-12-06T04:06:08Z
+url: https://github.com/astral-sh/uv/pull/16245
+synced_at: 2026-01-10T01:26:17Z
+---
+
+# Dont retry connection on SSL certificate error
+
+---
+
+_Pull request opened by @assadyousuf on 2025-10-11 00:18_
+
+## Summary
+SSL errors should not be retryable from the cached on non cached client: https://github.com/astral-sh/uv/issues/16235
+
+## Test Plan
+Unsure on if its possible/how to simulate an SSL certificate failure with the mock server so we can get a test going. Open to ideas on how to test this. See comment below
+
+
+
+---
+
+_Marked ready for review by @assadyousuf on 2025-10-15 00:15_
+
+---
+
+_Renamed from "Fix: Dont retry connection on SSL errors" to "Dont retry connection on SSL errors" by @assadyousuf on 2025-10-15 00:16_
+
+---
+
+_Referenced in [astral-sh/uv#16235](../../astral-sh/uv/issues/16235.md) on 2025-10-15 00:18_
+
+---
+
+_@assadyousuf reviewed on 2025-10-15 00:29_
+
+---
+
+_Review comment by @assadyousuf on `crates/uv-client/src/base_client.rs`:998 on 2025-10-15 00:29_
+
+Unsure on if its possible/how to simulate an SSL certificate failure with the mock server so we can get a test going. Open to ideas on how to test the new code path
+
+---
+
+_Renamed from "Dont retry connection on SSL errors" to "Dont retry connection on SSL certificate error" by @assadyousuf on 2025-10-15 00:33_
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:998 on 2025-10-15 11:27_
+
+I don't have a great idea either unfortunately, I'm using https://badssl.com/ for manual testing but we don't want to make CI depend on a third-party website. I tried building something with https://github.com/rustls/rcgen but it was clashing with the rustls features we were enabling, it would be great if we could fix that on the rcgen side and then use a self-signed cert in the test.
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:940 on 2025-10-15 11:29_
+
+Why do we have this check both here and in `is_transient_network_error`?
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:1008 on 2025-10-15 11:29_
+
+We should `return false` here.
+
+---
+
+_@konstin reviewed on 2025-10-15 11:30_
+
+---
+
+_Assigned to @konstin by @konstin on 2025-10-15 11:30_
+
+---
+
+_@samypr100 reviewed on 2025-10-23 01:54_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:998 on 2025-10-23 01:54_
+
+I would think setting SSL_CERT_FILE to a self signed cert chain in the test context may help, e.g. maybe with a self-signed cert for pypi.org and running typical uv project commands. I'd expect it to fail on hostname validation.
+
+If we really need some other kind of testing requiring our own mocked server, we could use a similar approach  like we did [here](https://github.com/astral-sh/uv/blob/0959763a828418410bdb7393696249b71e536969/crates/uv-client/tests/it/user_agent_version.rs#L29), but would require some additional minor setup to get some dummy certs working.
+
+---
+
+_@samypr100 reviewed on 2025-10-29 16:23_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:998 on 2025-10-29 16:23_
+
+https://github.com/astral-sh/uv/pull/16473 will unblock you on adding tests once its merged
+
+---
+
+_@michael-o reviewed on 2025-10-30 09:32_
+
+---
+
+_Review comment by @michael-o on `crates/uv-client/src/base_client.rs`:1104 on 2025-10-30 09:32_
+
+Is there really not better way than analyzing a string which can change any time?
+
+---
+
+_@konstin reviewed on 2025-10-30 13:24_
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:1104 on 2025-10-30 13:24_
+
+Feel free to ask this upstream, the error is currently not otherwise accessible, while I'd definitely prefer an enum-match here.
+
+---
+
+_@zanieb reviewed on 2025-10-30 13:55_
+
+---
+
+_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:998 on 2025-10-30 13:55_
+
+CI also already depends on pypi so I wouldn't be crushed if we hit badssl.com, I'd be less worried about the dependency than adding traffic to their site.
+
+---
+
+_@konstin reviewed on 2025-10-30 14:21_
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:998 on 2025-10-30 14:21_
+
+The repo behind the site has been archived, so I'm worried about it disappearing: https://github.com/chromium/badssl.com. Inversely, I'm not worried about the traffic since it looks like a static nginx config. We could run a copy on a bare minimum server, but their image is `ubuntu:16.04` based, so I'd rather invest in some local solution (does someone want to put an nginx binary on pypi? :D)
+
+---
+
+_@zanieb reviewed on 2025-10-30 14:27_
+
+---
+
+_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:998 on 2025-10-30 14:27_
+
+We could also host it ourselves like I do for the fly.io proxy for testing authentication
+
+---
+
+_@samypr100 reviewed on 2025-10-30 14:29_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:998 on 2025-10-30 14:29_
+
+I'd think the approach from #16473 would also work for what needs to be tested from my perspective and no other background CI service dependencies would be needed. 
+
+---
+
+_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:998 on 2025-10-30 14:32_
+
+Sgtm!
+
+---
+
+_@zanieb reviewed on 2025-10-30 14:32_
+
+---
+
+_Referenced in [astral-sh/uv#16473](../../astral-sh/uv/pulls/16473.md) on 2025-10-30 18:10_
+
+---
+
+_@samypr100 reviewed on 2025-11-18 03:19_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:998 on 2025-11-18 03:19_
+
+@assadyousuf here's a small [patch file](https://github.com/user-attachments/files/23596368/0001-fix-add-tests-and-improve-detection.patch) you can apply with `git am <patch-file>` which includes a test and other small fixes and improvements. You'll need to rebase first as the patch depends on the changes from #16473.
+
+
+---
+
+_@samypr100 reviewed on 2025-11-18 03:23_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:940 on 2025-11-18 03:23_
+
+I briefly looked into this and `is_transient_network_error` is used more broadly throughout uv where as `handle` here is only in `uv-client`. DefaultRetryableStrategy.handle will actually not return fatal for TLS errors because it's always a connection error so the default handler (which returns transient) will kick in rather than `is_transient_network_error` being invoked in this code path.
+
+---
+
+_@samypr100 reviewed on 2025-11-18 03:23_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:1008 on 2025-11-18 03:23_
+
+This will be fixed with the suggestions from https://github.com/astral-sh/uv/pull/16245#discussion_r2536168502
+
+---
+
+_@samypr100 reviewed on 2025-11-18 03:31_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:1104 on 2025-11-18 03:31_
+
+I proposed a tentative solution using an enum match to `rustls::Error` as part of https://github.com/astral-sh/uv/pull/16245#discussion_r2536168502 to this. Running manual checks across all cases in https://badssl.com/ and some others I could think of always resulted in a similar chain that luckily was able to be captured consistently at least from the testing that wad done (more testing may be needed).
+This is a variant of the existing `find_source` implementation, but handles wrapped IO errors (where source was None) which was pervasive in TLS errors where the existing `find_source` failed to capture.
+
+```rust
+fn find_source_with_io<E: Error + 'static>(orig: &dyn Error) -> Option<&E> {
+    let mut cause = orig.source();
+    while let Some(err) = cause {
+        if let Some(concrete_err) = err.downcast_ref() {
+            return Some(concrete_err);
+        }
+        if let Some(io_err) = err.downcast_ref::<io::Error>() {
+            if let Some(inner_err) = io_err.get_ref() {
+                if let Some(concrete_err) = inner_err.downcast_ref() {
+                    return Some(concrete_err);
+                }
+                cause = Some(inner_err);
+                continue;
+            }
+        }
+        cause = err.source();
+    }
+    None
+}
+```
+
+
+---
+
+_@messerli-wallace approved on 2025-11-18 19:36_
+
+---
+
+_Comment by @assadyousuf on 2025-11-18 21:52_
+
+@messerli-wallace was that approval a mistake? I havent had time to read and resolve comments just yet
+
+---
+
+_Comment by @konstin on 2025-11-19 09:46_
+
+This person is not associated with the project. You can see the different as grey checkmark vs the green checkmark of project members.
+
+---
+
+_@assadyousuf reviewed on 2025-11-30 05:26_
+
+---
+
+_Review comment by @assadyousuf on `crates/uv-client/src/base_client.rs`:998 on 2025-11-30 05:26_
+
+@samypr100 Thanks! Just applied your patch
+
+---
+
+_@assadyousuf reviewed on 2025-11-30 06:05_
+
+---
+
+_Review comment by @assadyousuf on `crates/uv-client/src/base_client.rs`:1104 on 2025-11-30 06:05_
+
+@samypr100 Thanks for this, string matching was very janky
+
+---
+
+_@assadyousuf reviewed on 2025-11-30 06:05_
+
+---
+
+_Review comment by @assadyousuf on `crates/uv-client/src/base_client.rs`:1008 on 2025-11-30 06:05_
+
+As mentioned, should be fixed in the above patch
+
+---
+
+_Review requested from @konstin by @assadyousuf on 2025-11-30 06:10_
+
+---
+
+_Review requested from @samypr100 by @assadyousuf on 2025-11-30 06:10_
+
+---
+
+_Review requested from @michael-o by @assadyousuf on 2025-11-30 06:10_
+
+---
+
+_@samypr100 approved on 2025-12-01 00:12_
+
+looks good to me
+
+---
+
+_@konstin reviewed on 2025-12-02 12:18_
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:940 on 2025-12-02 12:18_
+
+Looking at the 4 places that have `Transient failure while handling`, only uv-publish uses the `UvRetryableStrategy`, which looks inconsistent. We should fix that to have a consistent handling across in another PR, ideally before duplicating this here.
+
+---
+
+_@samypr100 reviewed on 2025-12-06 04:06_
+
+---
+
+_Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:940 on 2025-12-06 04:06_
+
+Agreed, it does feel quite inconsistent currently.
+
+---

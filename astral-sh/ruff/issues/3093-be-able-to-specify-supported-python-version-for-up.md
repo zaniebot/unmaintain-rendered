@@ -1,0 +1,65 @@
+---
+number: 3093
+title: "Be able to specify supported Python version for `UP`"
+type: issue
+state: closed
+author: ThatXliner
+labels:
+  - question
+assignees: []
+created_at: 2023-02-21T19:33:49Z
+updated_at: 2023-02-21T19:40:11Z
+url: https://github.com/astral-sh/ruff/issues/3093
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# Be able to specify supported Python version for `UP`
+
+---
+
+_Issue opened by @ThatXliner on 2023-02-21 19:33_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+The Pyupgrade rule set doesn't seem to be configurable to what minimally support Python version our project wants. For example, rule `UP007` is "Use `X | Y` for type annotations" which I don't want since I'm supporting 3.8+, which does not support the union syntax.
+
+Sure, I can just ignore the rules that don't apply but I feel like being able to specify Python version is easier. But if you disagree, feel free to close this issue since this is more of an annoyance than a feature request or bug.
+
+---
+
+_Comment by @charliermarsh on 2023-02-21 19:36_
+
+We do support this! Via [`target-version`](https://beta.ruff.rs/docs/settings/#target-version), which you can specify on the command-line or in your `pyproject.toml`.
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-21 19:36_
+
+---
+
+_Comment by @ThatXliner on 2023-02-21 19:38_
+
+Thanks for the fast response! I was just looking at the docs when I realized that I missed that.
+
+Another thought, perhaps it could be auto-detected via the package manager's configuration? For example, `[tool.poetry.dependencies.python]` in the `pyproject.toml` tells Poetry the Python version a project supports
+
+---
+
+_Closed by @ThatXliner on 2023-02-21 19:38_
+
+---
+
+_Comment by @charliermarsh on 2023-02-21 19:40_
+
+No worries! Yeah this has come up before but I haven't started on it at all :joy: It's tracked in #2039.
+
+---

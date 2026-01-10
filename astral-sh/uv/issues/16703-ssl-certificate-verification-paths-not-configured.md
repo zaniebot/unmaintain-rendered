@@ -1,0 +1,219 @@
+---
+number: 16703
+title: SSL certificate verification paths not configured correctly when Python is installed via uv (in Red Hat UBI8 base image)
+type: issue
+state: closed
+author: winwinashwin
+labels:
+  - question
+assignees: []
+created_at: 2025-11-12T11:58:09Z
+updated_at: 2025-11-18T16:31:18Z
+url: https://github.com/astral-sh/uv/issues/16703
+synced_at: 2026-01-10T01:26:09Z
+---
+
+# SSL certificate verification paths not configured correctly when Python is installed via uv (in Red Hat UBI8 base image)
+
+---
+
+_Issue opened by @winwinashwin on 2025-11-12 11:58_
+
+### Summary
+
+When using uv to install and run Python inside a Red Hat UBI8-based container, the resulting Python environment does not appear to have correct SSL verification paths configured.
+
+Standard HTTPS connections (e.g., via requests, aiohttp etc) fail due to missing or misconfigured CA certificates.
+Inspecting the SSL configuration shows that the default verify paths are either empty or pointing to incorrect locations.
+
+### MRE
+
+1. Dockerfile (uv managed python)
+
+```Dockerfile
+# uv.Dockerfile
+
+FROM redhat/ubi8:latest
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+ENV UV_LINK_MODE=copy
+
+RUN echo -e 'import ssl; print(ssl.get_default_verify_paths())' > /app.py
+
+CMD ["uv", "run", "--python", "3.11.13", "/app.py"]
+```
+
+2. Dockerfile (native python)
+
+```Dockerfile
+# native.Dockerfile
+
+FROM redhat/ubi8:latest
+
+RUN yum update -y && yum install -y python3.11 && yum clean all
+RUN echo -e 'import ssl; print(ssl.get_default_verify_paths())' > /app.py
+
+CMD ["/usr/bin/python3.11", "/app.py"]
+```
+
+3. Build images
+
+```bash
+docker build -t uv-ssl-test:uv -f uv.Dockerfile .
+docker build -t uv-ssl-test:native -f native.Dockerfile .
+
+```
+
+4. Run the examples
+
+```bash
+$ docker run --rm uv-ssl-test:uv
+Downloading cpython-3.11.13-linux-x86_64-gnu (download) (28.8MiB)
+ Downloading cpython-3.11.13-linux-x86_64-gnu (download)
+DefaultVerifyPaths(cafile=None, capath='/etc/ssl/certs', openssl_cafile_env='SSL_CERT_FILE', openssl_cafile='/etc/ssl/cert.pem', openssl_capath_env='SSL_CERT_DIR', openssl_capath='/etc/ssl/certs')
+
+
+$ docker run --rm uv-ssl-test:native
+DefaultVerifyPaths(cafile='/etc/pki/tls/cert.pem', capath='/etc/pki/tls/certs', openssl_cafile_env='SSL_CERT_FILE', openssl_cafile='/etc/pki/tls/cert.pem', openssl_capath_env='SSL_CERT_DIR', openssl_capath='/etc/pki/tls/certs')
+```
+
+
+### Platform
+
+Linux 6.6.105+ x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.8
+
+### Python version
+
+Python 3.11.13
+
+---
+
+_Label `bug` added by @winwinashwin on 2025-11-12 11:58_
+
+---
+
+_Referenced in [cleanlab/cleanlab-tlm#133](../../cleanlab/cleanlab-tlm/issues/133.md) on 2025-11-12 12:13_
+
+---
+
+_Label `bug` removed by @konstin on 2025-11-12 13:53_
+
+---
+
+_Label `question` added by @konstin on 2025-11-12 13:53_
+
+---
+
+_Comment by @konstin on 2025-11-12 13:54_
+
+If you install `python3.11` with yum, it installs the `ca-certificates` package as a dependency. That's the package that has all the certificates and is missing in the uv-managed Dockerfile. As an alternative, there's also the certifi package, which bundles CA certificates as a Python package instead of a yum package.
+
+---
+
+_Comment by @winwinashwin on 2025-11-12 14:18_
+
+@konstin I ran `yum install -y ca-certificates && update-ca-trust`. uv python still doesn't use the correct directories. Am I missing something? 
+
+I'm aware of explicitly setting `SSL_CERT_FILE` and `SSL_CERT_DIR` but I was expecting uv python to work out of the box.
+
+---
+
+_Comment by @konstin on 2025-11-12 14:25_
+
+I'm not too familiar with how the `ssl` module works and previously installing `ca-certificates` made it work, maybe @geofft or @jjhelmus know.
+
+---
+
+_Comment by @winwinashwin on 2025-11-18 11:57_
+
+@geofft @jjhelmus Any comments?
+
+---
+
+_Comment by @geofft on 2025-11-18 14:53_
+
+This is interesting. Compared to Fedora (`fedora:42`), this RHEL image does not ship the symlink /etc/ssl/cert.pem. If you do a `ln -s ../pki/tls/cert.pem /etc/ssl`, then things works fine.
+
+In fact there are several symlinks in /etc/ssl in Fedora that point at /etc/pki/tls (or directly at the files the symlinks in there point to), and the RHEL image only has /etc/ssl/certs -> /etc/pki/tls/certs. Furthermore, on RHEL, that directory does not contain the symlinks that  [`openssl rehash`](https://docs.openssl.org/3.5/man1/openssl-rehash/) creates. On Fedora it does. I think if it contained the hash symlinks, things would also work fine, but I haven't tested.
+
+I suppose we can patch our build of OpenSSL to special-case this RHEL location and look for it, but I wonder if there's a specific reason that RHEL doesn't make all of these symlinks.
+
+(... on the other hand, the fact that /etc/ssl/openssl.cnf doesn't exist is slightly convenient in that it avoids #15327)
+
+---
+
+_Comment by @winwinashwin on 2025-11-18 15:40_
+
+I also noticed that curl doesn't have this issue. 
+```bash
+$ curl -vvvv https://dns.google.com |& grep 'CA'
+*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+  CApath: none
+```
+
+curl seems to be handling this at [compile time](https://github.com/curl/curl/blob/80005b4c8a5743aa48f6164f5da602cd8416451d/acinclude.m4#L1195).
+
+> I suppose we can patch our build of OpenSSL to special-case this RHEL location and look for it
+
+So maybe this is not a bad idea?
+
+
+
+
+---
+
+_Comment by @geofft on 2025-11-18 15:51_
+
+That isn't surprising - the version of curl inside the RHEL image is provided by RHEL, and therefore uses the OpenSSL library, configuration, and norms from RHEL. The version of Python we install is not specific to RHEL (or Fedora or anything else); we build a single Python that's expected to work across all distributions.
+
+I found https://bugzilla.redhat.com/show_bug.cgi?id=1053882 which explains why Fedora has these symlinks: they are specifically for compatibility with non-Fedora-packaged software. I do see some upstream CPython SSL folks at the very end of that thread. It looks like that bug was actually resolved relatively recently, and RHEL's ca-certificates package appears to have branched before it.
+
+It does look like the UBI9 base image has these symlinks and things work:
+
+```
+$ docker run --rm -it redhat/ubi9:latest
+# ls -l /etc/ssl
+total 0
+lrwxrwxrwx 1 root root 49 Aug 19  2024 cert.pem -> /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+lrwxrwxrwx 1 root root 18 Aug 19  2024 certs -> /etc/pki/tls/certs
+lrwxrwxrwx 1 root root 28 Aug 19  2024 ct_log_list.cnf -> /etc/pki/tls/ct_log_list.cnf
+lrwxrwxrwx 1 root root 24 Aug 19  2024 openssl.cnf -> /etc/pki/tls/openssl.cnf
+# curl -LSsf https://astral.sh/uv/install.sh | sh
+# uvx python3.14
+Python 3.14.0 (main, Oct 31 2025, 23:03:06) [Clang 21.1.4 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import urllib.request
+>>> urllib.request.urlopen("https://astral.sh")
+<http.client.HTTPResponse object at 0x7fb0ca3a86a0>
+```
+
+Is using the UBI9 image an option for you?
+
+That said the fact that they made this change in EL9 makes me more comfortable with doing this kind of patch (i.e., there's no specific reason why RHEL wants third-party applications _not_ to use this directory). It'd be kind of nice not to do a patch for older OSes but EL8 is still supported for many years....
+
+---
+
+_Referenced in [astral-sh/python-build-standalone#858](../../astral-sh/python-build-standalone/issues/858.md) on 2025-11-18 16:04_
+
+---
+
+_Comment by @winwinashwin on 2025-11-18 16:31_
+
+> Is using the UBI9 image an option for you?
+
+Yup, We are actually in the process of migrating to UBI10. So this won't be an issue anymore!
+
+Thank you so much for all the help and clarifications!! 
+
+Closing.
+
+
+---
+
+_Closed by @winwinashwin on 2025-11-18 16:31_
+
+---

@@ -1,0 +1,346 @@
+---
+number: 4941
+title: "`required_if_eq` doesn't respect global arguments"
+type: issue
+state: closed
+author: Gordon01
+labels:
+  - C-bug
+  - A-parsing
+  - E-medium
+  - A-validators
+assignees: []
+created_at: 2023-05-26T11:12:04Z
+updated_at: 2023-06-01T15:06:40Z
+url: https://github.com/clap-rs/clap/issues/4941
+synced_at: 2026-01-10T01:28:03Z
+---
+
+# `required_if_eq` doesn't respect global arguments
+
+---
+
+_Issue opened by @Gordon01 on 2023-05-26 11:12_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.69.0 (84c898d65 2023-04-16)
+
+### Clap Version
+
+4.3.0
+
+### Minimal reproducible code
+
+```rust
+use clap::{Args, Parser, Subcommand};
+
+#[derive(Parser)]
+struct Cli {
+    /// Output JSON formatted messages
+    #[arg(short, long, global = true)]
+    json: bool,
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Args)]
+struct Force {
+    /// Skip confirmation step
+    #[arg(short, long, required_if_eq("json", "true"))]
+    force: bool,
+}
+
+#[derive(Subcommand)]
+#[command(rename_all = "snake_case")]
+enum Commands {
+    /// Delete all expired tokens
+    CleanupTokens(Force),
+}
+
+fn main() {
+    let _ = Cli::parse();
+    println!("Success");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo r -q -- --json cleanup_tokens
+```
+
+### Actual Behaviour
+
+`Success` printed
+
+### Expected Behaviour
+
+```
+error: the following required arguments were not provided:
+  --force
+
+Usage: playground.exe --json cleanup_tokens --force
+
+For more information, try '--help'.
+```
+### Additional Context
+
+TLDR:
+`cargo r -q -- --json cleanup_tokens` doesn't work
+`cargo r -q -- cleanup_tokens --json` does.
+
+
+### Debug Output
+
+> `cargo r -q -- --json cleanup_tokens`
+```
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="playground"
+[clap_builder::builder::command]Command::_propagate:playground
+[clap_builder::builder::command]Command::_check_help_and_version:playground expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:playground
+[clap_builder::builder::command]Command::_propagate pushing "json" to cleanup_tokens
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:json
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"--json"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("--json")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--json'
+[clap_builder::parser::parser]Parser::parse_long_arg("json"): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id="json"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="json", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="json"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="Cli", source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: ["true"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"cleanup_tokens"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("cleanup_tokens")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some("cleanup_tokens")
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of cleanup_tokens to "playground.exe cleanup_tokens"     
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of cleanup_tokens to "playground-cleanup_tokens"     
+[clap_builder::builder::command]Command::_build: name="cleanup_tokens"
+[clap_builder::builder::command]Command::_propagate:cleanup_tokens
+[clap_builder::builder::command]Command::_check_help_and_version:cleanup_tokens expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:cleanup_tokens
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:force
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:json
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=cleanup_tokens
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:force:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:force: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:force: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="force", source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: ["false"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_defaults:iter:json:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:json: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:json: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="json", source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: ["false"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:json:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:json: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:json: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="json"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="json"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:"json"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"Cli"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"Cli":group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=["json", "json"]
+Success
+```
+> `cargo r -q -- cleanup_tokens --json`
+```
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="playground"
+[clap_builder::builder::command]Command::_propagate:playground
+[clap_builder::builder::command]Command::_check_help_and_version:playground expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:playground
+[clap_builder::builder::command]Command::_propagate pushing "json" to cleanup_tokens
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:json
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"cleanup_tokens"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("cleanup_tokens")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some("cleanup_tokens")
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of cleanup_tokens to "playground.exe cleanup_tokens"
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of cleanup_tokens to "playground-cleanup_tokens"        
+[clap_builder::builder::command]Command::_build: name="cleanup_tokens"
+[clap_builder::builder::command]Command::_propagate:cleanup_tokens
+[clap_builder::builder::command]Command::_check_help_and_version:cleanup_tokens expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:cleanup_tokens
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:force
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:json
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=cleanup_tokens
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"--json"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("--json")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--json'
+[clap_builder::parser::parser]Parser::parse_long_arg("json"): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id="json"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="json", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="json"
+[clap_builder::parser::parser]Parser::push_arg_values: ["true"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:force:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:force: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:force: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="force", source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: ["false"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:json:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:json: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:json: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id="json"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="json", conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="json"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="json"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:"json"
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::validator]Validator::validate_required:iter: Missing "force"
+[clap_builder::parser::validator]Validator::missing_required_error; incl=["force"]
+[clap_builder::parser::validator]Validator::missing_required_error: reqs=ChildGraph([])
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=["force"], matcher=true, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:"force" arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[StyledStr("\u{1b}[1m--force\u{1b}[0m")]
+[clap_builder::parser::validator]Validator::missing_required_error: req_args=[
+    "--force",
+]
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_smart_usage
+[ clap_builder::output::usage]Usage::get_args: incls=["json", "force"]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_args: ret_val=[StyledStr("\u{1b}[1m--json\u{1b}[0m"), StyledStr("\u{1b}[1m--force\u{1b}[0m")]  
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: the following required arguments were not provided:
+  --force
+
+Usage: playground.exe cleanup_tokens --json --force
+```
+
+---
+
+_Label `C-bug` added by @Gordon01 on 2023-05-26 11:12_
+
+---
+
+_Label `A-parsing` added by @epage on 2023-05-26 20:05_
+
+---
+
+_Label `E-medium` added by @epage on 2023-05-26 20:05_
+
+---
+
+_Label `A-validators` added by @epage on 2023-05-26 20:05_
+
+---
+
+_Comment by @epage on 2023-05-26 20:05_
+
+Currently, as we recurse through subcommands, we
+1. Parse
+2. Add defaults
+3. Validate
+
+Once done, we then add globals.
+
+We'd need to rework this and my gut says it'll take some finessing to ensure we get the behavior we want for validation, defaults, and globals.
+
+---
+
+_Comment by @epage on 2023-06-01 15:06_
+
+Ah, we do have an existing issue for this, closing in favor of #1546
+
+---
+
+_Closed by @epage on 2023-06-01 15:06_
+
+---

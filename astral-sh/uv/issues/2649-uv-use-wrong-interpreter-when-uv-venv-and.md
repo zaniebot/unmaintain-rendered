@@ -1,0 +1,191 @@
+---
+number: 2649
+title: "uv use wrong interpreter when `uv venv`, and activated wrong environment when activate venv"
+type: issue
+state: closed
+author: kevindaffaarr
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-03-25T15:07:57Z
+updated_at: 2024-03-26T03:03:42Z
+url: https://github.com/astral-sh/uv/issues/2649
+synced_at: 2026-01-10T01:23:20Z
+---
+
+# uv use wrong interpreter when `uv venv`, and activated wrong environment when activate venv
+
+---
+
+_Issue opened by @kevindaffaarr on 2024-03-25 15:07_
+
+<!--
+
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+**Run On**
+uv version: 0.1.24
+OS: Windows 11
+
+## Problem Reproducing
+I have multiple python version in my PC with aliases python, python310, and python311. I already install uv in python311 by
+```
+python311 -m pip install uv
+```
+
+And then I check the other python
+```
+python -m pip freeze // there is no uv installed
+
+python310 -m pip freeze // there is no uv installed
+```
+which is expected.
+
+Then I trigger command for creating a virtual environment:
+```
+python311 -m v venv
+```
+
+## First Problem
+The first problem is, uv use python alias (which is python 3.10.8) as interpreter.
+
+## Second Problem
+After I activate the venv and pip freeze
+```
+source ./.venv/Scripts/Activate
+pip freeze
+```
+It resulted the activated python interpreter of my other folder with installed packages, meanwhile my current Lib folder is empty.
+
+<details>
+<summary>Below is the full terminal interactions</summary>
+<br>
+
+```
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ python311 -m pip install uv
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: uv in c:\users\kevin\appdata\roaming\python\python311\site-packages (0.1.24)
+
+[notice] A new release of pip is available: 23.2.1 -> 24.0
+[notice] To update, run: python311.exe -m pip install --upgrade pip
+
+
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ python311 -m pip freeze
+// truncated because too long
+pexpect==4.9.0
+pip-tools==7.4.0
+pkginfo==1.9.6
+platformdirs==3.11.0
+poetry==1.7.1
+poetry-core==1.8.1
+poetry-plugin-export==1.6.0
+ptyprocess==0.7.0
+pyproject_hooks==1.0.0
+pywin32-ctypes==0.2.2
+rapidfuzz==3.6.1
+requests==2.31.0
+requests-toolbelt==1.0.0
+shellingham==1.5.4
+tomlkit==0.12.3
+trove-classifiers==2024.1.8
+urllib3==2.1.0
+uv==0.1.24
+virtualenv==20.25.0
+zipp==3.17.0
+// truncated because too long
+
+
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ python311 -m uv venv
+Using Python 3.10.8 interpreter at: C:\Program Files\Python310\python.exe
+Creating virtualenv at: .venv
+Activate with: source .venv\bin\activate
+
+
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ source ./.venv/Scripts/activate
+
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ pip freeze
+// truncated because too long
+pywin32==306
+pywin32-ctypes==0.2.2
+pyzmq==25.1.1
+rapidfuzz==3.6.1
+requests==2.31.0
+requests-toolbelt==1.0.0
+rsa==4.9
+shellingham==1.5.4
+six==1.16.0
+soupsieve==2.5
+SQLAlchemy==2.0.27
+sqlalchemy-bigquery @ git+https://github.com/googleapis/python-bigquery-sqlalchemy.git@0c4cf07dce7e70cd04b196ca72193a65f95e3567
+stack-data==0.6.2
+tomli==2.0.1
+tomlkit==0.12.3
+tornado==6.3.3
+traitlets==5.10.0
+trove-classifiers==2024.1.8
+typing_extensions==4.7.1
+tzdata==2023.3
+urllib3==2.0.5
+virtualenv==20.24.5
+wcwidth==0.2.6
+zipp==3.17.0
+// truncated because too long
+
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ uv pip freeze
+bash: uv: command not found
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ uv
+bash: uv: command not found
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$
+```
+</details>
+
+---
+
+_Comment by @zanieb on 2024-03-25 17:11_
+
+This sounds like it would be resolved by https://github.com/astral-sh/uv/pull/2338 and looks like a duplicate of https://github.com/astral-sh/uv/issues/2222
+
+See also #2386 
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-03-25 17:11_
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 03:03_
+
+Closing in favor of those related issues. Thanks!
+
+---
+
+_Closed by @charliermarsh on 2024-03-26 03:03_
+
+---
+
+_Referenced in [astral-sh/uv#3736](../../astral-sh/uv/pulls/3736.md) on 2024-05-22 14:14_
+
+---

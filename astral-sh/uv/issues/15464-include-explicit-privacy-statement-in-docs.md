@@ -1,0 +1,60 @@
+---
+number: 15464
+title: Include explicit privacy statement in docs
+type: issue
+state: open
+author: abeyerpath
+labels:
+  - documentation
+assignees: []
+created_at: 2025-08-22T22:21:31Z
+updated_at: 2025-08-27T20:24:30Z
+url: https://github.com/astral-sh/uv/issues/15464
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# Include explicit privacy statement in docs
+
+---
+
+_Issue opened by @abeyerpath on 2025-08-22 22:21_
+
+### Summary
+
+The documentation (and maybe also refs in README.md and/or installer spew) should include a privacy statement and disclosure.
+
+It would be good practice to be explicit about what _isn't_ collected. Also would be handy to head off questions about things like linehaul that might be surprising to some people or prone to trigger audit questions or IDS alerts. (eg #8474)
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @abeyerpath on 2025-08-22 22:21_
+
+---
+
+_Label `enhancement` removed by @konstin on 2025-08-25 10:59_
+
+---
+
+_Label `documentation` added by @konstin on 2025-08-25 10:59_
+
+---
+
+_Comment by @zanieb on 2025-08-25 12:37_
+
+It'd be great to open an upstream issue in pip requesting this too. We're following them here, and afaik there is no such documentation on their end.
+
+---
+
+_Comment by @abeyerpath on 2025-08-27 20:24_
+
+I would have expected that pip would have had that already, but doesn't seem to. There were a few requests around features for limiting or modifying the linehaul data, but no docs. 
+
+I opened a similar https://github.com/pypa/pip/issues/13559
+
+That aside I do still believe it would be beneficial (even if just repeating what upstream says) to also have it within uv.
+
+---

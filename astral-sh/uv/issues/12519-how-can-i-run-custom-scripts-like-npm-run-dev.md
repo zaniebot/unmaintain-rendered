@@ -1,0 +1,48 @@
+---
+number: 12519
+title: How can I run custom scripts like npm run dev with uv?
+type: issue
+state: closed
+author: HateRainbow
+labels:
+  - duplicate
+assignees: []
+created_at: 2025-03-27T22:07:20Z
+updated_at: 2025-03-28T00:30:23Z
+url: https://github.com/astral-sh/uv/issues/12519
+synced_at: 2026-01-10T01:25:20Z
+---
+
+# How can I run custom scripts like npm run dev with uv?
+
+---
+
+_Issue opened by @HateRainbow on 2025-03-27 22:07_
+
+Hello,
+
+I'm currently working with the uv package and I'm trying to replicate functionality similar to npm run dev in a Node.js environment. Specifically, I want to define and run custom scripts from my pyproject.toml file, similar to how you would use npm run to execute commands line that you don't have to re-write in a JavaScript project.
+
+---
+
+_Label `enhancement` added by @HateRainbow on 2025-03-27 22:07_
+
+---
+
+_Comment by @trag1c on 2025-03-27 23:39_
+
+Looks like you want #5903.
+
+---
+
+_Label `enhancement` removed by @samypr100 on 2025-03-28 00:30_
+
+---
+
+_Label `duplicate` added by @samypr100 on 2025-03-28 00:30_
+
+---
+
+_Closed by @samypr100 on 2025-03-28 00:30_
+
+---

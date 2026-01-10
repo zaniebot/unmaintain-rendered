@@ -1,0 +1,255 @@
+---
+number: 18886
+title: ANN201, ANN202, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError
+type: issue
+state: open
+author: spaceby
+labels:
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2025-06-23T10:10:01Z
+updated_at: 2025-11-05T10:28:10Z
+url: https://github.com/astral-sh/ruff/issues/18886
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# ANN201, ANN202, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError
+
+---
+
+_Issue opened by @spaceby on 2025-06-23 10:10_
+
+### Summary
+
+ANN205 automatically sets the return type to NoReturn to raise NotImplementedError
+
+before
+```python
+class Class:
+    @staticmethod
+    def func(self):
+        raise NotImplementedError
+
+```
+
+after
+```python
+from typing import NoReturn
+
+
+class Class:
+    @staticmethod
+    def func(self) -> NoReturn:
+        raise NotImplementedError
+
+```
+In my opinion, this shouldn't be the case for NotImplementedError
+
+https://play.ruff.rs/d3f2d182-94c6-4543-ad12-8d59e1b27777
+
+---
+
+_Renamed from "ANN205 automatically sets the return type to NoReturn to raise NotImplementedError" to "ANN201, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError" by @spaceby on 2025-06-23 10:13_
+
+---
+
+_Renamed from "ANN201, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError" to "ANN201, ANN202, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError" by @spaceby on 2025-06-23 10:16_
+
+---
+
+_Comment by @MichaReiser on 2025-06-23 11:04_
+
+Can you explain why you think this shouldn't be the case for `NotImplementedError`?
+
+Changing the return type does seem correct to me because `func` never returns, it only ever raises.
+
+---
+
+_Label `needs-info` added by @MichaReiser on 2025-06-23 11:04_
+
+---
+
+_Comment by @spaceby on 2025-06-23 11:28_
+
+https://docs.python.org/3/library/exceptions.html#NotImplementedError
+
+`NotImplementedError` is just a way to indicate that the method is abstract. 
+It's a bit odd to say that abstract methods must have a `NoReturn` return type.
+
+---
+
+_Comment by @spaceby on 2025-06-23 11:33_
+
+Instead of `NoReturn`, you can specify any type that you intend to use in the implementation of this abstract method.
+
+---
+
+_Label `needs-info` removed by @MichaReiser on 2025-06-23 11:40_
+
+---
+
+_Label `fixes` added by @MichaReiser on 2025-06-23 11:40_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-06-23 11:40_
+
+---
+
+_Comment by @MichaReiser on 2025-06-23 11:40_
+
+Oh I see. Thank you. Yes, I think it makes sense to not suggest a fix in this case but still flag the missing type annotation. 
+
+---
+
+_Referenced in [astral-sh/ruff#18927](../../astral-sh/ruff/pulls/18927.md) on 2025-06-24 23:36_
+
+---
+
+_Referenced in [astral-sh/ruff#18935](../../astral-sh/ruff/issues/18935.md) on 2025-06-25 10:35_
+
+---
+
+_Comment by @MichaReiser on 2025-06-25 10:35_
+
+@spaceby would using `@abstractmethod` be an alternative (and inheriting from `ABC`) over using `raise NotImplementedError` or is there a reason why this doesn't work for you?
+
+---
+
+_Comment by @DaniBodor on 2025-06-25 12:31_
+
+> [@spaceby](https://github.com/spaceby) would using `@abstractmethod` be an alternative (and inheriting from `ABC`) over using `raise NotImplementedError` or is there a reason why this doesn't work for you?
+
+I think that more often than not, using abstract methods would be the preferable option for largely the same behavior (not quite identical). That being said, as long as the linter "allows" using `NotImplementedError` formulations, they should be dealt with in a way that makes sense, including not expecting these return types or the issue mentioned in #18935.
+
+(The alternative in my mind would be to raise a linting error against using `NotImplementedError`, but that is probably not the preferred option).
+
+---
+
+_Comment by @MichaReiser on 2025-06-25 12:34_
+
+> formulations, which are still the preferred option is some cases, 
+
+Can you give examples in which cases they're still preferred?
+
+I'm asking because the solution here has the disadvantage that it will not suggest `NoReturn` for methods that are not implemented (because someone decided they don't have to) but not because the class is abstract.
+
+---
+
+_Comment by @DaniBodor on 2025-06-25 12:45_
+
+> Can you give examples in which cases they're still preferred?
+
+An abstract method forces a subclass to implement the method, whereas raising the `NotImplementedError` just means that the subclass cannot use this method.
+
+So if there is a parent method where some of the children have the method and others don't, then creating the abstract method would mean that even the children that don't use this method need to implement it (probably raising an error anyway).
+
+There is an argument to be made that methods that are not shared by _all_ subclasses should not be part of the parent. But there is also a reasonable argument to be made for using the `NotImplementedError`.
+
+
+
+> I'm asking because the solution here has the disadvantage that it will not suggest `NoReturn` for methods that are not implemented (because someone decided they don't have to) but not because the class is abstract.
+
+This argument I don't understand. I think that any method that raises a `NotImplementedError` should not be expected to have a `NoReturn` return type. In fact, I think it should be treated by the linter equivalently to an abstract method in most if not all respects (I don't know if there are some edge cases where it would be problematic).
+
+Note also that I had previously raised an issue (which was solved) about other inconsistent behavior of NotImplementedError methods #12427. I think [this](https://github.com/astral-sh/ruff/issues/12427#issuecomment-2382165866) was a pivotal comment for resolving that issue. Maybe something similar can be applied more broadly.
+
+---
+
+_Comment by @DaniBodor on 2025-06-25 12:59_
+
+Maybe a more concrete example (it's not the perfect example, but best I could come up with on the spot).
+
+`number_of_legs` is an abstract method, because even if it's 0 (snake), that is still a number that I maybe want to get back.
+`speak` raises NotImplementedError because you can't force the turtle to say anything. (Of course, you argue to print an empty string or to raise an error in the child class, but it's not completely unreasonable to raise the NotImplementedError).
+
+```py
+from abc import ABC, abstractmethod
+
+
+class Animal(ABC):
+    @abstractmethod
+    def number_of_legs(self):
+        pass
+
+    def speak(self):
+        raise NotImplementedError("Animal doesn't make a sound.")
+
+
+class Dog(Animal):
+    def number_of_legs(self):
+        return 4
+
+    def speak(self):
+        print("Woof!")
+
+
+class Snake(Animal):
+    def number_of_legs(self):
+        return 0
+
+    def speak(self):
+        print("Hiss!")
+
+
+class Turtle(Animal):
+    def number_of_legs(self):
+        return 4
+```
+
+In addition, `NotImplementedError` is a little more lax than an abstract method. That is, if a new class is created, you don't need to implement every single abstract method from the getgo, but can allow for phased development.
+
+---
+
+_Comment by @MichaReiser on 2025-06-25 13:00_
+
+In the case you outline, I think that changing the return type to `Never` is somewhat more accurate and it helps static analysis tools like ty (our upcoming type checker) or pyright to understand that this method can never complete. 
+
+[Here's an example](https://pyright-play.net/?pythonVersion=3.13&strict=true&enableExperimentalFeatures=true&reportImplicitOverride=true&reportShadowedImports=true&reportUnusedCallResult=true&reportUninitializedInstanceVariable=true&code=FAMwTg9gtgBAhgIwMYwJZQA4TAFxgQQCEBhAGngQGccw4kcoBTHACwgBNRJYcBPDVADsA5mkzY8AOUYA3RmHIQ5YMKnaNgwJABs4lSjEJ7GACiLEAlAC5gMOzAACiarXpNWHW-fUgYORtQmlIzaIBYwALQAfDAIEBDaVjAAdKmaOnoGAAqQGPIAygCuyLr6JkbB1l52DkryqurVMD5%2BAThBIWGRMXEJNvYDMGDMhWCCMAAqYIUa6aXZcLiocNpFJZnlxlUDtcoNGgMt-oHBoeHRMNLKMP2DdrSowZcQOACSmNqMTIL%2B7ACiKmwJgsmmAQmocEESEYMAAvDAchA8mA1hkyiCwb5wThIdDksd2tt7BhVD8TAAiKYzckY7G4xgAJjhCMWOGWq2KaMowM0qCxgghUMZ%2BLawNudgAxJMWI80AYANaCCAAd3GOAgsRh6jg7BgSA4jAAhNK4HhlahtNoYFA4PKDvYpXA9StPmAYBBfLwIKMCFlXjBKIVKAIkKhvQZIbrWIxeM7xkgWIwkPL3YUzSxeE0pQADAnZmCCWTyAOFJDQxjsShNIQyFZqZkADyAA). Pyright can see that calling `PartialSubclass.test` will never return and can flag this to the user. 
+
+That's why I think that the distinction between: This class is abstract and the method is abstract (in which case we shouldn't recomment `Never`) and we decided that this sub class doesn't implement this method (in which case recommending `Never` isn't wrong) can be valuable.
+
+---
+
+_Comment by @spaceby on 2025-06-26 09:04_
+
+I don't really understand what you're talking about, but here are some examples.
+
+[example with correct types](https://pyright-play.net/?pythonVersion=3.13&strict=true&enableExperimentalFeatures=true&reportImplicitOverride=true&reportShadowedImports=true&reportUnusedCallResult=true&reportUninitializedInstanceVariable=true&code=FAMwTg9gtgBALgTwA4EsB2BzGKpImOGCANwFMwwUATU4OgYwBsBDAZ1ZgCE3SAuYGIJg0Q8UqzgAKVqUYgAlDAC0APhgAjCBEb8hemGGYoZMAHIQ4ASVyNSUUmjikqAUQr4GLdjAAKkJOQAygCu6kxsrJLcMvK6QgACJOSUNAJCImIS0rIKymqa2nH6BqRwwWBoMAAqYMG0wOgSzGj0pDAAvL7%2BQaHh7JLydCiijXDNrQB0TlmxaYJIlI6SAEQ1dcuDQA)
+
+[example with type error](https://pyright-play.net/?pythonVersion=3.13&strict=true&enableExperimentalFeatures=true&reportImplicitOverride=true&reportShadowedImports=true&reportUnusedCallResult=true&reportUninitializedInstanceVariable=true&code=FAMwTg9gtgBALgTwA4EsB2BzGKpImOGAOQFMA3EsAGhggrDBQBMTg2BjAGwEMBnXmACE%2BJAFzAYkmCxDwSvOAApeJTiACUMALQA%2BYuUripxmGG4oVxCHACSuTiSgk0cEkwCiDfBx78YABUgkSgBlAFcAIy4%2BXkVhFXUjKQABOkpGFgkpGTkFZVUNbT0IiAhOJJNTEjgwsDQYABUwMNZgdAVuNHYSGABeAKDQyOj%2BRXU2FFl2uE7ugDpXPMSsySRGF0UAIiaWzfGgA)
+
+---
+
+_Comment by @spaceby on 2025-06-26 09:11_
+
+I work with django and there are a lot of things like this
+
+```python
+class BaseSerializer:
+    def to_internal_value(self, data):
+        raise NotImplementedError('`to_internal_value()` must be implemented.')
+
+    def to_representation(self, instance):
+        raise NotImplementedError('`to_representation()` must be implemented.')
+
+
+class ImplementedSerializer(BaseSerializer):
+    # to_internal_value is not implemented because it is not needed
+
+    def to_representation(self, instance):
+        return instance.id
+```
+
+---
+
+_Comment by @spaceby on 2025-11-05 10:28_
+
+Any news?
+
+---
+
+_Referenced in [astral-sh/ruff#21311](../../astral-sh/ruff/pulls/21311.md) on 2025-11-07 05:08_
+
+---

@@ -1,0 +1,142 @@
+---
+number: 16953
+title: "[red-knot] Implement subtyping/assignability between different callable objects"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - help wanted
+  - ty
+assignees: []
+created_at: 2025-03-24T15:23:36Z
+updated_at: 2025-04-01T23:48:32Z
+url: https://github.com/astral-sh/ruff/issues/16953
+synced_at: 2026-01-10T01:22:58Z
+---
+
+# [red-knot] Implement subtyping/assignability between different callable objects
+
+---
+
+_Issue opened by @dhruvmanila on 2025-03-24 15:23_
+
+With https://github.com/astral-sh/ruff/pull/16804 completed, we have the necessary infrastructure to check subtype/assignability relationship between two callable objects. Currently, it only does the check for subtyping/assignability between two `GeneralCallableType` types, which effectively means `typing.Callable` annotation or lambdas, as those are the only things that construct the `GeneralCallableType`. (We do expose `knot_extensions.CallableTypeFromFunction` from `knot_extensions` which converts a `FunctionType` into a `GeneralCallableType` but that's mainly to help write tests for it.)
+
+This issue is to check other subtype and assignability relationships involving callable objects that still need to be implemented:
+- [x] A `CallableType` is always a subtype of `KnownClass::Object` (and never the other way around)
+- [x] A `FunctionType` can be a subtype of `Callable` (but never the other way around)
+- [x] Other (non-`GeneralCallable`) `Type::Callable` variants, like bound methods, can be subtypes of / assignable to `Callable`s.
+- [x] `InstanceType (with a __call__ method)` can be a subtype of `Callable` (but never the other way around)
+
+
+---
+
+_Label `red-knot` added by @dhruvmanila on 2025-03-24 15:23_
+
+---
+
+_Referenced in [astral-sh/ruff#16804](../../astral-sh/ruff/pulls/16804.md) on 2025-03-24 15:23_
+
+---
+
+_Label `help wanted` added by @carljm on 2025-03-24 16:41_
+
+---
+
+_Comment by @MatthewMckee4 on 2025-03-24 23:24_
+
+>  A CallableType is always a subtype of KnownClass::Object (and never the other way around)
+
+Can we not generalize this for every type? 
+
+---
+
+_Referenced in [astral-sh/ruff#16960](../../astral-sh/ruff/pulls/16960.md) on 2025-03-25 00:08_
+
+---
+
+_Referenced in [astral-sh/ruff#16970](../../astral-sh/ruff/pulls/16970.md) on 2025-03-25 16:26_
+
+---
+
+_Closed by @carljm on 2025-03-25 22:04_
+
+---
+
+_Closed by @carljm on 2025-03-25 22:04_
+
+---
+
+_Reopened by @dhruvmanila on 2025-03-26 13:30_
+
+---
+
+_Comment by @carljm on 2025-03-26 13:31_
+
+> Can we not generalize this for every type?
+
+Yes. I actually thought we had already, but maybe it was removed at some point.
+
+---
+
+_Comment by @MatthewMckee4 on 2025-03-26 13:32_
+
+We have it in is_assignable_to
+
+---
+
+_Referenced in [astral-sh/ruff#17005](../../astral-sh/ruff/pulls/17005.md) on 2025-03-26 23:39_
+
+---
+
+_Added to milestone `Red Knot Q1 2025` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Removed from milestone `Red Knot Q1 2025` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
+
+---
+
+_Assigned to @MatthewMckee4 by @carljm on 2025-03-27 19:05_
+
+---
+
+_Renamed from "[red-knot] Implement subtyping between different callable objects" to "[red-knot] Implement subtyping/assignability between different callable objects" by @sharkdp on 2025-03-31 14:34_
+
+---
+
+_Referenced in [astral-sh/ruff#17095](../../astral-sh/ruff/pulls/17095.md) on 2025-03-31 14:57_
+
+---
+
+_Referenced in [astral-sh/ruff#17105](../../astral-sh/ruff/pulls/17105.md) on 2025-03-31 23:23_
+
+---
+
+_Closed by @carljm on 2025-04-01 23:40_
+
+---
+
+_Comment by @MatthewMckee4 on 2025-04-01 23:44_
+
+I think this is good to stay closed now? @carljm @dhruvmanila 
+
+---
+
+_Comment by @carljm on 2025-04-01 23:47_
+
+Yes, I think it's fine to keep it closed. There are a couple other descriptor-protocol-related callable types that could still be given a subtype relation with Callable, but these are mostly internal and unlikely to surface in user code; if they ever do we can add them. Also I think they have overloads, which means it will be easier to handle them correctly once we have fuller overload support.
+
+Thanks for all your work on this issue!
+
+---
+
+_Comment by @MatthewMckee4 on 2025-04-01 23:48_
+
+Sounds good, no worries!
+
+---

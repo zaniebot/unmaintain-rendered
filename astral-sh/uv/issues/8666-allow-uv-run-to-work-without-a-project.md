@@ -1,0 +1,304 @@
+---
+number: 8666
+title: "allow \"uv run\" to work without a project"
+type: issue
+state: closed
+author: mmerickel
+labels:
+  - question
+  - needs-decision
+assignees: []
+created_at: 2024-10-29T16:29:02Z
+updated_at: 2025-09-17T15:48:57Z
+url: https://github.com/astral-sh/uv/issues/8666
+synced_at: 2026-01-10T01:24:31Z
+---
+
+# allow "uv run" to work without a project
+
+---
+
+_Issue opened by @mmerickel on 2024-10-29 16:29_
+
+It'd be nice if this flow worked simply to avoid needing to activate a virtualenv - regardless of whether I'm using a full uv project or not.
+
+```
+$ uv venv
+$ uv pip install -e .
+$ uv run python
+```
+
+However as of 0.4.28 I get the following error: 
+
+```
+$ uv run python
+error: No `project` table found in: `/Users/michael/work/oss/webob/pyproject.toml`
+```
+
+Obviously in this case I'm not asking uv to do anything except use the correct path as if I was activating the virtualenv - equivalent to `.venv/bin/activate; python`.
+
+---
+
+_Comment by @zanieb on 2024-10-29 16:36_
+
+`uv run --no-project` should work there
+
+---
+
+_Label `question` added by @zanieb on 2024-10-29 16:36_
+
+---
+
+_Comment by @mmerickel on 2024-10-29 16:57_
+
+Yeah thanks for pointing that out and I confirmed it works. Having to add an extra arg there on every command is a deal breaker right - `uv run` is the primary command I’m using all the time during dev. I’d instead activate the env or use `.venv/bin/python …` (my current flow). I guess this issue becomes a feature request to drop the flag and make it the default fallback behavior when no project can be found. 
+
+---
+
+_Comment by @zanieb on 2024-10-29 17:06_
+
+What are you using the `pyproject.toml` for? Just want to understand the use-case more.
+
+---
+
+_Comment by @mmerickel on 2024-10-29 17:20_
+
+Things like build-system, black config, isort config, and tool.ruff config. 
+
+---
+
+_Comment by @zanieb on 2024-10-29 17:21_
+
+What build system are you using without a `[project]` table 👀 
+
+---
+
+_Comment by @mmerickel on 2024-10-29 17:43_
+
+setuptools doesn’t require it - it can pull all the data from setup.py and setup.cfg like it has for decades. :-) I guess I should switch it up to use project but it’s not required by the build backend PEP. 
+
+---
+
+_Comment by @mmerickel on 2024-10-29 17:45_
+
+To be clear I know it’s required to use uv sync and uv lock + lock files but that’s not my short term goal.
+
+---
+
+_Label `needs-decision` added by @zanieb on 2024-10-29 17:58_
+
+---
+
+_Comment by @samypr100 on 2024-10-31 03:52_
+
+> Having to add an extra arg there on every command is a deal breaker right - uv run is the primary command I’m using all the time during dev
+
+Maybe as an alternative workaround, setup an shell alias for `uv run` to be `uv run --no-project`?
+
+---
+
+_Comment by @mmerickel on 2024-11-01 17:11_
+
+Yeah I can work around it, but this ticket is here incase y'all want a cleaner story for the larger community for "older" projects.
+
+In pyramid we have for years recommended for people to do the following as a simple starter sequence:
+
+```
+python3 -m venv env
+env/bin/pip install -e .
+env/bin/pshell site.ini
+```
+
+And I thought it'd be cool to at least have a "drop in replacement" story for uv where we'd recommend the following:
+
+```
+uv venv
+uv pip install -e .
+uv run pshell site.ini
+```
+
+As of today we need to add `--no-project` to every `uv run` command and that's no fun. :-) Personally I think the error that is raised about "no project table" is not worth requiring an explicit flag to get past compared to the logical fallback to just run the command in the virtualenv even if there's no project.
+
+Also mainly for my sanity and to clarify for anyone else I went back to just check and this issue occurs whether or not you have a pyproject.toml. It's just complaining about the missing `[project]` section therein.
+
+---
+
+_Comment by @zanieb on 2024-11-01 23:38_
+
+Fwiw I think this should probably work but doesn't
+
+```
+❯ cat pyproject.toml
+[tool.uv]
+managed = false
+
+❯ uv run python
+error: No `project` table found in: `/Users/zb/workspace/uv/example/pyproject.toml`
+```
+
+
+
+---
+
+_Referenced in [astral-sh/uv#8764](../../astral-sh/uv/issues/8764.md) on 2024-11-02 13:59_
+
+---
+
+_Comment by @mattp- on 2024-11-05 14:48_
+
+👍 on this, I use uv primarily as a manager to venv's per project, but im not necessarily making changes to the projects im dropping into that would allow me to modify pyproject.toml. Being able to set an env var that silences no-project, but still works when a project dir i go to actually DOES have project settings, would be ideal.
+
+---
+
+_Comment by @matterhorn103 on 2024-11-07 01:09_
+
+If a directory contains nothing but a script, with no `pyproject.toml` or `.venv` in sight, `uv run script.py` works.
+
+If there's a `.venv` but no `pyproject.toml`, it also works.
+
+Is that the intended behaviour? If so it seems strange to require a `[project]` table when `pyproject.toml` is present, but not otherwise.
+
+---
+
+_Comment by @zanieb on 2024-11-07 03:13_
+
+The presence of a `pyproject.toml` is what we use to determine if you're working... in a project :) I think it does make some sense, though I can understand why you would want it to work differently. I'll be exploring some approaches to resolve this.
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-11-07 03:13_
+
+---
+
+_Comment by @trim21 on 2024-11-21 22:08_
+
+> What build system are you using without a `[project]` table 👀
+
+I have a example for this, a python backend web server doesn't need any build-system.
+
+When deploying I just need to copy everything to docker and install deps from requirements.txt, no `[project]` involved.
+
+Maybe we can add a option or env to make `--no-project` enabled by default.
+
+For example, `UV_RUN_NO_PROJECT=1 uv run ... ` ( even uv doesn't load dotenv for itself direnv can still work in this case ) or `tool.uv.no-project = true` in config file
+
+---
+
+_Comment by @trim21 on 2024-11-28 05:59_
+
+I just find that we have a option `tool.uv.package`, maybe we can use this option when `tool.uv.package = false`?
+
+https://github.com/astral-sh/uv/blob/8a27d4d340f7dbdaeb144d4b8f80f3b27cc29ec0/docs/concepts/projects/config.md?plain=1#L147-L148
+
+---
+
+_Referenced in [python/typeshed#13311](../../python/typeshed/pulls/13311.md) on 2024-12-26 21:48_
+
+---
+
+_Comment by @Avasam on 2024-12-26 22:28_
+
+For real world examples, I've been hitting this in typeshed. Not sure if I wanna try adding a dummy project config.
+
+---
+
+_Comment by @stefanv on 2025-01-17 21:45_
+
+In trying to use uv to prepare environments for a web application (no compilation or package involved), I noticed that `uv run` gives:
+
+```
+error: No `project` table found in: `<somepath>/pyproject.toml`
+```
+
+OK, so we add the project section to `pyproject.toml`. Now we get:
+
+```
+$ uv run make
+  × Failed to build `skyportal @ file:///<path-to-project>`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      error: Multiple top-level packages discovered in a flat-layout: ...
+```
+
+OK, so it seems I *have* to run `uv run --no-project`. Which, presumably should have been the case originally when the `project` section was missing. Having a way to configure this behavior, without a manual flag on each invocation, would be very helpful.
+
+(EDIT: To pre-empt the question of "why do you have a pyproject.toml" in the first place: it's where we configure project linting.)
+
+---
+
+_Comment by @T-256 on 2025-01-23 00:36_
+
+Also related to #10204 and #10208 
+
+---
+
+_Comment by @helderco on 2025-01-31 15:08_
+
+Here's an example I ran into today: https://github.com/swe-bench/SWE-bench
+
+It has a [`pyproject.toml`](https://github.com/swe-bench/SWE-bench/blob/a0536ee6f9fd5ff88acf17a36a384bf3da3d93d6/pyproject.toml) but with only the following:
+```toml
+[build-system]
+requires = ['setuptools>=42']
+build-backend = 'setuptools.build_meta'
+```
+Notice the above doesn't include a `[project]` section, but you can install it with `pip install -e .`. There's a [`setup.py`](https://github.com/swe-bench/SWE-bench/blob/a0536ee6f9fd5ff88acf17a36a384bf3da3d93d6/setup.py) where the dependencies are declared. 
+
+My team member is having issues with his environment, so I wish I could tell him to just slap `uv run` in front:
+```
+❯ uv run -m swebench.harness.run_evaluation \
+    --predictions_path gold \
+    --max_workers 1 \
+    --instance_ids sympy__sympy-20590 \
+    --run_id validate-gold
+error: No `project` table found in: `/.../SWE-bench/pyproject.toml`
+```
+Don't want to instruct on changing that open source project's `pyproject.toml` to accomodate, and wish I wouldn't have to recommend going through the `uv pip` route.
+
+---
+
+_Comment by @charliermarsh on 2025-01-31 15:12_
+
+👍 We do currently plan to support this -- hopefully soon.
+
+---
+
+_Referenced in [astral-sh/uv#11149](../../astral-sh/uv/issues/11149.md) on 2025-01-31 23:04_
+
+---
+
+_Referenced in [python/typeshed#13599](../../python/typeshed/pulls/13599.md) on 2025-03-08 03:13_
+
+---
+
+_Comment by @rbavery on 2025-05-21 05:15_
+
+another example https://github.com/567-labs/systematically-improving-rag/tree/main/cohort_2
+
+---
+
+_Comment by @T-256 on 2025-06-17 00:07_
+
+Does #13742 solve this issue?
+
+---
+
+_Comment by @mmerickel on 2025-06-17 17:21_
+
+I just tested with the current uv main commit and the sequence of commands in the ticket result in the same error so no it doesn't solve the issue.
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-06-17 17:26_
+
+---
+
+_Referenced in [astral-sh/uv#14113](../../astral-sh/uv/pulls/14113.md) on 2025-06-17 17:39_
+
+---
+
+_Closed by @zanieb on 2025-09-17 15:48_
+
+---

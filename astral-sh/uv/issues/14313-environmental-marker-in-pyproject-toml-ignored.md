@@ -1,0 +1,153 @@
+---
+number: 14313
+title: Environmental marker in pyproject.toml ignored for platform‐specific dependencies in uv 0.6.0
+type: issue
+state: closed
+author: 19igari
+labels:
+  - question
+assignees: []
+created_at: 2025-06-27T11:23:22Z
+updated_at: 2025-06-30T02:12:35Z
+url: https://github.com/astral-sh/uv/issues/14313
+synced_at: 2026-01-10T01:25:43Z
+---
+
+# Environmental marker in pyproject.toml ignored for platform‐specific dependencies in uv 0.6.0
+
+---
+
+_Issue opened by @19igari on 2025-06-27 11:23_
+
+### Summary
+
+**Describe the bug**
+When declaring a dependency with an environment marker in pyproject.toml—for example:
+
+```
+[project]
+name = "example"
+version = "0.1.0"
+requires-python = "==3.12"
+dependencies = [
+  "tensorrt-cu12==10.3.0; sys_platform == 'linux' and platform_machine == 'x86_64'"
+]
+```
+uv should evaluate the environment marker (sys_platform == 'linux' and platform_machine == 'x86_64'), skip the tensorrt-cu12 dependency on ARM64, and successfully complete uv sync without error. Instead, on an ARM64 (Jetson Orin) environment, `uv sync` still tries to build tensorrt-cu12, resulting in a build error.
+
+**Minimal reproduction**
+Use the following Dockerfile and run docker build .:
+```
+FROM ghcr.io/astral-sh/uv:0.6.0-debian-slim
+
+COPY <<EOF /mre/pyproject.toml
+[project]
+name = "example"
+version = "0.1.0"
+requires-python = "==3.12"
+dependencies = [
+  "tensorrt-cu12==10.3.0; sys_platform == 'linux' and platform_machine == 'x86_64'"
+]
+EOF
+
+WORKDIR /mre
+RUN uv sync
+```
+
+**Error output on ARM64 (Jetson Orin)**
+```
+× Failed to build `tensorrt-cu12==10.3.0`
+├─▶ The build backend returned an error
+╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+  [stderr]
+  RuntimeError: TensorRT currently only builds wheels for x86_64 processors
+  hint: This usually indicates a problem with the package or the build environment.
+help: `tensorrt-cu12` (v10.3.0) was included because `example` (v0.1.0) depends on `tensorrt-cu12==10.3.0`
+```
+**Additional context**
+- This regression appears between uv 0.5.31 (works) and uv 0.6.0 (fails).
+
+### Platform
+
+Ubuntu 22.04.4 ARM64 (Jetson Orin)
+
+### Version
+
+uv 0.6.0
+
+### Python version
+
+Python 3.12.0
+
+---
+
+_Label `bug` added by @19igari on 2025-06-27 11:23_
+
+---
+
+_Comment by @charliermarsh on 2025-06-27 14:14_
+
+I believe this is correct, because `uv sync` needs to determine the dependencies of `tensorrt-cu12==10.3.0`, and that package only publishes a [source distribution](https://pypi.org/project/tensorrt-cu12/10.3.0/#files). So, to get the dependencies, we need to run a build step, regardless of what platform you're on.
+
+---
+
+_Comment by @charliermarsh on 2025-06-27 14:15_
+
+One workaround is to provide the metadata upfront via [`dependency-metadata`](https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata):
+
+```toml
+[[tool.uv.dependency-metadata]]
+name = "tensorrt-cu12"
+version = "10.3.0"
+requires-dist = ["tensorrt_cu12_libs==10.12.0.36", "tensorrt_cu12_bindings==10.12.0.36", "numpy; extra == \"numpy\""]
+provides-extra = ["numpy"]
+requires-python = ">=3.6"
+```
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-06-27 14:16_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-06-27 14:16_
+
+---
+
+_Comment by @19igari on 2025-06-28 04:02_
+
+I’m aware that the `tensorrt-cu12` package is only available as a source distribution and cannot be built for ARM64. Therefore, I’d like the resolver to simply skip any dependency resolution for `tensorrt-cu12` on ARM64 as described in [platform-specific-dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/#platform-specific-dependencies)
+
+ I’m trying to set up an environment where TensorRT can run on both x86 and Jetson platforms. In this setup, I need to include `tensorrt-cu12` as a dependency for x86, but on Jetson I’m using a self-hosted TensorRT package that works standalone, so there’s no need to add `tensorrt-cu12` as a dependency there.
+
+---
+
+_Comment by @charliermarsh on 2025-06-28 13:18_
+
+Totally, I understand. What you're describing isn't compatible with `uv.lock`, though. `uv.lock` resolves for all environments, so we need to know the dependencies. And that package doesn't declare them statically. So we need to get them somehow. Otherwise, how can we produce a lockfile that works on x86 and ARM? We have to be able to resolve.
+
+(If they release with a newer version of `setuptools`, then we could extract them statically and it wouldn't be necessary to build the package, even if they don't ship a wheel.)
+
+(If you resolve on x86 and commit the `uv.lock`, that's another valid answer, since we won't need to build the package on ARM if the lockfile already exists.)
+
+
+---
+
+_Comment by @19igari on 2025-06-30 01:48_
+
+I fully understand. Thank you. When I run `uv sync`, it needs to generate uv.lock, and to do so—even on an arm64 platform—it still tries to build `tensorrt-cu12` in order to fetch its metadata.
+
+I also now see why uv sync began failing on arm64 in version 0.6.0. When I unpacked the tensorrt-cu12 package from PyPI, I found its metadata stored inside the `.egg-info` files. In the commit https://github.com/astral-sh/uv/pull/11395 between uv 0.5.31 and 0.6.0, those `.egg-info` contents are no longer referenced, so the metadata can’t be retrieved anymore.
+
+---
+
+_Closed by @19igari on 2025-06-30 02:05_
+
+---
+
+_Comment by @charliermarsh on 2025-06-30 02:12_
+
+Ah right, that makes sense. We removed that behavior since it was non-standard and problematic in some cases. Source distributions built with newer versions of `setuptools` should have reliable static metadata which solves this problem going forward.
+
+---

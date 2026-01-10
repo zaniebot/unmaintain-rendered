@@ -1,0 +1,86 @@
+---
+number: 9112
+title: "Prefer splitting right hand side of assignment first: Unnecessary parentheses"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+  - preview
+assignees: []
+created_at: 2023-12-13T09:07:19Z
+updated_at: 2023-12-20T23:42:26Z
+url: https://github.com/astral-sh/ruff/issues/9112
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# Prefer splitting right hand side of assignment first: Unnecessary parentheses
+
+---
+
+_Issue opened by @MichaReiser on 2023-12-13 09:07_
+
+Ruff introduces unnecessary parentheses around values when the target doesn't end with a parenthesized expression, but only contains one:
+
+
+```python
+a = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[xxxxx].bbvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb = ccccccccccccccccccccccccccccccccccc["aaaaaaa"]
+
+a = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[xxxxx].bbvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb = ccccccccccccccccccccccccccccccccccc["aaaaaaa"]
+```
+
+**Black**
+
+```python
+a = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[
+    xxxxx
+].bbvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb = (
+    ccccccccccccccccccccccccccccccccccc["aaaaaaa"]
+)
+
+a = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[
+    xxxxx
+].bbvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb = ccccccccccccccccccccccccccccccccccc[
+    "aaaaaaa"
+]
+```
+
+**Ruff**
+
+```python
+a = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[
+        xxxxx
+    ].bbvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+) = ccccccccccccccccccccccccccccccccccc["aaaaaaa"]
+
+a = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[
+        xxxxx
+    ].bbvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+) = ccccccccccccccccccccccccccccccccccc["aaaaaaa"]
+```
+
+Ruff's output is more noisy because of the extra parentheses.
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-12-13 09:07_
+
+---
+
+_Label `preview` added by @MichaReiser on 2023-12-13 09:07_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-12-13 09:07_
+
+---
+
+_Referenced in [astral-sh/ruff#9209](../../astral-sh/ruff/pulls/9209.md) on 2023-12-20 07:51_
+
+---
+
+_Closed by @MichaReiser on 2023-12-20 23:42_
+
+---

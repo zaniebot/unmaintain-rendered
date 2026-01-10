@@ -1,0 +1,56 @@
+---
+number: 15419
+title: "Set `GIT_LFS_SKIP_SMUDGE=1` if `UV_GIT_LFS` is not set?"
+type: issue
+state: open
+author: Turakar
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-21T15:13:17Z
+updated_at: 2025-10-01T18:12:15Z
+url: https://github.com/astral-sh/uv/issues/15419
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# Set `GIT_LFS_SKIP_SMUDGE=1` if `UV_GIT_LFS` is not set?
+
+---
+
+_Issue opened by @Turakar on 2025-08-21 15:13_
+
+### Summary
+
+At the moment, you need to opt-in to git lfs using `UV_GIT_LFS=1` if you want to use it. As such, the default behavior of uv is to not pull git lfs artifacts. Thus, I think it would be helpful to set `GIT_LFS_SKIP_SMUDGE=1` so that LFS knows to not pull lfs artifacts and does not error.
+
+### Example
+
+Instead of having to instruct users of my repository to run
+```
+GIT_LFS_SKIP_SMUDGE=1 uv sync
+```
+they can just run the normal `uv sync` instead. If a repository requires lfs pulling, they anyways already need to instruct
+```
+UV_GIT_LFS=1 uv sync
+```
+This might reduce surprises as in #12938.
+
+---
+
+_Label `enhancement` added by @Turakar on 2025-08-21 15:13_
+
+---
+
+_Comment by @alexbowe on 2025-09-29 18:53_
+
+I just arrived here after having this error show up for me. My sense is that silently checking out LFS files without following their refs and without raising an error would also lead to downstream surprises.
+
+I completely agree with the need to simplify how we instruct users to `uv sync` though. It'd be nice if the LFS strategy could be configured on a per-dependency basis in `pyproject.toml` or something.
+
+---
+
+_Comment by @Turakar on 2025-10-01 18:12_
+
+Per-dependency sounds like a good solution to me, too. Could be another argument to the source declaration which is already there, as one would declare a branch as well for example. I would still advocate for changing the default to either UV_GIT_LFS=1 or GIT_LFS_SKIP_SMUDGE=1.
+
+---

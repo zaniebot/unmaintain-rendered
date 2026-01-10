@@ -1,0 +1,37 @@
+---
+number: 9190
+title: "run scripts from [project.gui-scripts] with pythonw on windows"
+type: issue
+state: closed
+author: borco
+labels: []
+assignees: []
+created_at: 2024-11-18T09:18:42Z
+updated_at: 2024-11-18T09:36:49Z
+url: https://github.com/astral-sh/uv/issues/9190
+synced_at: 2026-01-10T01:24:37Z
+---
+
+# run scripts from [project.gui-scripts] with pythonw on windows
+
+---
+
+_Issue opened by @borco on 2024-11-18 09:18_
+
+Scripts configured under `[project.gui-scripts]` should be run with `pythonw.exe` on Windows. However, they are run with `python.exe` and show a terminal console in addition to the application GUI window.
+
+More on `[project.gui-scripts]` can be found here: https://packaging.python.org/en/latest/specifications/pyproject-toml/#entry-points
+
+
+
+---
+
+_Comment by @borco on 2024-11-18 09:36_
+
+Just discovered this is actually a bug wit `python 3.13`. Using `python 3.12` works fine and no console is shown for the `[project.gui-scripts]`.
+
+---
+
+_Closed by @borco on 2024-11-18 09:36_
+
+---

@@ -1,0 +1,75 @@
+---
+number: 3073
+title: "`KeyringProvider::fetch_subprocess` should be async"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - good first issue
+  - performance
+assignees: []
+created_at: 2024-04-16T19:46:47Z
+updated_at: 2024-04-23T12:58:01Z
+url: https://github.com/astral-sh/uv/issues/3073
+synced_at: 2026-01-10T01:23:24Z
+---
+
+# `KeyringProvider::fetch_subprocess` should be async
+
+---
+
+_Issue opened by @zanieb on 2024-04-16 19:46_
+
+As far as I can tell, we're egregiously blocking the event loop for 80ms on keyring fetches. The function should be async and use an async subprocess API.
+
+---
+
+_Label `good first issue` added by @zanieb on 2024-04-16 19:46_
+
+---
+
+_Label `performance` added by @zanieb on 2024-04-16 19:46_
+
+---
+
+_Comment by @zanieb on 2024-04-16 19:49_
+
+See https://docs.rs/tokio/latest/tokio/process/struct.Command.html
+
+https://github.com/astral-sh/uv/blob/c0efeeddf6d738991d8f3149168ce57c52073f4e/crates/uv-auth/src/keyring.rs#L100
+
+---
+
+_Comment by @naosense on 2024-04-17 01:46_
+
+> See https://docs.rs/tokio/latest/tokio/process/struct.Command.html
+> 
+> https://github.com/astral-sh/uv/blob/c0efeeddf6d738991d8f3149168ce57c52073f4e/crates/uv-auth/src/keyring.rs#L100
+
+hey@zanieb i want to try this, could you assign it to me?
+
+---
+
+_Assigned to @naosense by @charliermarsh on 2024-04-17 01:47_
+
+---
+
+_Comment by @charliermarsh on 2024-04-17 01:47_
+
+Done @naosense thanks!
+
+---
+
+_Comment by @zanieb on 2024-04-17 02:24_
+
+Sweet let me know if you have any questions. The `KeyringProvider::fetch` API will need to become async too.
+
+---
+
+_Referenced in [astral-sh/uv#3089](../../astral-sh/uv/pulls/3089.md) on 2024-04-17 06:15_
+
+---
+
+_Closed by @zanieb on 2024-04-23 12:58_
+
+---

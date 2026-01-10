@@ -1,0 +1,87 @@
+---
+number: 8882
+title: "error: Failed to spawn"
+type: issue
+state: closed
+author: xplosionmind
+labels:
+  - question
+assignees: []
+created_at: 2024-11-07T08:31:07Z
+updated_at: 2024-11-07T13:42:20Z
+url: https://github.com/astral-sh/uv/issues/8882
+synced_at: 2026-01-10T01:24:33Z
+---
+
+# error: Failed to spawn
+
+---
+
+_Issue opened by @xplosionmind on 2024-11-07 08:31_
+
+Hi! I am trying to start a Django app, but I am having problems.
+
+## Steps to reproduce
+
+1. `uv init test-app`
+2. `cd test-app`
+3. `uv add django`
+4. `uv run -- django --version || uv run django --version`
+
+and I get:
+```
+error: Failed to spawn: `django`
+  Caused by: No such file or directory (os error 2)
+```
+
+## Info
+
+OS: Fedora 41  
+uv version: 0.4.30
+
+---
+
+_Comment by @konstin on 2024-11-07 09:15_
+
+django does not install a runnable binary, but a module entrypoint you can access through `python -m`:
+```console
+$ uv run python -m django --version
+5.1.3
+```
+
+---
+
+_Label `question` added by @konstin on 2024-11-07 09:15_
+
+---
+
+_Comment by @xplosionmind on 2024-11-07 10:08_
+
+Oooh, that is wonderful. Thank you! Sorry for the dumb question, I am a newbie 😬
+
+---
+
+_Comment by @FishAlchemist on 2024-11-07 10:23_
+
+@konstin I'm not sure which version started supporting it, but there's actually another way to do it.
+![image](https://github.com/user-attachments/assets/3e02d2a4-2e15-4b14-949a-188d20bc5ad9)
+```bash
+uv run -m django --version
+```
+
+Edit:
+I found it! It was a feature introduced in version 0.4.18.
+https://github.com/astral-sh/uv/releases/tag/0.4.18
+
+---
+
+_Comment by @FishAlchemist on 2024-11-07 10:35_
+
+Actually, django has an executable file, but it's not called ``django``
+https://docs.djangoproject.com/en/5.1/ref/django-admin/
+
+---
+
+_Closed by @charliermarsh on 2024-11-07 13:25_
+
+---

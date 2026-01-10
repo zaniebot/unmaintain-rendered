@@ -1,0 +1,72 @@
+---
+number: 7726
+title: "[Error]stream did not contain valid UTF-8"
+type: issue
+state: closed
+author: sdbds
+labels:
+  - bug
+  - windows
+assignees: []
+created_at: 2024-09-26T20:02:40Z
+updated_at: 2024-09-28T12:38:43Z
+url: https://github.com/astral-sh/uv/issues/7726
+synced_at: 2026-01-10T01:24:18Z
+---
+
+# [Error]stream did not contain valid UTF-8
+
+---
+
+_Issue opened by @sdbds on 2024-09-26 20:02_
+
+command: uv pip install hdbscan==0.8.38.post1
+platform:windows
+version:uv 0.4.16 (e81ed8ec5 2024-09-24)
+
+```
+error: Failed to prepare distributions Caused by: Failed to fetch wheel: hdbscan==0.8.38.post1 
+Caused by: Failed to run `C:\Users\qinglongshengzhe\AppData\Local\uv\cache\builds-v0\.tmp4iKplS\Scripts\python.exe` 
+Caused by: stream did not contain valid UTF-8
+```
+
+
+---
+
+_Comment by @Paillat-dev on 2024-09-27 09:09_
+
+Same with `uv add git+https://github.com/feldberlin/timething.git`
+
+---
+
+_Referenced in [astral-sh/uv#7733](../../astral-sh/uv/issues/7733.md) on 2024-09-27 09:24_
+
+---
+
+_Label `windows` added by @charliermarsh on 2024-09-27 12:24_
+
+---
+
+_Comment by @charliermarsh on 2024-09-27 12:24_
+
+I'm going to close in favor of #7733 which has more info.
+
+---
+
+_Closed by @charliermarsh on 2024-09-27 12:24_
+
+---
+
+_Comment by @charliermarsh on 2024-09-28 12:38_
+
+Should be fixed by https://github.com/astral-sh/uv/pull/7757.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-09-28 12:38_
+
+---
+
+_Referenced in [astral-sh/uv#8009](../../astral-sh/uv/issues/8009.md) on 2024-10-08 16:42_
+
+---

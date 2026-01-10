@@ -1,0 +1,117 @@
+---
+number: 7257
+title: Better Error Handling for Bad PyPIs
+type: issue
+state: closed
+author: CF-FHB-X
+labels:
+  - compatibility
+  - needs-decision
+assignees: []
+created_at: 2024-09-10T15:45:09Z
+updated_at: 2025-02-10T21:07:38Z
+url: https://github.com/astral-sh/uv/issues/7257
+synced_at: 2026-01-10T01:24:12Z
+---
+
+# Better Error Handling for Bad PyPIs
+
+---
+
+_Issue opened by @CF-FHB-X on 2024-09-10 15:45_
+
+Hi there!
+
+I'm trying to move over from `Poetry` to `uv`, but I'm running into an issue with one of the internal PyPIs that our Nexus is proxying. When I run `uv add package_name`, I get the following error:
+
+```
+error: Received some unexpected HTML from https://url.to.nexus/repository/pypi/simple/package_name/
+  Caused by: Unexpected fragment (expected '#sha256=...' or similar) on URL: main
+```
+
+For some reason that downstream repo has a bunch of "fluff" for each package's endpoint (i.e., instead of just listing all the packages with their hashes, it also has links like "About", "Documentation", etc.). I suspect it's because that PyPI is a custom deployment (caveat: I have zero input on our Nexus, and even less than zero input on that downstream custom PyPI). If I don't include any packages that reside on that custom downstream repo, `uv` works _great_, but the moment I need anything on that custom repo, bam. Errors.
+
+Is there some setting for `uv` where it can ignore situations like this? Something along the lines of a `--ignore-fragments` or something more appropriate?
+
+I'm running `uv` v0.4.7 and running on Windows 11. I've tested this on Python 3.10 through 3.12.
+
+Thanks!
+
+
+---
+
+_Label `compatibility` added by @charliermarsh on 2024-09-16 02:48_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-09-16 02:48_
+
+---
+
+_Comment by @CF-FHB-X on 2024-10-30 18:26_
+
+Just curious if there's any extra info on whether this can be added to a future version or not? If there's something I can help with, more than happy to!
+
+---
+
+_Comment by @mulliken on 2025-01-29 22:53_
+
+I think I am running into the same issue and would be interested in any updates.
+
+---
+
+_Comment by @zanieb on 2025-01-29 23:24_
+
+@mulliken can you share the error? Without providing more details about your situation, we can't use your comment as further motivation for adding this feature.
+
+@CF-FHB-X Sorry for the lack of reply. It seems generally hard to support non-compliant indexes. I think we're only likely to take action here if see more use-cases and have a better understanding of the patterns present in these indexes. Does pip work with this index?
+
+---
+
+_Comment by @CF-FHB-X on 2025-01-30 16:37_
+
+@zanieb Yes, `pip` and `Poetry` both work with that particular repo without any issues. My feeling is that `uv` is seeing those non-package HTML links and isn't able to parse them correctly (maybe it's expecting certain parts to be there like the hash?), hence the `unexpected HTML` error. Maybe I'm oversimplifying it, but would it just be an issue of adding in some error handling for that particular part where a non-standard HTML link that can't be parsed is just ignored (or instead throws a warning instead of an error)? 
+
+I'm sure there's more going on in the backend that I'm not aware of, but I also know how those Nexus repos have caused issues in the past with indexes that are either out of date or have those extra HTML links in there. Both `pip` and `Poetry` seem to be able to handle them (although `Poetry` doesn't like out of date indexes where files are missing).
+
+Hope that helps!
+
+---
+
+_Comment by @charliermarsh on 2025-01-30 16:45_
+
+Sigh... I think we should probably not throw a hard error here. It's not explicitly forbidden by the spec (including a SHA as a fragment is a SHOULD, and it doesn't say anything about other kinds of fragments). I'm annoyed by it, though!
+
+---
+
+_Comment by @CF-FHB-X on 2025-01-30 17:04_
+
+You'd be surprised by the number of times "annoyed" and "Nexus" show up together... But happy to test out any changes on this goofy repo, though! Just let me know!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-01-30 17:39_
+
+---
+
+_Referenced in [astral-sh/uv#11107](../../astral-sh/uv/pulls/11107.md) on 2025-01-30 18:17_
+
+---
+
+_Closed by @zanieb on 2025-01-30 18:35_
+
+---
+
+_Comment by @CF-FHB-X on 2025-01-30 19:21_
+
+Awesome - thanks for that fix! I'll keep you posted when that version is released.
+
+---
+
+_Comment by @CF-FHB-X on 2025-02-10 21:07_
+
+Sorry for the delay in replying (got sidetracked with a couple of other things), but everything is working like a charm now! 
+
+Thanks again!
+
+---

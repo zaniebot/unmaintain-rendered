@@ -1,0 +1,181 @@
+---
+number: 13100
+title: "`uv export` breaks with local dev sources unlike `poetry export`"
+type: issue
+state: closed
+author: MarkusSintonen
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-04-25T06:03:10Z
+updated_at: 2025-04-27T14:14:41Z
+url: https://github.com/astral-sh/uv/issues/13100
+synced_at: 2026-01-10T01:25:29Z
+---
+
+# `uv export` breaks with local dev sources unlike `poetry export`
+
+---
+
+_Issue opened by @MarkusSintonen on 2025-04-25 06:03_
+
+### Summary
+
+We have issues with cases where pyproject dev dependencies are using various locally existing sources. Following used to work with `poetry export` but it breaks with `uv export` giving errors like:
+```
+0.357 error: Failed to generate package metadata for `xxx==1.0.0 @ editable+../xxx`
+0.357   Caused by: Distribution not found at: file:///xyz/xxx
+```
+
+Here is a stripped down example of pyproject and Dockerfile (its heavily simplified example of the issue and not something that is actually used):
+
+Dockerfile
+```dockerfile
+FROM ghcr.io/astral-sh/uv:0.6.5-python3.13-bookworm-slim
+
+# Not copying the dev local sources to the image
+COPY pyproject.toml uv.lock ./
+
+# This used to work with Poetry-pyproject:
+# RUN poetry export --without-hashes --without-urls > tmp-requirements.txt
+# But uv export fails with errors:
+RUN uv export --no-dev --no-editable --no-emit-project --no-hashes > tmp-requirements.txt
+
+# Various other things happening etc...
+
+# Install via the exported requirements file to some target(s)
+RUN uv pip install --requirement tmp-requirements.txt --target .
+```
+
+pyproject.toml
+```toml
+[project]
+name = "foo"
+version = "1.0.0"
+requires-python = "==3.13.*"
+
+dependencies = ["a", "b", "c"]
+
+[dependency-groups]
+dev = ["xxx", "yyy", "zzz"]
+
+[tool.uv.sources]
+# Various editable dev sources which are not copied in Dockerfile
+xxx = { path = "../xxx", editable = true }
+yyy = { path = "../yyy", editable = true }
+zzz = { path = "../zzz", editable = true }
+# Can also include some custom indexes
+c = { index = "some_pypi" }
+```
+
+I have tried various different parameters for `uv export` but it always fails and does not respect the `no-dev` or `no-editable` flags. I dont understand why it tries to look into the layer paths that do not exist in built docker image eventhough they are omitted in export command.
+
+Thanks for the great work here!
+
+### Platform
+
+Darwin 24.4.0 arm64
+
+### Version
+
+0.6.5
+
+### Python version
+
+3.13.3
+
+---
+
+_Label `bug` added by @MarkusSintonen on 2025-04-25 06:03_
+
+---
+
+_Comment by @konstin on 2025-04-25 07:58_
+
+Are you looking for `--no-sources`?
+
+---
+
+_Comment by @MarkusSintonen on 2025-04-25 08:12_
+
+> Are you looking for `--no-sources`?
+
+We need sources still with index dependencies (`{ index = "some_pypi" }`). Also it seems to be not working.
+
+---
+
+_Comment by @konstin on 2025-04-25 08:15_
+
+uv generally needs access to all declared packages to ensure metadata consistency, so atm exports will only work if the other packages are also available in the docker container.
+
+---
+
+_Label `bug` removed by @konstin on 2025-04-25 08:15_
+
+---
+
+_Label `enhancement` added by @konstin on 2025-04-25 08:15_
+
+---
+
+_Comment by @MarkusSintonen on 2025-04-25 10:14_
+
+Figured a hacky workaround to `uv remove` all path based dev deps before running any other uv commands in Dockerfile. But annoyingly need to list every path dev dep separately for the `remove` command in Dockerfile 😕 It also feels weird and kinda wrong to do such manipulation of the project file first before running the `export`.
+
+---
+
+_Comment by @charliermarsh on 2025-04-25 12:34_
+
+I think you want `--frozen`?
+
+---
+
+_Comment by @Kostiantyn-Salnykov on 2025-04-25 12:46_
+
+> I think you want `--frozen`?
+
+I have the similar issue,
+I have custom sources (index gitlab package), also have a local editable (development) package that I need to install as non editable in Docker file and result build.
+
+As I see uv always install the package as a reference but not include the modules (different from distribution of .tar.gz and .whl)
+
+Nothing helped, really.
+
+I think there are really missing documentation about how to handle such cases to meet all requirements:
+- Custom index package(s);
+- Local package(s) with local editable;
+- Local package(s) installed in docker as non-editable and can be found in site-package of the python environment (not a related links);
+
+---
+
+_Comment by @MarkusSintonen on 2025-04-26 09:23_
+
+> I think you want `--frozen`?
+
+Oh nice! `uv export --frozen ...` seems to work! Maybe the error message could have hint about using the "frozen" mode when exporting fails. Or something else in the docs about hinting this behaviour when using `sources` etc problematic 🤔 
+
+Thanks a lot @charliermarsh !
+
+---
+
+_Comment by @charliermarsh on 2025-04-26 14:07_
+
+Yeah `--frozen` generally means: just use the file without trying to validate or refresh it. When in a Docker context, you almost always want `--frozen` :)
+
+---
+
+_Closed by @charliermarsh on 2025-04-26 14:07_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-04-26 14:07_
+
+---
+
+_Comment by @MarkusSintonen on 2025-04-27 14:14_
+
+> Yeah `--frozen` generally means: just use the file without trying to validate or refresh it. When in a Docker context, you almost always want `--frozen` :)
+
+Yes thanks! Some how I didn't notice `--frozen` was a thing for `export` 😄
+
+---

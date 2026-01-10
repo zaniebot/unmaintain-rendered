@@ -1,0 +1,101 @@
+---
+number: 9200
+title: "How to ignore E501: Line too long in docstrings"
+type: issue
+state: closed
+author: DanielNoord
+labels:
+  - documentation
+assignees: []
+created_at: 2023-12-19T14:12:27Z
+updated_at: 2025-03-31T09:13:08Z
+url: https://github.com/astral-sh/ruff/issues/9200
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# How to ignore E501: Line too long in docstrings
+
+---
+
+_Issue opened by @DanielNoord on 2023-12-19 14:12_
+
+```python
+def func():
+    """
+    My very long docstring that I can't seem to be able to get under 100 characters but that I don't want to change.
+    """
+
+    string = "My very long string that I can't seem to be able to get under 100 characters but that should be changed"
+```
+Running `ruff --select=E501 --line-length=100 test.py`.
+
+How can I ignore E501 on the line in the docstring but not in the `string` line. I have tried to do this but can't figure out how to do so. `pylint` read the ignore comment even if it is in a docstring, would that be a possibility here?
+
+---
+
+_Comment by @charliermarsh on 2023-12-19 14:38_
+
+The `# noqa` for multi-line strings need to come at the end of the multi-line string, kinda like this:
+
+```python
+def func():
+    """
+    My very long docstring that I can't seem to be able to get under 100 characters but that I don't want to change.
+    """  # noqa: E501
+```
+
+This ensures that the `# noqa` doesn't appear within the actual string contents.
+
+
+---
+
+_Comment by @DanielNoord on 2023-12-19 15:10_
+
+Thanks @charliermarsh, that's what I was looking for.
+
+Not sure if these should be added to the `line-too-long` docs. Multi-line strings and docstrings are different objects and I couldn't find anything through google/GIthub when looking for docstrings. Adding a short example for them might help with discoverability.
+
+---
+
+_Comment by @charliermarsh on 2023-12-19 21:07_
+
+Good call -- it's mentioned in the docs [here](https://docs.astral.sh/ruff/linter/#error-suppression) but it should probably be mentioned in the rule documentation since this does come up often.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-12-19 21:07_
+
+---
+
+_Referenced in [astral-sh/ruff#9205](../../astral-sh/ruff/pulls/9205.md) on 2023-12-20 03:58_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-20 03:58_
+
+---
+
+_Closed by @charliermarsh on 2023-12-20 04:04_
+
+---
+
+_Comment by @1vecera on 2025-03-31 08:49_
+
+I want to suggest that E501 would not apply for docstings at all as there is [doc-line-too-long (W505)](https://docs.astral.sh/ruff/rules/doc-line-too-long/#doc-line-too-long-w505) for people that want to length check their docstrings and the overlap causes issues for people who are fine with long dosctrings, but want short code. Having noqa everywhere is ugly.
+
+Should I open a new issue for that?
+
+
+---
+
+_Comment by @MichaReiser on 2025-03-31 08:54_
+
+@1vecera see https://github.com/astral-sh/ruff/issues/16577
+
+---
+
+_Comment by @1vecera on 2025-03-31 09:13_
+
+thanks! 
+
+---

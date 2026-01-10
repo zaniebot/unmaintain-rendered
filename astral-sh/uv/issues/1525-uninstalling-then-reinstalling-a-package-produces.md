@@ -1,0 +1,169 @@
+---
+number: 1525
+title: Uninstalling then reinstalling a package produces METADATA error
+type: issue
+state: closed
+author: RafailFridman
+labels:
+  - bug
+  - needs-mre
+assignees: []
+created_at: 2024-02-16T18:47:21Z
+updated_at: 2025-01-14T02:11:02Z
+url: https://github.com/astral-sh/uv/issues/1525
+synced_at: 2026-01-10T01:23:07Z
+---
+
+# Uninstalling then reinstalling a package produces METADATA error
+
+---
+
+_Issue opened by @RafailFridman on 2024-02-16 18:47_
+
+Steps to reproduce:
+* Installing some package, let's say `pandas`
+```
+uv venv env1 -p 3.10
+source env1/bin/activate
+uv pip install pandas
+```
+* Uninstalling it and installing it again:
+```
+uv pip uninstall pandas
+uv pip install pandas
+```
+
+* Produces the following error:
+```
+error: Failed to read metadata for: pandas==2.2.0
+  Caused by: failed to open file `~/env1/lib/python3.10/site-packages/pandas-2.2.0.dist-info/METADATA`
+  Caused by: No such file or directory (os error 2)
+```
+
+Am I doing something wrong? 
+
+---
+
+_Comment by @zanieb on 2024-02-16 18:48_
+
+Hm interesting, I can't reproduce this:
+
+```
+❯ source .venv/bin/activate
+❯ uv pip install pandas
+Resolved 6 packages in 96ms
+Downloaded 2 packages in 499ms
+Installed 2 packages in 26ms
+ + numpy==1.26.4
+ + pandas==2.2.0
+ 
+❯ uv pip uninstall pandas
+Uninstalled 1 package in 87ms
+ - pandas==2.2.0
+ 
+❯ uv pip install pandas
+Resolved 6 packages in 3ms
+Installed 1 package in 16ms
+ + pandas==2.2.0
+```
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-16 18:50_
+
+---
+
+_Label `needs-reproduction` added by @zanieb on 2024-02-16 18:50_
+
+---
+
+_Comment by @RafailFridman on 2024-02-16 19:00_
+
+Hm, I tried it with different python versions, and still get this.
+I tried it on centos 7.9 and RHEL 9.1.
+What information could be useful for reproducing this? 
+I tried running with `-v` flag, but it does not show anything useful for this issue
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 19:04_
+
+It might be useful to see the contents of `~/env1/lib/python3.10/site-packages/pandas-2.2.0.dist-info` or similar after the uninstall, and then after the second install.
+
+---
+
+_Comment by @RafailFridman on 2024-02-16 19:28_
+
+After the uninstall the folder `~/env1/lib/python3.10/site-packages/pandas-2.2.0.dist-info` is empty, but it still exists
+After the second install attempt it remains empty.
+
+I tried to manually remove the `pandas-2.2.0.dist-info` before the second installation attempt, and then the installation succeeded!
+So it seems that this folder was not removed during the uninstall, which causes this issue.
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 19:54_
+
+Great, that's really helpful! Just confirming: it's _totally_ empty, no dotfiles or anything, right? Will review.
+
+---
+
+_Comment by @RafailFridman on 2024-02-16 20:03_
+
+Yes, it is totally empty - nothing shows up with `ls -a`
+
+Thanks!
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 20:18_
+
+Thanks! I have at least one idea here.
+
+---
+
+_Comment by @RafailFridman on 2024-03-04 15:52_
+
+I checked it in version 0.1.13, and I don't get this issue anymore. Closing, I guess :) 
+
+---
+
+_Closed by @RafailFridman on 2024-03-04 15:52_
+
+---
+
+_Comment by @akozlu on 2024-10-29 14:37_
+
+having similar problems on 0.4.27 on linux I think, whenever i do a `uv pip uninstall` and then `uv pip install` I end up in the following situation. Wondering if there's an argument/command I can utilize to get out of this state instead of manually deleting the dist-info file or re-creating the `.venv`
+```
+warning: Failed to uninstall package at .venv/lib/python3.8/site-packages/aiobotocore-2.13.3.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
+```
+
+edit: the problem presents itself when index-url is pointed towards a self hosted registry like Nexus I think, so something might be problematic with me running `uv pip uninstall xxx` commands against packages downloaded from Nexus
+
+---
+
+_Referenced in [astral-sh/uv#8690](../../astral-sh/uv/issues/8690.md) on 2024-10-29 22:16_
+
+---
+
+_Comment by @Cogito on 2025-01-03 05:11_
+
+Just adding, I ran into a similar issue on Windows trying to `uv sync --reinstall` as there were some ghost python processes with some libraries open. This caused a permissions error, leaving an empty `.dist-info` folder, which then caused errors like above.
+
+---
+
+_Comment by @akozlu on 2025-01-13 06:51_
+
+Its definitely the failure to delete `.dist-info` folder, even though the contents of them are deleted. Was curious what you meant by  _ghost python processes with some libraries_, were those UV related operations? thank you.
+
+---
+
+_Comment by @Cogito on 2025-01-14 02:11_
+
+Unfortunately I'm unsure as to what exactly was going on.
+
+I was using intellij and thought maybe it was indexing the venv, but that seems unlikely.
+I had run a few tools with uv (dagster, dbt, jupyter, etc) and of the ones I had I most suspected dagster (as it has long running daemon and webserver). In any case, I could see python processes running (spawned by uv as far as I could tell) that didn't match up to anything I was actively using. killing them and fixing the empty folders seemed to resolve the issue.
+
+---

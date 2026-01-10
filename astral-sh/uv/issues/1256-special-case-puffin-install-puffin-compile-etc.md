@@ -1,0 +1,40 @@
+---
+number: 1256
+title: "Special-case `puffin install`, `puffin compile`, etc."
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - error messages
+assignees: []
+created_at: 2024-02-06T04:20:09Z
+updated_at: 2024-02-06T19:25:08Z
+url: https://github.com/astral-sh/uv/issues/1256
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Special-case `puffin install`, `puffin compile`, etc.
+
+---
+
+_Issue opened by @charliermarsh on 2024-02-06 04:20_
+
+We should either give a good error message _or_ just assume `puffin pip install` (and warn).
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-02-06 04:20_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-06 04:30_
+
+---
+
+_Referenced in [astral-sh/uv#1257](../../astral-sh/uv/pulls/1257.md) on 2024-02-06 04:55_
+
+---
+
+_Closed by @charliermarsh on 2024-02-06 19:25_
+
+---

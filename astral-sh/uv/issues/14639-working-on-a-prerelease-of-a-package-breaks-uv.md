@@ -1,0 +1,169 @@
+---
+number: 14639
+title: working on a prerelease of a package breaks uv for local development
+type: issue
+state: closed
+author: Butanium
+labels:
+  - bug
+  - external
+assignees: []
+created_at: 2025-07-15T22:19:47Z
+updated_at: 2025-07-16T04:28:19Z
+url: https://github.com/astral-sh/uv/issues/14639
+synced_at: 2026-01-10T01:25:47Z
+---
+
+# working on a prerelease of a package breaks uv for local development
+
+---
+
+_Issue opened by @Butanium on 2025-07-15 22:19_
+
+### Summary
+
+I'm currently working on my package which has local tag 1.0.0.dev1. No matter which argument I use for `--prerelease` I get the same error when syncing / running
+```bash
+uv sync --all-extras
+error: Failed to generate package metadata for `nnterp @ editable+.`
+  Caused by: The build backend returned an error
+  Caused by: Call to `setuptools.build_meta.build_editable` failed (exit status: 1)
+
+[stderr]
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/build_meta.py", line 473, in get_requires_for_build_editable
+    return self.get_requires_for_build_wheel(config_settings)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/build_meta.py", line 331, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+    self.run_setup()
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/build_meta.py", line 317, in run_setup
+    exec(code, locals())
+  File "<string>", line 1, in <module>
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/__init__.py", line 115, in setup
+    return distutils.core.setup(**attrs)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/_distutils/core.py", line 148, in setup
+    _setup_distribution = dist = klass(attrs)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/dist.py", line 321, in __init__
+    _Distribution.__init__(self, dist_attrs)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/_distutils/dist.py", line 309, in __init__
+    self.finalize_options()
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools/dist.py", line 784, in finalize_options
+    ep(self)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/_integration/setuptools.py", line 123, in infer_version
+    _assign_version(dist, config)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/_integration/setuptools.py", line 55, in _assign_version
+    maybe_version = _get_version(config, force_write_version_files=True)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/_get_version_impl.py", line 101, in _get_version
+    version_string = _format_version(parsed_version)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/version.py", line 442, in format_version
+    main_version = _entrypoints._call_version_scheme(
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/_entrypoints.py", line 123, in _call_version_scheme
+    result = scheme(version)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/version.py", line 240, in guess_next_dev_version
+    return version.format_next_version(guess_next_version)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/version.py", line 188, in format_next_version
+    guessed = guess_next(self, *k, **kw)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/version.py", line 233, in guess_next_version
+    return _modify_version._bump_dev(version) or _modify_version._bump_regex(version)
+  File "/mnt/nw/home/c.dumas/.cache/uv/builds-v0/.tmpV69XSH/lib/python3.10/site-packages/setuptools_scm/_modify_version.py", line 27, in _bump_dev
+    raise ValueError(
+ValueError: choosing custom numbers for the `.devX` distance is not supported.
+ The 1.0.0.dev1 can't be bumped
+Please drop the tag or create a new supported one ending in .dev0
+
+hint: This usually indicates a problem with the package or the build environment.
+```
+
+MWE in toml:
+```toml
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+[tool.setuptools_scm]
+
+[project]
+dynamic = ["version"]
+name = "nnterp"
+authors = [
+  { name="Clément Dumas", email="butanium.contact@gmail.com" },
+]
+description = "Utils and mechanistic interpretability intervensions using nnsight"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+```
+
+command:
+```bash
+uv init examples && cd examples && git init && git add . && git commit -m "Initial commit" && git tag 1.0.0.dev1
+```
+edit the toml with above and run `uv sync`
+
+### Platform
+
+Linux 6.8.0-60-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.7.20
+
+### Python version
+
+3.10.12
+
+---
+
+_Label `bug` added by @Butanium on 2025-07-15 22:19_
+
+---
+
+_Comment by @zanieb on 2025-07-15 22:27_
+
+Hi again!
+
+The error
+
+```
+ValueError: choosing custom numbers for the `.devX` distance is not supported.
+ The 1.0.0.dev1 can't be bumped
+```
+
+comes from setuptools, not uv. I'm not sure what their restriction is, but I don't think it's uv's fault?
+
+
+
+---
+
+_Label `external` added by @zanieb on 2025-07-15 22:27_
+
+---
+
+_Comment by @Butanium on 2025-07-15 23:22_
+
+can confrim that it's from them! sorry about that, I got confused as I had some struggle installing `nnsight 0.5.dev8` with uv while pip would work (I did figure out the pre-release arg at some point).
+
+For future reference, it's a problem about using `dev` in the tag, as stated in the error.... https://github.com/pypa/setuptools-scm/issues/1040
+sorry for the incovenience and thanks zanieb!!
+
+---
+
+_Closed by @Butanium on 2025-07-15 23:22_
+
+---
+
+_Comment by @Butanium on 2025-07-15 23:24_
+
+@zanieb I deleted my comment in https://github.com/astral-sh/uv/issues/12589#issuecomment-3075900912
+
+---
+
+_Comment by @zanieb on 2025-07-16 04:28_
+
+No problem, thanks!
+
+---

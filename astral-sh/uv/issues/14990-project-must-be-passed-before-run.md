@@ -1,0 +1,108 @@
+---
+number: 14990
+title: "--project must be passed before \"run\""
+type: issue
+state: closed
+author: diegochine
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-07-31T10:24:23Z
+updated_at: 2025-07-31T12:23:49Z
+url: https://github.com/astral-sh/uv/issues/14990
+synced_at: 2026-01-10T01:25:51Z
+---
+
+# --project must be passed before "run"
+
+---
+
+_Issue opened by @diegochine on 2025-07-31 10:24_
+
+### Summary
+
+From the docs, the `uv run` usage is:
+```
+uv run [OPTIONS] [COMMAND]
+```
+
+I was trying to run with `uv` a file from a different folder than the one it resides in, meaning I have to use the `--project` option to specify the project (for some reason, it doesn't seem to be able to find `pyproject.toml` automatically). 
+
+Based on the docs, I would do:
+```
+uv run --project /path/to/dir python /path/to/dir/file.py
+```
+
+This does not work, I get a `ModuleNotFoundError` (i.e. the venv is not being correctly activated).
+What actually works is:
+```
+uv --project /path/to/dir run python /path/to/dir/file.py
+```
+
+i.e., specifying `--project` *before* `run`.
+
+I am not sure whether this is a bug or just the docs not being clear enough. 
+
+### Platform
+
+macOS 15.5 arm64
+
+### Version
+
+uv 0.8.2 (21fadbcc1 2025-07-22)
+
+### Python version
+
+Python 3.13.5
+
+---
+
+_Label `bug` added by @diegochine on 2025-07-31 10:24_
+
+---
+
+_Comment by @charliermarsh on 2025-07-31 11:30_
+
+Unfortunately I can't reproduce this. I ran:
+
+```
+> uv run --project ./foo python /Users/crmarsh/workspace/uv/foo/main.py
+Hello from foo!
+```
+
+Where `foo/main.py` includes `import anyio`, and `foo/pyproject.toml` is:
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.2"
+dependencies = [
+    "anyio>=4.9.0",
+]
+```
+
+We'll need a more complete reproduction to help here.
+
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-07-31 11:30_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2025-07-31 11:30_
+
+---
+
+_Comment by @diegochine on 2025-07-31 12:23_
+
+I actually found the issue and it was not related to `uv` at all. My bad. Confirm it works as expected, closing the issue.
+
+---
+
+_Closed by @diegochine on 2025-07-31 12:23_
+
+---

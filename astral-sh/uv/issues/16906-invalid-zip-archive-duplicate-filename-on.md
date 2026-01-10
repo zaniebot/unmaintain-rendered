@@ -1,0 +1,102 @@
+---
+number: 16906
+title: "`invalid Zip archive: Duplicate filename` on duplicated `module-name`"
+type: issue
+state: closed
+author: Yamakaky
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-01T09:47:58Z
+updated_at: 2025-12-04T09:58:35Z
+url: https://github.com/astral-sh/uv/issues/16906
+synced_at: 2026-01-10T01:26:11Z
+---
+
+# `invalid Zip archive: Duplicate filename` on duplicated `module-name`
+
+---
+
+_Issue opened by @Yamakaky on 2025-12-01 09:47_
+
+### Summary
+
+`uv init --lib test`
+
+Edit `pyproject.toml`:
+```
+...
+[tool.uv.build-backend]
+module-name = ["test_lib", "test_lib"]
+```
+
+```
+❯ uv build
+Building source distribution (uv build backend)...
+Building wheel from source distribution (uv build backend)...
+  × Failed to build `/var/tmp/pote-lib`
+  ├─▶ Failed to write wheel zip archive
+  ╰─▶ invalid Zip archive: Duplicate filename
+```
+
+It took me some time to find the issue during an internal migration to uv. Printing the module name in the error message would greatly improve the experience. 
+
+### Platform
+
+Linux 6.8.0-47-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.11
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @Yamakaky on 2025-12-01 09:47_
+
+---
+
+_Label `good first issue` added by @konstin on 2025-12-01 09:51_
+
+---
+
+_Label `good first issue` removed by @konstin on 2025-12-01 09:51_
+
+---
+
+_Referenced in [astral-sh/uv#16907](../../astral-sh/uv/pulls/16907.md) on 2025-12-01 10:05_
+
+---
+
+_Comment by @konstin on 2025-12-01 10:26_
+
+We should probably just deduplicate the module name list
+
+---
+
+_Comment by @konstin on 2025-12-01 15:59_
+
+If we do this, we should also handle `foo` and `foo.bar` being in the same list.
+
+---
+
+_Referenced in [astral-sh/uv#16928](../../astral-sh/uv/pulls/16928.md) on 2025-12-02 12:08_
+
+---
+
+_Assigned to @EliteTK by @EliteTK on 2025-12-02 12:10_
+
+---
+
+_Closed by @EliteTK on 2025-12-03 10:05_
+
+---
+
+_Comment by @Yamakaky on 2025-12-04 09:58_
+
+Thanks for the quick fix!
+
+---

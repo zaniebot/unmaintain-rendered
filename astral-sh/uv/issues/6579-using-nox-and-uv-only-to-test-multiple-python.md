@@ -1,0 +1,313 @@
+---
+number: 6579
+title: using nox and uv only to test multiple python versions
+type: issue
+state: closed
+author: bartdorlandt
+labels:
+  - question
+assignees: []
+created_at: 2024-08-24T12:10:24Z
+updated_at: 2025-01-07T20:11:39Z
+url: https://github.com/astral-sh/uv/issues/6579
+synced_at: 2026-01-10T01:24:03Z
+---
+
+# using nox and uv only to test multiple python versions
+
+---
+
+_Issue opened by @bartdorlandt on 2024-08-24 12:10_
+
+Hi, 
+I'm struggling to use a pure uv only environment that can use nox for multiple python versions...
+
+Dockerfile
+```
+FROM ubuntu:24.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/GMT
+ENV PATH="$PATH:/root/.local/bin"
+ENV NOX_DEFAULT_VENV_BACKEND=uv
+ARG VERSIONS="3.12 3.11 3.10 3.9"
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+RUN uv python install ${VERSIONS} && \
+    uv tool install nox[uv]
+
+RUN apt-get update -qy && apt-get upgrade -qy && \
+    apt-get install -qy --no-install-recommends \
+        ca-certificates curl gnupg2 git openssh-client
+```
+
+noxfile.py
+```
+"""noxfile."""
+from nox import session
+
+py_versions = ["3.12", "3.11"]
+
+@session(python=py_versions)
+def tests(session):
+    session.install(".")
+    session.install("pytest", "pytest-cov")
+    session.run("pytest")
+```
+
+the `uv python install 3.x` doesn't create any shims (like you would have with pyenv), so they are not known to the shell with python3.11 ...
+I can call nox from uv per python versions, which works, but kind of beats the point of nox.
+
+```
+uv run --python 3.11 nox -s tests
+uv run --python 3.12 nox -s tests
+```
+
+For each of the command the other environment would be skipped. Example:
+```
+nox > Running session tests-3.11
+nox > Missing interpreters will error by default on CI systems.
+nox > Session tests-3.11 skipped: Python interpreter 3.11 not found.
+```
+
+(therefore not specifying the different python versions in the noxfile.)
+Has anyone else played with this already? (and got it to work?)
+My goal is to use versions installed by uv only and preferably have it run automatically against all desired python versions.
+
+uv version: 0.3.3
+
+
+---
+
+_Comment by @bartdorlandt on 2024-08-24 12:34_
+
+Additional info.
+
+Using a simpler noxfile:
+```
+"""noxfile."""
+from nox import session
+
+@session()
+def tests(session):
+    session.install(".",)
+    session.install("pytest", "pytest-cov")
+    session.run("pytest")
+```
+
+it will run fine, for the specifically requested python version.
+
+```
+root@69e959d9538c:/src# nox -s tests
+nox > Running session tests
+nox > Creating virtual environment (uv) using python in .nox/tests
+nox > /root/.local/share/uv/tools/nox/bin/uv pip install .
+nox > /root/.local/share/uv/tools/nox/bin/uv pip install pytest pytest-cov
+nox > pytest
+=================================================== test session starts ====================================================
+platform linux -- Python 3.12.5, pytest-8.3.2, pluggy-1.5.0
+rootdir: /src
+configfile: pyproject.toml
+plugins: cov-5.0.0
+...
+```
+
+Using it specifying another version is working:
+
+```
+root@69e959d9538c:/src# uv run --python 3.11 nox -s tests
+nox > Running session tests
+nox > Creating virtual environment (uv) using python in .nox/tests
+nox > uv pip install .
+nox > uv pip install pytest pytest-cov
+nox > pytest
+=================================================== test session starts ====================================================
+platform linux -- Python 3.11.9, pytest-8.3.2, pluggy-1.5.0
+rootdir: /src
+configfile: pyproject.toml
+plugins: cov-5.0.0
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-25 11:46_
+
+Need to find a minute to play around with this before giving a confident answer. In the meantime would love to hear from others.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-08-25 11:46_
+
+---
+
+_Comment by @samypr100 on 2024-08-25 20:51_
+
+@henryiii might have ideas on the ideal way to do this using Nox with uv as he was the author of the integration of nox with uv
+
+---
+
+_Referenced in [wntrblm/nox#842](../../wntrblm/nox/pulls/842.md) on 2024-08-27 22:06_
+
+---
+
+_Comment by @dsully on 2024-09-09 21:51_
+
+I have the same need to run against multiple versions of Python, but ones that are built "in-house".
+
+Currently we're using tox to drive this as opposed to another tool wrapping tox:
+
+```ini
+[tox]
+envlist = prepare,test3{10,11,12},ci
+ignore_basepython_conflict = true
+
+[testenv]
+base_python = python3.10
+...
+
+[testenv:test310]
+depends = prepare
+commands =
+    pytest test --cov src
+    mypy --config-file tox.ini src
+    ...
+
+[testenv:test311]
+depends = prepare
+commands =
+    pytest test --cov src
+
+[testenv:test312]
+depends = prepare
+commands =
+    pytest test --cov src
+
+...
+```
+
+---
+
+_Comment by @wpk-nist-gov on 2024-09-20 15:03_
+
+I ran into the same issue.  In the meantime, I'm just adding the paths to uv pythons to the `os.environ` using the following:
+
+```python
+def add_uv_to_environ() -> None:
+    import os
+    import subprocess
+    from pathlib import Path
+
+    path_to_uv_pythons = (
+        subprocess.check_output(
+            ["uv", "python", "dir"], env={"NO_COLOR": "1", **os.environ}
+        )
+        .decode()
+        .strip()
+    )
+    paths_new = ":".join(map(str, Path(path_to_uv_pythons).glob("*/bin")))
+    paths_old = os.environ["PATH"]
+    os.environ["PATH"] = f"{paths_new}:{paths_old}"
+
+
+add_uv_to_environ()
+
+
+@nox.session
+def test(session): 
+...
+```
+
+Or as a bash script `shim-uv`
+
+```bash
+#!/usr/bin/env bash
+p=$PATH
+for k in "$(uv python dir)"/*/bin; do
+    p="${k}:${p}"
+done
+
+PATH=$p "$@"
+```
+
+and run
+```bash
+shim-uv nox/tox ....
+```
+
+
+
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-10-21 21:37_
+
+---
+
+_Comment by @Levelleor on 2024-11-08 20:39_
+
+@wpk-nist-gov, thank you for providing the script! I’m wondering if there’s a way to automate the process of pulling the necessary Python versions beforehand. Do you have any automated solution for this, and if so, how do you implement it?
+
+Currently, I'm using `uv tool run nox -s tests`, but it doesn’t automatically pull the required Python binaries when executed. I will have to install them first or parameterize the tests by injecting `uv python install ...` into every run. I could enforce developers to manually specify an array of Python distributions in something like `tests.py` file then install all pythons before executing nox: `uv run tests.py`, but that introduces an extra step that I’d prefer to avoid.
+
+From my understanding, to utilize the script you provided, I would first need to identify the specific Python versions I want, then have uv install them, and only afterward add them to the PATH. Is there a more simpler way around? Or, rather, a more standardized way that I could pass down onto users?
+
+---
+
+_Comment by @henryiii on 2024-11-08 20:42_
+
+nox is supposed to install Python automatically as needed as long as you are using the uv backend. That was added in https://github.com/wntrblm/nox/pull/842, which was released almost exactly a month ago.
+
+---
+
+_Comment by @Levelleor on 2024-11-08 21:13_
+
+Hey, this is great news actually! Just to make it clear, were you talking about setting venv backend to uv? @henryiii 
+
+```
+nox --default-venv-backend uv ...
+```
+
+This worked for me.
+
+---
+
+_Comment by @henryiii on 2024-11-08 21:22_
+
+Yes, or
+
+```python
+nox.options.default_venv_backend = "uv|virtualenv"
+```
+
+(I put this in all my noxfiles)
+
+---
+
+_Comment by @FCamborda on 2024-11-14 15:08_
+
+For anybody struggling with this, make sure that you are using uv >= 0.4.16. We were on 0.4.4 and this line was being skipped:
+https://github.com/saucoide/nox/blob/1e01f798facd6b8b3e44cae6389e3319afe02016/nox/virtualenv.py#L564
+But now it works like a charm!!
+
+---
+
+_Closed by @zanieb on 2025-01-07 20:11_
+
+---
+
+_Referenced in [glass-dev/glass#471](../../glass-dev/glass/pulls/471.md) on 2025-01-13 17:04_
+
+---
+
+_Referenced in [wntrblm/nox#841](../../wntrblm/nox/issues/841.md) on 2025-03-21 14:02_
+
+---
+
+_Referenced in [Qiskit/rustworkx#1416](../../Qiskit/rustworkx/issues/1416.md) on 2025-05-01 14:26_
+
+---
+
+_Referenced in [planetlabs/planet-mcp#7](../../planetlabs/planet-mcp/pulls/7.md) on 2025-09-23 15:19_
+
+---

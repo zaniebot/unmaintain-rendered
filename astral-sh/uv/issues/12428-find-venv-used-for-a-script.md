@@ -1,0 +1,56 @@
+---
+number: 12428
+title: Find venv used for a script
+type: issue
+state: closed
+author: C-nit
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-24T13:40:12Z
+updated_at: 2025-03-31T12:21:59Z
+url: https://github.com/astral-sh/uv/issues/12428
+synced_at: 2026-01-10T01:25:19Z
+---
+
+# Find venv used for a script
+
+---
+
+_Issue opened by @C-nit on 2025-03-24 13:40_
+
+### Summary
+
+Writing a standalone single script, a developer should be able to make full use of IDEs, too. That means the IDE needs to know about the venv to inspect code of installed dependencies, for type checking, etc. 
+
+When I was developing a script uv, I did manage to find the venv nosing through the cache (under ~/.cache/uv/environments-v2/). For VSCode specifically I had to pass the path to python via "Select Interpreter".
+
+A programmatic way to return this would be very welcome.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @C-nit on 2025-03-24 13:40_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-24 13:48_
+
+I think this has already been resolved by #11891, which introduces `python find --script`. If that's not what you are looking for, there's also #12387 and its linked PR #12405.
+
+---
+
+_Comment by @C-nit on 2025-03-31 12:21_
+
+`uv python find --script` is perfect. Just had to `uv self update` from v0.6.5 to v0.6.11 and there it is!
+
+Thanks a bunch!
+
+---
+
+_Closed by @C-nit on 2025-03-31 12:21_
+
+---

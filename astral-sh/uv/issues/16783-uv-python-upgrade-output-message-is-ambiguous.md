@@ -1,0 +1,98 @@
+---
+number: 16783
+title: "`uv python upgrade` output message is ambiguous"
+type: issue
+state: open
+author: nehfan
+labels:
+  - good first issue
+  - error messages
+assignees: []
+created_at: 2025-11-19T23:39:20Z
+updated_at: 2025-12-16T10:23:01Z
+url: https://github.com/astral-sh/uv/issues/16783
+synced_at: 2026-01-10T01:26:10Z
+---
+
+# `uv python upgrade` output message is ambiguous
+
+---
+
+_Issue opened by @nehfan on 2025-11-19 23:39_
+
+### Summary
+
+`uv python upgrade`
+
+Reports:
+
+`There are no installed versions to upgrade`
+
+The meaning of this message is somewhat ambiguous.  This message could mean:
+
+1. No installed versions of Python were found when trying to upgrade Python.
+2. The Python versions that were found are up to date and don't need to be upgraded.
+
+The user should not be left confused about the outcome of the upgrade attempt.  Consider rephrasing this message so the meaning is clearer to a casual user.
+
+### Platform
+
+Win11
+
+### Version
+
+0.9.10
+
+### Python version
+
+3.11
+
+---
+
+_Label `bug` added by @nehfan on 2025-11-19 23:39_
+
+---
+
+_Renamed from "'uv python upgrade' output message is ambiguous" to "`uv python upgrade` output message is ambiguous" by @nehfan on 2025-11-19 23:40_
+
+---
+
+_Label `good first issue` added by @zanieb on 2025-11-19 23:53_
+
+---
+
+_Label `bug` removed by @zanieb on 2025-11-19 23:53_
+
+---
+
+_Label `error messages` added by @zanieb on 2025-11-19 23:53_
+
+---
+
+_Comment by @bhanutejags on 2025-11-20 16:28_
+
+If no one is working on this, I'd be happy to work on this.
+
+---
+
+_Comment by @zanieb on 2025-11-20 17:32_
+
+Feel free.
+
+---
+
+_Referenced in [astral-sh/uv#16815](../../astral-sh/uv/pulls/16815.md) on 2025-11-21 22:25_
+
+---
+
+_Comment by @tysoncung on 2025-12-15 02:24_
+
+I'm interested in working on this issue. Could you provide more context about what you're looking for? Any additional details about requirements or constraints would be helpful.
+
+---
+
+_Comment by @konstin on 2025-12-16 10:23_
+
+@tysoncung There's already a PR for this in https://github.com/astral-sh/uv/pull/16815, so this isn't a good task anymore.
+
+---

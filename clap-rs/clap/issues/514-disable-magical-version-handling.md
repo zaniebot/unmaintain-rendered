@@ -1,0 +1,85 @@
+---
+number: 514
+title: Disable Magical Version Handling
+type: issue
+state: closed
+author: mitsuhiko
+labels:
+  - C-enhancement
+  - A-parsing
+assignees: []
+created_at: 2016-05-28T19:25:32Z
+updated_at: 2018-08-02T03:29:49Z
+url: https://github.com/clap-rs/clap/issues/514
+synced_at: 2026-01-10T01:26:30Z
+---
+
+# Disable Magical Version Handling
+
+---
+
+_Issue opened by @mitsuhiko on 2016-05-28 19:25_
+
+Currently you cannot implement `--version` yourself and what's worse is that you cannot disable the short alias for it (`-V`), you can only bind it to a different letter.
+
+What i want is to not have version info at all on arguments and implement `--version` myself as i want to short some license info there as well.
+
+
+---
+
+_Comment by @mitsuhiko on 2016-05-28 19:25_
+
+Currently if you disable the version flag with the setting and you add your own `--version`, clap starts handling it again and brings up it's own version screen.
+
+
+---
+
+_Comment by @kbknapp on 2016-05-30 04:31_
+
+I agree this would be a good change, I came across something I wanted to do muslef like this as well. I'll post back here as I start getting this implemented. 👍 
+
+
+---
+
+_Label `T: enhancement` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Label `C: args` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-05-30 04:31_
+
+---
+
+_Referenced in [clap-rs/clap#517](../../clap-rs/clap/pulls/517.md) on 2016-05-30 10:23_
+
+---
+
+_Comment by @kbknapp on 2016-05-30 10:26_
+
+#517 fixes this. Now you'd just need to specify an arg with a long of `version` which effectively disables the auto-generated one (to include the short). 
+
+
+---
+
+_Closed by @homu on 2016-05-31 10:42_
+
+---

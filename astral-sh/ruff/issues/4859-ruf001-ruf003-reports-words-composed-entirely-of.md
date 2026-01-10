@@ -1,0 +1,122 @@
+---
+number: 4859
+title: RUF001-RUF003 reports words composed entirely of non-ascii characters
+type: issue
+state: closed
+author: Fogapod
+labels:
+  - question
+assignees: []
+created_at: 2023-06-05T07:49:23Z
+updated_at: 2023-06-06T00:55:56Z
+url: https://github.com/astral-sh/ruff/issues/4859
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# RUF001-RUF003 reports words composed entirely of non-ascii characters
+
+---
+
+_Issue opened by @Fogapod on 2023-06-05 07:49_
+
+It looks like https://github.com/charliermarsh/ruff/pull/4552 attempted to partially fix this but there are still a lot of false positives.
+
+I'm not sure what attacks these rules are supposed to mitigate so this might work as intended but here are a few examples from our codebase with lots of cyrillic comments/examples:
+```py
+# single char reported
+# информация о пользователе     ■ Comment contains ambiguous `о` (CYRILLIC SMALL LETTER O). Did you mean `o` (LATIN SMALL LETTER O)?
+# Если с момента     ■ Comment contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)?
+# даже если у него нет видео.     ■ Comment contains ambiguous `у` (CYRILLIC SMALL LETTER U). Did you mean `y` (LATIN SMALL LETTER Y)?
+
+# not reported
+# очень
+# оно
+# темно
+
+# entire word is reported
+# получение ВСЕХ     ■■■■ Comment contains ambiguous `Х` (CYRILLIC CAPITAL LETTER HA). Did you mean `X` (LATIN CAPITAL LETTER X)?
+# ссылка на его ID     ■■■ Comment contains ambiguous `о` (CYRILLIC SMALL LETTER O). Did you mean `o` (LATIN SMALL LETTER O)?
+```
+
+Can ruff improve something here or our only option is to disable RUFF001-RUF003? vscode had some setting to whitelist languages, not sure if it could work with ruff well
+
+---
+
+_Comment by @charliermarsh on 2023-06-05 13:10_
+
+Hmm, I think these are consistent with VS Code (although VS Code only seems to flag strings, and not comments):
+
+<img width="231" alt="Screen Shot 2023-06-05 at 9 09 12 AM" src="https://github.com/charliermarsh/ruff/assets/1309177/058a32ef-04de-45e2-8462-fb659ad62a4d">
+
+We do have a setting to allow certain characters: [`allowed-confusables`](https://beta.ruff.rs/docs/settings/#allowed-confusables). So maybe you can add those characters to that list?
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-06-05 13:10_
+
+---
+
+_Comment by @Fogapod on 2023-06-05 13:22_
+
+Didn't notice that setting, this is what i used for now:
+`allowed-confusables = ["а", "А", "б", "Б", "в", "В", "г", "Г", "е", "Е", "з", "З", "и", "И", "к", "К", "м", "М", "н", "Н", "о", "О", "р", "Р", "с", "С", "у", "У", "ф", "Ф", "х", "Х"]`
+Works perfectly. Thanks!
+
+---
+
+_Closed by @Fogapod on 2023-06-05 13:22_
+
+---
+
+_Comment by @Fogapod on 2023-06-05 13:26_
+
+Right after closing this I noticed that this is not perfect, this is an example of code with mixed language that I'd want to catch but allowed-confusables ignores it: `f"Сache or database waiting error, total {self.MAX_WAITING_ATTEMPTS} attempts"` (first С is cyrillic)
+
+---
+
+_Reopened by @Fogapod on 2023-06-05 13:26_
+
+---
+
+_Comment by @charliermarsh on 2023-06-05 15:47_
+
+I'm just not sure that this is a solvable problem given the examples above. How would we avoid flagging this, from your initial comment:
+
+```
+# получение ВСЕХ     ■■■■ Comment contains ambiguous `Х` (CYRILLIC CAPITAL LETTER HA). Did you mean `X` (LATIN CAPITAL LETTER X)?
+```
+
+But continue to flag this:
+```
+# First X is the "CYRILLIC CAPITAL LETTER HA".
+# Хbox
+```
+
+It's the same as the "Cache" example above.
+
+Are the examples you provided in the first comment realistic, or were they included just to describe the behavior?
+
+---
+
+_Comment by @Fogapod on 2023-06-05 15:58_
+
+All of my examples are taken from existing code. There are so many that the only solutions are to disable rules 1-3 or to whitelist half of alphabet which almost defeats the purpose.
+
+My expectations about the rules might be wrong because I initially thought they detect combinations of characters from different languages in a suspicious manner but it's actually way simpler. This should probably be handled by text editor, maybe a spell checker, outside ruff
+
+---
+
+_Comment by @charliermarsh on 2023-06-06 00:55_
+
+Yeah, I think I need to close this as "working as intended" for now.
+
+---
+
+_Closed by @charliermarsh on 2023-06-06 00:55_
+
+---
+
+_Referenced in [astral-sh/ruff#7255](../../astral-sh/ruff/issues/7255.md) on 2023-09-10 06:35_
+
+---

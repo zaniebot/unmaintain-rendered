@@ -1,0 +1,89 @@
+---
+number: 8431
+title: Recommended way to install tool for all users on system
+type: issue
+state: closed
+author: lambda674
+labels:
+  - question
+assignees: []
+created_at: 2024-10-21T22:41:55Z
+updated_at: 2024-12-26T16:59:50Z
+url: https://github.com/astral-sh/uv/issues/8431
+synced_at: 2026-01-10T01:24:28Z
+---
+
+# Recommended way to install tool for all users on system
+
+---
+
+_Issue opened by @lambda674 on 2024-10-21 22:41_
+
+I have CLI package `foo` that is published to PyPi. At work, we have a few servers that many users use for one off tasks. I want to distribute `foo` on these servers.
+
+The [tools section of the docs](https://docs.astral.sh/uv/guides/tools/) seems to be uv's answer for this, but I'm not sure how to install a tool system wide. For my use case, all it would take is allowing `uv tool install` to install to `/usr/local/bin`.
+
+A workaround for now is to manually manage a script in `/usr/local/bin` called `foo`:
+```
+#!/usr/bin/env bash
+
+uv pipx foo "$@"
+```
+
+However, the CLI will be run many times and upgraded only once a day. The docs indicate that `uv pipx` isn't good for a tool run many times.
+
+Any suggestions?
+
+---
+
+_Comment by @zanieb on 2024-10-21 22:49_
+
+So you can do this with
+```
+UV_TOOL_BIN_DIR=/usr/local/bin uv tool install foo
+```
+
+For most purposes `uvx foo` is probably fine too. The overhead is maybe 10ms
+
+```
+❯ time black -q
+...
+black -q  0.09s user 0.02s system 91% cpu 0.119 total
+❯ time uvx black -q
+...
+uvx black -q  0.09s user 0.03s system 92% cpu 0.127 total
+```
+
+---
+
+_Label `question` added by @zanieb on 2024-10-21 22:50_
+
+---
+
+_Referenced in [astral-sh/uv#8435](../../astral-sh/uv/issues/8435.md) on 2024-10-22 04:02_
+
+---
+
+_Comment by @lambda674 on 2024-10-22 14:21_
+
+`UV_TOOL_BIN_DIR=/usr/local/bin uv tool install foo` didn't quite work because the executable added to `/usr/local/bin` is a symlink to `$ROOT_HOME/.local/share/uv/tools/<package>`, but `$ROOT_HOME` isn't accessible to non-root users.
+
+Seems like `uvx` is the best option here, this seems to work for my purpose. Thanks!
+
+---
+
+_Comment by @zanieb on 2024-10-22 14:39_
+
+You can set `UV_TOOL_DIR` to change the storage directory too.
+
+---
+
+_Comment by @gaby on 2024-10-23 12:08_
+
+@lambda674 Look at my comment here https://github.com/astral-sh/uv/issues/8435#issuecomment-2428240406 using those 2 variables seems to work. I was able to test this in a python container.
+
+---
+
+_Closed by @charliermarsh on 2024-12-26 16:59_
+
+---

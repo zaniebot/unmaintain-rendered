@@ -1,0 +1,67 @@
+---
+number: 1457
+title: Quick example occurrences_of is wrong
+type: issue
+state: closed
+author: galop1n
+labels: []
+assignees: []
+created_at: 2019-04-22T23:03:03Z
+updated_at: 2020-02-01T19:30:02Z
+url: https://github.com/clap-rs/clap/issues/1457
+synced_at: 2026-01-10T01:26:54Z
+---
+
+# Quick example occurrences_of is wrong
+
+---
+
+_Issue opened by @galop1n on 2019-04-22 23:03_
+
+
+### Affected Version of clap
+
+At least the latest 2.33.0
+
+### Bug or Feature Request Summary
+
+The quick example fail at fetching the number of occurences of the -v argument.
+
+### Expected Behavior Summary
+
+occurrences_of("v") returns the number of occurrences.
+
+### Actual Behavior Summary
+
+Always return 0. If replaced with occurrences_of("verbosity"), the correct amount is returned.
+
+### Steps to Reproduce the issue
+
+Just run the quick example with one or more -v
+
+### Sample Code or Link to Sample Code
+
+The quick example code on the main page !
+
+
+---
+
+_Comment by @jeremystucki on 2019-09-08 17:53_
+
+I think this is no longer the case
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 14:35_
+
+Closing in favor of #1652 
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 14:35_
+
+---
+
+_Label `T: duplicate` added by @pksunkara on 2020-02-01 19:30_
+
+---

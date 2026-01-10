@@ -1,0 +1,124 @@
+---
+number: 12777
+title: "`uv venv` doesn't create python3 python3.xx entrypoint aliases on Windows"
+type: issue
+state: closed
+author: yashgorana
+labels:
+  - question
+assignees: []
+created_at: 2025-04-09T11:58:58Z
+updated_at: 2025-10-02T08:41:26Z
+url: https://github.com/astral-sh/uv/issues/12777
+synced_at: 2026-01-10T01:25:24Z
+---
+
+# `uv venv` doesn't create python3 python3.xx entrypoint aliases on Windows
+
+---
+
+_Issue opened by @yashgorana on 2025-04-09 11:58_
+
+### Summary
+
+an new `uv venv` on linux/macOS looks something like this
+```
+.
+├── CACHEDIR.TAG
+├── bin
+│   ├── activate
+│   ├── activate.bat
+│   ├── activate.csh
+│   ├── activate.fish
+│   ├── activate.nu
+│   ├── activate.ps1
+│   ├── activate_this.py
+│   ├── deactivate.bat
+│   ├── pydoc.bat
+│   ├── python -> /opt/homebrew/opt/python@3.12/bin/python3.12
+│   ├── python3 -> python
+│   └── python3.12 -> python
+├── lib
+│   └── python3.12
+│       └── site-packages
+│           ├── _virtualenv.pth
+│           └── _virtualenv.py
+└── pyvenv.cfg
+```
+
+But on Windows we get
+```
+.
+├── CACHEDIR.TAG
+├── bin
+│   ├── activate
+│   ├── activate.bat
+│   ├── activate.csh
+│   ├── activate.fish
+│   ├── activate.nu
+│   ├── activate.ps1
+│   ├── activate_this.py
+│   ├── deactivate.bat
+│   ├── pydoc.bat
+│   ├── python.exe          # <-- no python3 or python3.12
+│   └── pythonw.exe  
+├── lib
+│   └── site-packages
+│       ├── _virtualenv.pth
+│       └── _virtualenv.py
+└── pyvenv.cfg
+```
+
+Would be nice to have it so that we can keep scripts, like entrypoint.sh, portable across platforms, instead of falling back to use `python`?
+
+### Platform
+
+Windows
+
+### Version
+
+0.6.13
+
+### Python version
+
+3.12.9
+
+---
+
+_Label `bug` added by @yashgorana on 2025-04-09 11:58_
+
+---
+
+_Comment by @zanieb on 2025-04-09 13:17_
+
+I think this is standard, Windows doesn't have symlinks (they require higher permissions by default), so Python just writes a single `python.exe`.  Windows also uses `Scripts/` instead of `bin/`. You can confirm we match the official behavior with `uv run -m venv example`
+
+---
+
+_Label `bug` removed by @zanieb on 2025-04-09 13:17_
+
+---
+
+_Label `question` added by @zanieb on 2025-04-09 13:17_
+
+---
+
+_Closed by @charliermarsh on 2025-04-10 14:16_
+
+---
+
+_Comment by @SchmartMaker on 2025-10-02 08:41_
+
+Just sharing my experience here.
+
+What worked for me is to create a `python3.cmd` file in the `Scripts` directory that contains the text `@python %*`.
+
+This method has an advantage over using `Set-Alias` because it's compatible with external processes like Dapr CLI.
+
+In PowerShell, you can create the alias for the virtual environment in directory `v` with e.g.:
+
+```powershell
+Set-Content -Path .\v\Scripts\python3.cmd -Value '@python %*'
+```
+
+---

@@ -1,0 +1,347 @@
+---
+number: 4069
+title: "error: invalid command 'bdist_wheel'"
+type: issue
+state: closed
+author: adminy
+labels:
+  - question
+assignees: []
+created_at: 2024-06-05T20:13:40Z
+updated_at: 2024-07-10T21:10:22Z
+url: https://github.com/astral-sh/uv/issues/4069
+synced_at: 2026-01-10T01:23:34Z
+---
+
+# error: invalid command 'bdist_wheel'
+
+---
+
+_Issue opened by @adminy on 2024-06-05 20:13_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+uv 0.2.6
+
+when installing `pyyaml==5.4.1`
+I get:
+```
+Resolved 126 packages in 1.66s
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: pyyaml==5.4.1
+  Caused by: Failed to build: `pyyaml==5.4.1`
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+usage: -c [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: -c --help [cmd1 cmd2 ...]
+   or: -c --help-commands
+   or: -c cmd --help
+
+error: invalid command 'bdist_wheel'
+---
+  Caused by: This error likely indicates that you need to `uv pip install wheel` into the build environment for pyyaml==5.4.1
+```
+
+If it knows what its missing, why doesn't it install that package?
+
+---
+
+_Comment by @charliermarsh on 2024-06-05 20:19_
+
+Ah, it's package's job to declare its build dependencies. The "Caused by" at the end is us trying to provide a helpful hint for how to fix it, but we can't know that that's actually the problem, and it would be spec incompliant for us to make assumptions about it.
+
+---
+
+_Comment by @zanieb on 2024-06-05 20:22_
+
+Related https://github.com/astral-sh/uv/issues/2252#issuecomment-1985287074
+
+You could resolve this by using `--no-build-isolation` and installing the requisite build dependencies.
+
+@konstin did you forget to make sure this special case message was only raised under `--no-build-isolation`? There's not a pull request linked in https://github.com/astral-sh/uv/issues/2342. I think the message is not helpful outside that context because installing `wheel` won't help.
+
+---
+
+_Label `question` added by @zanieb on 2024-06-05 20:22_
+
+---
+
+_Comment by @charliermarsh on 2024-06-05 20:26_
+
+I think it's helpful, but perhaps should be rephrased? It's _way_ more helpful to know that the `wheel` package is missing than that `bdist_wheel` is an invalid command.
+
+---
+
+_Comment by @konstin on 2024-06-06 08:15_
+
+We indeed attach the context uncoditionally and lack the build isolation check. This shouldn't be the problem here, pyyaml 5.4.1 correctly declares a dependency on wheel (https://inspector.pypi.io/project/pyyaml/5.4.1/packages/a0/a4/d63f2d7597e1a4b55aa3b4d6c5b029991d3b824b5bd331af8d4ab1ed687d/PyYAML-5.4.1.tar.gz/PyYAML-5.4.1/pyproject.toml).
+
+Can you share the commands to reproduce the error? It installs successfully for me on older python and on newer pythons i get a different error (windows and ubuntu):
+
+```console
+$ uv venv -p 3.12
+$ uv pip install pyyaml==5.4.1
+Resolved 1 package in 280ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: pyyaml==5.4.1
+  Caused by: Failed to build: `pyyaml==5.4.1`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit code: 1
+--- stdout:
+running egg_info
+writing lib3\PyYAML.egg-info\PKG-INFO
+writing dependency_links to lib3\PyYAML.egg-info\dependency_links.txt
+writing top-level names to lib3\PyYAML.egg-info\top_level.txt
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\build_meta.py", line 325, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=['wheel'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\build_meta.py", line 295, in _get_build_requires
+    self.run_setup()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\build_meta.py", line 311, in run_setup
+    exec(code, locals())
+  File "<string>", line 271, in <module>
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\__init__.py", line 103, in setup
+    return distutils.core.setup(**attrs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\core.py", line 184, in setup
+    return run_commands(dist)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\core.py", line 200, in run_commands
+    dist.run_commands()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\dist.py", line 969, in run_commands
+    self.run_command(cmd)
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\dist.py", line 968, in run_command
+    super().run_command(command)
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\dist.py", line 988, in run_command
+    cmd_obj.run()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\command\egg_info.py", line 321, in run
+    self.find_sources()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\command\egg_info.py", line 329, in find_sources
+    mm.run()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\command\egg_info.py", line 550, in run
+    self.add_defaults()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\command\egg_info.py", line 588, in add_defaults
+    sdist.add_defaults(self)
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\command\sdist.py", line 102, in add_defaults
+    super().add_defaults()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\command\sdist.py", line 250, in add_defaults
+    self._add_defaults_ext()
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\command\sdist.py", line 335, in _add_defaults_ext
+    self.filelist.extend(build_ext.get_source_files())
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 201, in get_source_files
+  File "C:\Users\Konstantin\AppData\Local\uv\cache\.tmpTnVWP3\.venv\Lib\site-packages\setuptools\_distutils\cmd.py", line 107, in __getattr__
+    raise AttributeError(attr)
+AttributeError: cython_sources
+---
+```
+
+
+
+---
+
+_Comment by @adminy on 2024-06-09 23:18_
+
+well, I'm just using nixos which makes 0 assumtions about the things that are installed. its absolute barebones python, no global packages. the only binary I got is python3.10
+
+then I just do uv pip install pyyaml==5.4.1
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-06-09 23:27_
+
+Yeah, it's the fault of the package at that specific version. It looks like you need to use PyYAML 6.0.1 in order to have a working install.
+
+---
+
+_Comment by @charliermarsh on 2024-06-09 23:28_
+
+There is effectively nothing that uv can do here. That version of the package does not declare the correct build dependencies. So you either need to install them yourself out-of-band (`uv pip install wheel`, then `uv pip install --no-build-isolation pyyaml==5.4.1`) or update to a newer version.
+
+---
+
+_Comment by @covracer on 2024-06-24 14:48_
+
+(Adding to the existing ticket because I think it's the same issue; if it's actually a different issue I'm happy to file a new ticket.)
+
+I switched a project from `pip` to `uv`. It worked for a little while, but then this problem broke the build:
+```
+root@27436ccb1f5b:/srv# pip install --upgrade pip setuptools uv wheel
+root@27436ccb1f5b:/srv# uv pip install --no-cache --reinstall --system --verbose biopython==1.77
+DEBUG uv 0.2.13
+DEBUG Searching for Python interpreter in search path
+DEBUG Found cpython 3.10.12 at `/usr/local/bin/python3` (search path)
+DEBUG Using Python 3.10.12 environment at /usr/local/bin/python3
+DEBUG Acquired lock for `/usr/local`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.10.12
+DEBUG Adding direct dependency: biopython==1.77
+DEBUG No cache entry for: https://pypi.org/simple/biopython/
+DEBUG Searching for a compatible version of biopython (==1.77)
+DEBUG Selecting: biopython==1.77 (biopython-1.77.tar.gz)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/4f/47/323e23c427b3246cc092a767f1868396a47ae05a7a135ce828600e7fe177/biopython-1.77-cp36-cp36m-macosx_10_9_x86_64.whl.metadata
+DEBUG Adding transitive dependency for biopython==1.77: numpy*
+DEBUG No cache entry for: https://pypi.org/simple/numpy/
+DEBUG Searching for a compatible version of numpy (*)
+DEBUG Selecting: numpy==2.0.0 (numpy-2.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/d6/a8/6a2419c40c7b6f7cb4ef52c532c88e55490c4fa92885964757d507adddce/numpy-2.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Tried 2 versions: biopython 1, numpy 1
+Resolved 2 packages in 479ms
+DEBUG Identified uncached requirement: biopython==1.77
+DEBUG Identified uncached requirement: numpy==2.0.0
+[...]
+DEBUG Solving with installed Python version: 3.10.12
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG No cache entry for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==70.1.0 (setuptools-70.1.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/b3/b3a3415d2debd837106ed417f8681d8af63037fed367fa1b85dbfef081f1/setuptools-70.1.0-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG Installing in setuptools==70.1.0 in /root/.cache/uv/environments-v0/.tmp4GN5pP
+DEBUG Identified uncached requirement: setuptools==70.1.0
+DEBUG Downloading and building requirement for build: setuptools==70.1.0
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/b3/b3a3415d2debd837106ed417f8681d8af63037fed367fa1b85dbfef081f1/setuptools-70.1.0-py3-none-any.whl
+DEBUG Installing build requirement: setuptools==70.1.0
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+DEBUG Calling `setuptools.build_meta:__legacy__.build_wheel("/root/.cache/uv/built-wheels-v3/pypi/biopython/1.77/s1czoIEwLOoCMojvWuoZF/.tmpCPVxEH", {}, None)`
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: biopython==1.77
+  Caused by: Failed to build: `biopython==1.77`
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+We need both setuptools AND wheel packages installed for bdist_wheel to work. Try running: pip install wheel
+---
+```
+
+This is in a container based on Debian 11 Bullseye. Please let me know if you're like a Dockerfile+docker-compose.yaml that reproduce the issue.
+
+Trying older releases, this appears to be a regression: 0.1.17 is the newest release that works for me, while 0.1.18 is the oldest release that fails for me. https://github.com/astral-sh/uv/issues/2313 https://github.com/astral-sh/uv/pull/2341 caught my eye in the commit titles https://github.com/astral-sh/uv/compare/0.1.17...0.1.18
+
+@charliermarsh I see at the time, your spider sense tingled https://github.com/astral-sh/uv/issues/2313#issuecomment-1986875178
+
+The `--no-build-isolation` flag mentioned above and the `--legacy-setup-py` flag mentioned in #2341 both work around the issue:
+```
+root@bb2a87c16f30:/srv# uv pip install --no-build-isolation --no-cache --system --reinstall biopython==1.77
++ uv pip install --no-build-isolation --no-cache --system --reinstall biopython==1.77
+Resolved 2 packages in 233ms
+   Built biopython==1.77
+Downloaded 2 packages in 8.43s
+Uninstalled 2 packages in 17ms
+Installed 2 packages in 15ms
+ - biopython==1.77
+ + biopython==1.77
+ - numpy==2.0.0
+ + numpy==2.0.0
+```
+```
+root@bb2a87c16f30:/srv# uv pip install --no-cache --system --reinstall --legacy-setup-py biopython==1.77
++ uv pip install --no-cache --system --reinstall --legacy-setup-py biopython==1.77
+Resolved 2 packages in 474ms
+   Built biopython==1.77
+Downloaded 2 packages in 6.83s
+Uninstalled 2 packages in 32ms
+Installed 2 packages in 13ms
+ - biopython==1.77
+ + biopython==1.77
+ - numpy==2.0.0
+ + numpy==2.0.0
+```
+
+The latest version of biopython git+https://github.com/biopython/biopython.git seems to behave the same as version 1.77.
+
+I can reproduce the issue with `pip 24.1` with the major difference that it works by default and only fails if `--use-pep517` is explicitly chosen.
+```
+root@bb2a87c16f30:/srv# pip install --force-reinstall git+https://github.com/biopython/biopython.git
++ pip install --force-reinstall git+https://github.com/biopython/biopython.git
+Collecting git+https://github.com/biopython/biopython.git
+  Cloning https://github.com/biopython/biopython.git to /tmp/pip-req-build-str6jtfe
+  Running command git clone --filter=blob:none --quiet https://github.com/biopython/biopython.git /tmp/pip-req-build-str6jtfe
+  Resolved https://github.com/biopython/biopython.git to commit cca7983d2e054db56123295034f4eefc919cb7fa
+  Preparing metadata (setup.py) ... done
+Collecting numpy (from biopython==1.84.dev0)
+  Using cached numpy-2.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (60 kB)
+Using cached numpy-2.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (19.3 MB)
+Building wheels for collected packages: biopython
+  Building wheel for biopython (setup.py) ... done
+  Created wheel for biopython: filename=biopython-1.84.dev0-cp310-cp310-linux_x86_64.whl size=3168711 sha256=a2589ad16cecf149ca311cbca2c0da225b06dd9951f736b4d8e75351603237ef
+  Stored in directory: /tmp/pip-ephem-wheel-cache-w490jw9c/wheels/c0/e3/29/3b7bf898d7fe6d4de17fcab24cd454bc9e1deec60388309d51
+Successfully built biopython
+Installing collected packages: numpy, biopython
+  Attempting uninstall: numpy
+    Found existing installation: numpy 2.0.0
+    Uninstalling numpy-2.0.0:
+      Successfully uninstalled numpy-2.0.0
+  Attempting uninstall: biopython
+    Found existing installation: biopython 1.84.dev0
+    Uninstalling biopython-1.84.dev0:
+      Successfully uninstalled biopython-1.84.dev0
+[...]
+Successfully installed biopython-1.84.dev0 numpy-2.0.0
+```
+```
+root@bb2a87c16f30:/srv# pip install --force-reinstall --use-pep517 --quiet git+https://github.com/biopython/biopython.git
++ pip install --force-reinstall --use-pep517 --quiet git+https://github.com/biopython/biopython.git
+  error: subprocess-exited-with-error
+  
+  × Building wheel for biopython (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [1 lines of output]
+      We need both setuptools AND wheel packages installed for bdist_wheel to work. Try running: pip install wheel
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for biopython
+ERROR: ERROR: Failed to build installable wheels for some pyproject.toml based projects (biopython)
+```
+
+---
+
+_Referenced in [astral-sh/uv#2252](../../astral-sh/uv/issues/2252.md) on 2024-06-24 14:48_
+
+---
+
+_Comment by @charliermarsh on 2024-06-24 14:51_
+
+Thanks for the write-up! I think this is expected since we use PEP 517 by default, and (as you noted) the package doesn't seem to install with `--use-pep517`. In that case, the package itself would need to be fixed to enable installing without build isolation.
+
+---
+
+_Referenced in [biopython/biopython#4755](../../biopython/biopython/pulls/4755.md) on 2024-06-24 16:19_
+
+---
+
+_Referenced in [astral-sh/uv#4480](../../astral-sh/uv/pulls/4480.md) on 2024-06-24 17:54_
+
+---
+
+_Referenced in [astral-sh/uv#4964](../../astral-sh/uv/pulls/4964.md) on 2024-07-10 16:15_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-10 16:15_
+
+---
+
+_Closed by @charliermarsh on 2024-07-10 21:10_
+
+---
+
+_Closed by @charliermarsh on 2024-07-10 21:10_
+
+---

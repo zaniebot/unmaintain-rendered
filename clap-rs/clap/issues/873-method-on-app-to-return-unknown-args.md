@@ -1,0 +1,252 @@
+---
+number: 873
+title: Method on App to return unknown args
+type: issue
+state: closed
+author: jsgf
+labels: []
+assignees: []
+created_at: 2017-02-24T17:00:17Z
+updated_at: 2021-04-06T18:31:48Z
+url: https://github.com/clap-rs/clap/issues/873
+synced_at: 2026-01-10T01:26:37Z
+---
+
+# Method on App to return unknown args
+
+---
+
+_Issue opened by @jsgf on 2017-02-24 17:00_
+
+
+### Rust Version
+1.15
+
+
+### Affected Version of clap
+clap 2.20.5
+
+---
+
+It would be useful to have a method that parses the command line args and returns the matches, but also a vector of all args which don't match, in the order they appear in. This vector can then be passed on to a secondary command line parser (in my case I'm trying to integrate with C++ libraries which use Google gflags).
+
+
+
+---
+
+_Comment by @kbknapp on 2017-02-24 19:06_
+
+@jsgf I edited your comment just to pull out the unused template :wink:
+
+This is already supported via what clap calls "External SubCommands." Due to a work proxy I can't get to the [docs.rs page](https://docs.rs/clap) but if you search for `AppSettings::AllowExternalSubcommands` it should pop up with an example. Please let me know if the documentation is unclear or you even if you just have questions on how to use this!
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-02-24 19:07_
+
+---
+
+_Comment by @kbknapp on 2017-02-24 19:11_
+
+I was able to find a cache of the docs page:
+
+> Specifies that an unexpected positional argument, which would otherwise cause a `ErrorKind::UnknownArgument` error, should instead be treated as a `SubCommand` within the `ArgMatches` struct.
+>
+>NOTE: Use this setting with caution, as a truly unexpected argument (i.e. one that is NOT an external subcommand) will not cause an error and instead be treated as a potential subcommand. One should check for such cases manually and inform the user appropriately.
+
+ ### Examples
+
+```rust
+// Assume there is an external subcommand named "subcmd"
+let m = App::new("myprog")
+    .setting(AppSettings::AllowExternalSubcommands)
+    .get_matches_from(vec![
+        "myprog", "subcmd", "--option", "value", "-fff", "--flag"
+    ]);
+
+// All trailing arguments will be stored under the subcommand's sub-matches using an empty
+// string argument name
+match m.subcommand() {
+    (external, Some(ext_m)) => {
+         let ext_args: Vec<&str> = ext_m.values_of("").unwrap().collect();
+         assert_eq!(external, "subcmd");
+         assert_eq!(ext_args, ["--option", "value", "-fff", "--flag"]);
+    },
+    _ => {},
+}
+```
+
+---
+
+_Comment by @jsgf on 2017-02-24 19:15_
+
+Thanks - it would have taken a while to find that.
+
+One question though - does it require I have a subcommand to capture those flags, or can I use them as global flags on the main command?  (I guess having something like `mycmd --foo --bar gflags --gflag1 --gflag2 othersubcmd` would be OK - would that work as I'm thinking?)
+
+---
+
+_Comment by @kbknapp on 2017-02-25 05:35_
+
+No worries, I welcome all questions and know the docs are big and it can be impossible to know what to search for!
+
+I see what you're trying to do better now. You actually have a few options for this scenario. 
+
+ * Use `--` to separate all args for this other CLI
+ * Use `AppSettings::TrailingVarArg` to do the same as the above, without the need for `--`
+ * Use `AppSettings::AllowExternalSubcommands` like the above (which doesn't require a `clap::SubCommand` be defined, but *does* require a "subcommand" be used at runtime, i.e. something unrecognized to kick off this setting)
+
+There's pros and cons to each case. But all of them require the external arguments to be in sequence and not intermixed with your actual arguments. I'll try to elaborate a little.
+
+### Using --
+
+You could tell users, pass `--` and all following args will be passed on to this other CLI. I'll use `rustc` as my "other CLI" for the example.
+
+```rust
+let m = App::new("prog")
+    .arg(Arg::with_name("rustc")
+        .multiple(true)
+        .allow_hyphen_values(true))   // This setting may not be needed...
+                                      // it's been a while since I've used this :P 
+    .get_matches();
+
+let rustc_args: Vec<_> = m.values_of("rustc").unwrap().collect(); // unwrap just for brevity here
+```
+
+This would be invoked like: 
+
+```
+$ prog -- -C opt-level=3 -g some_file.rs
+```
+
+### Using AppSettings::TrailingVarArg
+
+It's literally the same as above, but you don't need to use `--`. The way it works is it just uses the first unknown arg to start parsing all following args as values
+
+
+
+```rust
+let m = App::new("prog")
+    .setting(AppSettings::TrailingVarArg)
+    .arg(Arg::with_name("rustc")
+        .multiple(true)
+        .allow_hyphen_values(true))   // This setting may not be needed...
+                                      // it's been a while since I've used this :P 
+    .get_matches();
+
+let rustc_args: Vec<_> = m.values_of("rustc").unwrap().collect(); // unwrap just for brevity here
+```
+
+This would be invoked like: 
+
+```
+$ prog -C opt-level=3 -g some_file.rs
+```
+
+### Using AppSettings::AllowExternalSubcommand
+
+In this version, you *do* have to tell your users to use some word to kick off the parsing of values. If it's a single CLI I'd recommend just using that binary name as the word, although anything unknown would work.
+
+The benefit of this method is you could support multiple "external CLIs".
+
+```rust
+let m = App::new("prog")
+    .setting(AppSettings::AllowExternalSubcommands)
+    .get_matches();
+
+match m.subcommand() {
+    (external, Some(ext_m)) => {
+         let rustc_args: Vec<&str> = ext_m.values_of("").unwrap().collect();
+     },
+    _ => {},
+}
+```
+
+This would be invoked:
+
+```
+$ prog rustc -C opt-level=3 -g some_file.rs
+```
+
+For example if we added `cargo` and `rustc` support it'd look like:
+
+
+```rust
+let m = App::new("prog")
+    .setting(AppSettings::AllowExternalSubcommands)
+    .get_matches();
+
+match m.subcommand() {
+    ("rustc", Some(ext_m)) => {
+        let rustc_args: Vec<&str> = ext_m.values_of("").unwrap().collect();
+        println!("running rustc {:?}", rustc_args);
+    ("cargo", Some(ext_m)) => {
+        let cargo_args: Vec<&str> = ext_m.values_of("").unwrap().collect();
+        println!("running cargo {:?}", cargo_args);
+     },
+    (unk, Some(ext_m)) => println!("error: {} isn't a supported CLI", unk),
+    _ => {},
+}
+```
+But notice I didn't define any actual subcommands.
+
+---
+
+_Closed by @kbknapp on 2017-04-05 04:39_
+
+---
+
+_Comment by @breezewish on 2018-11-07 08:40_
+
+Seems that the solution shown in "Using AppSettings::TrailingVarArg" no longer works?
+
+```
+$ prog --abc
+error: Found argument '--abc' which wasn't expected, or isn't valid in this context
+```
+
+But this is fine:
+```
+$ prog abc --abc
+```
+
+---
+
+_Referenced in [oasislabs/oasis-cli#90](../../oasislabs/oasis-cli/pulls/90.md) on 2019-08-06 06:57_
+
+---
+
+_Comment by @gmjosack on 2021-04-06 18:31_
+
+If anyone comes across this issue later (as it's basically the only useful result when searching for this issue) if you want to be able to propagate unknown args to another program the following worked for me
+
+```rust
+    let launcher_matches = App::new("some-prog")
+        .setting(AppSettings::TrailingVarArg)
+        .setting(AppSettings::DontDelimitTrailingValues)
+        .setting(AppSettings::AllowLeadingHyphen)
+        .setting(AppSettings::DisableVersion)
+        .setting(AppSettings::DisableHelpFlags)
+        .setting(AppSettings::DisableHelpSubcommand)
+        .arg(
+            Arg::with_name("some-flag")
+                .long("some-flag")
+                .required(false)
+                .takes_value(false),
+        )
+        .arg(
+            Arg::with_name("remainder")
+                .multiple(true)
+                .allow_hyphen_values(true),
+        )
+        .get_matches();
+
+    let some_flag: bool = launcher_matches.is_present("some-flag");
+    let remainder: Vec<_> = launcher_matches
+        .values_of("remainder")
+        .map_or_else(|| vec![], |v| v.collect());
+```
+
+Specifically missing from the previous example to propagate flags without the `--` delimiter
+
+---

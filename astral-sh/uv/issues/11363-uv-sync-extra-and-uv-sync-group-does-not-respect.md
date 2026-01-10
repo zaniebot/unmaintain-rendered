@@ -1,0 +1,343 @@
+---
+number: 11363
+title: "`uv sync --extra` and `uv sync --group` does not respect other groups and extras that are not supposed to be resolved"
+type: issue
+state: closed
+author: validatedev
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-09T19:23:42Z
+updated_at: 2025-02-09T19:55:12Z
+url: https://github.com/astral-sh/uv/issues/11363
+synced_at: 2026-01-10T01:25:04Z
+---
+
+# `uv sync --extra` and `uv sync --group` does not respect other groups and extras that are not supposed to be resolved
+
+---
+
+_Issue opened by @validatedev on 2025-02-09 19:23_
+
+### Summary
+
+## Part 1: Optional Dependencies (Extras)
+From the repo https://github.com/validatedev/uv-tensorrt-extradep-issue-mre
+
+```
+uv sync --extra macos
+  × Failed to build `tensorrt-cu12-libs==10.8.0.43`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `wheel_stub.buildapi.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_28_x86_64.whl against tag py3-none-manylinux_2_28_x86_64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_28_x86_64.whl against tag py2-none-manylinux_2_28_x86_64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_31_aarch64.whl against tag py3-none-manylinux_2_31_aarch64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_31_aarch64.whl against tag py2-none-manylinux_2_31_aarch64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-win_amd64.whl against tag py3-none-win_amd64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-win_amd64.whl against tag py2-none-win_amd64
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/wheel.py", line 249, in download_wheel
+          return download_manual(wheel_directory, distribution, version, config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/wheel.py", line 185, in download_manual
+          raise RuntimeError(f"Didn't find wheel for {distribution} {version}")
+      Traceback (most recent call last):
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/wheel.py", line 249, in download_wheel
+          return download_manual(wheel_directory, distribution, version, config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/wheel.py", line 185, in download_manual
+          raise RuntimeError(f"Didn't find wheel for {distribution} {version}")
+      RuntimeError: Didn't find wheel for tensorrt-cu12-libs 10.8.0.43
+
+      During handling of the above exception, another exception occurred:
+
+      Traceback (most recent call last):
+        File "<string>", line 11, in <module>
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/buildapi.py", line 29, in build_wheel
+          return download_wheel(pathlib.Path(wheel_directory), config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/wheel.py", line 251, in download_wheel
+          report_install_failure(distribution, version, config, exception_context)
+        File "/Users/validate/.cache/uv/builds-v0/.tmpvmtNmP/lib/python3.12/site-packages/wheel_stub/error.py", line 67, in report_install_failure
+          raise InstallFailedError(
+      wheel_stub.error.InstallFailedError:
+      *******************************************************************************
+
+      The installation of tensorrt-cu12-libs for version 10.8.0.43 failed.
+
+      This is a special placeholder package which downloads a real wheel package
+      from https://pypi.nvidia.com/. If https://pypi.nvidia.com/ is not reachable, we
+      cannot download the real wheel file to install.
+
+      You might try installing this package via
+      ```
+      $ pip install --extra-index-url https://pypi.nvidia.com/ tensorrt-cu12-libs
+      ```
+
+      Here is some debug information about your platform to include in any bug
+      report:
+
+      Python Version: CPython 3.12.8
+      Operating System: Darwin 24.3.0
+      CPU Architecture: arm64
+      nvidia-smi command not found. Ensure NVIDIA drivers are installed.
+
+      *******************************************************************************
+
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12-libs` (v10.8.0.43) was included because `uv-tensorrt-extradep-issue-mre[cuda]` (v0.1.0) depends on `tensorrt-cu12-libs>=10.7.0`
+```
+It should not try to build the package `tensorrt-cu12-libs`, as it is not requested.
+
+
+Likewise:
+```
+docker build -f linux-cpu.Dockerfile -t uv-test-extra .
+
+[+] Building 12.2s (11/12) 
+ => [internal] load build definition from linux-cpu.Dockerfile                                                                                                            0.1s
+ => => transferring dockerfile: 571B                                                                                                                                      0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim-bookworm                                                                                              2.0s
+ => [internal] load .dockerignore                                                                                                                                         0.0s
+ => => transferring context: 2B                                                                                                                                           0.0s
+ => [1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:34656cd90456349040784165b9decccbcee4de66f3ead0a1168ba893455afd1e                                        0.0s
+ => [3/7] ADD https://astral.sh/uv/0.5.29/install.sh /uv-installer.sh                                                                                                     1.6s
+ => [internal] load build context                                                                                                                                         0.0s
+ => => transferring context: 1.36kB                                                                                                                                       0.0s
+ => CACHED [2/7] RUN apt-get update && apt-get upgrade -y     && apt-get install -y curl                                                                                  0.0s
+ => CACHED [3/7] ADD https://astral.sh/uv/0.5.29/install.sh /uv-installer.sh                                                                                              0.0s
+ => CACHED [4/7] RUN sh /uv-installer.sh && rm /uv-installer.sh                                                                                                           0.0s
+ => CACHED [5/7] WORKDIR /app                                                                                                                                             0.0s
+ => [6/7] COPY pyproject.toml hello.py /app/                                                                                                                              0.1s
+ => [7/7] RUN uv --version     && uv sync --extra linux --extra linux-cpu                                                                                                 8.3s
+ => => # uv 0.5.29                                                                                                                                                            
+ => => # Using CPython 3.12.9 interpreter at: /usr/local/bin/python3                                                                                                          
+ => => # Creating virtual environment at: .venv                                                                                                                               
+ => => #    Building tensorrt-cu12-libs==10.8.0.43  
+```
+
+It should not attempt to build `tensorrt-cu12-libs`, as it is not requested.
+
+If you disable line 19 `"tensorrt-cu12-libs>=10.7.0 ; sys_platform == 'linux'"` in the `pyproject.toml` file of the repository, you will find that, although other packages within the `cuda` optional dependency lack `darwin` builds, `uv sync --extra macos` will not encounter any issues.
+
+```
+uv sync --extra macos
+Resolved 38 packages in 37ms
+Prepared 2 packages in 18.13s
+Installed 11 packages in 326ms
+ + attrs==25.1.0
+ + filelock==3.17.0
+ + fsspec==2025.2.0
+ + jinja2==3.1.5
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + setuptools==75.8.0
+ + sympy==1.13.1
+ + torch==2.6.0
+ + typing-extensions==4.12.2
+```
+
+And the same applies to the Dockerfile example.
+
+## Part 2: Dependency Groups
+From the repo https://github.com/validatedev/uv-tensorrt-groupdep-issue-mre
+
+```
+uv sync --group macos
+Using CPython 3.12.8
+Creating virtual environment at: .venv
+  × Failed to build `tensorrt-cu12-libs==10.8.0.43`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `wheel_stub.buildapi.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_28_x86_64.whl against tag py3-none-manylinux_2_28_x86_64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_28_x86_64.whl against tag py2-none-manylinux_2_28_x86_64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_31_aarch64.whl against tag py3-none-manylinux_2_31_aarch64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-manylinux_2_31_aarch64.whl against tag py2-none-manylinux_2_31_aarch64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-win_amd64.whl against tag py2-none-win_amd64
+      INFO:wheel-stub:Testing wheel tensorrt_cu12_libs-10.8.0.43-py2.py3-none-win_amd64.whl against tag py3-none-win_amd64
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/wheel.py", line 249, in download_wheel
+          return download_manual(wheel_directory, distribution, version, config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/wheel.py", line 185, in download_manual
+          raise RuntimeError(f"Didn't find wheel for {distribution} {version}")
+      Traceback (most recent call last):
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/wheel.py", line 249, in download_wheel
+          return download_manual(wheel_directory, distribution, version, config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/wheel.py", line 185, in download_manual
+          raise RuntimeError(f"Didn't find wheel for {distribution} {version}")
+      RuntimeError: Didn't find wheel for tensorrt-cu12-libs 10.8.0.43
+
+      During handling of the above exception, another exception occurred:
+
+      Traceback (most recent call last):
+        File "<string>", line 11, in <module>
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/buildapi.py", line 29, in build_wheel
+          return download_wheel(pathlib.Path(wheel_directory), config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/wheel.py", line 251, in download_wheel
+          report_install_failure(distribution, version, config, exception_context)
+        File "/Users/validate/.cache/uv/builds-v0/.tmpESCk7j/lib/python3.12/site-packages/wheel_stub/error.py", line 67, in report_install_failure
+          raise InstallFailedError(
+      wheel_stub.error.InstallFailedError:
+      *******************************************************************************
+
+      The installation of tensorrt-cu12-libs for version 10.8.0.43 failed.
+
+      This is a special placeholder package which downloads a real wheel package
+      from https://pypi.nvidia.com/. If https://pypi.nvidia.com/ is not reachable, we
+      cannot download the real wheel file to install.
+
+      You might try installing this package via
+      ```
+      $ pip install --extra-index-url https://pypi.nvidia.com/ tensorrt-cu12-libs
+      ```
+
+      Here is some debug information about your platform to include in any bug
+      report:
+
+      Python Version: CPython 3.12.8
+      Operating System: Darwin 24.3.0
+      CPU Architecture: arm64
+      nvidia-smi command not found. Ensure NVIDIA drivers are installed.
+
+      *******************************************************************************
+
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12-libs` (v10.8.0.43) was included because `uv-tensorrt-groupdep-issue-mre:cuda` (v0.1.0) depends on `tensorrt-cu12-libs>=10.7.0`
+```
+It should not try to build the package `tensorrt-cu12-libs`, as it is not requested.
+
+Likewise:
+```
+docker build -f linux-cpu.Dockerfile -t uv-test-group .
+
+[+] Building 8.2s (11/12)                                                                                                                                      docker:orbstack
+ => [internal] load build definition from linux-cpu.Dockerfile                                                                                                            0.0s
+ => => transferring dockerfile: 587B                                                                                                                                      0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim-bookworm                                                                                              0.8s
+ => [internal] load .dockerignore                                                                                                                                         0.0s
+ => => transferring context: 2B                                                                                                                                           0.0s
+ => [1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:34656cd90456349040784165b9decccbcee4de66f3ead0a1168ba893455afd1e                                        0.0s
+ => [internal] load build context                                                                                                                                         0.0s
+ => => transferring context: 137B                                                                                                                                         0.0s
+ => [3/7] ADD https://astral.sh/uv/0.5.29/install.sh /uv-installer.sh                                                                                                     0.7s
+ => CACHED [2/7] RUN apt-get update && apt-get upgrade -y     && apt-get install -y curl                                                                                  0.0s
+ => CACHED [3/7] ADD https://astral.sh/uv/0.5.29/install.sh /uv-installer.sh                                                                                              0.0s
+ => CACHED [4/7] RUN sh /uv-installer.sh && rm /uv-installer.sh                                                                                                           0.0s
+ => CACHED [5/7] WORKDIR /app                                                                                                                                             0.0s
+ => CACHED [6/7] COPY pyproject.toml hello.py /app/                                                                                                                       0.0s
+ => [7/7] RUN uv --version     && uv sync --group linux --group linux-cpu --no-group cuda                                                                                 6.6s
+ => => # uv 0.5.29                                                                                                                                                            
+ => => # Using CPython 3.12.9 interpreter at: /usr/local/bin/python3                                                                                                          
+ => => # Creating virtual environment at: .venv                                                                                                                               
+ => => #    Building tensorrt-cu12-libs==10.8.0.43                                                                                                                            
+```
+
+
+It should not attempt to build `tensorrt-cu12-libs`, as it is not requested.
+
+If you disable line 19 `"tensorrt-cu12-libs>=10.7.0 ; sys_platform == 'linux'"` in the `pyproject.toml` file of the repository, you will find that, although other packages within the `cuda` dependency group lack `darwin` builds, `uv sync --group macos` will not encounter any issues.
+
+```
+uv sync --group macos
+Resolved 37 packages in 663ms
+Installed 11 packages in 384ms
+ + attrs==25.1.0
+ + filelock==3.17.0
+ + fsspec==2025.2.0
+ + jinja2==3.1.5
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + setuptools==75.8.0
+ + sympy==1.13.1
+ + torch==2.6.0
+ + typing-extensions==4.12.2
+```
+
+And the same applies to the Dockerfile example.
+
+
+Docker version: `27.4.1, build b9d17ea`
+
+### Platform
+
+Darwin 24.3.0 arm64 (macOS Sequoia 15.3 24D60)
+
+### Version
+
+uv 0.5.29 (Homebrew 2025-02-06)
+
+### Python version
+
+Python 3.12.8
+
+---
+
+_Label `bug` added by @validatedev on 2025-02-09 19:23_
+
+---
+
+_Referenced in [astral-sh/uv#9654](../../astral-sh/uv/issues/9654.md) on 2025-02-09 19:26_
+
+---
+
+_Comment by @validatedev on 2025-02-09 19:28_
+
+I think the caveat is that uv tries to build the package regardless of the environment it is working in and the markers or conflicts that are set.
+
+---
+
+_Comment by @charliermarsh on 2025-02-09 19:32_
+
+Thanks for the clear reproduction. Unfortunately, this is correct behavior. `tensorrt-cu12-libs` does not publish any wheels (https://pypi.org/project/tensorrt-cu12-libs/#files). And the source distribution they publish uses Metadata 2.1, which tools are _not_ allowed to rely on. So if a tool wants to figure out its dependencies, it _must_ build the package. That's the only way to get the package metadata. And without the package metadata, we can't resolve the dependencies.
+
+You should open an issue with `tensorrt-cu12-libs` asking them to upgrade to the latest version of `setuptools` so that newer versions of the package use Metadata 2.2 or later. This would allow tools (uv, and others) to avoid building the package in these contexts.
+
+---
+
+_Comment by @validatedev on 2025-02-09 19:36_
+
+@charliermarsh Thank you for the detailed explanation. I will file an issue regarding the package related to the problem you mentioned.
+
+---
+
+_Closed by @validatedev on 2025-02-09 19:36_
+
+---
+
+_Comment by @charliermarsh on 2025-02-09 19:41_
+
+I can also look into it myself if I can find the build pipeline. It'd be nice to get this fixed.
+
+---
+
+_Referenced in [NVIDIA/TensorRT#4352](../../NVIDIA/TensorRT/issues/4352.md) on 2025-02-09 19:53_
+
+---
+
+_Comment by @validatedev on 2025-02-09 19:55_
+
+> I can also look into it myself if I can find the build pipeline. It'd be nice to get this fixed.
+
+You're the best!
+
+I have also created an issue, probably in the right repo :)
+https://github.com/NVIDIA/TensorRT/issues/4352
+
+---
+
+_Referenced in [astral-sh/uv#11675](../../astral-sh/uv/issues/11675.md) on 2025-02-20 19:45_
+
+---
+
+_Referenced in [astral-sh/uv#12309](../../astral-sh/uv/issues/12309.md) on 2025-03-19 08:07_
+
+---

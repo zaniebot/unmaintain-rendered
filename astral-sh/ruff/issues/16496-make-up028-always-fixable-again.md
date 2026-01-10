@@ -1,0 +1,153 @@
+---
+number: 16496
+title: "Make `UP028` always fixable again"
+type: issue
+state: closed
+author: InSyncWithFoo
+labels:
+  - fixes
+  - wish
+assignees: []
+created_at: 2025-03-04T11:34:12Z
+updated_at: 2025-03-04T17:06:21Z
+url: https://github.com/astral-sh/ruff/issues/16496
+synced_at: 2026-01-10T01:22:57Z
+---
+
+# Make `UP028` always fixable again
+
+---
+
+_Issue opened by @InSyncWithFoo on 2025-03-04 11:34_
+
+After #16451, [`UP028`](https://docs.astral.sh/ruff/rules/yield-in-for-loop/) is no longer always fixable. However, a different kind of fix can be offered in such cases:
+
+```python
+for some_global, some_nonlocal in iterable:
+    yield some_global, some_nonlocal
+```
+
+```python
+for _element in iterable:
+    some_global, some_nonlocal = _element
+    yield some_global, some_nonlocal
+```
+
+I can't think of any edge cases, other than that adding a new name to the scope might break runtime inspections:
+
+```python
+nonlocal some_nonlocal
+
+for some_nonlocal in iterable:
+    yield some_nonlocal
+
+print(locals())  # {'some_nonlocal': ...}
+```
+
+```python
+nonlocal some_nonlocal
+
+for _element in iterable:
+    some_nonlocal = _element
+    yield some_nonlocal
+
+print(locals())  # {'some_nonlocal': ..., '_element': ...}
+```
+
+Also consider the case where the new name is the same as an existing one:
+
+```python
+_element = ...
+
+for _element in iterable:
+    some_global, some_nonlocal = _element
+    yield some_global, some_nonlocal
+
+print(_element)  # !!!
+```
+
+Generating a new, unique variable name is trivial, but it does, however, necessitate the fix being marked as unsafe to give the user a chance to review that name (along with everything else).
+
+---
+
+_Comment by @MichaReiser on 2025-03-04 12:24_
+
+I consider adding such a fix low priority as this pattern should be rare. I'm okay adding it if it has low complexity. 
+
+I believe Ruff already has a functionality to introduce new names but that can fail (because of overlaps?)
+
+---
+
+_Label `wish` added by @MichaReiser on 2025-03-04 12:24_
+
+---
+
+_Label `fixes` added by @MichaReiser on 2025-03-04 12:24_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-04 12:35_
+
+@MichaReiser Generating a new name can never fail: Ruff just needs to check all names of the form `var_{number}` from 0 to infinity, stopping as soon as it finds one available (I think I did this once in a PR).
+
+The examples above are all about `global`/`nonlocal`, but the same also applies to subscripts and attributes.
+
+---
+
+_Comment by @dscorbett on 2025-03-04 15:25_
+
+The point of UP028 is to recommend `yield from` where possible. The fix proposed here doesn’t use `yield from` so it isn’t an appropriate fix for UP028: it only fixes it in that it adds an extra statement to the loop so UP028 doesn’t apply. It could be an appropriate fix for a new style rule against assigning to globals via `for` targets, which is unrelated to `yield`.
+
+---
+
+_Comment by @InSyncWithFoo on 2025-03-04 16:22_
+
+That's a much better idea. Consider this a rule request then.
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `fixes` removed by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `wish` removed by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `rule` removed by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `fixes` added by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Label `wish` added by @MichaReiser on 2025-03-04 17:05_
+
+---
+
+_Comment by @MichaReiser on 2025-03-04 17:06_
+
+I'll close this. Feel free to open a new issue if you want to request a rule. A new issue makes it easier to find and should document its motivation
+
+---
+
+_Closed by @MichaReiser on 2025-03-04 17:06_
+
+---
+
+_Referenced in [astral-sh/ruff#16507](../../astral-sh/ruff/issues/16507.md) on 2025-03-04 18:33_
+
+---

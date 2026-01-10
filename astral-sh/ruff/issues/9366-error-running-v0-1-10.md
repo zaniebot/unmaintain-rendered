@@ -1,0 +1,97 @@
+---
+number: 9366
+title: Error running v0.1.10
+type: issue
+state: closed
+author: nickdrozd
+labels:
+  - bug
+assignees: []
+created_at: 2024-01-02T20:48:59Z
+updated_at: 2024-01-02T22:23:50Z
+url: https://github.com/astral-sh/ruff/issues/9366
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Error running v0.1.10
+
+---
+
+_Issue opened by @nickdrozd on 2024-01-02 20:48_
+
+After installing v0.1.10 via `pip`:
+
+```
+python3.11 -m ruff --version
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/nick/.local/lib/python3.11/site-packages/ruff/__main__.py", line 32, in <module>
+    ruff = os.fsdecode(find_ruff_bin())
+                       ^^^^^^^^^^^^^^^
+  File "/home/nick/.local/lib/python3.11/site-packages/ruff/__main__.py", line 25, in find_ruff_bin
+    if path.is_file():
+       ^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'is_file'
+```
+
+---
+
+_Comment by @MaksAksenov on 2024-01-02 20:51_
+
+The path method handling logic was updated for one case:
+https://github.com/astral-sh/ruff/pull/9315/files#diff-a2a4fcdbfaddd66c163fba246256d9648cda29200a4e20a5da780c9fe4e10defR11 
+and was not updated for another:
+https://github.com/astral-sh/ruff/pull/9315/files#diff-a2a4fcdbfaddd66c163fba246256d9648cda29200a4e20a5da780c9fe4e10defR25
+
+---
+
+_Comment by @charliermarsh on 2024-01-02 20:51_
+
+Ah thanks, I'll cut a follow-up release to fix this today.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-01-02 20:51_
+
+---
+
+_Comment by @charliermarsh on 2024-01-02 20:52_
+
+If anyone is interested in a quick PR, welcome to it, otherwise I will :)
+
+---
+
+_Referenced in [astral-sh/ruff#9367](../../astral-sh/ruff/pulls/9367.md) on 2024-01-02 20:58_
+
+---
+
+_Comment by @zanieb on 2024-01-02 21:07_
+
+Thanks for the pull request! Could ya'll briefly describe how Python / Ruff is installed on your system? It looks like the test coverage in CI is for a different branch of the logic here.
+
+---
+
+_Comment by @nickdrozd on 2024-01-02 21:15_
+
+I'm running some version of Ubuntu where the system `python3` is `python3.8`. `python3.11` is installed via `apt`, and `ruff` is installed via `python3.11 -m pip`.
+
+---
+
+_Comment by @nickdrozd on 2024-01-02 21:21_
+
+`which ruff` => `/home/nick/.local/bin/ruff`. But
+
+```python
+    ruff_exe = "ruff" + sysconfig.get_config_var("EXE")
+
+    path = os.path.join(sysconfig.get_path("scripts"), ruff_exe)
+```
+
+`path` => `/usr/local/bin/ruff`, which is not a path that exists.
+
+---
+
+_Closed by @charliermarsh on 2024-01-02 22:23_
+
+---

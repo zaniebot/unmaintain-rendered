@@ -1,0 +1,95 @@
+---
+number: 3727
+title: TCH004 incorrectly states that import is used for more than type checking
+type: issue
+state: closed
+author: tibbe
+labels: []
+assignees: []
+created_at: 2023-03-25T07:01:40Z
+updated_at: 2023-03-25T15:11:15Z
+url: https://github.com/astral-sh/ruff/issues/3727
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# TCH004 incorrectly states that import is used for more than type checking
+
+---
+
+_Issue opened by @tibbe on 2023-03-25 07:01_
+
+Version: ruff 0.0.254
+
+In the example below it seems to me that the import is clearly used for type-checking only. In fact this particular package (boto3-stubs) is a type-checking only package.
+
+`repro.py`:
+```py
+import typing
+
+import boto3
+
+if typing.TYPE_CHECKING:
+    from mypy_boto3_sns.client import SNSClient
+
+
+def create_sns_client() -> SNSClient:
+    return boto3.client('sns')
+
+
+sns_client: typing.Optional[SNSClient]
+```
+
+Libraries used:
+```toml
+boto3 = "1.26.97"
+botocore = "1.29.97"
+boto3-stubs = {version = "1.26.97.post1", extras = ["apigatewaymanagementapi", "cloudsearch", "cloudsearchdomain", "cognito-idp", "dynamodb", "s3", "secretsmanager", "ses", "sns", "sqs", "transcribe", "translate"]}
+```
+
+Incorrect lint error:
+```
+benetics/repro.py:6:39: TCH004 Move import `mypy_boto3_sns.client.SNSClient` out of type-checking block. Import is used for more than type hinting.
+```
+
+
+---
+
+_Comment by @edgarrmondragon on 2023-03-25 12:49_
+
+Have you tried enabling [PEP 563](https://peps.python.org/pep-0563/) with
+
+```python
+from __future__ import annotations
+```
+
+You can automatically add it to all modules with the [`isort.requires-imports`](https://beta.ruff.rs/docs/settings/#required-imports) setting.
+
+---
+
+_Comment by @charliermarsh on 2023-03-25 15:11_
+
+I think Ruff is correct here -- this code gives you a runtime error:
+
+```
+❯ python foo.py
+Traceback (most recent call last):
+  File "/Users/crmarsh/workspace/ruff/foo.py", line 9, in <module>
+    def create_sns_client() -> SNSClient:
+                               ^^^^^^^^^
+NameError: name 'SNSClient' is not defined
+```
+
+If you include `from __future__ import annotations` as @edgarrmondragon, then the annotations will indeed be deferred, and you _can_ move that import into a type-checking block. But without future annotations, that import has to be available at runtime.
+
+Your other option is to use a forward annotation, like this:
+
+```
+sns_client: typing.Optional["SNSClient"]
+```
+
+
+---
+
+_Closed by @charliermarsh on 2023-03-25 15:11_
+
+---

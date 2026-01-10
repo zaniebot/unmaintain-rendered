@@ -1,0 +1,55 @@
+---
+number: 8123
+title: "`uncapitalized-environment-variables` (`SIM112`) false positive on `https_proxy`, `http_proxy` and `no_proxy` variables"
+type: issue
+state: closed
+author: DetachHead
+labels:
+  - accepted
+assignees: []
+created_at: 2023-10-22T23:26:16Z
+updated_at: 2023-10-23T13:48:38Z
+url: https://github.com/astral-sh/ruff/issues/8123
+synced_at: 2026-01-10T01:22:47Z
+---
+
+# `uncapitalized-environment-variables` (`SIM112`) false positive on `https_proxy`, `http_proxy` and `no_proxy` variables
+
+---
+
+_Issue opened by @DetachHead on 2023-10-22 23:26_
+
+```py
+import os
+
+os.environ["https_proxy"] # error
+os.environ["http_proxy"] # error
+os.environ["no_proxy"] # error
+```
+https://play.ruff.rs/75b318d8-1456-4743-a136-fe45150985ad
+
+while there is no "official" standard, most applications use lowercase for these variables, so i think this rule should ignore them. or maybe a setting could be added for variable names to ignore
+
+source:
+- https://unix.stackexchange.com/a/212972
+- https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/#http_proxy-and-https_proxy
+
+---
+
+_Comment by @charliermarsh on 2023-10-23 03:20_
+
+This seems reasonable to me.
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-10-23 03:20_
+
+---
+
+_Referenced in [astral-sh/ruff#8140](../../astral-sh/ruff/pulls/8140.md) on 2023-10-23 11:46_
+
+---
+
+_Closed by @zanieb on 2023-10-23 13:48_
+
+---

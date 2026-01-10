@@ -1,0 +1,272 @@
+---
+number: 4516
+title: "Large `Args` struct causes stack overflow on Intel SGX"
+type: issue
+state: open
+author: trevor-crypto
+labels:
+  - C-bug
+  - A-derive
+  - S-waiting-on-design
+assignees: []
+created_at: 2022-11-28T18:57:15Z
+updated_at: 2022-12-22T18:42:23Z
+url: https://github.com/clap-rs/clap/issues/4516
+synced_at: 2026-01-10T01:27:57Z
+---
+
+# Large `Args` struct causes stack overflow on Intel SGX
+
+---
+
+_Issue opened by @trevor-crypto on 2022-11-28 18:57_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.67.0-nightly (a28f3c88e 2022-11-20)
+
+### Clap Version
+
+4.0.27
+
+### Minimal reproducible code
+
+Too large to show paste:
+https://gist.github.com/rust-play/708d645d1c26354657fb8df945718ccc
+
+`.cargo/config` : 
+```
+[target.x86_64-fortanix-unknown-sgx]
+runner = "ftxsgx-runner-cargo"
+[build]
+target = "x86_64-fortanix-unknown-sgx"
+```
+
+`Cargo.toml`:
+```
+[dependencies]
+clap = { version = "4.0.27", default-features = false,  features = ["std", "derive", "help", "usage", "error-context"] }
+
+[package.metadata.fortanix-sgx]
+heap-size = 0x10000000
+stack-size = 0x100000
+```
+
+### Steps to reproduce the bug with the above code
+
+1. Have a working environment to compile and run against the `x86_64-fortanix-unknown-sgx` target
+2. `cargo run -- --help` using the minimal reproducible code above
+3. Notice the SIGBUS triggered
+4. Now try `cargo run --release -- --help`
+5. Notice all is normal (help is shown)
+
+### Actual Behaviour
+
+```shell
+     Running `ftxsgx-runner-cargo target/x86_64-fortanix-unknown-sgx/debug/clap-test`
+SIGBUS triggered: likely caused by stack overflow in enclave.
+ERROR: while running "ftxsgx-runner" "target/x86_64-fortanix-unknown-sgx/debug/clap-test.sgxs" got signal: 7
+```
+
+### Expected Behaviour
+
+The `--debug` profile should work correctly, as `--release` does, and not trigger a stack overflow.
+
+### Additional Context
+
+I know this is an obscure issue due to the fact that the amount of args is insanely large, but I actually have a use-case that is similar to this since with Fortanix Intel SGX, you do not have I/O for a config file, or the ability to use environment variables. I have already increased `stack-size`, but it doesn't seem to help after a certain point.
+
+**I don't expect this to be addressed, so it would be great to just have some insight into how to "please" `clap` (clap's parser?) so that it doesn't stack overflow.**
+
+
+### Debug Output
+
+None, unfortunately.
+
+---
+
+_Label `C-bug` added by @trevor-crypto on 2022-11-28 18:57_
+
+---
+
+_Comment by @epage on 2022-11-29 02:23_
+
+Happen to be able to get a crash dump?  I'm curious which code hits a stack overflow.
+
+`clap::Arg` is fairly big.  I hope to shrink it as part of https://github.com/clap-rs/clap/discussions/3476.
+
+rustc and llvm don't do an efficient job with removing stack copies, like with types like `clap::Arg`: https://arewestackefficientyet.com/
+
+If this is when we read `ArgMatches` to populate the struct, then I have no idea what could be improved about that.
+
+EDIT: I tried to reproduce this on x64 Linux but the compile times for hundreds of args was just becoming too much for me.
+
+---
+
+_Comment by @epage on 2022-11-29 02:24_
+
+I suspect a workaround would be to break the `Args` up into multiple structs and use `#[command(flatten)]`.  That should force stack space to get reclaimed.
+
+---
+
+_Label `A-derive` added by @epage on 2022-11-29 02:24_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2022-11-29 02:26_
+
+---
+
+_Comment by @trevor-crypto on 2022-11-29 07:35_
+
+Thanks for the quick response @epage. I will try your suggestion of breaking up the args into structs then flattening.
+
+Here is a stacktrace:
+```gdb
+(gdb) bt
+#0  0x00007fffc00b2456 in clap_test::{impl#5}::augment_args (__clap_app=...) at src/main.rs:3
+#1  0x00007fffc0073629 in clap_test::{impl#3}::command () at src/main.rs:3
+#2  0x00007fffc0061010 in clap::derive::Parser::parse<clap_test::A> ()
+    at ~/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.27/src/derive.rs:82
+#3  0x00007fffc0070cb1 in clap_test::main () at src/main.rs:349
+```
+
+Seems like it comes from `clap::Args` derive macro generation of `augment_args`?
+
+---
+
+_Comment by @epage on 2022-11-29 13:04_
+
+Huh, so it is `augment_args`.  Nothing is being created on the stack.  We do have temporaries being created for passing into functions.  There are likely also a **lot** of moves happening.
+
+I wonder if there is a way to restructure things to reduce all of this.
+
+---
+
+_Comment by @trevor-crypto on 2022-11-29 16:27_
+
+> I wonder if there is a way to restructure things to reduce all of this.
+
+I will try to restructure the giant struct and get back to you.
+
+---
+
+_Comment by @trevor-crypto on 2022-12-20 11:37_
+
+I was able to split the args struct and the issue goes away, as you suspected. Albeit successful, the parsing actually takes quite a while compared to `argh` (which we're currently using with a massive config struct).
+
+[Updated playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=e3825e9961c6a07b67203d8b546d4835) with broken code
+
+
+---
+
+_Comment by @epage on 2022-12-20 12:57_
+
+How much is the performance off between the two?
+
+What is the performance situation?  Large number of argument definitions with very few present?
+
+
+---
+
+_Comment by @trevor-crypto on 2022-12-20 14:00_
+
+Just ran a quick test a few times, with all of the arguments present: (debug build)
+```
+clap parse duration: 6.765064496s
+argh parse duration: 58.132469ms
+```
+
+You can see the massive arg struct here, where `clap` is split up and flattened, and `argh` has it fully inline.
+
+[Here is the full example in a repo](https://github.com/trevor-crypto/sgx-clap-test/blob/e08a9a41292e20f970c8b04939da234516911011/src/main.rs#L60-L69)
+
+---
+
+_Comment by @epage on 2022-12-20 15:31_
+
+For reference, on a laptop, I'm getting
+```
+clap parse duration: 12.344762ms
+argh parse duration: 1.14286ms
+```
+EDIT: Updated for release build
+
+Either way, something for me to look into.'
+
+btw if you want something inbetween argh and clap., `bpaf` might be something to try.  My biggest concern over it is some usability aspects due to its functional heritage.
+
+---
+
+_Comment by @epage on 2022-12-20 16:15_
+
+According to callgrind, most of the time is spend in memcmp's (40+%).  This makes sense because in clap v4, we switched to some naiive data types for lower binary overhead with the assumption that there weren't a lot of unique arguments but instead a large argv would be taken up with a single positional argument passed in from xargs.  In general, this is a use case that clap's dynamic design can't compete against parsers with a more static design (as confirmed by callgrind below).  Something I want to explore is more hybrid approach for clap so it can be dynamic where needed and static elsewhere.
+
+Switching to clap HEAD (which **shouldn't** matter), I'm getting
+```
+clap parse duration: 10.297272ms
+argh parse duration: 1.216893ms
+```
+
+Switching out for `HashMap` with the default hasher, I'm getting
+```
+clap parse duration: 4.226175ms
+argh parse duration: 1.198631ms
+```
+We could possibly put that behind a feature flag.  It will require some breaking changes though and can't be done until 5.0.
+
+With that, callgrind is saying the biggest higher up functions are
+- 55% validate (1x)
+  - 51% gather_conflicts (170x)
+    - 32% gather_direct_conflicts (58,140x)
+      - 28% hash map entry (58,140x)
+        - 28% hash_one
+    - 15% check-explicit (29,240x)
+- 36% parse_opt_value (170x)
+  - 36% react (170x)
+    - 36% start_custom_arg (170x)
+
+From another slice of the problem, 27% of the time is still spent in memcmp
+
+This seems to just be the overhead of a more dynamic design (storing things in a hashmap) compared to a more static design (knowing all arguments at compile time).
+
+---
+
+_Comment by @trevor-crypto on 2022-12-21 06:10_
+
+Thanks for looking into this @epage ! 
+
+I forgot to run my tests in `--release`, so that is probably why the perf seemed so different. I updated my comment to show that it was a debug build.
+
+In regards to the main issue of the stack overflowing (on SGX and maybe other low mem systems) when there is a massive arg struct, is there any way to offload the parsing to heapspace?
+
+---
+
+_Comment by @epage on 2022-12-21 13:59_
+
+The stack overflow isn't in the parsing but in our defining of the command line.  We are creating a lot of temporaries.  I'm unsure why its not reclaiming stack space during that and what we can do to force it to clean up stack space.
+
+---
+
+_Referenced in [clap-rs/clap#4572](../../clap-rs/clap/pulls/4572.md) on 2022-12-22 18:18_
+
+---
+
+_Comment by @epage on 2022-12-22 18:42_
+
+While looking at another issue, I found an optimization that I could make that took the test case from ~10ms on my machine to ~3ms.
+
+---
+
+_Referenced in [clap-rs/clap#3524](../../clap-rs/clap/issues/3524.md) on 2023-01-06 16:25_
+
+---
+
+_Referenced in [clap-rs/clap#5134](../../clap-rs/clap/issues/5134.md) on 2023-09-23 17:56_
+
+---

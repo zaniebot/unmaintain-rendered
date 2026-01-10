@@ -1,0 +1,66 @@
+---
+number: 12765
+title: "E721 suggestion to use \"is\" rather than \"==\" results in broken code if using pandas/numpy"
+type: issue
+state: closed
+author: Hnasar
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-08T21:42:22Z
+updated_at: 2024-08-09T01:37:28Z
+url: https://github.com/astral-sh/ruff/issues/12765
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# E721 suggestion to use "is" rather than "==" results in broken code if using pandas/numpy
+
+---
+
+_Issue opened by @Hnasar on 2024-08-08 21:42_
+
+In general it's unsafe to recommend users replace `==` with `is` — notably, user code can override `__eq__` for `==` but there's no equivalent for `is`. 
+
+```lang=pycon
+>>> import pandas as pd
+>>> df = pd.DataFrame({'a': [1,2], 'b': [3.0, 4.0]})
+>>> type(df.dtypes == int)
+<class 'pandas.core.series.Series'>
+>>> type(df.dtypes is int)
+<class 'bool'>
+```
+
+or alternatively 
+```lang=pycon
+>>> import numpy as np
+>>> np.dtype(float) == float
+True
+>>> np.dtype(float) is float
+False
+```
+
+Personally, I don't think following this PEP8 minor point is worth the noise and risk for error.
+
+[E721](https://docs.astral.sh/ruff/rules/type-comparison/) is similar to E711, but the latter at least includes a warning: https://docs.astral.sh/ruff/rules/none-comparison/#fix-safety and is a more common idiom
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 01:33_
+
+Thanks -- I think this is a duplicate of https://github.com/astral-sh/ruff/issues/4560. At least we don't raise E721 on the provided examples like `np.dtype(float) == float`, but yes we'd like to do better.
+
+---
+
+_Closed by @charliermarsh on 2024-08-09 01:33_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-09 01:33_
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 01:37_
+
+(I added some documentation based on this nudge: https://github.com/astral-sh/ruff/pull/12769)
+
+---

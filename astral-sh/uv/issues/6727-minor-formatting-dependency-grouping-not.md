@@ -1,0 +1,80 @@
+---
+number: 6727
+title: "minor formatting: dependency grouping not preserved if there's an empty line between"
+type: issue
+state: open
+author: ChannyClaus
+labels:
+  - projects
+assignees: []
+created_at: 2024-08-27T22:52:23Z
+updated_at: 2024-08-27T23:04:49Z
+url: https://github.com/astral-sh/uv/issues/6727
+synced_at: 2026-01-10T01:24:05Z
+---
+
+# minor formatting: dependency grouping not preserved if there's an empty line between
+
+---
+
+_Issue opened by @ChannyClaus on 2024-08-27 22:52_
+
+```
+$ uv --version
+uv 0.3.5 (6c62d9fbf 2024-08-27)
+```
+
+starting with
+```
+$ cat pyproject.toml 
+[project]
+name = "uv-empty-space"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # first block
+    "requests",
+
+    # second block
+    "pydantic",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+running `uv add pandas` yields the below:
+```
+$ cat pyproject.toml 
+[project]
+name = "uv-empty-space"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # first block
+    "requests",
+    # second block
+    "pydantic",
+    "pandas>=2.2.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+i wonder if the empty line between `requests` and `pydantic` should be preserved?
+
+
+---
+
+_Referenced in [astral-sh/uv#6388](../../astral-sh/uv/pulls/6388.md) on 2024-08-27 22:53_
+
+---
+
+_Label `projects` added by @zanieb on 2024-08-27 23:04_
+
+---

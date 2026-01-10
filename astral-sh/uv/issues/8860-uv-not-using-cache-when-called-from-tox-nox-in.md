@@ -1,0 +1,260 @@
+---
+number: 8860
+title: uv not using cache when called from Tox/Nox in container
+type: issue
+state: open
+author: FCamborda
+labels:
+  - question
+assignees: []
+created_at: 2024-11-06T10:34:26Z
+updated_at: 2024-11-11T19:12:26Z
+url: https://github.com/astral-sh/uv/issues/8860
+synced_at: 2026-01-10T01:24:33Z
+---
+
+# uv not using cache when called from Tox/Nox in container
+
+---
+
+_Issue opened by @FCamborda on 2024-11-06 10:34_
+
+Hi,
+
+sorry if this is not the right place. I'm hesitating whether this is the scope of uv or nox. I get the same behavior with Tox, so it could also be a problem of my understanding/usage.
+
+Basically, we have a container with preinstalled dependencies that we run for CI/CD, including uv, ruff, nox, and other tools. We aim to have a static environment (or as static as it gets) to have a controlled upgrade of third-party dependencies.
+
+We have a noxfile with different sessions where we install our (hopefully pre-installed) dependencies. Due to needs of a more complex environment, we do not want to remove the `session.install` or use `ruff` from `PATH` (i.e. pass `external=True`).
+
+A minimal reproducible case would be the following:
+```shell
+# noxfile.py
+
+import nox
+
+@nox.session
+def ruff(session):
+    session.install("ruff")
+    stdout = session.run("ruff", "--version", silent=True)
+    installed_version = stdout.split()[-1]
+    if installed_version != "0.6.9":
+        session.error(f"Expected '0.6.9', instead got '{installed_version}'")
+```
+
+In our Dockerfile, we have a lot of different tools, but the uv/Python specifics are:
+* Install uv (we pin the version, but for example sake I used latest)
+* Install Python interpreters with uv
+* Install a venv and activate it by default
+  Note: This part is vital for our setup, we cannot simply install onto `--system`
+* Pre-install a set of dependencies (here an outdated Ruff)
+
+```shell
+# Dockerfile
+FROM ubuntu:20.04
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV PYVERSION=3.11
+
+# Install Python 3.11 using uv
+RUN uv python install ${PYVERSION}
+
+# Install Python globally + venv
+ENV VIRTUAL_ENV=/.venv/
+ENV UV_PYTHON_INSTALL_DIR=/.python/
+RUN uv python install ${PYVERSION} && \
+    uv venv ${VIRTUAL_ENV} --python ${PYVERSION}
+
+# Activate venv
+ENV PATH_NO_VENV=$PATH
+ENV PATH=${VIRTUAL_ENV}/bin:$PATH
+
+# Install ruff and Nox into the virtual environment
+ENV OUTDATED_RUFF=0.6.9
+RUN uv pip install ruff==${OUTDATED_RUFF}
+
+# Force Nox usage
+ENV NOX_DEFAULT_VENV_BACKEND="uv"
+
+COPY noxfile.py /noxfile.py
+
+CMD ["uvx", "nox", "-f", "/noxfile.py"]
+```
+If I copy the Noxfile next to the Dockerfile locally, I get the following error:
+```
+> docker run $(docker build -q .)
+Installed 8 packages in 21ms
+nox > Running session ruff
+nox > Creating virtual environment (uv) using python in .nox/ruff
+nox > uv pip install ruff
+nox > ruff --version
+nox > Session ruff aborted: Expected '0.6.9', instead got '0.7.2'.
+```
+
+Interestingly enough, if I simply run `uv pip install ruff`, I will get the cached version.
+```
+>docker run -it --entrypoint /bin/bash $(docker build -q .)
+>> uv pip install ruff
+Audited 1 package in 0.45ms
+>> ruff --version
+ruff 0.6.9
+```
+
+---
+
+_Renamed from "Force Nox to use uv cache (in container)" to "Force Nox to use uv pip cache (in container)" by @FCamborda on 2024-11-06 10:39_
+
+---
+
+_Renamed from "Force Nox to use uv pip cache (in container)" to "uv not using cache (in container) when called from Tox/Nox" by @FCamborda on 2024-11-07 07:38_
+
+---
+
+_Renamed from "uv not using cache (in container) when called from Tox/Nox" to "uv not using cache when called from Tox/Nox in container" by @FCamborda on 2024-11-07 07:38_
+
+---
+
+_Comment by @charliermarsh on 2024-11-07 13:30_
+
+Are you sure that `CMD ["uvx", "nox", "-f", "/noxfile.py"]` is running in the project environment? I don't see where it's being installed.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-07 13:34_
+
+---
+
+_Comment by @FCamborda on 2024-11-07 19:42_
+
+@charliermarsh I'm not sure I understood what you mean by project environment: the venv?
+(the CMD command is just to make it a nice one-liner to explain the problem and avoid different types of shells)
+
+In this case I used uvx from the uv container directly to install Nox. In my understanding, even if it wasn't part of the activated venv, uv should use the cache nevertheless.
+
+I can also refrain from using uvx. If I install Nox directly into the environment that includes Ruff, we get the same behavior
+```
+# Dockerfile
+FROM ubuntu:20.04
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV PYVERSION=3.11
+
+# Install Python 3.11 using uv
+RUN uv python install ${PYVERSION}
+
+# Install Python globally + venv
+ENV VIRTUAL_ENV=/.venv/
+ENV UV_PYTHON_INSTALL_DIR=/.python/
+RUN uv python install ${PYVERSION} && \
+    uv venv ${VIRTUAL_ENV} --python ${PYVERSION}
+
+# Activate venv
+ENV PATH_NO_VENV=$PATH
+ENV PATH=${VIRTUAL_ENV}/bin:$PATH
+
+# Install ruff and Nox into the virtual environment
+ENV OUTDATED_RUFF=0.6.9
+RUN uv pip install ruff==${OUTDATED_RUFF} nox
+
+# Force Nox usage
+ENV NOX_DEFAULT_VENV_BACKEND="uv"
+
+COPY noxfile.py /noxfile.py
+
+CMD ["nox", "-f", "/noxfile.py"]
+```
+```
+> docker run $(docker build -q .)
+Installed 8 packages in 21ms
+nox > Running session ruff
+nox > Creating virtual environment (uv) using python in .nox/ruff
+nox > uv pip install ruff
+nox > ruff --version
+nox > Session ruff aborted: Expected '0.6.9', instead got '0.7.2'.
+```
+
+Same thing for the interactive shell:
+```
+> docker run -it --entrypoint /bin/bash $(docker build -q .)
+>> uv pip install ruff
+Audited 1 package in 0.45ms
+>> ruff --version
+ruff 0.6.9
+```
+
+---
+
+_Comment by @charliermarsh on 2024-11-07 21:31_
+
+Sorry, I think my question was not useful -- my bad.
+
+It looks like Nox installs into its own isolated environment? If you run with `--verbose`:
+
+```
+nox > Running session ruff
+nox > Creating virtual environment (uv) using python3 in .nox/ruff
+Using CPython 3.11.10 interpreter at: /.venv/bin/python3
+Creating virtual environment at: /.nox/ruff
+
+nox > uv pip install ruff
+Using Python 3.11.10 environment at /.nox/ruff
+Resolved 1 package in 46ms
+Prepared 1 package in 336ms
+Installed 1 package in 0.53ms
+ + ruff==0.7.2
+
+nox > ruff --version
+ruff 0.7.2
+
+nox > Session ruff aborted: Expected '0.6.9', instead got '0.7.2'.
+```
+
+So it looks like Nox is looking in a different place than you're installing Ruff into.
+
+---
+
+_Comment by @charliermarsh on 2024-11-07 21:33_
+
+I'm not familiar enough with Nox to know if there's a way for you to "pre-install" into the session like this.
+
+---
+
+_Comment by @FCamborda on 2024-11-07 23:51_
+
+Ahh I think I got it: Yes, Nox creates a new virtual environment for every session. And I think then that the uv pip cache is shared only for the venv and the Python interpreter it was created from? I thought that the cache was globally accessible (if the Python version matches)
+
+Is there a way to tell uv to install a (compatible) version of a package if found in the cache, I'm assuming that the different venvs are created from the same Python version.
+That is
+```
+uv python install 3.11
+uv venv foo --python 3.11
+source foo/bin/activate
+uv pip install ruff==0.6.2
+deactivate
+uv venv bar --python 3.11
+source foo/bin/activate
+uv pip install ruff  # install 0.6.2, not latest
+```
+I guess this could be achieved by installing in the global Python and using something like system site packages? But we do not want to install directly in the system/global Python...
+
+---
+
+_Comment by @henryiii on 2024-11-11 16:53_
+
+I think you are trying to rely on implementation specific behavior; I don't think installers usually guarantee that they will or won't pull from a cache. Here it seems uv is being smart and realizing `==0.6.9` isn't the latest version when you later request the latest version. I think what you want is `pip download` (which last I checked wasn't in uv yet), which would allow you to do this explicitly by pre-downloading the packages then installing from that directory.
+
+---
+
+_Comment by @FCamborda on 2024-11-11 17:58_
+
+That is a very fair point to make. Thanks! IIRC we were relying on system site packages when using pip.
+
+I will explore other possible solutions and have already reached out for the Nox developers. I will comment again if I find something, but you can close this issue if you prefer. I think this is an interesting feature for those of us who have to be a bit careful about third-party dependencies. 
+
+---
+
+_Comment by @henryiii on 2024-11-11 19:12_
+
+What about using a constraints file?
+
+---

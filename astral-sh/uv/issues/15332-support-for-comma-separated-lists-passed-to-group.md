@@ -1,0 +1,98 @@
+---
+number: 15332
+title: "Support for comma-separated lists passed to `--group` and `--extra` flags"
+type: issue
+state: open
+author: paduszyk
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-17T20:01:06Z
+updated_at: 2025-08-18T12:35:05Z
+url: https://github.com/astral-sh/uv/issues/15332
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# Support for comma-separated lists passed to `--group` and `--extra` flags
+
+---
+
+_Issue opened by @paduszyk on 2025-08-17 20:01_
+
+### Summary
+
+Given the following `pyproject.toml` for a Django project:
+
+```toml
+[project]
+name = "app"
+version = "1"
+requires-python = ">=3.13"
+dependencies = [
+  "django>=5.2.5",
+]
+
+[project.optional-dependencies]
+mysql = [
+  "mysqlclient>=2.2.7",
+]
+postgresql = [
+  "psycopg[binary]>=3.2.9",
+]
+```
+
+I would like to install packages supporting both (unnecessarily _all_; here I have only two backends). So, I go with:
+
+```shell
+uv sync --extra=postgresql --extra=sqlite --frozen
+```
+
+When using pip, I could do the same with comma-separated list:
+
+```shell
+pip install -e ".[postgresql,mysql]"
+```
+
+I am just wondering on whether this kind of input could be implemented in uv.
+
+The example refers to `--extra`, but could also applied to the `--group` flag.
+
+### Example
+
+Here is a `Dockerfile` from one of my recent projects. I believe that enabling comma-separated lists would be an interesting idea for application of the proposed feature.
+
+```Dockerfile
+
+# === Build ===
+
+FROM python:3.13-alpine AS builder
+
+# ===  Here, comma-separated list could be passed. ===
+ARG DJANGO_DATABASE_ENGINES 
+# ====================================================
+
+WORKDIR /app/
+
+COPY --from=ghcr.io/astral-sh/uv:0.8.11 /uv /bin/
+COPY pyproject.toml uv.lock uv.toml ./
+
+RUN uv sync --no-dev --extra=${DJANGO_DATABASE_ENGINES} --frozen
+
+
+# === Runtime ===
+
+FROM python:3.13-alpine
+
+# ...
+
+```
+
+---
+
+_Label `enhancement` added by @paduszyk on 2025-08-17 20:01_
+
+---
+
+_Referenced in [astral-sh/uv#15343](../../astral-sh/uv/pulls/15343.md) on 2025-08-18 08:01_
+
+---

@@ -1,0 +1,149 @@
+---
+number: 1608
+title: ignore extra macos parameter
+type: issue
+state: open
+author: sixcorners
+labels:
+  - C-enhancement
+  - S-waiting-on-decision
+  - A-parsing
+assignees: []
+created_at: 2019-12-18T11:32:32Z
+updated_at: 2021-12-09T20:24:30Z
+url: https://github.com/clap-rs/clap/issues/1608
+synced_at: 2026-01-10T01:26:59Z
+---
+
+# ignore extra macos parameter
+
+---
+
+_Issue opened by @sixcorners on 2019-12-18 11:32_
+
+When you start an app on macos it will sometimes pass a process serial number. This blows up apps that use clap.
+The place where it is getting passed for me is from the "App downloaded from the internet" dialog box. When you click open it will try to open the rust app but fail and do nothing. If you ignored a parameter that looks like this `-psn_0_5539144` on macos then this would be fixed for all apps using clap.
+
+### Rust Version
+rustc 1.39.0
+
+### Affected Version of clap
+whatever the latest is (v2.31.2)
+
+### Expected Behavior Summary
+App doesn't fail when running from the "App downloaded from the internet" dialog box.
+
+### Actual Behavior Summary
+"error: Found argument '-p' which wasn't expected, or isn't valid in this context"
+
+### Steps to Reproduce the issue
+Launch a rust application on macos from the "App downloaded from the internet" warning dialog box.
+
+
+---
+
+_Renamed from "Handle macos process serial number" to "ignore extra macos parameter" by @sixcorners on 2019-12-19 16:21_
+
+---
+
+_Referenced in [alacritty/alacritty#2998](../../alacritty/alacritty/issues/2998.md) on 2020-01-03 16:31_
+
+---
+
+_Comment by @nixpulvis on 2020-01-03 16:41_
+
+IMO, this is a tragic interface being forced upon the community by Apple. Why should argument parsers need to deal with this, or applications without a need for the PSN. Couldn't it be passed in the `ENV` much more transparently?
+
+Either way it seems many applications don't care about this PSN, for example:
+
+https://github.com/bitcoin/bitcoin/blob/b6e34afe9735faf97d6be7a90fafd33ec18c0cbb/src/util/system.cpp#L383-L389
+
+So adding an option to ignore it on macOS may make sense. I wouldn't want non-macOS code to need to care though.
+
+---
+
+_Comment by @chrisduerr on 2020-01-03 20:05_
+
+If this was ignored in clap directly, I also think that it probably shouldn't just be done automatically without any compile-time checks. If a user wants to add their own `-psn` flag, things shouldn't explode.
+
+Though I don't think it's possible to build the string `-psn_` as  option right now, so that should be fine. But blocking just `-psn` would certainly cause huge troubles.
+
+---
+
+_Label `P4: nice to have` added by @CreepySkeleton on 2020-02-01 11:15_
+
+---
+
+_Label `T: RFC / question` added by @CreepySkeleton on 2020-02-01 11:15_
+
+---
+
+_Label `W: 2.x` added by @CreepySkeleton on 2020-02-01 11:15_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-01 11:15_
+
+---
+
+_Label `W: after v3 release` added by @CreepySkeleton on 2020-02-01 11:15_
+
+---
+
+_Label `W: maybe` added by @CreepySkeleton on 2020-02-01 11:15_
+
+---
+
+_Label `W: after v3 release` removed by @CreepySkeleton on 2020-02-07 07:14_
+
+---
+
+_Label `C: args` added by @pksunkara on 2020-04-01 18:16_
+
+---
+
+_Label `T: new setting` added by @pksunkara on 2020-04-01 18:16_
+
+---
+
+_Label `T: RFC / question` removed by @pksunkara on 2020-04-01 18:16_
+
+---
+
+_Label `W: 2.x` removed by @pksunkara on 2020-10-26 07:58_
+
+---
+
+_Comment by @woelper on 2021-03-04 15:39_
+
+I had this issue, too - in case it helps anyone, i used `.get_matches_from()` and filtered incoming arguments before with `let args: Vec<String> = std::env::args().filter(|a| !a.contains("psn_")).collect();`
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Referenced in [epage/clapng#130](../../epage/clapng/issues/130.md) on 2021-12-06 18:38_
+
+---
+
+_Label `C: args` removed by @epage on 2021-12-08 20:29_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:29_
+
+---
+
+_Label `T: new setting` removed by @epage on 2021-12-08 20:37_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 20:37_
+
+---
+
+_Label `P4: nice to have` removed by @epage on 2021-12-09 20:24_
+
+---

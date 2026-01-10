@@ -1,0 +1,41 @@
+---
+number: 8697
+title: "`uv export` only exports to STDOUT"
+type: issue
+state: closed
+author: TiansuYu
+labels: []
+assignees: []
+created_at: 2024-10-30T12:00:13Z
+updated_at: 2024-10-30T12:09:17Z
+url: https://github.com/astral-sh/uv/issues/8697
+synced_at: 2026-01-10T01:24:31Z
+---
+
+# `uv export` only exports to STDOUT
+
+---
+
+_Issue opened by @TiansuYu on 2024-10-30 12:00_
+
+`uv export` even if including `--directory <some path> --format requirement-txt` only prints out to STDOUT, not in a `requirements.txt` file. 
+
+- python version: `3.11.10`
+- uv version: `uv 0.4.28 (debe67ffd 2024-10-28)`
+- OS: MacOS
+
+I would expect `uv export --directory <some-path> # without or without --format` to create a `requirements.txt` file in `<some-path>`
+
+
+
+---
+
+_Comment by @TiansuYu on 2024-10-30 12:09_
+
+I misunderstood here, you should use `--output-file` to specify endpoints. 
+
+---
+
+_Closed by @TiansuYu on 2024-10-30 12:09_
+
+---

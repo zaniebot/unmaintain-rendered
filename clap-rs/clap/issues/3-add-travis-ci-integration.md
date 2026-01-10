@@ -1,0 +1,51 @@
+---
+number: 3
+title: Add Travis-CI integration
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2015-03-01T19:56:36Z
+updated_at: 2018-08-02T03:29:35Z
+url: https://github.com/clap-rs/clap/issues/3
+synced_at: 2026-01-10T01:26:22Z
+---
+
+# Add Travis-CI integration
+
+---
+
+_Issue opened by @kbknapp on 2015-03-01 19:56_
+
+_No description provided._
+
+---
+
+_Label `enhancement` added by @kbknapp on 2015-03-01 19:56_
+
+---
+
+_Comment by @kbknapp on 2015-03-01 22:54_
+
+Added.
+
+
+---
+
+_Closed by @kbknapp on 2015-03-01 22:54_
+
+---
+
+_Referenced in [clap-rs/clap#1661](../../clap-rs/clap/issues/1661.md) on 2020-02-03 09:24_
+
+---
+
+_Referenced in [clap-rs/clap#1750](../../clap-rs/clap/issues/1750.md) on 2020-03-17 12:59_
+
+---
+
+_Referenced in [clap-rs/clap#6107](../../clap-rs/clap/issues/6107.md) on 2025-08-25 22:06_
+
+---

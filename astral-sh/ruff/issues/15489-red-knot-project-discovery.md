@@ -1,0 +1,41 @@
+---
+number: 15489
+title: "[red-knot] Project discovery"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - ty
+assignees: []
+created_at: 2025-01-15T09:46:20Z
+updated_at: 2025-01-23T15:02:50Z
+url: https://github.com/astral-sh/ruff/issues/15489
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# [red-knot] Project discovery
+
+---
+
+_Issue opened by @MichaReiser on 2025-01-15 09:46_
+
+* [x] Support `pyproject.toml`
+* [x] Support `knot.toml`
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2025-01-15 09:46_
+
+---
+
+_Added to milestone `Red Knot Q1 2025` by @MichaReiser on 2025-01-15 09:46_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2025-01-15 09:46_
+
+---
+
+_Closed by @MichaReiser on 2025-01-23 15:02_
+
+---

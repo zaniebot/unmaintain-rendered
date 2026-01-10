@@ -1,0 +1,44 @@
+---
+number: 14827
+title: "Explicitly specify platform wheel in `uv_build` backend"
+type: issue
+state: open
+author: charlesnicholson
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-07-22T17:57:02Z
+updated_at: 2025-07-22T17:57:02Z
+url: https://github.com/astral-sh/uv/issues/14827
+synced_at: 2026-01-10T01:25:49Z
+---
+
+# Explicitly specify platform wheel in `uv_build` backend
+
+---
+
+_Issue opened by @charlesnicholson on 2025-07-22 17:57_
+
+### Summary
+
+We have pure Python packages that we dynamically bundle OS-specific native shared libraries with as data during distribution package preparation ("wheeling"). As a result, despite there being no extension methods, the distribution wheels are still platform-specific.
+
+The build frontend and backend (originally pip + setuptools + wheel, now uv and uv_build) don't know this, so to accomplish this we need to explicitly specify that the wheel be a platform wheel. 
+
+Today we do this via `python -m wheel tags --platform-tag XXX` where XXX is the platform we care about (e.g. `win_amd64`. See https://stackoverflow.com/questions/75204255/how-to-force-a-platform-wheel-using-build-and-pyproject-toml for more context.
+
+We can always simply rename the .whl file, since there doesn't appear to be any metadata, but then we have to make sure we get the names right (nothing validates that we're giving them the right names). It would be much nicer if we could pass an arg to the `uv_build` backend as part of the build invocation that says "look, please treat this as a platform-specific wheel despite it not having extension methods; i know what i'm doing"
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @charlesnicholson on 2025-07-22 17:57_
+
+---
+
+_Referenced in [KyleKing/textract-py3#16](../../KyleKing/textract-py3/pulls/16.md) on 2025-11-20 04:43_
+
+---

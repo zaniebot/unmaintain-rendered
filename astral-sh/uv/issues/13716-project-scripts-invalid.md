@@ -1,0 +1,85 @@
+---
+number: 13716
+title: "[project.scripts] invalid"
+type: issue
+state: closed
+author: thcpdd
+labels:
+  - question
+assignees: []
+created_at: 2025-05-29T10:51:13Z
+updated_at: 2025-06-02T00:13:00Z
+url: https://github.com/astral-sh/uv/issues/13716
+synced_at: 2026-01-10T01:25:37Z
+---
+
+# [project.scripts] invalid
+
+---
+
+_Issue opened by @thcpdd on 2025-05-29 10:51_
+
+### Question
+
+I want to define a script name to start fastapi convinently, so I write config file:
+```
+[project]
+name = "uv-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.2",
+]
+
+[project.scripts]
+dev = "uvicorn main:app"
+start = "uvicorn main:app --host 0.0.0.0"
+```
+But it has an error when I run `uv run dev`:
+```bash
+error: Failed to spawn: `dev`
+  Caused by: program not found
+```
+The `main.py` file content:
+```python
+from fastapi import FastAPI
+
+
+app = FastAPI()
+
+
+@app.get('/index')
+def index():
+    return {"msg": "hello"}
+
+```
+
+
+### Platform
+
+Windows 11 x86_64
+
+### Version
+
+uv 0.7.8 (0ddcc1905 2025-05-23)
+
+---
+
+_Label `question` added by @thcpdd on 2025-05-29 10:51_
+
+---
+
+_Comment by @zanieb on 2025-05-29 12:29_
+
+That's not how `project.scripts` works, see https://docs.astral.sh/uv/concepts/projects/config/#command-line-interfaces and https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
+
+I think you're looking for #5903 
+
+---
+
+_Closed by @charliermarsh on 2025-06-02 00:13_
+
+---

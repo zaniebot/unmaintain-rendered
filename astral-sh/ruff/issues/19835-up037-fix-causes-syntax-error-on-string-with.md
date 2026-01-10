@@ -1,0 +1,59 @@
+---
+number: 19835
+title: UP037 fix causes syntax error on string with newline escape and comment
+type: issue
+state: open
+author: MeGaGiGaGon
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2025-08-08T20:05:16Z
+updated_at: 2025-08-08T20:07:32Z
+url: https://github.com/astral-sh/ruff/issues/19835
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# UP037 fix causes syntax error on string with newline escape and comment
+
+---
+
+_Issue opened by @MeGaGiGaGon on 2025-08-08 20:05_
+
+### Summary
+
+If a quoted annotation contains a newline escape (`\n`) before a comment (`#`), the fix for [quoted-annotation (UP037)](https://docs.astral.sh/ruff/rules/quoted-annotation/#quoted-annotation-up037) will cause a syntax error [playground](https://play.ruff.rs/43c56f81-29c2-401e-895b-f1f01d29c128):
+```powershell
+PS ~>echo @'
+from __future__ import annotations
+def foo(bar: "A\n#"): ...
+'@ | uvx ruff check --select UP037 - --fix 2>&1 | rg "syntax error"
+error: Fix introduced a syntax error. Reverting all changes.
+```
+The fix works fine if the newline is instead added using a multiline string, so (completely guessing) this might be fixable by making these cases also take that code path.
+```powershell
+PS ~>echo @'
+from __future__ import annotations
+def foo(bar: """A
+#"""): ...
+'@ | uvx ruff check --select UP037 - --fix
+from __future__ import annotations
+def foo(bar: (A
+#
+)): ...
+Found 1 error (1 fixed, 0 remaining).
+```
+
+### Version
+
+ruff 0.12.8 (f51a228f0 2025-08-07)
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-08 20:07_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-08-08 20:07_
+
+---

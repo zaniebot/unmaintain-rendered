@@ -1,0 +1,333 @@
+---
+number: 2785
+title: "Section headings don't match contents"
+type: issue
+state: closed
+author: stevenengler
+labels:
+  - C-bug
+  - A-derive
+assignees: []
+created_at: 2021-09-24T15:33:55Z
+updated_at: 2021-10-16T04:00:55Z
+url: https://github.com/clap-rs/clap/issues/2785
+synced_at: 2026-01-10T01:27:25Z
+---
+
+# Section headings don't match contents
+
+---
+
+_Issue opened by @stevenengler on 2021-09-24 15:33_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.55.0 (c8dfcfe04 2021-09-06)
+
+### Clap Version
+
+master
+
+### Minimal reproducible code
+
+```rust
+use clap::Clap;
+
+#[derive(Debug, Clone, Clap)]
+struct CliOptions {
+    #[clap(flatten)]
+    options_a: OptionsA,
+
+    #[clap(flatten)]
+    options_b: OptionsB,
+}
+
+#[derive(Debug, Clone, Clap)]
+#[clap(help_heading = "HEADING A")]
+struct OptionsA {
+    #[clap(long)]
+    should_be_in_section_a: Option<u32>,
+}
+
+#[derive(Debug, Clone, Clap)]
+#[clap(help_heading = "HEADING B")]
+struct OptionsB {
+    #[clap(long)]
+    should_be_in_section_b: Option<u32>,
+}
+
+fn main() {
+    CliOptions::parse();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- --help
+```
+
+### Actual Behaviour
+
+```
+clap-failure-example
+
+USAGE:
+    clap-failure-example [OPTIONS]
+
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+OPTIONS:
+        --should-be-in-section-a <SHOULD_BE_IN_SECTION_A>
+
+HEADING A:
+        --should-be-in-section-b <SHOULD_BE_IN_SECTION_B>
+```
+
+### Expected Behaviour
+
+```
+clap-failure-example
+
+USAGE:
+    clap-failure-example
+
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+HEADING A:
+        --should-be-in-section-a <SHOULD_BE_IN_SECTION_A>
+
+HEADING B:
+        --should-be-in-section-b <SHOULD_BE_IN_SECTION_B>
+```
+
+### Additional Context
+
+This was broken by #2531.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `T: bug` added by @stevenengler on 2021-09-24 15:33_
+
+---
+
+_Comment by @pksunkara on 2021-09-24 15:42_
+
+Thanks for digging into this more than needed. Always appreciate the extra info.
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-09-24 15:42_
+
+---
+
+_Comment by @epage on 2021-09-24 15:42_
+
+This was broken by #2531.
+
+`App::help_heading` is required to be called before adding args but in #2531, we switched to calling app methods after args.
+
+---
+
+_Label `:money_with_wings: $10` added by @pksunkara on 2021-09-24 15:43_
+
+---
+
+_Label `D: easy` added by @pksunkara on 2021-09-24 15:43_
+
+---
+
+_Comment by @epage on 2021-09-24 15:44_
+
+My proposal is still the same, we revert #2531 and instead move setting of help/about to `into_app`.  `Args` should not be setting these while `Clap`s should.
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-09-24 15:44_
+
+---
+
+_Comment by @epage on 2021-09-24 15:45_
+
+@pksunkara I wouldn't classify this as easy until we have a decision made on what we want the behavior to be because `help_heading` is at tension with the doc comment.
+
+---
+
+_Label `D: easy` removed by @pksunkara on 2021-09-24 15:47_
+
+---
+
+_Label `:money_with_wings: $10` removed by @pksunkara on 2021-09-24 15:47_
+
+---
+
+_Comment by @epage on 2021-09-24 15:48_
+
+Note: this can be worked around by setting the help heading on each arg.  Not ideal but one way to be unblocked.
+
+---
+
+_Comment by @pksunkara on 2021-09-24 15:58_
+
+I think just the first arg in each flattened struct should be enough as a workaround IIRC.
+
+```rust
+#[derive(Debug, Clone, Clap)]
+struct OptionsA {
+    #[clap(long)]
+    #[clap(help_heading = "HEADING A")]
+    should_be_in_section_a: Option<u32>,
+}
+```
+
+---
+
+_Comment by @pksunkara on 2021-09-24 15:59_
+
+I will leave the decision of 3.0 milestone to you. I am not sure if what you are proposing needs breaking changes or not.
+
+---
+
+_Comment by @stevenengler on 2021-09-24 16:09_
+
+Thanks for the quick replies!
+
+> I think just the first arg in each flattened struct should be enough as a workaround IIRC.
+
+It looks like it needs to be set on each individually:
+
+```rust
+use clap::Clap;
+
+#[derive(Debug, Clone, Clap)]
+struct CliOptions {
+    #[clap(flatten)]
+    options_a: OptionsA,
+
+    #[clap(flatten)]
+    options_b: OptionsB,
+}
+
+#[derive(Debug, Clone, Clap)]
+struct OptionsA {
+    #[clap(long)]
+    #[clap(help_heading = Some("HEADING A"))]
+    should_be_in_section_a: Option<u32>,
+
+    #[clap(long)]
+    should_also_be_in_section_a: Option<u32>,
+}
+
+#[derive(Debug, Clone, Clap)]
+struct OptionsB {
+    #[clap(long)]
+    #[clap(help_heading = Some("HEADING B"))]
+    should_be_in_section_b: Option<u32>,
+
+    #[clap(long)]
+    should_also_be_in_section_b: Option<u32>,
+}
+
+fn main() {
+    CliOptions::parse();
+}
+```
+
+```text
+clap-failure-example
+
+USAGE:
+    clap-failure-example [OPTIONS]
+
+FLAGS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+OPTIONS:
+        --should-also-be-in-section-a <SHOULD_ALSO_BE_IN_SECTION_A>
+        --should-also-be-in-section-b <SHOULD_ALSO_BE_IN_SECTION_B>
+
+HEADING A:
+        --should-be-in-section-a <SHOULD_BE_IN_SECTION_A>
+
+HEADING B:
+        --should-be-in-section-b <SHOULD_BE_IN_SECTION_B>
+```
+
+---
+
+_Comment by @epage on 2021-09-24 16:10_
+
+> I will leave the decision of 3.0 milestone to you. I am not sure if what you are proposing needs breaking changes or not.
+
+My proposed change would not be an API breakage but a behavior breakage (expectations for what deriving `Args` does)
+
+---
+
+_Comment by @epage on 2021-09-24 16:11_
+
+> It looks like it needs to be set on each:
+
+Thanks for confirming this.  I was making my assumption based on doc string
+
+> Set a custom heading for this arg to be printed under
+
+https://docs.rs/clap/3.0.0-beta.4/clap/struct.Arg.html#method.help_heading
+
+---
+
+_Comment by @pksunkara on 2021-09-24 17:58_
+
+Ah, I was confusing that with https://docs.rs/clap/3.0.0-beta.4/clap/struct.App.html#method.help_heading
+
+---
+
+_Referenced in [clap-rs/clap#2803](../../clap-rs/clap/issues/2803.md) on 2021-10-01 20:53_
+
+---
+
+_Referenced in [clap-rs/clap#2814](../../clap-rs/clap/pulls/2814.md) on 2021-10-05 14:49_
+
+---
+
+_Assigned to @epage by @epage on 2021-10-14 02:01_
+
+---
+
+_Referenced in [clap-rs/clap#2872](../../clap-rs/clap/pulls/2872.md) on 2021-10-14 16:56_
+
+---
+
+_Referenced in [clap-rs/clap#2873](../../clap-rs/clap/issues/2873.md) on 2021-10-14 17:35_
+
+---
+
+_Referenced in [clap-rs/clap#2882](../../clap-rs/clap/pulls/2882.md) on 2021-10-15 14:09_
+
+---
+
+_Closed by @bors[bot] on 2021-10-16 04:00_
+
+---
+
+_Referenced in [clap-rs/clap#2894](../../clap-rs/clap/issues/2894.md) on 2021-10-16 15:03_
+
+---
+
+_Referenced in [shadow/shadow#1726](../../shadow/shadow/pulls/1726.md) on 2021-10-18 03:48_
+
+---

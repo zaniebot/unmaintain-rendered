@@ -1,0 +1,162 @@
+---
+number: 14994
+title: "[pytest] New rule idea- Prefer multiple `pytest.param(..., id=...)` over `pytest.mark.parametrize(..., ids=...)`"
+type: issue
+state: open
+author: UnknownPlatypus
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-12-15T22:27:04Z
+updated_at: 2025-11-03T15:38:14Z
+url: https://github.com/astral-sh/ruff/issues/14994
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# [pytest] New rule idea- Prefer multiple `pytest.param(..., id=...)` over `pytest.mark.parametrize(..., ids=...)`
+
+---
+
+_Issue opened by @UnknownPlatypus on 2024-12-15 22:27_
+
+Hi ! 
+
+This is a new rule suggestion for the [pytest-style](https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt) plugin.
+
+It checks for `pytest.mark.parametrize` calls using the `ids` keyword argument and replace each set of test values with a `pytest.params(.., id=...)` parameter set, effectively binding the id with the set of arguments.
+
+When using the `ids=[…]` syntax, each id is bound to a set of parameters by index.
+
+This is quite error prone and makes test hard to modify (adding a test case in the middle means adding an id at the corresponding index in the ids list). Moreover, if one test case fails, it's not directly obvious which set of parameters is associated with the failing id. This issue gets worse the more test case you have in your parametrize call.
+
+Pytest [seems to agree](https://docs.pytest.org/en/7.1.x/example/parametrize.html#different-options-for-test-ids) this is not a good pattern:
+
+> In test_timedistance_v1, we specified ids as a list of strings which were used as the test IDs. These are succinct, but can be a pain to maintain.
+
+An autofix would look like this:
+
+Don't use:
+```python
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [
+        (datetime(2001, 12, 12), datetime(2001, 12, 11), timedelta(1)),
+        ... # 10 other test cases
+        (datetime(2001, 12, 11), datetime(2001, 12, 12), timedelta(-1)),
+    ],
+    ids=["forward", ..., "backward"],
+)
+def test(a, b, expected):
+    pass
+```
+Use instead:
+```python
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [
+        pytest.param(
+            datetime(2001, 12, 12), datetime(2001, 12, 11), timedelta(1), id="forward"
+        ),
+        ... # 10 other test cases
+        pytest.param(
+            datetime(2001, 12, 11), datetime(2001, 12, 12), timedelta(-1), id="backward"
+        ),
+    ],
+)
+def test(a, b, expected):
+    pass
+```
+I've already implemented such fixer [in python](https://github.com/UnknownPlatypus/django-upgrade/pull/3) (using pyupgrade/django-upgrade building blocs) **and would be very interested in porting this to ruff.**
+
+If you have in mind another MR I could take inspiration from (especially the auto-fix part) it would be awesome! 
+Also I'm not sure which code to use, PT028 could overlap with a potential new pytest-style rule
+
+
+
+---
+
+_Label `rule` added by @dylwil3 on 2024-12-16 04:39_
+
+---
+
+_Label `needs-decision` added by @dylwil3 on 2024-12-16 04:39_
+
+---
+
+_Comment by @MichaReiser on 2024-12-16 07:43_
+
+Thanks @UnknownPlatypus for the nice write up. 
+
+For now, we only rarely add new rules that don't exist in the upstream linter (in this case, pytest-style). Do you know if your lint has been proposed and discussed for [flake8-pytest](https://github.com/m-burst/flake8-pytest-style/issues?q=sort%3Aupdated-desc+is%3Aissue+is%3Aopen)
+
+---
+
+_Comment by @UnknownPlatypus on 2024-12-16 12:35_
+
+@MichaReiser To my knowledge, it has not been discussed in flake8-pytest and I intentionally didn't open an issue there because this is the kind of rule that would be extremely cumbersome to manually fix (hence the reason I wrote an autofixer for it only).
+
+But I can open an issue there if you want to get some more input from the pytest community that might be more present there ?
+
+
+---
+
+_Comment by @TomerBin on 2024-12-17 21:55_
+
+Thank you @UnknownPlatypus !! This rule sounds amazing 
+
+---
+
+_Comment by @Zac-HD on 2025-01-11 02:53_
+
+PT028 is indeed a new rule, see https://github.com/m-burst/flake8-pytest-style/pull/324.
+
+
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2025-01-11 07:47_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-01-11 08:51_
+
+---
+
+_Comment by @UnknownPlatypus on 2025-01-11 14:51_
+
+And also [PT029-31 now](https://github.com/m-burst/flake8-pytest-style?tab=readme-ov-file#change-log). 
+
+I've opened [a matching issue](https://github.com/m-burst/flake8-pytest-style/issues/328) in pytest-style following Micha advice. Might help for the decision here too
+
+---
+
+_Comment by @UnknownPlatypus on 2025-04-18 21:13_
+
+Hey @MichaReiser , still very interested to implement this fixer in ruff. 
+
+The upstream repo did not see any activity in the last 3 months so it will not help decide I guess.
+
+It would probably make sense to add it to ruff in the PT9XX range (like it has been done for flake8-datetimez with https://docs.astral.sh/ruff/rules/datetime-min-max/.
+
+What are your thoughts on this ?
+
+---
+
+_Comment by @randolf-scholz on 2025-11-03 12:41_
+
+One can also pass a `Callable` for `ids` to formats the argument, it seems your proposal doesn't take that into account.
+I think your suggestion only makes sense when multiple arguments are parametrized at once, because in this case, `ids` is applied to each argument independently, which usually is undesired (see https://github.com/pytest-dev/pytest/issues/8283)
+
+
+
+
+
+
+---
+
+_Comment by @UnknownPlatypus on 2025-11-03 15:37_
+
+The `Callable` case would be skipped, my proposal is only about the list of strings syntax. See pytest doc link in the issue
+
+---

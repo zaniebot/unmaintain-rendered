@@ -1,0 +1,137 @@
+---
+number: 9789
+title: PLC2801 triggers for cases that are not necessarily errors
+type: issue
+state: closed
+author: ThiefMaster
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2024-02-02T16:13:28Z
+updated_at: 2024-05-24T17:27:04Z
+url: https://github.com/astral-sh/ruff/issues/9789
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# PLC2801 triggers for cases that are not necessarily errors
+
+---
+
+_Issue opened by @ThiefMaster on 2024-02-02 16:13_
+
+Is PLC2801 really supposed to trigger in this case, and suggest using a `get` method that does not exist? I can of course easily silence the rule, but just in case it's overzealous here I'm opening this issue.
+
+```python
+class classproperty(property):
+    def __get__(self, obj, type=None):
+        return self.fget.__get__(None, type)()
+
+
+class A:
+    @classproperty
+    @classmethod
+    def prop(cls):
+        return 'aaa'
+
+
+class B:
+    prop = 'bbb'
+
+
+class C:
+    pass
+
+
+class Foo(A, B, C):
+    @classmethod
+    def test(cls):
+        for class_ in reversed(cls.mro()[:-1]):
+            prop = class_.__dict__.get('prop')
+            if isinstance(prop, classproperty):
+                prop = prop.__get__(None, class_)
+            print(class_.__name__, prop)
+
+
+Foo.test()
+```
+
+```
+[adrian@eluvian:~/dev/indico/py3/src:update-ruff +$]> ruff --version
+ruff 0.2.0
+
+[adrian@eluvian:~/dev/indico/py3/src:update-ruff +$]> ruff --isolated --select PLC2801 --preview --no-cache rufftest/ruff_sample.py
+rufftest/ruff_sample.py:27:24: PLC2801 Unnecessary dunder call to `__get__`. Use `get` method.
+   |
+25 |             prop = class_.__dict__.get('prop')
+26 |             if isinstance(prop, classproperty):
+27 |                 prop = prop.__get__(None, class_)
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^ PLC2801
+28 |             print(class_.__name__, prop)
+   |
+   = help: Use `get` method
+
+Found 1 error.
+
+```
+
+---
+
+_Comment by @zanieb on 2024-02-02 16:18_
+
+Huh... reading https://docs.python.org/3/howto/descriptor.html this sounds like a totally incorrect suggestion for how `__get__` is supposed to work in the first place?
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-02 16:18_
+
+---
+
+_Comment by @ThiefMaster on 2024-02-02 16:20_
+
+Yes, `__get__` is a property thing and has nothing to do with a dict's `.get()`
+
+---
+
+_Label `help wanted` added by @zanieb on 2024-02-02 16:23_
+
+---
+
+_Comment by @charliermarsh on 2024-02-02 16:37_
+
+Looks like it is similar in Pylint: https://github.com/pylint-dev/pylint/blob/6062c1d8bb16de5d1a9f14f51b265653483ad6dd/pylint/constants.py#L143
+
+---
+
+_Referenced in [astral-sh/ruff#9791](../../astral-sh/ruff/pulls/9791.md) on 2024-02-02 17:11_
+
+---
+
+_Comment by @LefterisJP on 2024-02-04 13:47_
+
+We also get lots of unecessary hits on this rule. We also use the dunder set in a hacky way to get around immutability somewhere temporarily so it's also on us, but then this rule also hits.
+
+---
+
+_Comment by @charliermarsh on 2024-02-04 18:14_
+
+I believe we're removing `__get__` and `__set__`.
+
+---
+
+_Closed by @charliermarsh on 2024-02-05 15:54_
+
+---
+
+_Comment by @s-banach on 2024-05-24 17:25_
+
+Why would calling a dunder method ever be an error?
+Nobody is doing it accidentally, they do it because they're method chaining.
+
+---
+
+_Comment by @ThiefMaster on 2024-05-24 17:27_
+
+Just because something is possible it's not a good idea. And you can disable the rule altogether if you like doing it and want to keep doing it in your own codebase...
+
+---

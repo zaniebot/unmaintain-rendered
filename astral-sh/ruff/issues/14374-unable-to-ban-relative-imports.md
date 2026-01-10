@@ -1,0 +1,86 @@
+---
+number: 14374
+title: unable to ban relative imports
+type: issue
+state: closed
+author: zkurtz
+labels:
+  - question
+assignees: []
+created_at: 2024-11-16T00:54:41Z
+updated_at: 2024-11-16T01:07:09Z
+url: https://github.com/astral-sh/ruff/issues/14374
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# unable to ban relative imports
+
+---
+
+_Issue opened by @zkurtz on 2024-11-16 00:54_
+
+Here's an entire minimal repo dedicated to illustrating the issue: https://github.com/zkurtz/tmp_debug_ruff
+
+My pyproject.toml includes the snippet provided [in the docs]( https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_ban-relative-imports):
+```
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+```
+
+My repo includes a relative import: `from . import blah`.
+
+But running `ruff check .` in my repo says all checks passed, and `ruff check --fix` makes no changes. My interpretation of the rule was that it either should throw an error or fix the import to `from src.import blah`.
+
+My ruff version is 0.7.4.
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-11-16 00:56_
+
+Thanks for the repro. You need to enable the rule -- it's not enabled by default:
+
+```shell
+❯ uvx ruff check --select TID
+src/__init__.py:1:1: TID252 Prefer absolute imports over relative imports
+  |
+1 | from . import blah
+  | ^^^^^^^^^^^^^^^^^^ TID252
+2 | # expecting ruff to require this to be `from src import blah`
+  |
+  = help: Replace relative imports with absolute imports
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+```
+
+You add this to your `pyproject.toml`, as an example:
+
+```toml
+[tool.ruff.lint]
+extend-select = ["TID"]
+```
+
+---
+
+_Comment by @zkurtz on 2024-11-16 01:03_
+
+Success, thank you! My only follow up question is whether the docs could be clarified; it's still not obvious to me where the docs imply this solution.
+
+---
+
+_Closed by @zkurtz on 2024-11-16 01:05_
+
+---
+
+_Comment by @charliermarsh on 2024-11-16 01:07_
+
+Sweet. There's some information on rule selection here: https://docs.astral.sh/ruff/linter/#rule-selection
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-16 01:07_
+
+---

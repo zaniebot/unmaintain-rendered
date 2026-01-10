@@ -1,0 +1,60 @@
+---
+number: 10177
+title: Share UV projects to team after init built
+type: issue
+state: closed
+author: thinhs107
+labels:
+  - question
+assignees: []
+created_at: 2024-12-26T18:17:54Z
+updated_at: 2024-12-27T18:20:56Z
+url: https://github.com/astral-sh/uv/issues/10177
+synced_at: 2026-01-10T01:24:50Z
+---
+
+# Share UV projects to team after init built
+
+---
+
+_Issue opened by @thinhs107 on 2024-12-26 18:17_
+
+Hello,
+
+I am currently working on and evaluating the UV products and would like to know if anybody can help me share my projects with other team members instead of pushing it to PyPi. I successfully built the project using 'uv build' which created dist\{*.tar} and dist\{*.whl}; but unsure what will be next step will be if I to distribute it locally. 
+
+Thank you
+
+---
+
+_Comment by @FishAlchemist on 2024-12-26 19:58_
+
+Since you've used the project's API, the relevant documentation is here.
+https://docs.astral.sh/uv/concepts/projects/
+
+I'm unsure of what you're trying to accomplish, so I'd like to understand your previous process.
+
+Note: Most of the outputs of UV actually meet the PEP standard.
+
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 22:52_
+
+You could share the built `.tar.gz` and `.whl` files with teammates, and they can then install them with `uv pip install /path/to/file.whl`.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-12-26 22:52_
+
+---
+
+_Comment by @thinhs107 on 2024-12-27 18:20_
+
+@charliermarsh - awesome. thank you for the information. That is what I was aiming for.
+
+---
+
+_Closed by @thinhs107 on 2024-12-27 18:20_
+
+---

@@ -1,0 +1,108 @@
+---
+number: 13822
+title: "What's the best way to cite this project?"
+type: issue
+state: open
+author: Pacatro
+labels:
+  - wish
+assignees: []
+created_at: 2025-06-03T15:02:36Z
+updated_at: 2025-06-04T14:24:17Z
+url: https://github.com/astral-sh/uv/issues/13822
+synced_at: 2026-01-10T01:25:38Z
+---
+
+# What's the best way to cite this project?
+
+---
+
+_Issue opened by @Pacatro on 2025-06-03 15:02_
+
+### Question
+
+Hi! I'm currently working on a project that uses `uv`, and I was wondering if there is a way to cite this repository in [BibTeX](https://www.bibtex.com/g/bibtex-format/) format. I've seen that some GitHub repositories include a "Cite this repository" option, but that doesn't seem to be available here.
+
+Would it be possible to add support for this feature, or could you provide a recommended citation format for referencing `uv` in academic or technical work?
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @Pacatro on 2025-06-03 15:02_
+
+---
+
+_Comment by @zanieb on 2025-06-03 15:59_
+
+Hey! Can you share an example you've seen in another repository?
+
+---
+
+_Comment by @edmorley on 2025-06-03 16:16_
+
+TIL:
+https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files
+
+
+---
+
+_Comment by @Pacatro on 2025-06-03 17:08_
+
+> TIL: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files
+
+Yep, that's what I'm talking about.
+
+---
+
+_Referenced in [astral-sh/uv#13824](../../astral-sh/uv/pulls/13824.md) on 2025-06-03 17:17_
+
+---
+
+_Comment by @konstin on 2025-06-03 17:33_
+
+uv doesn't have a publication, so you can cite it like an other website or `@misc`. In your journal's citation guidelines, there may be specific notes on software or GitHub that you need to follow.
+
+---
+
+_Comment by @IvanIsCoding on 2025-06-03 23:46_
+
+@zanieb  As a suggestion, `uv` could be archived with [Zenodo](https://zenodo.org/) like any other scientific software. That would generate a DOI and a corresponding citation. The source code would also be preserved as well.
+
+For example, Conda is archived on Zenodo: https://doi.org/10.5281/zenodo.10055409.
+
+edit: it looks like even [conda-forge](https://conda-forge.org/news/2021/05/22/conda-forge-is-now-citable/) created a [Zenodo entry](https://zenodo.org/records/4774217) to be citable as well. This is what their [`CITATION.cff` looks like on their repository](https://github.com/conda-forge/conda-forge.github.io/blob/main/CITATION.cff)
+
+---
+
+_Comment by @zanieb on 2025-06-04 14:23_
+
+For posterity, I looked into this briefly...
+
+- I am supportive of publishing each release to Zenodo
+- It turns out they have a GitHub Integration that just "does this" using a webhook on release
+- However, they require admin permissions to webhooks, which is unacceptable for us for security reasons
+- There's not a way to set up a GitHub Integration with a manually added webhook, maybe that's a feature request
+- We can add a job that manually performs the upload to our CI
+- I futzed with some AI to generate a GitHub Action / bash script we could use on release, but it doesn't seem entirely trivial
+- We can't prioritize adding something like that to our release process, though I would review a contribution if it is high quality and tested on a fork with the Zenodo sandbox
+
+---
+
+_Label `question` removed by @zanieb on 2025-06-04 14:23_
+
+---
+
+_Label `wish` added by @zanieb on 2025-06-04 14:23_
+
+---
+
+_Renamed from "Citation" to "What's the best way to cite this project?" by @zanieb on 2025-06-04 14:24_
+
+---

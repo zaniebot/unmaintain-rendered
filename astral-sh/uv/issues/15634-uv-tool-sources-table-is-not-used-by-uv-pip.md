@@ -1,0 +1,85 @@
+---
+number: 15634
+title: "`uv.tool.sources` table is not used by `uv pip install` except for project installation"
+type: issue
+state: closed
+author: wshanks
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-02T17:50:49Z
+updated_at: 2025-09-05T14:43:10Z
+url: https://github.com/astral-sh/uv/issues/15634
+synced_at: 2026-01-10T01:25:58Z
+---
+
+# `uv.tool.sources` table is not used by `uv pip install` except for project installation
+
+---
+
+_Issue opened by @wshanks on 2025-09-02 17:50_
+
+### Summary
+
+As described in the documentation [here](https://docs.astral.sh/uv/concepts/indexes/#pinning-a-package-to-an-index), `uv.tool.sources` can be used to pin a dependency to a specific index. The second example given is to pin `torch` to different Pytorch indexes depending on the platform:
+
+```toml
+[project]
+dependencies = ["torch"]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu118", marker = "sys_platform == 'darwin'"},
+  { index = "pytorch-cu124", marker = "sys_platform != 'darwin'"},
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+```
+
+If one uses `uv pip install .` in the project directory containing the `pyproject.toml` file on Linux, the `tool.uv.sources` table is respected and in this case `torch` would be installed from the `pytorch-cu124` index. However, if one uses `uv pip install torch`, uv will instead fall back to checking the indexes in order and will install `torch` from the `python-cu118` index.
+
+The main usage pattern where I encounter this behavior is with [tox-uv](https://github.com/tox-dev/tox-uv). `tox` splits out the project dependencies from the project and installs all the dependencies with an explicit `pip install` step and then installs the project after that. When using `tox-uv`, the dependency installation step using `uv pip install <dependencies>` installs the dependencies without referencing the `tool.uv.sources` index pinning.
+
+I filed this under the "bug" category. My preference would be for `uv pip install` to respect `uv.tool.sources` when run in a directory with a `pyproject.toml` file (like `tool.uv.index` is). However, I could understand if the decision was that `tool.uv.sources` only applied to project installation and not ad hoc package installation (but maybe that should be documented).
+
+### Platform
+
+Fedora Linux 42, x86_64 (but should be platform independent)
+
+### Version
+
+uv 0.8.14
+
+### Python version
+
+Python 3.13.3
+
+---
+
+_Label `bug` added by @wshanks on 2025-09-02 17:50_
+
+---
+
+_Comment by @konstin on 2025-09-05 12:08_
+
+This is by design: Sources only apply to dependencies in the project or workspace. They work better with the project-based commands (`uv lock`, `uv sync`, `uv run`, etc.). I agree that it's confusing that we apply e.g. indexes in `pyproject.toml` are always respected but sources only for the project, but we found it would be more confusing if `uv pip install torch` would consider project sources.
+
+For the tox-uv case, we have `uv sync --no-install-workspace` to install only the dependencies, and then `uv sync` which install only the workspace members on top. Those commands may work better for this model than the `uv pip` interface.
+
+---
+
+_Comment by @wshanks on 2025-09-05 14:43_
+
+Thanks @konstin! I will close since there is no action to take here. Digging some more into the tox-uv repo to see where `uv sync --no-install-workspace` could go, I realized that there was a change intended to address `tool.uv.sources` in https://github.com/tox-dev/tox-uv/pull/180. That provides an option to set `package = uv` which leads to tox running `uv pip install .` instead of splitting out the dependencies and installing them first. So that option causes uv to get called only once with the project in the list of packages to be installed and so `tool.uv.sources` is used. Thanks to uv being super fast the loss of having the dependencies set up separately so that their setup can be skipped on subsequent runs is not really missed.
+
+---
+
+_Closed by @wshanks on 2025-09-05 14:43_
+
+---

@@ -1,0 +1,157 @@
+---
+number: 2803
+title: "Don't leak `help_heading` when flattening"
+type: issue
+state: closed
+author: epage
+labels:
+  - C-bug
+  - A-derive
+assignees: []
+created_at: 2021-10-01T20:53:36Z
+updated_at: 2021-10-16T20:11:06Z
+url: https://github.com/clap-rs/clap/issues/2803
+synced_at: 2026-01-10T01:27:26Z
+---
+
+# Don't leak `help_heading` when flattening
+
+---
+
+_Issue opened by @epage on 2021-10-01 20:53_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.55.0 (c8dfcfe04 2021-09-06)
+
+### Clap Version
+
+v3.0.0-beta.4
+
+### Minimal reproducible code
+
+```rust
+use clap::Clap;
+
+#[derive(Debug, Clone, Clap)]
+#[clap(help_heading = "General")]
+struct CliOptions {
+    #[clap(flatten)]
+    options_a: OptionsA,
+
+    #[clap(flatten)]
+    options_b: OptionsB,
+}
+
+#[derive(Debug, Clone, Clap)]
+#[clap(help_heading = "HEADING A")]
+struct OptionsA {
+    #[clap(long)]
+    should_be_in_section_a: Option<u32>,
+}
+
+#[derive(Debug, Clone, Clap)]
+struct OptionsB {
+    #[clap(long)]
+    option_b: Option<u32>,
+}
+
+fn main() {
+    CliOptions::parse();
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run -- --help
+
+### Actual Behaviour
+
+`option_b` is in "HEADING A"
+
+### Expected Behaviour
+
+`option_b` should be in `General
+
+### Additional Context
+
+This is split out of  #2785.  
+
+Similarly, we should also support setting `help_heading` when specifying `flatten` and it should push and pop the heading.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `T: bug` added by @epage on 2021-10-01 20:53_
+
+---
+
+_Added to milestone `3.0` by @epage on 2021-10-01 20:53_
+
+---
+
+_Comment by @epage on 2021-10-01 20:54_
+
+I'm assuming we'd need to add a `get_heading_help` and have the derive get it and then restore it afterwards.
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-10-01 21:09_
+
+---
+
+_Comment by @kbknapp on 2021-10-01 23:13_
+
+Oddly enough I ran into exactly this at work the other day.
+
+> I'm assuming we'd need to add a get_heading_help and have the derive get it and then restore it afterwards.
+
+Yeah that's the best way I can think of to do this in the least obtrusive manner. An alternative would be to have `#[clap(help_heading = "Foo"] struct Foo;` use `Arg::help_heading` individually on each field when creating the `Arg` struct instead of setting the "global" `App` help heading which sets the current heading for all future args added to the `App` until it's changed or reset.
+
+
+---
+
+_Comment by @epage on 2021-10-01 23:35_
+
+> An alternative would be to have #[clap(help_heading = "Foo"] struct Foo; use Arg::help_heading individually on each field when creating the Arg struct instead of setting the "global" App help heading which sets the current heading for all future args added to the App until it's changed or reset.
+
+Forgot to mention that I had considered this.  I assumed people would want the setting to be inherited which this wouldn't allow.  For example, [clap-verbosity-flag](https://github.com/rust-cli/clap-verbosity-flag) probably wouldn't be so prescriptive as setting its own help heading, relying on inheriting it.  We could extend the trait to allow passing in a heading, but I worry about that being a slippery slope for what goes in the trait interface.
+
+Granted, now that I say this, the converse to this also needs to be implemented  If someone sets the heading on a `flatten`, that should apply as an `App` heading and be reset afterwards so someone can set the heading on the clap-verbosity flags.
+
+---
+
+_Comment by @pksunkara on 2021-10-12 12:41_
+
+Related to #2785
+
+---
+
+_Referenced in [clap-rs/clap#2872](../../clap-rs/clap/pulls/2872.md) on 2021-10-14 16:56_
+
+---
+
+_Referenced in [clap-rs/clap#2882](../../clap-rs/clap/pulls/2882.md) on 2021-10-15 14:09_
+
+---
+
+_Referenced in [clap-rs/clap#2884](../../clap-rs/clap/pulls/2884.md) on 2021-10-15 15:20_
+
+---
+
+_Referenced in [clap-rs/clap#2895](../../clap-rs/clap/pulls/2895.md) on 2021-10-16 15:20_
+
+---
+
+_Closed by @bors[bot] on 2021-10-16 20:11_
+
+---

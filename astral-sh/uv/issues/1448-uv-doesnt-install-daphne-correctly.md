@@ -1,0 +1,84 @@
+---
+number: 1448
+title: uv Doesnt install daphne correctly
+type: issue
+state: closed
+author: nofalx
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-16T07:23:44Z
+updated_at: 2024-02-22T03:04:20Z
+url: https://github.com/astral-sh/uv/issues/1448
+synced_at: 2026-01-10T01:23:06Z
+---
+
+# uv Doesnt install daphne correctly
+
+---
+
+_Issue opened by @nofalx on 2024-02-16 07:23_
+
+
+### How to produce?
+
+Make file below
+```
+install:
+	python$(PYTHON_VERSION) -m venv env
+	. env/bin/activate && pip --version
+	. env/bin/activate && python -m pip install --upgrade pip
+	. env/bin/activate && pip--version
+	. env/bin/activate && python  -m pip install uv
+	. env/bin/activate && uv pip install -r requirements.txt
+```
+
+for the file `env/bin/daphne`
+
+
+uv will produce this output
+```
+#!/project/env/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from daphne.cli import CommandLineInterface.entrypoint
+if __name__ == "__main__":
+    sys.argv[0] = re.sub(r"(-script\.pyw|\.exe)?$", "", sys.argv[0])
+    sys.exit(CommandLineInterface.entrypoint())
+
+```
+
+pip without uv will produce this output
+```
+#!/project/env/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from daphne.cli import CommandLineInterface
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(CommandLineInterface.entrypoint())
+```
+
+### The issue
+
+The issue lays in the
+`from daphne.cli import CommandLineInterface.entrypoint`
+as this is an invalid python code to import
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-02-16 07:42_
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 03:04_
+
+This was fixed by #1622.
+
+---
+
+_Closed by @charliermarsh on 2024-02-22 03:04_
+
+---

@@ -1,0 +1,326 @@
+---
+number: 5093
+title: "Allow customizing styling of `[default]`, `[possible values]`, `[env]` in arg description"
+type: issue
+state: closed
+author: epage
+labels:
+  - C-enhancement
+  - A-help
+assignees: []
+created_at: 2023-08-28T14:40:50Z
+updated_at: 2025-07-19T17:38:04Z
+url: https://github.com/clap-rs/clap/issues/5093
+synced_at: 2026-01-10T01:28:06Z
+---
+
+# Allow customizing styling of `[default]`, `[possible values]`, `[env]` in arg description
+
+---
+
+_Issue opened by @epage on 2023-08-28 14:40_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.3.3
+
+### Describe your use case
+
+From https://github.com/clap-rs/clap/issues/3234#issuecomment-1523123649
+
+> I cannot find the style to use to change the appearance of the default and possible values. They always appear white. Is that not currently supported?
+> 
+> <img alt="Screenshot 2023-04-26 at 1 51 01 PM" width="973" src="https://user-images.githubusercontent.com/16580576/234539329-81d4ab72-858c-4991-82db-8cfe02cb740e.png">
+> 
+> I understand that this might not be directly related to this issue, so I can open a new one if that's more appropriate.
+
+
+
+### Describe the solution you'd like
+
+Allow styling to either help it stand out from the rest of the description
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+From https://github.com/clap-rs/clap/issues/3234#issuecomment-1531541590
+
+> Besides naming the styling element for defaults, possible values, and env variables, I'm curious on how people think we should style it.
+> 
+> Some options I thought of:
+> 
+>     * `{spec}[default: true]{reset}` (all styled the same)
+> 
+>     * `{spec}[default: {literal}true{reset}{spec}]{reset}` (outer-styled, value stuled)
+> 
+>     * `[{spec}default:{reset} {literal}true{reset}]` (key-styled, values-styled)
+
+So long as we only use new style definitions, it is not a major or minor breaking change according to our support policy.  See https://github.com/clap-rs/clap/blob/master/CONTRIBUTING.md#compatibility-expectations
+
+---
+
+_Label `C-enhancement` added by @epage on 2023-08-28 14:40_
+
+---
+
+_Label `A-help` added by @epage on 2023-08-28 14:40_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2023-08-28 14:40_
+
+---
+
+_Referenced in [clap-rs/clap#3234](../../clap-rs/clap/issues/3234.md) on 2023-08-28 14:45_
+
+---
+
+_Comment by @GilShoshan94 on 2024-04-25 22:58_
+
+Hi, we can also add `[aliases]` and `[short aliases]` as well, there are at the same place in the code.
+
+I am in favor for:
+
+> `{spec}[default: {literal}true{reset}{spec}]{reset}` (outer-styled, value styled)
+
+The reason is the stay consistent with how `placeholder` style is applied (not just the key but the delimiters `[]` and `<>` are styled as well).
+
+For that, we would need to add one more field to the struct `Styles`, that we would name `spec`.
+
+I looked into the code and found that the modification should occures in `clap_builder/src/builder/styling.rs` (for `Styles`) and in `clap_builder/src/output/help_template.rs` to apply the style. (correct me if I'm wrong please)
+
+I am ready to work on this and to submit a PR but I have to admit that I am a bit confused about the mixed used of `StyledStr` and simple `&str`. Overall I see how styles are applied with `render()` and `render_reset()`. I just want to make sure how to write the code in the way that styles are not applied if `clap::ColorChoice` is set to `Never`.
+
+@epage Can you guide me on this precise point please ? And also, is there another place where I need to edit code ?
+
+---
+
+_Comment by @epage on 2024-04-26 00:26_
+
+> I just want to make sure how to write the code in the way that styles are not applied if clap::ColorChoice is set to Never.
+
+You don't need to worry about it.  The styling design that clap uses follows the idea of decoupling the presentation from the medium its being rendered to.  We style everything with colors as needed.  When we output, instead of `std::io::stdout`, we use `anstream::stdout` which takes our ANSI escape codes and renders them as needed.  For the user, if they are choosing not to use `anstream`, `StyledStr` lets them control the styling by offering the different ways of doing `Display`.
+
+> The reason is the stay consistent with how placeholder style is applied (not just the key but the delimiters [] and <> are styled as well).
+
+While I understand the principle, I think we also need to keep in mind how all of this will look.  When I was styling Cargo's output, I had considered using `{literal}` in more places (e.g. `Arg::help`) but i was worried that it was going to be too distracting from the primary focus of the output.  I will say this is likely more important in `-h` than in `--help` (with truly long form help).  I think for myself, I would render the `[]` content in a single style.  If terminals consistently rendered italics in a reasonable way, I'd likely use that.
+
+---
+
+_Comment by @GilShoshan94 on 2024-04-28 12:54_
+
+Hi @epage,
+
+I started to work on it. I add a `spec` field to the `Styles` struct.
+After reading you, I decide to simply try several styling and to let you decide what do you like the most:
+
+A) `{spec}[default: true]{reset}`
+![image](https://github.com/clap-rs/clap/assets/29143941/881e3992-82d5-43cf-8298-6568c2353b04)
+
+B) `[{spec}default: true{reset}]`
+![image](https://github.com/clap-rs/clap/assets/29143941/ecc4eace-8ce1-46ac-a17c-adb06fbdad5d)
+
+C) `[{spec}default{reset}: true]`
+![image](https://github.com/clap-rs/clap/assets/29143941/7367294d-afdf-4131-b635-6c5bb4e4dadb)
+
+D) `{spec}[default:{reset} {literal}true{reset}{spec}]{reset}`
+![image](https://github.com/clap-rs/clap/assets/29143941/3c35ae97-8a8b-42b1-a854-b3cad9ecbf67)
+
+E) `[{spec}default{reset}: {literal}true{reset}]`
+![image](https://github.com/clap-rs/clap/assets/29143941/aa13e62e-5518-49e8-955d-4bb6977fc931)
+
+---
+
+In the samples above, I used this style:
+```rust
+fn get_cli_styles() -> Styles {
+    use clap::builder::styling::AnsiColor;
+    Styles::styled()
+        .header(AnsiColor::Green.on_default().bold())
+        .usage(AnsiColor::Green.on_default().bold())
+        .literal(AnsiColor::Cyan.on_default().bold())
+        .placeholder(AnsiColor::Cyan.on_default())
+        .error(AnsiColor::Red.on_default().bold())
+        .valid(AnsiColor::Green.on_default().bold())
+        .invalid(AnsiColor::Yellow.on_default().bold())
+        .spec(AnsiColor::Green.on_default())
+}
+```
+
+Personall, I think I prefer C) and E).
+
+Also, while working on it, I can easily make the styling even more customizable by allowing the user to specify a style for each "spec", I mean for `default`, `env`, `possible values`, ....
+I would still leave a `.spec(...)` method to set them all at once, but the user could do something like this:
+```rust
+fn get_cli_styles() -> Styles {
+    use clap::builder::styling::AnsiColor;
+    Styles::styled()
+        .header(AnsiColor::Green.on_default().bold())
+        .usage(AnsiColor::Green.on_default().bold())
+        .literal(AnsiColor::Cyan.on_default().bold())
+        .placeholder(AnsiColor::Cyan.on_default())
+        .error(AnsiColor::Red.on_default().bold())
+        .valid(AnsiColor::Green.on_default().bold())
+        .invalid(AnsiColor::Yellow.on_default().bold())
+        .spec(AnsiColor::Green.on_default()) // set fallback style for `[env], [default], [possible values], [aliases] and [short aliases]`
+        .env(AnsiColor::Magenta.on_default() // set style just for `env` keyword.
+}
+```
+
+I can do this but it feels a bit too much maybe ?
+
+---
+
+1. Can you please let me know which styling do you prefer me to do for the PR ? (I will complete with the long help too accordingly)
+2. Should I add more customization or keep it more simple and less flexible with only one field "spec" ?
+3. (Does "spec" for the styling field name makes sense ? or do you have a better name for this ?)
+4. For the "Default terminal styling" method on `Styles` (`styled()`) which default style do you want ? italic effect simply ?
+
+
+
+---
+
+_Comment by @epage on 2024-04-29 15:38_
+
+> Can you please let me know which styling do you prefer me to do for the PR ? (I will complete with the long help too accordingly)
+
+`[]` are part of it and should be colored with the type of spec, leading to (A) and (D).
+
+That still leaves us trying to balance
+- People who want these to stand out
+- People who don't want noise
+
+If we do (D) with `{literal}`, there isn't much choice.  If we do (A), then it could be harder to parse.
+
+Maybe one way to balance this is to have
+- `inline_spec`
+- `inline_spec_value` (defaults to `inline_spec`)
+
+> Should I add more customization or keep it more simple and less flexible with only one field "spec" ?
+
+Let's keep it simple for the first release and see where to go.  This works towards our balancing of functionality, best practices, binary size, and compile times.  The best practices is referring to the fact that we shouldn't be encouraging people to make their output a rainbow.  imo we need strong use cases to show why more specific styling is needed.
+
+> (Does "spec" for the styling field name makes sense ? or do you have a better name for this ?)
+
+I think prefixing with "inline" helps distinguish this from our possible-values output for `--help`
+
+As for `spec`, that name doesn't work too well but I've not come up with a better one.
+
+For brainstorming
+- Annotation
+- Context
+- Auto
+
+> For the "Default terminal styling" method on Styles (styled()) which default style do you want ? italic effect simply ?
+
+Looking at our [compatibility expectations](https://github.com/clap-rs/clap/blob/master/CONTRIBUTING.md#compatibility-expectations), we probably need to start with a default style.  I'm mixed about whether changing that style would constitute a minor or a major release.  At the moment, I'm leaning towards major.
+
+If/when we get to that point, italic would be a bad default for us to use because it is aliased to Invert in a lot of terminals which stands out glaringly.   I somewhat favor "dimmed" but I know some people who say that is unreadable on their terminal.  Likely, we'd stick with default unless we decide to add colors into our default styling.
+
+---
+
+_Comment by @GilShoshan94 on 2024-05-02 22:39_
+
+Hi @epage,
+
+I implemented according to your feedback, it passed the `cargo test`, but it doesn't mean too much since it's about styling (except that nothing is fundamentally broken). 
+
+I went with `inline_context` and `inline_context_value` for the setting name.
+The default is simple unstyled as you requested.
+
+I just have one problem with the styling of "Possible Values:" (for enumerated values / multiple choices):
+For regular `help` (`-h`): It's ok, I styled like the others inline contexts case.
+But for the `long_help` (`--help`), currently the enumerated values are already styled with the `literal` style ([see here in code](https://github.com/clap-rs/clap/blob/d681a81dd7f4d7ff71f2e65be26d8f90783f7b40/clap_builder/src/output/help_template.rs#L714))
+
+For now I left it as it is probabling at least a minor release.
+It feels a bit incosistent now, and I think I should change the style to `inline_context_value`.
+
+I am waiting for your feedback, in the meantimes I will do my PR.
+
+
+---
+
+_Referenced in [clap-rs/clap#5482](../../clap-rs/clap/pulls/5482.md) on 2024-05-02 22:51_
+
+---
+
+_Comment by @GilShoshan94 on 2024-05-02 23:47_
+
+(It set the `literal` to cyan, `inline_context` to a dimmed yellow and `inline_context_value` to yellow to showcase)
+
+1.) Here is the `long help` in my current PR (`literal` style is applied to the values for enumerated values):
+![image](https://github.com/clap-rs/clap/assets/29143941/670401ff-8533-4fd4-8893-8d5a6274790b)
+
+2.) And here is the `long help` with the fix to apply  `inline_context_value` instead of `literal`:
+![image](https://github.com/clap-rs/clap/assets/29143941/b2643797-7caa-411e-8c9a-bcc66d497cd6)
+
+The both have the same short `help`:
+![image](https://github.com/clap-rs/clap/assets/29143941/70613bfa-dae2-4051-a5c1-2afb2836d16a)
+
+Personally I found both 1.) and 2.) good. 
+It's more when we look at it in relation to the short help that 1.) feels inconsistent suddenly...
+
+3) There is a third solution if you want, we keep 1.) (`literal` style for the enum vals) but we also apply `literal` style as well on the enum vals in the short help (instead of `inline_context_value`), but only for enumarated values. I like this less honestly.
+
+
+My preference would be the 2.)
+
+
+Let me know what you prefer please.
+Have a nice day.
+
+---
+
+_Comment by @GilShoshan94 on 2024-05-21 11:52_
+
+Hi @epage,
+
+Hope you are doing well.
+I opened a PR #5482 and it was passing all the checks. 
+Now I need to update it because in the meantime I got 56 commits behind. 
+
+I just need an answer from you to my previous question to update or not the PR and it will be ready .
+
+---
+
+_Comment by @epage on 2024-05-21 15:35_
+
+As a heads up, I'm behind on a lot of my PRs and Issues.  It may take a while before I can get back to this.
+
+---
+
+_Comment by @crowlKats on 2024-08-08 12:09_
+
+as a note, Deno would be interested in having this; is there anything we can help out with to push this forward?
+
+---
+
+_Comment by @epage on 2024-08-08 13:55_
+
+Still very far behind.
+
+---
+
+_Referenced in [clap-rs/clap#6057](../../clap-rs/clap/pulls/6057.md) on 2025-07-01 20:41_
+
+---
+
+_Referenced in [clap-rs/clap#6056](../../clap-rs/clap/issues/6056.md) on 2025-07-01 21:27_
+
+---
+
+_Closed by @epage on 2025-07-09 22:37_
+
+---
+
+_Label `S-waiting-on-design` removed by @pksunkara on 2025-07-19 17:38_
+
+---

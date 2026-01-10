@@ -1,0 +1,45 @@
+---
+number: 6282
+title: Question about system Python-created venv and uv-created venv
+type: issue
+state: closed
+author: nth10sd
+labels:
+  - question
+assignees: []
+created_at: 2024-08-20T23:12:28Z
+updated_at: 2024-08-21T02:48:27Z
+url: https://github.com/astral-sh/uv/issues/6282
+synced_at: 2026-01-10T01:23:58Z
+---
+
+# Question about system Python-created venv and uv-created venv
+
+---
+
+_Issue opened by @nth10sd on 2024-08-20 23:12_
+
+I just have a question. For 2 scenarios:
+
+1) Download `uv` via Astral's script, have `uv` create a CUSTOMENV, activate the CUSTOMENV, install lockfile using `uv` via `uv pip sync --no-break-system-packages --strict --verify-hashes requirements.txt`
+2) Using `venv` from the official system Python, run `python3 -u -m venv --upgrade-deps CUSTOMENV`, activate CUSTOMENV, run `pip` inside the CUSTOMENV to install `uv`, install lockfile using `uv` via `uv pip sync --no-break-system-packages --strict --verify-hashes requirements.txt`
+
+Will I end up with virtually identical `venv`s?
+
+i.e. Is a `venv` created by `uv`, any different from a `venv` created by system Python, then having `uv` installed?
+
+---
+
+_Comment by @zanieb on 2024-08-20 23:39_
+
+Yes, these should be roughly identical. The environment will have metadata indicating the tool that created it, e.g. `uv = 0.3.0` in the `pyvenv.cfg`.
+
+---
+
+_Label `question` added by @zanieb on 2024-08-20 23:39_
+
+---
+
+_Closed by @charliermarsh on 2024-08-21 02:48_
+
+---

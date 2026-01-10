@@ -1,0 +1,133 @@
+---
+number: 16582
+title: "poor error message with `uv add -r` on a `requirements.txt` with a `-e` entry that has a bad path"
+type: issue
+state: open
+author: tsudol-plaid
+labels:
+  - error messages
+assignees: []
+created_at: 2025-11-03T19:53:24Z
+updated_at: 2025-11-05T17:02:42Z
+url: https://github.com/astral-sh/uv/issues/16582
+synced_at: 2026-01-10T01:26:07Z
+---
+
+# poor error message with `uv add -r` on a `requirements.txt` with a `-e` entry that has a bad path
+
+---
+
+_Issue opened by @tsudol-plaid on 2025-11-03 19:53_
+
+### Summary
+
+Let's say our project is set up like this:
+```
+proj/
+- pyproject.toml
+- requirements.txt
+foo.lib/
+  - pyproject.toml
+```
+
+And our `requirements.txt` contains:
+```
+-e file:foo.lib
+```
+
+That path for `foo.lib` in `requirements.txt` is incorrect, because the path should be relative, e.g. `../foo.lib`.
+
+However, instead of saying that the path is wrong, `uv` complains that:
+```
+error: Couldn't parse requirement in `requirements.txt` at position 3
+  Caused by: Expected path (`foo.lib`) to end in a supported file extension: `.whl`, `.tar.gz`, `.zip`, `.tar.bz2`, `.tar.lz`, `.tar.lzma`, `.tar.xz`, `.tar.zst`, `.tar`, `.tbz`, `.tgz`, `.tlz`, or `.txz`
+file:foo.lib
+^^^^^^^^^^^^
+```
+
+Presumably `uv` is treating the path as a file because of the `.lib` at the end.
+
+Contrast this with the error message when we replace the `.` with a `_`:
+```
+error: Distribution not found at: file:///private/tmp/test/foo_lib
+```
+This is a lot better. (Tho it does require you to know what a "distribution" is.)
+
+---
+
+Steps to reproduce:
+1. `uv init test` && `cd test`
+2. `echo "-e file:foo.lib" >> requirements.txt`
+3. `uv add -r requirements.txt `
+
+### Platform
+
+Darwin 24.6.0 arm64
+
+### Version
+
+uv 0.9.6 (Homebrew 2025-10-29)
+
+### Python version
+
+Python 3.10.16
+
+---
+
+_Label `bug` added by @tsudol-plaid on 2025-11-03 19:53_
+
+---
+
+_Label `bug` removed by @zanieb on 2025-11-03 19:56_
+
+---
+
+_Label `error messages` added by @zanieb on 2025-11-03 19:56_
+
+---
+
+_Comment by @zanieb on 2025-11-03 19:59_
+
+The relevant logic is at https://github.com/astral-sh/uv/blob/c9d3d60a189ef087c8ce82a4a85ff9e181e254c7/crates/uv-pypi-types/src/parsed_url.rs#L85-L89
+
+I'm not sure how we could distinguish between these cases though?
+
+---
+
+_Comment by @tsudol-plaid on 2025-11-03 20:33_
+
+I'm not sure either.
+
+The main issue, to me, is that the error message is misleading. A parse failure suggests that `uv` does not support `-e` lines, or `-e file:` lines. This is compounded by the fact that `requirements.txt` is a `pip` thing and the docs warn that [uv may not be fully compatible with pip](https://docs.astral.sh/uv/pip/compatibility/).
+
+But it's actually a configuration error due to how we invoke `pip` vs. how we have to invoke `uv` that makes the relative path wrong.
+
+Since it's supposed to be a file path, would be it be possible to differentiate between directories, files, and paths that do not exist?
+
+---
+
+_Comment by @charliermarsh on 2025-11-03 21:02_
+
+I think if it's preceded by `-e`, we can always assume it's a directory, right?
+
+---
+
+_Comment by @zanieb on 2025-11-03 21:42_
+
+> I think if it's preceded by -e, we can always assume it's a directory, right?
+
+That seems reasonable!
+
+> Since it's supposed to be a file path, would be it be possible to differentiate between directories, files, and paths that do not exist?
+
+We are already doing this — we're in the "does not exist" branch of the logic I linked.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-11-05 17:02_
+
+---
+
+_Referenced in [astral-sh/uv#16967](../../astral-sh/uv/pulls/16967.md) on 2025-12-03 14:48_
+
+---

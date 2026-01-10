@@ -1,0 +1,75 @@
+---
+number: 13266
+title: UP028 for multiple loops does not work
+type: issue
+state: closed
+author: spaceby
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2024-09-06T10:35:42Z
+updated_at: 2024-09-25T15:03:10Z
+url: https://github.com/astral-sh/ruff/issues/13266
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# UP028 for multiple loops does not work
+
+---
+
+_Issue opened by @spaceby on 2024-09-06 10:35_
+
+UP028 does not work when there are multiple yield loops in a function
+
+Code example:
+```python
+def text_not_ok():
+    a = [1, 2, 3]
+    for photo in a:
+        yield photo
+    for photo in a:
+        yield photo
+```
+
+https://play.ruff.rs/b9748aaf-8e8c-45cd-8138-20f41013b979
+
+---
+
+_Comment by @AlexWaygood on 2024-09-07 12:44_
+
+I think this is because of this logic here: https://github.com/astral-sh/ruff/blob/c3bcd5c8422b79bd5cbc874a98f70cdb92e8d445/crates/ruff_linter/src/rules/pyupgrade/rules/yield_in_for_loop.rs#L98-L112
+
+I.e., Ruff believes that some of the variables bound by the first loop might be referenced in the second loop, so it comes to the conclusion that it won't necessarily be safe to rewrite them as `yield from` statements. If you change the second loop to use different variable names, it flags both loops with `UP028`: https://play.ruff.rs/50ee023e-60f4-4a77-a870-3378a6c68b72
+
+It would be possible to improve Ruff's behaviour here, I think, but it might add some complexity to our implementation
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-09-07 13:00_
+
+---
+
+_Comment by @spaceby on 2024-09-17 09:37_
+
+Then you need to improve ruff's behavior
+Or add another rule that tracks repeating loops
+Or add a warning about this behavior to the documentation
+
+---
+
+_Label `bug` added by @zanieb on 2024-09-24 14:22_
+
+---
+
+_Referenced in [astral-sh/ruff#13504](../../astral-sh/ruff/pulls/13504.md) on 2024-09-24 14:44_
+
+---
+
+_Closed by @zanieb on 2024-09-25 15:03_
+
+---
+
+_Closed by @zanieb on 2024-09-25 15:03_
+
+---

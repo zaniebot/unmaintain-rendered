@@ -1,0 +1,59 @@
+---
+number: 1317
+title: Option to put a newline between version and about text
+type: issue
+state: closed
+author: blinry
+labels: []
+assignees: []
+created_at: 2018-07-09T07:37:22Z
+updated_at: 2019-03-19T00:35:35Z
+url: https://github.com/clap-rs/clap/issues/1317
+synced_at: 2026-01-10T01:26:48Z
+---
+
+# Option to put a newline between version and about text
+
+---
+
+_Issue opened by @blinry on 2018-07-09 07:37_
+
+My application has a multi-paragraph about text, and it looks silly to put it directly after the version line. I'd like an option to insert a newline between them.
+
+---
+
+_Comment by @kbknapp on 2018-07-09 22:02_
+
+You can use either use a [Help Template](https://docs.rs/clap/2.32.0/clap/struct.App.html#method.template) or use [`App::long_about`](https://docs.rs/clap/2.32.0/clap/struct.App.html#method.long_about) to only display those multiple paragraphs when the user runs `--help` (vs `-h`).  
+
+Feel free to ping me if those don't help and we can discuss more :wink: 
+
+---
+
+_Closed by @kbknapp on 2018-07-09 22:02_
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2018-07-09 22:03_
+
+---
+
+_Comment by @kbknapp on 2018-07-09 22:04_
+
+Oh, you can also just start your about message with `\n\n`. I forgot to mention that one.
+
+---
+
+_Comment by @blinry on 2018-07-10 09:34_
+
+The help template works super well for this, thanks!
+
+---
+
+_Comment by @ssokolow on 2019-03-19 00:03_
+
+I just realized that the issue I just opened (#1432) is relevant here as an example of why "just start your about message with `\n\n` isn't a viable solution:
+
+This problem applies to subcommands too, but you can't use the `\n\n` workaround there because it'll break the subcommand listing in the top-level `-h` output.
+
+---

@@ -1,0 +1,68 @@
+---
+number: 11435
+title: "pydocstyle: undocumented returns"
+type: issue
+state: closed
+author: adamjstewart
+labels: []
+assignees: []
+created_at: 2024-05-15T18:02:12Z
+updated_at: 2024-05-20T05:28:51Z
+url: https://github.com/astral-sh/ruff/issues/11435
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# pydocstyle: undocumented returns
+
+---
+
+_Issue opened by @adamjstewart on 2024-05-15 18:02_
+
+### Feature Request
+
+I would like to propose a new pydocstyle rule that checks for undocumented return values.
+
+### Implementation
+
+Specifically, ruff would check to see if a function is missing one of the following sections (assuming Google-style):
+
+* `Returns:` for normal functions
+* `Yields:` for generators
+
+According to the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html#doc-function-returns):
+
+> If the function only returns None, this section is not required. It may also be omitted if the docstring starts with “Return”, “Returns”, “Yield”, or “Yields”
+
+In the case where the return type of the function is not `None` and none of the above criteria are met, a rule violation should be issued.
+
+### Rationale
+
+The [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html#doc-function-returns) and the [NumPy Style Guide](https://numpydoc.readthedocs.io/en/latest/format.html#returns) both explicitly require return values to be documented.
+
+### Additional Information
+
+The only related feature request I could find in the pydocstyle repo is https://github.com/PyCQA/pydocstyle/issues/479. However, their criteria for whether or not a return value should be documented is whether or not an `Args:` section is present. I think checking the return type is much more reliable though.
+
+If this is something ruff would be willing to accept, I can try my hand at following https://docs.astral.sh/ruff/contributing/#example-adding-a-new-lint-rule and submit a PR!
+
+---
+
+_Referenced in [astral-sh/ruff#2310](../../astral-sh/ruff/issues/2310.md) on 2024-05-15 19:13_
+
+---
+
+_Comment by @augustelalande on 2024-05-18 00:16_
+
+This could be part of #458 which hasn't been implemented yet
+
+---
+
+_Comment by @dhruvmanila on 2024-05-20 05:28_
+
+Thank you for such a detailed issue! I'll merge this with #458, specifically `DAR201` and `DAR301` which covers `return` and `yield` respectively.
+
+---
+
+_Closed by @dhruvmanila on 2024-05-20 05:28_
+
+---

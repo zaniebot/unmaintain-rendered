@@ -1,0 +1,93 @@
+---
+number: 11679
+title: "File directive `# flake8: noqa` also suppresses isort errors"
+type: issue
+state: closed
+author: albertvillanova
+labels: []
+assignees: []
+created_at: 2024-06-01T16:16:06Z
+updated_at: 2024-06-02T09:03:16Z
+url: https://github.com/astral-sh/ruff/issues/11679
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# File directive `# flake8: noqa` also suppresses isort errors
+
+---
+
+_Issue opened by @albertvillanova on 2024-06-01 16:16_
+
+The file directive `# flake8: noqa` does not only suppress `flake8` errors but also `isort` ones.
+
+I would expect the flake8 directive to suppress only `flake8` errors, being equivalent to:
+```
+[tool.ruff.lint.per-file-ignores]
+"my_filename.py" = ["F"]
+```
+
+This was the behavior before replacing `flake8`+`isort` with `ruff`.
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Comment by @charliermarsh on 2024-06-01 17:03_
+
+Thanks! From my perspective this is working-as-intended. `# flake8: noqa` is interpreted as "suppress all lint errors", and unorganized imports is a form of lint error.
+
+Similarly:
+
+```toml
+[tool.ruff.lint.per-file-ignores]
+"my_filename.py" = ["F"]
+```
+
+This wouldn't match Flake8's behavior either, since `# flake8: noqa` doesn't mean "Ignore the F rules", it means "Ignore all Flake8 rules", which includes the Pycodestyle rules (E, W) and any plugins you have installed. So that would be too narrow.
+
+If you only want to ignore the `F` rules, I suggest using per-file ignores instead.
+
+
+---
+
+_Closed by @charliermarsh on 2024-06-01 17:03_
+
+---
+
+_Comment by @albertvillanova on 2024-06-02 09:03_
+
+Thanks for your reply, @charliermarsh.
+
+Forget my above comment about the equivalence to ignoring F rules, which is not precise.
+
+The key points are: for our files marked with the directive `# flake8: noqa`
+- before using `ruff`, we were using `flake8`+`isort`
+  - all Flake8 rules were ignored but not isort ones: the imports were sorted
+- we replaced `flake8`+`isort` with `ruff` and we expected the same behavior
+  - however now the imports are no longer sorted
+
+If this behavior change is fine from your perspective, would you consider it worth mentioning explicitly in the docs to make it even clearer?
+
+For example, maybe something like:
+> Note that Ruff will treat Flake8's `# flake8: noqa` directive as equivalent to `# ruff: noqa`, thus suppressing all linting violations, not only Flake8 ones (e.g. also `isort`).
+
+instead of:
+> Note that Ruff will also respect Flake8's `# flake8: noqa` directive, and will treat it as equivalent to `# ruff: noqa`.
+
+---
+
+_Referenced in [huggingface/datasets#6942](../../huggingface/datasets/issues/6942.md) on 2024-06-02 09:43_
+
+---

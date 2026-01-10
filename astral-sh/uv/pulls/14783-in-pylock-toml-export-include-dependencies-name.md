@@ -1,0 +1,118 @@
+---
+number: 14783
+title: In pylock.toml export, include dependencies (name, marker and version)
+type: pull_request
+state: open
+author: pimdh
+labels: []
+assignees: []
+base: main
+head: pim/pylock-deps
+created_at: 2025-07-21T09:14:19Z
+updated_at: 2025-12-09T17:40:28Z
+url: https://github.com/astral-sh/uv/pull/14783
+synced_at: 2026-01-10T01:26:17Z
+---
+
+# In pylock.toml export, include dependencies (name, marker and version)
+
+---
+
+_Pull request opened by @pimdh on 2025-07-21 09:14_
+
+## Summary
+
+In the code for export a lock file to `pylock.toml`, I added the `[[packages.dependencies]]` field (https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-dependencies). The goal of this change is to utilize `uv` to generate lockfiles for use with Pants and PEX (see https://github.com/pantsbuild/pants/issues/22201).
+
+Fixes #13032.
+
+Details:
+- Because this dependency field is not fully specified, I only include the package's name and version (EDIT: and marker), which seems sufficient for integrating the resulting files with Pants and Pex.
+- I didn't add the dependencies to `from_resolution`, because I don't need it, and because it wasn't immediately clear to me how the edges and nodes in the resolution graph would have to be filtered.
+- I filter the dependencies based on those selected by `ExportableRequirements::from_lock` for inclusion in the lockfile.
+
+
+## Test Plan
+
+I've updated the tests to include the dependencies.
+
+---
+
+_Referenced in [pantsbuild/pants#22518](../../pantsbuild/pants/pulls/22518.md) on 2025-07-21 09:29_
+
+---
+
+_Review requested from @charliermarsh by @konstin on 2025-07-21 09:50_
+
+---
+
+_Comment by @pimdh on 2025-07-21 10:02_
+
+I see where the tests are now. Fixing them.
+
+---
+
+_Comment by @pimdh on 2025-07-21 12:10_
+
+I've added the dependencies to the tests, and fixed the linting.
+
+---
+
+_Referenced in [pex-tool/pex#2834](../../pex-tool/pex/issues/2834.md) on 2025-07-21 15:41_
+
+---
+
+_Comment by @charliermarsh on 2025-07-22 19:12_
+
+Thanks @pimdh. We technically might be required to add (e.g.) the VCS annotations and such here... I need to review the spec.
+
+---
+
+_Referenced in [astral-sh/uv#13032](../../astral-sh/uv/issues/13032.md) on 2025-07-23 21:01_
+
+---
+
+_Comment by @jsirois on 2025-07-23 21:03_
+
+FWIW, I think name and version is not enough to cover all uv.locks. My analysis here: https://github.com/astral-sh/uv/issues/13032#issuecomment-3110161811
+
+---
+
+_Comment by @pimdh on 2025-08-20 21:50_
+
+Hi! Is there anything I can do to help get this PR merged?
+
+I'm happy to do any of the following:
+- keep the PR as is, so that dependencies are listed as (name, version)
+- add any of the other `PylockTomlPackage` fields to the dependencies
+- programmatically find a minimum subset of fields of `PylockTomlPackage` so that the dependency uniquely selects one of the packages. For example by picking some order in the fields, then iteratively decide to include it if it different among the candidates, and terminating when it uniquely picks a package.
+
+Please let me know which solution you prefer.
+
+For the use-case I am interested in - generating lockfiles for the Pants build system with UV for my monorepo - the first option seems to currently suffice. Although I do understand, as @jsirois states, that this doesn't lead to unique identification in all cases.
+
+---
+
+_Renamed from "In pylock.toml export, include dependencies (name and version)" to "In pylock.toml export, include dependencies (name, marker and version)" by @pimdh on 2025-08-25 14:49_
+
+---
+
+_Comment by @pimdh on 2025-08-25 14:52_
+
+Following the point by @jsirois, and my own experience that (name, version) does not guarantee that each dependency uniquely identifies a package, I've added the `marker` to the each dependency. This seems to successfully allow matching of dependencies with packages. The resulting `pylock.toml` files appear compatible with PEX.
+
+---
+
+_Referenced in [pex-tool/pex#2885](../../pex-tool/pex/issues/2885.md) on 2025-08-25 15:08_
+
+---
+
+_Referenced in [astral-sh/uv#15521](../../astral-sh/uv/issues/15521.md) on 2025-08-25 23:24_
+
+---
+
+_Comment by @dannytodd on 2025-12-09 17:40_
+
++1 for this. This would allow much easier integration of uv's locking mechanism into existing tooling. 
+
+---

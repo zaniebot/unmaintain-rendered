@@ -1,0 +1,41 @@
+---
+number: 5943
+title: "chore(deps): Switch humantime to cyborgtime"
+type: pull_request
+state: closed
+author: oherrala
+labels: []
+assignees: []
+draft: true
+base: master
+head: cyborgtime
+created_at: 2025-03-08T14:21:11Z
+updated_at: 2025-03-08T19:40:00Z
+url: https://github.com/clap-rs/clap/pull/5943
+synced_at: 2026-01-10T01:28:25Z
+---
+
+# chore(deps): Switch humantime to cyborgtime
+
+---
+
+_Pull request opened by @oherrala on 2025-03-08 14:21_
+
+[`humantime`](https://crates.io/crates/humantime) crate seems to be unmaintained and [`cyborgtime`](https://crates.io/crates/cyborgtime) is forked from that. According to crates.io's stats clap is the most downloaded user of `humantime`. 
+
+Since `humantime` crate is only used in one example code this shouldn't cause any bigger change to project.
+
+Ref. https://github.com/rustsec/advisory-db/pull/2249
+
+<!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+
+---

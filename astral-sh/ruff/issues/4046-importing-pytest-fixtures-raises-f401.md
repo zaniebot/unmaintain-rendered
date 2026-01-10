@@ -1,0 +1,152 @@
+---
+number: 4046
+title: importing pytest fixtures raises F401
+type: issue
+state: closed
+author: wasim42
+labels: []
+assignees: []
+created_at: 2023-04-20T13:31:27Z
+updated_at: 2023-04-27T21:38:13Z
+url: https://github.com/astral-sh/ruff/issues/4046
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# importing pytest fixtures raises F401
+
+---
+
+_Issue opened by @wasim42 on 2023-04-20 13:31_
+
+It appears that ruff isn't handling pytest fixtures correctly.
+
+Consider the following files (adapted from a pytest example):
+
+fruit.py
+```
+import pytest
+
+
+class Fruit:
+    def __init__(self, name):
+        self.name = name
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+
+@pytest.fixture
+def my_fruit():
+    return Fruit("apple")
+
+
+@pytest.fixture
+def fruit_basket(my_fruit):
+    return [Fruit("banana"), my_fruit]
+```
+
+and test_fruit.py:
+```
+from fruit import (
+    my_fruit,
+    fruit_basket
+)
+
+def test_my_fruit_in_basket(my_fruit, fruit_basket):
+    assert my_fruit in fruit_basket
+```
+
+Running `ruff --isolated test_fruit.py` I get:
+
+```
+test_fruit.py:2:5: F401 [*] `fruit.my_fruit` imported but unused
+test_fruit.py:3:5: F401 [*] `fruit.fruit_basket` imported but unused
+test_fruit.py:6:29: F811 Redefinition of unused `my_fruit` from line 2
+test_fruit.py:6:39: F811 Redefinition of unused `fruit_basket` from line 3
+Found 4 errors.
+[*] 2 potentially fixable with the --fix option.
+```
+
+I'm using `ruff 0.0.262`
+
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-20 16:53_
+
+Thanks for filing. I'll look into this!
+
+---
+
+_Comment by @charliermarsh on 2023-04-20 19:46_
+
+I think this has been discussed before, but I’m on my phone and it may be hard to dig up the relevant issue.
+
+---
+
+_Comment by @evanrittenhouse on 2023-04-20 20:48_
+
+#3295 pointed me to [this](https://docs.pytest.org/en/7.2.x/how-to/fixtures.html#using-fixtures-from-other-projects). Pytest suggests avoiding importing fixtures in favor of adding them to `conftest.py`. In that case, I'm personally a bit torn on implementing this - on one hand, it's definitely confusing behavior since the import is in fact used, but on the other it's not recommended to do so.
+
+I'm almost leaning towards fixing the unused import bug, but maybe implementing a separate rule centered on avoiding fixture imports? FWIW, it seems like [Pylint](https://github.com/pylint-dev/pylint/issues/3493) has the same issue as the one mentioned here. The suggested solution is to simply rename the fixture file (`fruit.py`, in this case) to `conftest.py`.
+
+---
+
+_Comment by @charliermarsh on 2023-04-21 01:52_
+
+Yeah, reading through the discussion, I think I agree with the conclusion that was reached in #3295: since Pytest itself recommends against this pattern, I'd rather not special-case in Ruff. (I'm not even sure how we could special-case it without introducing lots of false negatives. Best-case is that we could avoid _autofixing_ these cases but still flag them.)
+
+
+---
+
+_Comment by @charliermarsh on 2023-04-21 01:52_
+
+I'm going to close, given that conclusion, but always happy to continue the discussion.
+
+---
+
+_Closed by @charliermarsh on 2023-04-21 01:52_
+
+---
+
+_Comment by @wasim42 on 2023-04-21 05:07_
+
+Thank you very much for that!  I’m a novice with pytest and this was a case of me using a linter to help me muddle through, and it has 😜
+
+---
+
+_Comment by @jamesbraza on 2023-04-27 21:38_
+
+Today, `F401` autofixes wiped away my fixture imports a few times.  I can think of several workarounds:
+
+1. Use `conftest.py` (which I am avoiding for reasons beyond this issue's scope)
+2. Manually insert `# noqa: F401` before invoking `ruff`
+3. Place `F401` in `unfixable` aspect of config
+
+I went with option 3, marking `F401` as `unfixable`.
+
+---
+
+_Referenced in [astral-sh/ruff#2044](../../astral-sh/ruff/issues/2044.md) on 2023-07-05 21:47_
+
+---
+
+_Referenced in [hgrecco/pint-pandas#193](../../hgrecco/pint-pandas/issues/193.md) on 2023-07-05 23:10_
+
+---
+
+_Referenced in [mandiant/capa#1592](../../mandiant/capa/issues/1592.md) on 2023-07-07 09:03_
+
+---
+
+_Referenced in [astral-sh/ruff#10662](../../astral-sh/ruff/issues/10662.md) on 2024-03-30 00:47_
+
+---
+
+_Referenced in [flexcompute/Flow360#242](../../flexcompute/Flow360/pulls/242.md) on 2024-04-17 09:03_
+
+---
+
+_Referenced in [acdh-oeaw/rdfproxy#21](../../acdh-oeaw/rdfproxy/pulls/21.md) on 2024-07-26 20:23_
+
+---

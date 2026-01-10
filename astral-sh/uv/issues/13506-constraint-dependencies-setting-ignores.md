@@ -1,0 +1,133 @@
+---
+number: 13506
+title: constraint-dependencies setting ignores environment markers
+type: issue
+state: closed
+author: espdev
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-17T11:52:31Z
+updated_at: 2025-05-18T21:24:35Z
+url: https://github.com/astral-sh/uv/issues/13506
+synced_at: 2026-01-10T01:25:34Z
+---
+
+# constraint-dependencies setting ignores environment markers
+
+---
+
+_Issue opened by @espdev on 2025-05-17 11:52_
+
+### Summary
+
+Hello,
+
+I try to use [constraint-dependencies](https://docs.astral.sh/uv/reference/settings/#constraint-dependencies) setting to apply constraints for the dependency resolver.
+
+I need to apply constraints because I need to install `pyqt5` dependency in a Windows/Linux project (Python>=3.10).
+
+`pyqt5` depends on `pyqt5-qt5` dependency. Without constraint-dependencies I can't add/install `pyqt5` on Windows because there is no `pyqt5-qt5` binary distribution on PyPI (This is a mistake by the package maintainers, but nevertheless it is true). The same issue describes [here](https://github.com/astral-sh/uv/issues/7005).
+
+So, I have added `constraint-dependencies` to the `pyproject.toml` file:
+```toml
+[project]
+name = "my-app"
+version = "0.1.0"
+description = "My app"
+readme = "README.md"
+
+requires-python = ">=3.10, <3.14"
+
+dependencies = [
+    "pyqt5>=5.15.11",
+]
+
+[tool.uv]
+constraint-dependencies = [
+    "pyqt5-qt5<=5.15.2; sys_platform == 'win32'"
+]
+```
+
+And `manifest` section has been added to `uv.lock` file:
+```
+[manifest]
+constraints = [{ name = "pyqt5-qt5", marker = "sys_platform == 'win32'", specifier = "<=5.15.2" }]
+```
+
+It works fine on Windows, now I can install `pyqt5==5.15.11` and `pyqt5-qt5==5.15.2`.
+However, on Linux I would like to install the latest version of pyqt5-qt5 package: `pyqt5-qt5==5.15.16` because the latest binary distribution is available for Linux platform. But on Linux I also get `pyqt5-qt5==5.15.2`. The environment marker `"sys_platform == 'win32'"` just ignored.
+
+uv even downgrades `pyqt5-qt5` version if I add `constraint-dependencies` after:
+```
+❯ uv sync
+Using CPython 3.10.17
+Creating virtual environment at: .venv
+Resolved 4 packages in 0.66ms
+Prepared 3 packages in 10.66s
+Installed 3 packages in 24ms
+ + pyqt5==5.15.11
+ + pyqt5-qt5==5.15.16
+ + pyqt5-sip==12.17.0
+```
+
+... add `constraint-dependencies`
+
+```
+❯ uv lock
+Resolved 5 packages in 149ms
+Updated pyqt5-qt5 v5.15.16 -> v5.15.2, v5.15.16
+```
+
+I think `constraint-dependencies` setting should take into account environment markers. Especially  the fact that the markers are even indicated in the manifest in `uv.lock` file.
+
+### Platform
+
+Windows/Linux
+
+### Version
+
+uv 0.7.4
+
+### Python version
+
+Python >= 3.10
+
+---
+
+_Label `bug` added by @espdev on 2025-05-17 11:52_
+
+---
+
+_Comment by @charliermarsh on 2025-05-17 11:54_
+
+I don't think the marker is "ignored"; rather, uv tries to find a solution that avoids including multiple versions of `pyqt5-qt5` unnecessarily. Using `5.15.2` on Linux is actually totally compatible with the requirements you provided. I might suggest adding another constraint to say you want `> 5.15.2` on non-Windows.
+
+---
+
+_Comment by @espdev on 2025-05-17 12:03_
+
+Interesting note.
+
+So, I just added the constraints and it works as I expect! Thank you @charliermarsh!
+```toml
+[tool.uv]
+constraint-dependencies = [
+    "pyqt5-qt5<=5.15.2; sys_platform == 'win32'",
+    "pyqt5-qt5>=5.15.16; sys_platform == 'linux'",
+]
+```
+
+But this seems counter-intuitive to me. I expect the constraint will not apply to another platform. Because if I don't specify any constraints at all, uv will add/install the latest version of the dependency. But the main thing is that it works!
+
+---
+
+_Comment by @charliermarsh on 2025-05-18 21:24_
+
+👍 This _is_ working as expected, though there's been consideration in the past to being more "aggressive" in "forking" to include multiple versions here. I think that's best tracked elsewhere, though.
+
+---
+
+_Closed by @charliermarsh on 2025-05-18 21:24_
+
+---

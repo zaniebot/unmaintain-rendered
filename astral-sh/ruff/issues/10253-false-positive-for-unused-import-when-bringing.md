@@ -1,0 +1,263 @@
+---
+number: 10253
+title: False positive for unused import when bringing things forward in __init__.py
+type: issue
+state: open
+author: robvdl
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2024-03-06T19:12:42Z
+updated_at: 2025-02-23T08:08:47Z
+url: https://github.com/astral-sh/ruff/issues/10253
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# False positive for unused import when bringing things forward in __init__.py
+
+---
+
+_Issue opened by @robvdl on 2024-03-06 19:12_
+
+In `myapp/forms/__init__.py`:
+
+```python
+from .login import LoginForm
+```
+
+In `myapp/views/auth.py`:
+
+```python
+from myapp.forms import LoginForm`
+```
+
+ruff says that LoginForm in `forms/__init__.py` is unused, it's totally wrong because views/auth.py imports and uses it
+
+---
+
+_Comment by @robvdl on 2024-03-06 19:14_
+
+Example code here I was trying to add ruff to which triggered this bug https://github.com/wainuiomata/sambal
+
+---
+
+_Comment by @trag1c on 2024-03-06 19:16_
+
+It's correct that it's unused in `myapp/forms/__init__.py`.
+The fix would be to define a `__all__` list/tuple in there too (as Ruff treats that as usage):
+```py
+from .login import LoginForm
+
+__all__ = ("LoginForm",)
+```
+
+---
+
+_Referenced in [wainuiomata/sambal#20](../../wainuiomata/sambal/issues/20.md) on 2024-03-06 19:19_
+
+---
+
+_Comment by @robvdl on 2024-03-06 19:20_
+
+I'm not sure I agree with this, other linters will notice it unusued.
+
+You appear to be defending a bug, I'm OK with doing the `__all__` thing but don't defend a bug, ruff should also should realise it's actually used if it really is.
+
+---
+
+_Comment by @trag1c on 2024-03-06 19:22_
+
+I simply don't think it's a bug, I always define an `__all__` in my `__init__.py` files and it's helpful to know I missed an object somewhere.
+
+---
+
+_Comment by @robvdl on 2024-03-06 19:25_
+
+It is a bug, it's ruff not able to track this import in views/auth.py properly.
+
+Both pyflakes and PyCharms's linter can do this, so please don't defend this as NOT being a bug.
+
+It's not that I mind doing the `__all__` thing but it is still a bug.
+
+---
+
+_Comment by @trag1c on 2024-03-06 19:30_
+
+That's your opinion :thumbsup:
+
+---
+
+_Comment by @tjkuson on 2024-03-06 19:36_
+
+For what it's worth, I think mypy and Pyright on their respective strict modes will also complain about not explicitly exporting via the `__all__` attribute.
+
+---
+
+_Comment by @robvdl on 2024-03-06 19:46_
+
+I've never heard of Pyright, but so far I have found 3 linters that can track an import being forwarded in `__init__.py`.
+
+* pyflakes
+* pylint
+* PyCharm
+
+So it doesn't look good if both pyflakes and pylint can track this import, but not ruf. You are trying to get users right, because this "I'm right, you're wrong" behaviour is annoying.
+
+---
+
+_Comment by @tjkuson on 2024-03-06 19:53_
+
+To be clear, @trag1c and I are not members of Astral, we're just fellow users trying to contribute! Sorry to hear you find my opinion annoying, though.
+
+---
+
+_Comment by @robvdl on 2024-03-06 19:56_
+
+Sorry I'm trying to legitimately report a bug here and I felt I was getting fight back, I didn't realise you weren't official devs.
+
+---
+
+_Comment by @robvdl on 2024-03-06 19:57_
+
+In the mean time I have put the `__all__` thing in it, I just want Astral to look at this rather than sweep it under the carpet.
+
+---
+
+_Comment by @charliermarsh on 2024-03-06 19:59_
+
+Hey @robvdl thanks for the report. Unfortunately we don't track imports across files, so the assumption is that you either disable `F401` in `__init__.py` files, or use some other mechanism to make it explicit that this is a re-export -- for example, adding to `__all__`, or using the re-export convention of `from .login import LoginForm as LoginForm`. (I know you already heard some of this above, but perhaps the re-export convention will be interesting to you.)
+
+Ideally we would be able to track these across files, so it's fine to call it a bug (and we're planning to explore multi-file analysis over the next few months). The only caveat is that... even then it's not _totally_ clear that it'd be safe to remove `from .login import Login`, since you're defining a public interface, and you could have users of your package that rely on `Login` being exported there.
+
+As an aside, PyFlakes would also flag this. I'm not sure how you tested it, but PyFlakes doesn't look across files either:
+
+```
+❯ flake8 foo/
+foo/__init__.py:1:1: F401 '.login.LoginForm' imported but unused
+```
+
+Regardless, thanks for the report! That we don't detect these across files is a limitation.
+
+
+---
+
+_Comment by @robvdl on 2024-03-06 20:07_
+
+Thank you, yeah in the mean time I have gone with the `__all__` method which I am a little more comfortable with than doing something like this:
+
+```toml
+# 4. Ignore `E402` (import violations) in all `__init__.py` files.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+```
+
+I'll leave it at that.
+
+---
+
+_Comment by @charliermarsh on 2024-03-06 20:11_
+
+We've also considered _not_ enforcing unused imports in `__init__.py` files by default.
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-03-07 08:06_
+
+---
+
+_Label `multifile-analysis` added by @MichaReiser on 2024-03-07 08:06_
+
+---
+
+_Referenced in [hypothesis/lms#6248](../../hypothesis/lms/pulls/6248.md) on 2024-05-03 10:18_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2024-10-24 14:33_
+
+---
+
+_Label `multifile-analysis` removed by @MichaReiser on 2024-10-24 14:33_
+
+---
+
+_Comment by @umarbutler on 2025-02-18 05:33_
+
+@charliermarsh Any movement on this? I agree with @robvdl that this is a bug. Having to do `__all__` goes against DRY, is unintuitive, and is cumbersome.
+
+@robvdl's fix unfortunately doesn't work for me, however, this fix does (in case someone else wants it):
+```toml
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+```
+
+---
+
+_Comment by @MichaReiser on 2025-02-18 08:25_
+
+Ruff doesn't support multifile analysis yet but we're working towards bringing this capability to Ruff. But it will take a while and we then also have to change this specific rule implementation. TLDR: We're moving toward a fix but it is a rather large undertaking.
+
+---
+
+_Comment by @umarbutler on 2025-02-19 01:32_
+
+> Ruff doesn't support multifile analysis yet but we're working towards bringing this capability to Ruff. But it will take a while and we then also have to change this specific rule implementation. TLDR: We're moving toward a fix but it is a rather large undertaking.
+
+Couldn’t this just be made the default?
+```
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+```
+
+If you’re writing a Python package, you may not have any files in the package that reference imports from init so multifile analysis may not help there anyways right?
+
+---
+
+_Comment by @MichaReiser on 2025-02-19 10:06_
+
+yeah, we could consider adding an option or splitting the `__init__.py` behavior into its own rule.
+
+---
+
+_Comment by @Avasam on 2025-02-22 17:10_
+
+I'm surprised to not see anyone mention of
+```py
+from .login import LoginForm as LoginForm
+```
+Which is a canonical way to mark intended re-exports that type-checkers understand, and especially popular in stubs
+Edit: I missed Charlie did mention it in https://github.com/astral-sh/ruff/issues/10253#issuecomment-1981682998
+
+That way you don't have to explicitly list and maintain all names in `__all__`
+
+Of course if you use [useless-import-alias (PLC0414)](https://docs.astral.sh/ruff/rules/useless-import-alias/#useless-import-alias-plc0414) now that will trigger, so you have to do:
+
+```toml
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["PLC0414"]
+```
+
+So yeah, feel free to choose how you want to handle your package re-exports, and ignore the relevant code for `__init__.py` files.
+
+---
+
+> We've also considered _not_ enforcing unused imports in `__init__.py` files by default.
+
+As long as it's an option, I'd still prefer being explicit about my intended re-exports.
+
+---
+
+_Comment by @robvdl on 2025-02-23 01:49_
+
+I've never seen this method "from .login import LoginForm as LoginForm" but I can already say I hate it. It's like renaming an import to the same name it already is, it looks awkward and some other developer is going to come along and see it and go "what the heck is this" and remove them all, so you'd then have to place a comment to say why your'e doing that.
+
+I'd rather use the `__all__` method, but I stand firm by my statement that we shouldn't have to bring imports forward in order for them to be included for linting.
+
+---
+
+_Comment by @umarbutler on 2025-02-23 08:08_
+
+Personally, now that I have my workaround have started adding to all of my project's ruff configs, I'm not as annoyed by this, however, for a new user, there is a real potential for this to be confusing when you literally have 60+ error show up for __init__.py imports (yes, I had quite a lot of __init__.pys in my project) but your Pylance has never complained about that as an error.
+
+---

@@ -1,0 +1,78 @@
+---
+number: 7344
+title: "Add `--system` flag to `uv sync` command to use it in Docker"
+type: issue
+state: closed
+author: rfsan
+labels:
+  - duplicate
+  - question
+assignees: []
+created_at: 2024-09-12T20:49:28Z
+updated_at: 2024-09-13T01:45:51Z
+url: https://github.com/astral-sh/uv/issues/7344
+synced_at: 2026-01-10T01:24:13Z
+---
+
+# Add `--system` flag to `uv sync` command to use it in Docker
+
+---
+
+_Issue opened by @rfsan on 2024-09-12 20:49_
+
+I have the current Dockerfile
+
+```Dockerfile
+FROM python:3.12-slim
+ENV PYTHONUNBUFFERED=1
+RUN apt-get update && \
+    apt-get install -y git libgomp1 && \
+    rm -rf /var/lib/apt/lists/*
+ARG CODE=/app
+WORKDIR $CODE
+COPY pyproject.toml uv.lock ./
+RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
+    uv sync --frozen --no-cache --compile-bytecode --no-dev
+COPY src/ src/
+CMD [".venv/bin/python", "-m", "src.api_sample"]
+```
+
+I would like to install the dependencies using the system Python so that the final command is `CMD ["python", "-m", "src.api_sample"]`
+
+I tried using `uv pip install -r pyproject.toml --system` but this approach does not use the `uv.lock` file
+
+---
+
+_Comment by @Xdynix on 2024-09-12 22:37_
+
+> To force uv to use the system Python, provide the `--python-preference only-system` option.
+
+Maybe consider this?
+
+Ref: <https://docs.astral.sh/uv/concepts/python-versions/#adjusting-python-version-preferences>
+
+---
+
+_Comment by @zanieb on 2024-09-13 01:45_
+
+Please see https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment and https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path
+
+This use-case should be resolved by https://github.com/astral-sh/uv/pull/6834
+
+---
+
+_Closed by @zanieb on 2024-09-13 01:45_
+
+---
+
+_Label `question` added by @zanieb on 2024-09-13 01:45_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-09-13 01:45_
+
+---
+
+_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2024-10-10 14:01_
+
+---

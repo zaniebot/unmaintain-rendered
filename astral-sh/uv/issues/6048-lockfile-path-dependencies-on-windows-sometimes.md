@@ -1,0 +1,80 @@
+---
+number: 6048
+title: "Lockfile path dependencies on Windows sometimes include `\\\\?` prefix"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-08-12T22:25:54Z
+updated_at: 2024-08-12T23:34:30Z
+url: https://github.com/astral-sh/uv/issues/6048
+synced_at: 2026-01-10T01:23:55Z
+---
+
+# Lockfile path dependencies on Windows sometimes include `\\?` prefix
+
+---
+
+_Issue opened by @charliermarsh on 2024-08-12 22:25_
+
+For example:
+
+```toml
+-old snapshot
++new results
+────────────┬──────────────────────────────────────────────────────────────────
+   44    44 │ 
+   45    45 │ [[package]]
+   46    46 │ name = "workspace"
+   47    47 │ version = "0.1.0"
+   48       │-source = { path = "[TEMP_DIR]/workspace.zip" }
+         48 │+source = { path = '\\?\C:/Users/runneradmin/AppData/Local/Temp/.tmpArjGBP/workspace.zip' }
+   49    49 │ dependencies = [
+   50    50 │     { name = "anyio" },
+   51    51 │ ]
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-12 22:25_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-08-12 22:25_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-12 22:25_
+
+---
+
+_Referenced in [astral-sh/uv#6046](../../astral-sh/uv/pulls/6046.md) on 2024-08-12 22:26_
+
+---
+
+_Closed by @charliermarsh on 2024-08-12 23:14_
+
+---
+
+_Closed by @charliermarsh on 2024-08-12 23:14_
+
+---
+
+_Reopened by @charliermarsh on 2024-08-12 23:22_
+
+---
+
+_Referenced in [astral-sh/uv#6049](../../astral-sh/uv/pulls/6049.md) on 2024-08-12 23:27_
+
+---
+
+_Closed by @charliermarsh on 2024-08-12 23:34_
+
+---
+
+_Closed by @charliermarsh on 2024-08-12 23:34_
+
+---

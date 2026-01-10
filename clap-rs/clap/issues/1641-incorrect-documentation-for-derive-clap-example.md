@@ -1,0 +1,43 @@
+---
+number: 1641
+title: "Incorrect documentation for `derive(Clap)` example"
+type: issue
+state: closed
+author: tiziano88
+labels: []
+assignees: []
+created_at: 2020-01-22T22:49:25Z
+updated_at: 2020-02-06T07:52:53Z
+url: https://github.com/clap-rs/clap/issues/1641
+synced_at: 2026-01-10T01:27:00Z
+---
+
+# Incorrect documentation for `derive(Clap)` example
+
+---
+
+_Issue opened by @tiziano88 on 2020-01-22 22:49_
+
+I have just came across `clap`, and the first thing I tried was to use the `derive(Clap)` feature from the README, but it seems that is not actually working, and also the README mentions `examples/01d_quick_example.rs`, which does not seem to exist.
+
+My guess is that this is either a new feature, or a deprecated one, but I cannot tell which one.
+
+https://github.com/clap-rs/clap/blob/f3683a97924be22c7ae5932ff95812187dc2e438/README.md#L161-L172
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-22 22:56_
+
+It's a very very new feature that is work-in-progress. Don't look at those examples, they are not polished yet. Also we are about to rework the derive so it may become a little bit different from what's in the examples. Clap v3-beta will be released by the end of the month, you'll see the kind-of-final version then.  
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-06 07:52_
+
+Closing in favor of #1671 
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-06 07:52_
+
+---

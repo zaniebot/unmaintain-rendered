@@ -1,0 +1,58 @@
+---
+number: 13570
+title: allow multiple --package arguments to uv sync
+type: issue
+state: closed
+author: kapilt
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-21T11:21:00Z
+updated_at: 2025-05-21T11:26:15Z
+url: https://github.com/astral-sh/uv/issues/13570
+synced_at: 2026-01-10T01:25:35Z
+---
+
+# allow multiple --package arguments to uv sync
+
+---
+
+_Issue opened by @kapilt on 2025-05-21 11:21_
+
+### Summary
+
+I'm currently converting over a project (https://cloudcustodian.io) to use uv. its structured as a workspace over multiple packages. for developer installations, we simply use --all-packages.
+
+For our docker images we allow a build arg to specify a subset of packages. we'd like to be able to simply pass those as additional --package flags to uv sync, but currently that results in an unsupported error.
+
+```
+the argument '--package <PACKAGE>' cannot be used multiple times
+```
+
+the alternative atm is to invoke uv sync multiple times with --inexact, but we'd rather avoid that.
+
+its not clear why the single --package flag restriction exists, given --all-packages allows for multiple package to be sync'd at once.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @kapilt on 2025-05-21 11:21_
+
+---
+
+_Referenced in [cloud-custodian/cloud-custodian#10140](../../cloud-custodian/cloud-custodian/pulls/10140.md) on 2025-05-21 11:22_
+
+---
+
+_Comment by @charliermarsh on 2025-05-21 11:26_
+
+Thanks! Duplicate of https://github.com/astral-sh/uv/issues/12130.
+
+---
+
+_Closed by @charliermarsh on 2025-05-21 11:26_
+
+---

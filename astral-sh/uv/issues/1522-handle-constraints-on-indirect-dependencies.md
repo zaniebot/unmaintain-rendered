@@ -1,0 +1,145 @@
+---
+number: 1522
+title: handle constraints on indirect dependencies
+type: issue
+state: closed
+author: raylu
+labels:
+  - bug
+  - resolver
+  - great writeup
+assignees: []
+created_at: 2024-02-16T18:38:35Z
+updated_at: 2024-02-22T05:01:22Z
+url: https://github.com/astral-sh/uv/issues/1522
+synced_at: 2026-01-10T01:23:07Z
+---
+
+# handle constraints on indirect dependencies
+
+---
+
+_Issue opened by @raylu on 2024-02-16 18:38_
+
+if I have this requirements.in
+```
+virtualenv
+```
+and this requirements.txt
+```
+distlib==0.3.8
+    # via virtualenv
+filelock==3.8.0
+    # via virtualenv
+platformdirs==2.6.2
+    # via virtualenv
+virtualenv==20.16.5
+```
+then `pip-compile requirements.in` and `uv pip compile requirements.in -o requirements.txt` do the same thing (no functional changes to the txt file) so everything is great
+
+if I add this constraints.txt
+```
+filelock==3.8.0
+```
+and `rm requirements.txt`, then `pip-compile requirements.in -c constraints.txt` produces
+```
+distlib==0.3.8
+    # via virtualenv
+filelock==3.8.0
+    # via
+    #   -c constraints.txt
+    #   virtualenv
+platformdirs==3.11.0
+    # via virtualenv
+virtualenv==20.21.1
+```
+`pip-compile` picked the last version of virtualenv that supported the old `filelock` ([20.22.0 requires `filelock>=3.11`](https://github.com/pypa/virtualenv/blob/20.22.0/pyproject.toml#L40))
+
+however,
+```
+$ uv pip compile requirements.in -c constraints.txt -v
+[...]
+        0.008705s   3ms DEBUG uv_resolver::resolver Searching for a compatible version of virtualenv (*)
+        0.008872s   4ms DEBUG uv_resolver::resolver Selecting: virtualenv==20.25.0 (virtualenv-20.25.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=virtualenv, version=20.25.0
+     uv_resolver::resolver::distributions_wait package_id=virtualenv-20.25.0
+              0.009378s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/83/22/54b1180756d2d6194bcafb7425d437c3034c4bff92129c3e1e633079e2c4/virtualenv-20.25.0-py3-none-any.whl
+error: There are conflicting versions for `filelock`: `filelock>=3.12.2, <4` does not intersect with `filelock==3.8.0`
+```
+
+---
+
+_Comment by @zanieb on 2024-02-16 18:44_
+
+Interesting, thank you for the clear report!
+
+---
+
+_Label `bug` added by @zanieb on 2024-02-16 18:44_
+
+---
+
+_Referenced in [inventree/InvenTree#6499](../../inventree/InvenTree/pulls/6499.md) on 2024-02-16 19:52_
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 02:15_
+
+Ah yeah, ok, I see the issue here.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-18 02:15_
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 02:22_
+
+Have a fix but needs a few more test cases.
+
+---
+
+_Referenced in [astral-sh/uv#1621](../../astral-sh/uv/pulls/1621.md) on 2024-02-18 02:24_
+
+---
+
+_Label `great writeup` added by @zanieb on 2024-02-18 07:50_
+
+---
+
+_Label `resolver` added by @zanieb on 2024-02-18 07:50_
+
+---
+
+_Comment by @edwardpeek-crown-public on 2024-02-19 05:16_
+
+Hit this as well in my experimentation if you want another real-world case.  A one-liner repro:
+```bash
+# Doesn't work
+uv pip compile <(printf '%s\n' 'psycopg[c]>=3') -c <(printf '%s\n' 'psycopg==3.1.13' 'psycopg-c==3.1.13')
+
+# Works
+uv pip compile <(printf '%s\n' 'psycopg[c]>=3') -o <(printf '%s\n' 'psycopg==3.1.13' 'psycopg-c==3.1.13')
+```
+
+---
+
+_Comment by @charliermarsh on 2024-02-19 21:35_
+
+Thank you! I'm hoping to fix it today.
+
+---
+
+_Referenced in [astral-sh/uv#1796](../../astral-sh/uv/pulls/1796.md) on 2024-02-21 18:14_
+
+---
+
+_Closed by @charliermarsh on 2024-02-22 02:27_
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 05:01_
+
+Should be fixed in v0.1.7 (out now).
+
+---

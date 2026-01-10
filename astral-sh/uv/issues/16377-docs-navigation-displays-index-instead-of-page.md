@@ -1,0 +1,49 @@
+---
+number: 16377
+title: "Docs navigation displays \"Index\" instead of page name in nested nav structure"
+type: issue
+state: open
+author: FlaviusRaducu
+labels:
+  - documentation
+assignees: []
+created_at: 2025-10-20T22:43:43Z
+updated_at: 2025-12-18T15:41:06Z
+url: https://github.com/astral-sh/uv/issues/16377
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# Docs navigation displays "Index" instead of page name in nested nav structure
+
+---
+
+_Issue opened by @FlaviusRaducu on 2025-10-20 22:43_
+
+# Description
+
+While I was reading trough [the docs](https://docs.astral.sh/uv/getting-started/), I noticed that some next page navigation buttons were missing the page title and defaulting to "Index".  Please see a few examples below:
+
+**Example 1**
+<img width="1920" height="1007" alt="Image" src="https://github.com/user-attachments/assets/feec7419-6e52-43b7-89ae-e685acb58a37" />
+
+**Example 2**
+<img width="1920" height="1007" alt="Image" src="https://github.com/user-attachments/assets/b1902885-6a97-4ff4-b682-ca47dee97071" />
+
+# How to fix
+
+I'm not familiar with [MkDocs](https://www.mkdocs.org/) but the issue seems to be with the `mkdocs.template.yml` file; example [here](https://github.com/astral-sh/uv/blob/e0fe38eabbf97dfb84e1aa6c27b4c7a01f540cb3/mkdocs.template.yml#L174). I think we could do something along the lines to fix these issues:
+```YAML
+ - Guides:
+      - Guides overview: guides/index.md
+      - Installing Python: guides/install-python.md
+```
+
+---
+
+_Label `documentation` added by @konstin on 2025-10-21 07:43_
+
+---
+
+_Renamed from "docs(mkdocs): navigation displays "Index" instead of page name in nested nav structure" to "Docs navigation displays "Index" instead of page name in nested nav structure" by @konstin on 2025-12-18 15:41_
+
+---

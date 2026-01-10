@@ -1,0 +1,120 @@
+---
+number: 15627
+title: uv venv includes system dependencies in fresh environment
+type: issue
+state: open
+author: xOctave
+labels:
+  - question
+assignees: []
+created_at: 2025-09-02T13:47:59Z
+updated_at: 2025-09-02T14:04:26Z
+url: https://github.com/astral-sh/uv/issues/15627
+synced_at: 2026-01-10T01:25:57Z
+---
+
+# uv venv includes system dependencies in fresh environment
+
+---
+
+_Issue opened by @xOctave on 2025-09-02 13:47_
+
+### Summary
+
+`uv venv` includes system dependencies in fresh environment
+
+**Describe the bug**
+When creating a fresh project with `uv venv`, the virtual environment unexpectedly shows all system-wide dependencies when running `pip list`. I would expect a clean environment containing only the standard library (and optionally pip if seeded), but instead the environment seems to inherit global packages.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+
+1. Create a new directory:
+
+   ```bash
+   uv init uvdemo && cd uvdemo
+   ```
+2. Create a venv:
+
+   ```bash
+   uv venv --python 3.12
+   source .venv/bin/activate
+   ```
+3. List installed packages:
+
+   ```bash
+   pip list
+   ```
+4. Observe that all packages installed system-wide appear here.
+ 
+  ```[...]
+python-debian         0.1.49+ubuntu2
+python-markdown-math  0.8
+pytz                  2024.1
+pyxdg                 0.28
+PyYAML                6.0.1
+regex                 2022.10.31
+rencode               1.0.6
+requests              2.31.0
+rich                  13.7.1
+roman                 3.3
+service-identity      24.1.0
+setproctitle          1.3.3
+setuptools            68.1.2
+six                   1.16.0
+soupsieve             2.5
+ssh-import-id         5.11
+systemd-python        235
+textile               4.0.2
+torbrowser-launcher   0.3.7
+[...]
+```
+They should not be there !
+
+
+**Expected behavior**
+The environment created by `uv venv` should be isolated, with no system packages present. Running `pip list` should show only `pip`, `setuptools`, and `wheel` if seeded, or nothing at all if unseeded.
+
+**Actual behavior**
+System dependencies from `/usr/lib/python3.12/dist-packages` (and potentially others) appear inside the venv. This makes the venv non-isolated and causes unexpected behavior.
+
+
+**Additional context**
+
+* The venv’s `pyvenv.cfg` has `include-system-site-packages = false`.
+* `sys.path` inside the venv includes `/usr/lib/python3.12` and a system-installed `sitecustomize.py` gets loaded, which seems to bring in the system packages.
+* This makes it hard to rely on `uv venv` for isolated builds.
+
+
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+0.8.14
+
+### Python version
+
+3.12
+
+---
+
+_Label `bug` added by @xOctave on 2025-09-02 13:48_
+
+---
+
+_Comment by @zanieb on 2025-09-02 14:04_
+
+You're not getting `pip` from the virtual environment, e.g., do `which pip`. We don't install pip by default in virtual environments, use `uv pip list` instead or `uv venv --seed`.
+
+---
+
+_Label `bug` removed by @zanieb on 2025-09-02 14:04_
+
+---
+
+_Label `question` added by @zanieb on 2025-09-02 14:04_
+
+---

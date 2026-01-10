@@ -1,0 +1,167 @@
+---
+number: 14262
+title: Ability to select libc in a multi-libc environment
+type: issue
+state: closed
+author: nathanscain
+labels: []
+assignees: []
+created_at: 2025-06-25T15:46:28Z
+updated_at: 2025-07-16T13:52:18Z
+url: https://github.com/astral-sh/uv/issues/14262
+synced_at: 2026-01-10T01:25:43Z
+---
+
+# Ability to select libc in a multi-libc environment
+
+---
+
+_Issue opened by @nathanscain on 2025-06-25 15:46_
+
+## Problem Statement
+
+I am needing to support modern python installations within a manylinux2010 environment which runs an incompatible gnu libc version for python-build-standalone cpython builds. I can install musl libc alongside the existing machine configuration without affecting existing critical workflows, and uv is able to link python-build-standalone against this musl libc when explicitly handed the full version description (ie: cpython-3.13.5-linux-x86_64-musl). However, as the core system utilities use a gnu libc, uv will select gnu python builds by default (ie: a request for 3.13 results in attempting – and failing – to run cpython-3.13.5-linux-x86_64-gnu) even when running the musl build of uv.
+
+## Objective
+
+I need some means by which to inform uv of the libc that should be used for python version selection. This could take a few forms, and I don’t hold much preference for any 1 way over another if distributing the fix to users is not overly complex. Some options:
+
+### Option A: Configuration Setting
+
+The most straight forward option would be a configuration setting which I can set in the global `/etc/uv/uv.toml` file to direct the section of the ld path used to determine the libc variant and version. This could either be direct (dynamic-linker = “/lib/ld-musl-x86_64.so.1”), simplified (libc-variant = “musl”), or a mixture of the 2 (keyed as something like “libc” and allowing “gnu” or “musl” options to shortcut to the default dynamic location for the current arch or allow a full path to a specific ld shared object). This can be paired with an environment variable; however, that is less applicable in my situation is distributing environment variables is less straight-forward than updating a system-wide configuration file.
+
+### Option B: Updated Preferences
+
+This option gets at the oddity (in my option) of having the static musl build of uv select a gnu libc. Perhaps this was the objective, but I would expect the platform of the uv binary to influence the libc selection given that uv and pbs share the same minimum gnu libc requirements (as far as I am aware). This is much less direct than the first option, but perhaps more intuitive. If I am running a musl build of uv, I would expect to exhaust all options to link against musl for python (including the default ld location) before trying to like against gnu. If I wanted to link against gnu, the gnu build of uv is available with the inverse preference.
+
+### Combining Options
+
+The above options are not mutually exclusive. The first is non-breaking and could be implemented immediately without issue. The second is potentially breaking and could wait till the next major version. These could be worked separately if both ideas pass muster; however, I only require one or the other (with my only preference being the one that solves my issue the fastest).
+
+## Environment
+
+- uv version: 0.7.12 (latest approved for company use – 0.7.15 has no changes to libc detection)
+- os version: manylinux2010 environment + musl 1.2.5 (representative)
+- command: any command resulting in searching for a python version to use (ex: `uvx python@3.13`)
+
+## Reproduction
+
+- container: `quay.io/pypa/manylinux2010_x86_64:latest`
+- download: https://musl.libc.org/releases/musl-1.2.5.tar.gz 
+- untar and apply security patches for CVE-2025-26519: https://www.openwall.com/lists/musl/2025/02/13/1/1 https://www.openwall.com/lists/musl/2025/02/13/1/2
+- build and install musl libc: `./configure && make && make install`
+- download and install x64 MUSL Linux build of uv: https://github.com/astral-sh/uv/releases/download/0.7.12/uv-x86_64-unknown-linux-musl.tar.gz
+- show that uv auto selects glibc: `uv python list` 
+- show that uv can use musl python build if explicitly told: `uvx --python cpython-3.13.5-linux-x86_64-musl python`
+
+## References
+
+Current libc selection logic: https://github.com/astral-sh/uv/blob/4ed9c5791ba9d5c304aae14b920d612af26dc2d3/crates/uv-python/src/libc.rs#L60
+
+---
+
+_Comment by @oconnor663 on 2025-06-25 20:48_
+
+> the oddity (in my option) of having the static musl build of uv select a gnu libc
+
+I'm somewhat new to this topic, but I think a relevant detail to highlight is that there are sort of _three_ different types of binaries, from the perspective of `libc` selection:
+
+- dynamically linked to glibc
+- statically linked to musl
+- dynamically linked to musl
+
+Usually folks who target musl do that so they can statically link the whole binary. However, while static binaries don't need to load dynamics libraries on startup ("implicit" linking), they also _cannot_ load dynamic libraries at runtime ("explicit" linking, e.g. `dlopen`). It turns out that CPython is architected around explicit linking, and so our standalone musl builds dynamically link musl. That means they require `/lib/ld-musl-x86_64.so.1`, which exists on musl-based distros like Alpine but not (by default) on glibc-based distros. So it doesn't generally follow from "`uv` is targeting musl" that we can run musl flavors of standalone Python. It _would_ follow from "`uv` is dynamically loading musl", but as far as I know almost no one builds `uv` that way?
+
+---
+
+_Comment by @nathanscain on 2025-06-25 22:19_
+
+Yes, I agree mostly with that. uv being statically linked makes perfect sense and is where musl shines.
+
+The oddity I was getting at was that, if I made the choice to install musl uv (even if statically linked) instead of the gnu version, I'd expect to favor the musl python builds (which are dynamically linked) assuming the required ld could be found. The idea was mostly "implicit configuration" since the gnu uv and gnu python build standalone have the same glibc minimum version afaik, so if someone (a) went through the trouble of installing the non-default musl build and (b) has an incompatible gnu libc, then it probably means they are wanting to using musl python builds to get around the gnu libc being too old. In which case, it should be verified in advance that the musl ld so exists.
+
+I'm okay with that dropping out of this issue is if you'd rather avoid behavior differences by platform target in the built binaries. It was behavior I found surprising, but I could definitely see others finding uv selecting different Python platforms for different platform builds surprising if they came at it from a different angle.
+
+---
+
+_Comment by @nathanscain on 2025-06-27 20:48_
+
+@charliermarsh @zanieb @konstin
+
+Sorry - forgot to tag this story when I created it.
+
+Not sure if it would be an enhancement or bugfix by your standards, but I don't have a straight-forward way to tell uv to use a particular libc variant that I know of
+
+---
+
+_Comment by @zanieb on 2025-06-27 22:02_
+
+> if I made the choice to install musl uv (even if statically linked) instead of the gnu version, I'd expect to favor the musl python builds (which are dynamically linked) assuming the required ld could be found
+
+I think this seems reasonable. I think the problems are
+
+1. Historically, we didn't have functioning musl builds of Python, so we never preferred using them
+2. We use static musl builds of uv in Docker, and it's installed in images where it's very _common_ for people to still prefer GNU libc Python builds, which is contrary to your point (a) that someone went through some trouble to get this specific build of uv
+
+I think what Jack says is along the same lines as (2)
+
+> It would follow from "uv is dynamically loading musl", but as far as I know almost no one builds uv that way?
+
+I think these are only really arguments against "Option B" though, and even then I think there's probably _some_ way we can improve the default behavior — I'm just not sure yet.
+
+Adding a way to bypass our libc detection and request a different target seems reasonable. 
+
+
+---
+
+_Comment by @zanieb on 2025-06-27 22:02_
+
+(As a bit of an aside: please don't ping a bunch of the team)
+
+---
+
+_Comment by @nathanscain on 2025-06-27 22:10_
+
+(Sorry about that - will remember for the future)
+
+Yes, I think that makes sense with the distroless uv container images using static musl. I hadn't considered that.
+
+As for the bypass setting approach then, how hard would it be to add something like that? I had initially looked at it but the file isn't currently accessing configuration, and I wasn't sure how to go about adding that. 
+
+---
+
+_Comment by @zanieb on 2025-06-27 23:15_
+
+It'd be trivial to add a clause to `Libc::from_env` that reads an environment variable, e.g., `UV_LIBC`?
+
+https://github.com/astral-sh/uv/blob/f9d3f24728d34e73cb0b01570ffd389dd2c1f92f/crates/uv-python/src/platform.rs#L77
+
+Propagating a configuration file value would indeed be more work, I'm not sure how much of a pain it'd be to thread through — we don't infer other parts of the platform from configuration files so probably not fun. 
+
+---
+
+_Comment by @konstin on 2025-07-01 12:18_
+
+> I am needing to support modern python installations within a manylinux2010 environment which runs an incompatible gnu libc version for python-build-standalone cpython builds.
+
+Can you expand on why you have that requirement? Why are you not using a modern, supported distribution?
+
+uv infers the libc from the Python interpreter you give, so if you explicitly request a musl in `uv python install` or with `-p`, uv respects that selection no matter how the host looks.
+
+---
+
+_Comment by @nathanscain on 2025-07-01 13:06_
+
+Sure - we operate and maintain a number of legacy systems for various critical purposes (sorry to be vague). Work is ongoing to upgrade these, but they are delicate systems that some are wary about touching at all. The process has been slower than I'd prefer, but that is generally out of my control and musl provides a path to install modern software alongside the existing configuration without driving a significant, immediate cost of migration - allowing a phased approach to the transition. As unfortunate as this reality is, I don't believe we are alone in this regard.
+
+Yes - I am able to install musl builds on these machines if I am explicit (ref: last reproduction step above); however, it would be a different interface for users we will need to train as the majority of systems will just need `uv python install 3.13`. Installing (and more importantly, selecting throughout the day) musl requires the much longer and more error-prone `uv python install cpython-3.13.5-linux-x86_64-musl` as I don't believe I can just indicate the platform without also providing the flavor, patch revision, os, and arch. Ideally, the same command we train users to use on other systems works transparently for users.
+
+---
+
+_Referenced in [astral-sh/uv#14646](../../astral-sh/uv/pulls/14646.md) on 2025-07-16 06:23_
+
+---
+
+_Closed by @zanieb on 2025-07-16 13:52_
+
+---

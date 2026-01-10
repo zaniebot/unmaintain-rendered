@@ -1,0 +1,73 @@
+---
+number: 17046
+title: Using uv run in launch.json for Debugging Python Apps
+type: issue
+state: open
+author: user1500177
+labels:
+  - question
+assignees: []
+created_at: 2025-12-09T12:32:46Z
+updated_at: 2025-12-10T14:30:25Z
+url: https://github.com/astral-sh/uv/issues/17046
+synced_at: 2026-01-10T01:26:13Z
+---
+
+# Using uv run in launch.json for Debugging Python Apps
+
+---
+
+_Issue opened by @user1500177 on 2025-12-09 12:32_
+
+### Question
+
+Hi team,
+
+I’m currently able to debug my Python applications in VS Code using the standard Python configuration in [launch.json](vscode-file://vscode-app/c:/Users/kevin.paulson/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench.html):
+
+    {
+      "name": "Debug API (Python)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/api/main.py",
+      "console": "integratedTerminal"
+    }
+
+However, I’d like to use [uv run](vscode-file://vscode-app/c:/Users/kevin.paulson/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench.html) instead of the default Python interpreter, so I can leverage its speed and environment management. I can run my app with uv run src/api/main.py from the terminal, but I haven’t found a way to use uv run directly in [launch.json](vscode-file://vscode-app/c:/Users/kevin.paulson/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench.html) for debugging.
+
+Is it possible to configure [launch.json](vscode-file://vscode-app/c:/Users/kevin.paulson/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench.html) to use uv run for debugging (with breakpoints, etc.)? If so, what would the configuration look like?
+
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @user1500177 on 2025-12-09 12:32_
+
+---
+
+_Comment by @user1500177 on 2025-12-10 09:55_
+
+Hi  Could anyone help ??
+
+---
+
+_Comment by @sansmoraxz on 2025-12-10 14:24_
+
+Isn't `uv run` a wrapper on the corresponding python cli itself?
+
+You can just activate the venv created uv and continue working normally.
+
+---
+
+_Comment by @zanieb on 2025-12-10 14:30_
+
+See https://github.com/astral-sh/uv/issues/8558
+
+---

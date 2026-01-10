@@ -1,0 +1,69 @@
+---
+number: 10460
+title: Show ETA when downloading wheels (like pip)
+type: issue
+state: open
+author: StarConnor
+labels:
+  - tracing
+  - cli
+assignees: []
+created_at: 2025-01-10T06:54:14Z
+updated_at: 2025-01-10T14:40:16Z
+url: https://github.com/astral-sh/uv/issues/10460
+synced_at: 2026-01-10T01:24:54Z
+---
+
+# Show ETA when downloading wheels (like pip)
+
+---
+
+_Issue opened by @StarConnor on 2025-01-10 06:54_
+
+_No description provided._
+
+---
+
+_Renamed from "ETA time when downloading wheels like pip?" to "Feature Request: add ETA time when downloading wheels like pip?" by @StarConnor on 2025-01-10 06:54_
+
+---
+
+_Comment by @konstin on 2025-01-10 13:33_
+
+We cannot give ETAs for features, but the pip download feature is tracked in #3163.
+
+---
+
+_Closed by @konstin on 2025-01-10 13:33_
+
+---
+
+_Comment by @blueraft on 2025-01-10 13:39_
+
+I think this feature request is about the eta given by pip when downloading packages, see below 
+
+<img width="588" alt="Image" src="https://github.com/user-attachments/assets/11d1331a-f24b-4368-aaa8-a3ae1a339d80" />
+
+---
+
+_Reopened by @konstin on 2025-01-10 13:39_
+
+---
+
+_Comment by @konstin on 2025-01-10 13:39_
+
+Sorry, completely misread the request
+
+---
+
+_Renamed from "Feature Request: add ETA time when downloading wheels like pip?" to "Show ETA when downloading wheels (like pip)" by @zanieb on 2025-01-10 14:40_
+
+---
+
+_Label `tracing` added by @zanieb on 2025-01-10 14:40_
+
+---
+
+_Label `cli` added by @zanieb on 2025-01-10 14:40_
+
+---

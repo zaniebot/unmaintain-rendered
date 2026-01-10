@@ -1,0 +1,90 @@
+---
+number: 16185
+title: "Why does `uv sync` with `--no-editable` care if a `README.md` is around?"
+type: issue
+state: closed
+author: omgMath
+labels:
+  - question
+assignees: []
+created_at: 2025-10-08T12:39:14Z
+updated_at: 2025-10-17T04:56:51Z
+url: https://github.com/astral-sh/uv/issues/16185
+synced_at: 2026-01-10T01:26:04Z
+---
+
+# Why does `uv sync` with `--no-editable` care if a `README.md` is around?
+
+---
+
+_Issue opened by @omgMath on 2025-10-08 12:39_
+
+### Question
+
+Hi. I encountered the following behavior, which I found weird. Found this when trying a `Docker` image with only minimal amount of files, which did not include the `README.md`. The error I get is
+
+```
+  × Failed to build `foo @ file:///home/me/tmp/apps/foo`
+  ╰─▶ failed to open file `/home/me/tmp/apps/foo/README.md`: No such file or directory (os error 2)
+```
+
+The following should reproduce the error:
+
+```bash
+uv init
+uv init --package --app apps/foo
+uv add --package foo httpx 
+uv sync --package foo
+rm apps/foo/README.md
+uv sync --package foo --no-editable
+```
+
+Is there a reason `uv` cares about the README in this case? Sure, I get that it is referenced by default in the `pyproject.toml`s, but from my point of view it shouldn't be required to `sync`?
+
+Removing `readme = "README.md"` is a workaround.
+
+### Platform
+
+Debian GNU/Linux 12 (bookworm) on WSL
+
+### Version
+
+uv 0.9.0
+
+---
+
+_Label `question` added by @omgMath on 2025-10-08 12:39_
+
+---
+
+_Comment by @konstin on 2025-10-08 12:49_
+
+Are you looking for `--no-install-project`? `--no-editable` does a regular wheel build, which needs all files of the package, which includes the Readme. Without this file, the built wheel would have a mismatch between what was declared as required in `pyproject.toml` and what is in the final wheel.
+
+---
+
+_Comment by @omgMath on 2025-10-08 13:31_
+
+I see. Thanks for the explanation.
+
+I used `--no-editable` because of what I found in [the docs](https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs). That sounded like it would add the local workspace files into the `venv` so that it the source code could be removed again from the `Docker` image.
+
+Trying `--no-install-project` in my setup seems to work, but if I'm honest, I don't fully understand what it does from reading the [docs](https://docs.astral.sh/uv/reference/cli/#uv-sync--no-install-project).
+
+Did I get this right? Assume `foo` depends on `lib`, located in the workspace. Then `uv sync --package foo --no-install-project` adds the dependency `lib` to the `venv`, so `lib` can be used without needing a reference to the actual code anymore?
+
+"If used improperly, these flags can result in a broken environment since a package can be missing its dependencies." from [here](https://docs.astral.sh/uv/concepts/projects/sync/#partial-installations) sounded a bit scary to use it without fully understanding what it does...
+
+
+
+---
+
+_Comment by @konstin on 2025-10-16 19:42_
+
+Package installation is binary: You can either install a package fully (having its Readme) or not at all. uv has the `--no-install-*` options for caching in Docker: You install only dependencies for a cacheable layers, while the project, which changes every time, gets its own layer near the end of the dockerfile.
+
+---
+
+_Closed by @omgMath on 2025-10-17 04:56_
+
+---

@@ -1,0 +1,204 @@
+---
+number: 8751
+title: Please consider changing configuration merging semantics
+type: issue
+state: closed
+author: ofek
+labels:
+  - configuration
+assignees: []
+created_at: 2023-11-18T02:53:14Z
+updated_at: 2023-11-19T15:59:25Z
+url: https://github.com/astral-sh/ruff/issues/8751
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# Please consider changing configuration merging semantics
+
+---
+
+_Issue opened by @ofek on 2023-11-18 02:53_
+
+I am trying to integrate with Ruff by having a default config that extends the user's config:
+
+```toml
+extend = "/path/to/user_repo/ruff.toml"
+
+[lint]
+select = [
+    # snip
+]
+
+[lint.per-file-ignores]
+"**/tests/**/*" = [
+    # snip
+]
+# snip
+```
+
+I want to provide the base selection and per-file ignored rules which the user can then modify by ignoring with `ignore`, selecting more rules with `extend-select`, and adding additional per-file ignored rules with `extend-per-file-ignores`.
+
+Currently, the `ignore` that they define in their file has absolutely no effect. I think this is extremely unexpected and I would argue wrong behavior. It would make more sense from a UX perspective to treat merging as simply a data structure-level operation that only acts upon keys, nothing else, no other logic.
+
+I don't know how I would integrate with this limitation.
+
+---
+
+_Comment by @zanieb on 2023-11-18 16:05_
+
+Hi. Would you mind expanding your example a bit more to elucidate your point? I'm having a hard time following your problem.
+
+---
+
+_Label `configuration` added by @zanieb on 2023-11-18 16:05_
+
+---
+
+_Comment by @ofek on 2023-11-18 17:41_
+
+I'm using `ruff check --config my_ruff.toml ...` which extends the user's file. If I select a rule the user cannot ignore it, which is unexpected as I would assume exclusions take priority but what's actually happening is there is some extra logic that is preventing this based on the source.
+
+---
+
+_Comment by @charliermarsh on 2023-11-18 23:37_
+
+Configuration extension is not merely a merge of the `select` lists, and that's an intentional behavior. (IIRC, this was changed long ago in https://github.com/astral-sh/ruff/pull/2312.)
+
+Instead, the semantics are such that we treat each configuration source as a layer (starting with the root configuration file, then the file that `extends` it, and so on, and finally, the settings passed in on the CLI). To resolve the set of enabled rules, we resolve the `select` and `ignore` for that first layer; then we resolve the `select` and `ignore` for the second layer, and apply those changes to the set of selected rules; and so on.
+
+As a concrete example, if your configuration file contains `select = ["E", "F"]` and `ignore = ["E501"]`, and then the user passes `--select E501` on the command-line, we'd register two sets of selectors: the `select` and `ignore` in the configuration file, and then the `--select` from the command line. To resolve the enabled rules, we'd resolve that first set, which would give us everything from `E` and `F` except `E501`. We'd then resolve the second set, which would enable `E501`, giving us all of `E` and `F` as the final set.
+
+If you "just" merge the keys, you introduce some confusing problems. For example, if the configuration file that you extend has `ignore = ["E501"]` in it, then it becomes _impossible_ to enable `E501`. You can't enable it from the file with the `extends` in it, you can't enable it from the command-line, and so on -- since, in the end, all Ruff would see is a list that includes `E501` in its `ignore`, which will always beat out any method selecting `E501`. (And, in fact, we received issues in the past about those confusing problems, which led to this change, but I can't recall receiving any issues about the _current_ behavior before.)
+
+The problem here IMO is that in the issue as written, `extends` is being viewed as an unordered operation. Above, you want the configuration file with the `extends` in it to be the default, but those aren't the semantics of `extends`. Instead, I think you should be extending the _default_ configuration file, rather than the other way around: you want _your file_ to be defaults, with user configuration layered on top.
+
+
+---
+
+_Comment by @ofek on 2023-11-19 00:01_
+
+I'm okay with closing this in favor of https://github.com/astral-sh/ruff/issues/8737
+
+---
+
+_Closed by @ofek on 2023-11-19 00:01_
+
+---
+
+_Comment by @ofek on 2023-11-19 01:46_
+
+I'm sorry but I have to reopen this because I would like to get others' feedback. I ran into another case of really unexpected behavior as follows.
+
+User config:
+
+```toml
+extend = "C:\\Users\\ofek\\AppData\\Local\\hatch\\env\\.internal\\fmt\\eof-W-rA\\ruff_defaults.toml"
+
+[lint]
+preview = true
+
+[format]
+preview = true
+```
+
+My config:
+
+```toml
+[lint]
+select = [
+  ...
+]
+```
+
+Running Ruff without arguments does not enable preview mode even though that is enabled in the target config.
+
+I hear you when you say that this was partially a deliberate choice but please understand that I simply cannot comprehend how config is merged and I'm not exactly a new engineer.
+
+---
+
+_Reopened by @ofek on 2023-11-19 01:46_
+
+---
+
+_Comment by @charliermarsh on 2023-11-19 15:18_
+
+I just tested this locally and it does work for me.
+
+I have `base.toml`:
+
+```toml
+[lint]
+select = ["PIE"]
+```
+
+And then `ruff.toml`:
+
+```toml
+extend = "base.toml"
+
+[lint]
+preview = true
+
+[format]
+preview = true
+```
+
+Given `foo.py`:
+
+```python
+def func():
+    x = 1
+    pass
+
+
+def func():
+    x = 1
+    ...
+```
+
+Running:
+```shell
+❯ ruff check foo.py -n
+foo.py:6:5: PIE790 [*] Unnecessary `pass` statement
+foo.py:11:5: PIE790 [*] Unnecessary `...` literal
+```
+
+The latter violation is preview-only. And if I remove `preview = true` from `ruff.toml`, I get:
+
+```shell
+❯ ruff check foo.py -n
+foo.py:6:5: PIE790 [*] Unnecessary `pass` statement
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+I then did the same thing with `select = ["PL"]`, and:
+
+```python
+def func():
+    import os
+```
+
+Which triggers `PLC0415`, also a preview rule. In that case, I get:
+
+```shell
+❯ ruff check foo.py -n
+foo.py:2:5: PLC0415 `import` should be at the top-level of a file
+Found 1 error.
+```
+
+And again, if I remove `preview = true` from `ruff.toml`, the violation goes away.
+
+Can you provide more information on how you've determined that "Running Ruff without arguments does not enable preview mode even though that is enabled in the target config"?
+
+---
+
+_Comment by @ofek on 2023-11-19 15:59_
+
+This was user error from passing the wrong config file path on the command line, sorry for the noise!
+
+---
+
+_Closed by @ofek on 2023-11-19 15:59_
+
+---

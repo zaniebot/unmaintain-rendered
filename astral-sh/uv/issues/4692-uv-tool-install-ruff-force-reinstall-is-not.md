@@ -1,0 +1,87 @@
+---
+number: 4692
+title: "`uv tool install ruff --force --reinstall` is not idempotent"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - preview
+assignees: []
+created_at: 2024-07-01T13:30:57Z
+updated_at: 2024-07-01T14:25:13Z
+url: https://github.com/astral-sh/uv/issues/4692
+synced_at: 2026-01-10T01:23:40Z
+---
+
+# `uv tool install ruff --force --reinstall` is not idempotent
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-01 13:30_
+
+If I run `cargo run tool install ruff --force --reinstall`, it alternatives between the following.
+
+```
+Resolved 7 packages in 15ms
+Installed 7 packages in 12ms
+ + blinker==1.8.2
+ + click==8.1.7
+ + flask==3.0.3
+ + itsdangerous==2.2.0
+ + jinja2==3.1.4
+ + markupsafe==2.1.5
+ + werkzeug==3.0.3
+Installed: flask
+```
+
+And...
+
+```
+Resolved 7 packages in 14ms
+Installed 7 packages in 22ms
+ + blinker==1.8.2
+ + click==8.1.7
+ + flask==3.0.3
+ + itsdangerous==2.2.0
+ + jinja2==3.1.4
+ + markupsafe==2.1.5
+ + werkzeug==3.0.3
+Updated environment for tool `flask`
+```
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-07-01 13:31_
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 14:01_
+
+@zanieb - in theory could `--force` be dropped in favor of `--reinstall`?
+
+---
+
+_Referenced in [astral-sh/uv#4697](../../astral-sh/uv/pulls/4697.md) on 2024-07-01 14:05_
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 14:07_
+
+Got it, I see:
+
+```rust
+// Note we use `reinstall_entry_points` here instead of `reinstall`; requesting reinstall
+// will _not_ remove existing entry points when they are not managed by uv.
+```
+
+---
+
+_Comment by @zanieb on 2024-07-01 14:15_
+
+Mhm I think they need to be separate for that reason.
+
+---
+
+_Closed by @charliermarsh on 2024-07-01 14:25_
+
+---

@@ -1,0 +1,169 @@
+---
+number: 16883
+title: "Update Docker integration guide to prefer `COPY` over `ADD` for simple cases"
+type: pull_request
+state: closed
+author: MatthijsKok
+labels:
+  - documentation
+assignees: []
+base: main
+head: update-docs-docker-integration-guide
+created_at: 2025-11-28T15:17:19Z
+updated_at: 2025-12-03T15:16:43Z
+url: https://github.com/astral-sh/uv/pull/16883
+synced_at: 2026-01-10T01:26:18Z
+---
+
+# Update Docker integration guide to prefer `COPY` over `ADD` for simple cases
+
+---
+
+_Pull request opened by @MatthijsKok on 2025-11-28 15:17_
+
+## Summary
+
+Docker best practices recommend to use `COPY` when the additional functionality of `ADD` is not used.
+
+See:
+- https://docs.docker.com/build/building/best-practices/#add-or-copy
+- https://www.docker.com/blog/docker-best-practices-understanding-the-differences-between-add-and-copy-instructions-in-dockerfiles/
+
+## Test Plan
+
+Docs only change
+
+
+---
+
+_Comment by @zanieb on 2025-12-02 23:25_
+
+I'm fine with using `COPY` but I'd rather not change the ordering of the working directory as well. I find it less clear to `COPY . .`
+
+---
+
+_Label `documentation` added by @zanieb on 2025-12-02 23:25_
+
+---
+
+_@zanieb reviewed on 2025-12-03 14:59_
+
+---
+
+_Review comment by @zanieb on `docs/guides/integration/docker.md`:166 on 2025-12-03 14:59_
+
+Can you revert this change too please?
+
+---
+
+_@MatthijsKok reviewed on 2025-12-03 15:03_
+
+---
+
+_Review comment by @MatthijsKok on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:03_
+
+The first example was the only one that did not start with the `WORKDIR`, so I thought I'd align them.
+But whatever you prefer :) I can see how this is simpler in a way.
+
+Reverted.
+
+---
+
+_@zanieb approved on 2025-12-03 15:03_
+
+---
+
+_@MatthijsKok reviewed on 2025-12-03 15:05_
+
+---
+
+_Review comment by @MatthijsKok on `docs/guides/integration/docker.md`:170 on 2025-12-03 15:05_
+
+thought: with only 1 statement making use of the `WORKDIR` you could even
+```
+RUN uv --directory=app sync --locked
+```
+
+---
+
+_@zanieb reviewed on 2025-12-03 15:05_
+
+---
+
+_Review comment by @zanieb on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:05_
+
+Ah I didn't notice that, I presume we need it earlier in the other ones because we're relying on it for the cache mounts. I'm not quite sure how I feel about it. 
+
+---
+
+_@MatthijsKok reviewed on 2025-12-03 15:07_
+
+---
+
+_Review comment by @MatthijsKok on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:07_
+
+The cache mounts all target the absolute path `/root/.cache/uv`, so they are not impacted by `WORKDIR`.
+
+---
+
+_@MatthijsKok reviewed on 2025-12-03 15:08_
+
+---
+
+_Review comment by @MatthijsKok on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:08_
+
+Personally I _always_ start my dockerfiles with a `WORKDIR`, so I moved it without too much thought haha.
+
+It's not that important :) The current situation is perfectly fine
+
+---
+
+_Review comment by @zanieb on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:09_
+
+hm?
+
+https://github.com/astral-sh/uv/blob/e7af5838bbd3fe00d45b0ae6f399975846dbf41b/docs/guides/integration/docker.md#L408-L412
+
+---
+
+_@zanieb reviewed on 2025-12-03 15:09_
+
+---
+
+_@zanieb reviewed on 2025-12-03 15:09_
+
+---
+
+_Review comment by @zanieb on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:09_
+
+Sorry, "bind mounts" :)
+
+---
+
+_@MatthijsKok reviewed on 2025-12-03 15:13_
+
+---
+
+_Review comment by @MatthijsKok on `docs/guides/integration/docker.md`:166 on 2025-12-03 15:13_
+
+ahhh. ok that makes a lot more sense!
+
+I think the dilemma can be summed up as 
+- "`WORKDIR` statement before first time it's used" vs 
+- "`WORKDIR` statement at the start of the file" (potentially 'far away')
+
+whatever you think is best <3
+
+---
+
+_Merged by @zanieb on 2025-12-03 15:16_
+
+---
+
+_Closed by @zanieb on 2025-12-03 15:16_
+
+---
+
+_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
+
+---

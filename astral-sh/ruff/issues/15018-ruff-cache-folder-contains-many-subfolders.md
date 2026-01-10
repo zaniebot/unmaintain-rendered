@@ -1,0 +1,77 @@
+---
+number: 15018
+title: ruff cache folder contains many subfolders
+type: issue
+state: closed
+author: yabirgb
+labels:
+  - question
+assignees: []
+created_at: 2024-12-16T11:14:43Z
+updated_at: 2024-12-16T14:39:23Z
+url: https://github.com/astral-sh/ruff/issues/15018
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# ruff cache folder contains many subfolders
+
+---
+
+_Issue opened by @yabirgb on 2024-12-16 11:14_
+
+I noticed that I had a folder `.ruff_cache` and seems to have different subfolders
+
+```
+(rotki) ➜  rotki git:(migrate-movements) ✗ du -h .ruff_cache 
+124K	.ruff_cache/0.1.11
+132K	.ruff_cache/0.3.7
+120K	.ruff_cache/0.3.0
+156K	.ruff_cache/0.7.1
+128K	.ruff_cache/0.5.2
+132K	.ruff_cache/0.5.5
+216K	.ruff_cache/0.1.5
+132K	.ruff_cache/0.5.4
+148K	.ruff_cache/0.7.0
+132K	.ruff_cache/0.4.1
+272K	.ruff_cache/0.6.2
+872K	.ruff_cache/content
+144K	.ruff_cache/0.6.4
+648K	.ruff_cache/0.6.3
+132K	.ruff_cache/0.4.7
+240K	.ruff_cache/0.2.2
+156K	.ruff_cache/0.8.2
+248K	.ruff_cache/0.1.15
+2.4M	.ruff_cache/0.5.6
+256K	.ruff_cache/0.3.3
+112K	.ruff_cache/0.1.9
+3.0M	.ruff_cache/0.1.7
+2.4M	.ruff_cache/0.5.7
+604K	.ruff_cache/0.3.5
+156K	.ruff_cache/0.8.0
+148K	.ruff_cache/0.6.8
+132K	.ruff_cache/0.4.2
+1.8M	.ruff_cache/0.8.1
+144K	.ruff_cache/0.6.7
+132K	.ruff_cache/0.4.3
+236K	.ruff_cache/0.4.4
+144K	.ruff_cache/0.6.9
+ 16M	.ruff_cache
+```
+
+I belive those are all the ruff versions that I used in the project. Would it be possible to have some rule to autodelete it when I use a new ruff version? Is it fine if I delete them?
+
+---
+
+_Comment by @dhruvmanila on 2024-12-16 11:22_
+
+We store cache on a per-version basis which is what you're seeing there. It should be fine to remove cache from older versions or you can utilize `ruff clean` to remove all the cache and then the subsequent run should only create the cache folder for the version that you're using.
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-12-16 11:22_
+
+---
+
+_Closed by @yabirgb on 2024-12-16 14:39_
+
+---

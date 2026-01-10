@@ -1,0 +1,105 @@
+---
+number: 4040
+title: "`uv pip compile` perf regression in 0.2.6"
+type: issue
+state: closed
+author: blueraft
+labels:
+  - performance
+  - great writeup
+assignees: []
+created_at: 2024-06-05T09:59:05Z
+updated_at: 2024-06-05T18:12:00Z
+url: https://github.com/astral-sh/uv/issues/4040
+synced_at: 2026-01-10T01:23:33Z
+---
+
+# `uv pip compile` perf regression in 0.2.6
+
+---
+
+_Issue opened by @blueraft on 2024-06-05 09:59_
+
+There's a significant performance regression in `uv 0.2.6` for projects that rely on [setuptools_scm](https://github.com/pypa/setuptools_scm/).
+
+### MRE
+1. Initialize a blank git repo.
+2. Copy the following pyproject.toml.
+```toml
+[build-system]
+requires = ["setuptools<69.3.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = 'foobar'
+dynamic = ["version"]
+requires-python = ">=3.9"
+
+dependencies = ["flask"]
+
+[tool.setuptools_scm]
+```
+
+Benchmarks from an Ubuntu machine (I am able to reproduce this on MacOS too):
+1. `uv 0.2.6`
+```sh
+❯ uv --version
+uv 0.2.6
+❯ hyperfine 'uv pip compile pyproject.toml'
+Benchmark 1: uv pip compile pyproject.toml
+  Time (mean ± σ):     604.1 ms ±   5.2 ms    [User: 515.1 ms, System: 96.1 ms]
+  Range (min … max):   596.4 ms … 611.8 ms    10 runs
+```
+
+2. `uv 0.2.5`
+```sh
+❯ uv --version
+uv 0.2.5
+❯ hyperfine 'uv pip compile pyproject.toml'
+Benchmark 1: uv pip compile pyproject.toml
+  Time (mean ± σ):      58.2 ms ±   1.3 ms    [User: 41.6 ms, System: 23.7 ms]
+  Range (min … max):    55.1 ms …  61.0 ms    50 runs
+```
+
+
+ 
+
+---
+
+_Label `performance` added by @konstin on 2024-06-05 11:04_
+
+---
+
+_Label `great writeup` added by @konstin on 2024-06-05 11:04_
+
+---
+
+_Comment by @konstin on 2024-06-05 11:04_
+
+The cause of this regression is we unified some code paths and now require a static `version` field to read a `pyproject.toml` statically, instead we're now building the package to get the metadata including the version.
+
+---
+
+_Comment by @charliermarsh on 2024-06-05 15:02_
+
+We can fix this though it's sort of a pain.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-05 15:11_
+
+---
+
+_Comment by @blueraft on 2024-06-05 15:17_
+
+Thank you! 
+
+---
+
+_Referenced in [astral-sh/uv#4058](../../astral-sh/uv/pulls/4058.md) on 2024-06-05 17:56_
+
+---
+
+_Closed by @charliermarsh on 2024-06-05 18:12_
+
+---

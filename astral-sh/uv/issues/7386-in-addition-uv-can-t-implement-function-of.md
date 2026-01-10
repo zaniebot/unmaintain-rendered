@@ -1,0 +1,48 @@
+---
+number: 7386
+title: "In  addition ,  uv can't  implement function of    running  script  commands  ,just  like    pdm run script  or  npm run script "
+type: issue
+state: closed
+author: Super1Windcloud
+labels:
+  - question
+assignees: []
+created_at: 2024-09-14T04:51:02Z
+updated_at: 2024-09-14T12:29:06Z
+url: https://github.com/astral-sh/uv/issues/7386
+synced_at: 2026-01-10T01:24:14Z
+---
+
+# In  addition ,  uv can't  implement function of    running  script  commands  ,just  like    pdm run script  or  npm run script 
+
+---
+
+_Issue opened by @Super1Windcloud on 2024-09-14 04:51_
+
+In  addition ,  uv can't  implement function of    running  script  commands  ,just  like    pdm run script  or  npm run script 
+
+---
+
+_Comment by @Super1Windcloud on 2024-09-14 05:03_
+
+Except for its speed advantage, PDM cannot compete with UV. The experience in other aspects is top-notch. However, the next version of PDM will soon integrate UV. In time, PDM will be completely reborn.
+
+---
+
+_Comment by @charliermarsh on 2024-09-14 12:29_
+
+Thanks :) Follow this issue here which is focused on that kind of task runner / script runner capability: #5903
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-14 12:29_
+
+---
+
+_Closed by @charliermarsh on 2024-09-14 12:29_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-14 12:29_
+
+---

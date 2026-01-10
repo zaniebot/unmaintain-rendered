@@ -1,0 +1,83 @@
+---
+number: 3734
+title: "`PLC0414` false positive for stubs"
+type: issue
+state: closed
+author: Avasam
+labels:
+  - question
+assignees: []
+created_at: 2023-03-25T22:02:13Z
+updated_at: 2023-03-27T18:39:03Z
+url: https://github.com/astral-sh/ruff/issues/3734
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# `PLC0414` false positive for stubs
+
+---
+
+_Issue opened by @Avasam on 2023-03-25 22:02_
+
+`PLC0414` should not be applied to `.pyi`. Explicit re-exports are a valid convention to indicate that a type is meant to be exposed as re-exported, and isn't just used in the stub for typing reference.
+
+https://github.com/python/typeshed/blob/main/CONTRIBUTING.md#conventions
+> Imports in stubs are considered private (not part of the exported API) unless:
+> - they use the form from library import name as name (sic, using explicit as even if the name stays the same); or
+> - they use the form from library import * which means all names from that library are exported.
+
+For example:
+```py
+from ._modules import controller as controller, event as event, gui as gui, memory as memory, savestate as savestate
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-25 22:38_
+
+It looks like Pylint _does_ flag these in `.pyi` files so this would be a deviation.
+
+I'm actually kind of surprised this rule exists at all any more. Isn't explicit re-export part of the de facto public / private standard used by type checkers? E.g., see [Pyright](https://github.com/microsoft/pyright/blob/main/docs/typed-libraries.md#library-interface).
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-03-25 22:38_
+
+---
+
+_Comment by @Avasam on 2023-03-25 22:53_
+
+> It looks like Pylint does flag these in .pyi files so this would be a deviation.
+
+Pylint does not (officially) support type stubs: https://github.com/PyCQA/pylint/issues/4987 Any pylint errors in `.pyi` files are to be taken with a grain of salt. It just happens to work because they're technically valid python files.
+
+> Isn't explicit re-export part of the de facto public / private standard used by type checkers
+
+Yeah fair point. typeshed outlines the same convention, but it's scoped to stubs. I didn't even think the convention was also for regular python file. Makes that rule a bit weird, maybe it's just a strict rule to try and warn about a potential accidental re-export (keeping in mind pylint originally has many violation levels and a soft-cap pointing system). In that case it might make more sense to just keep the rule as-is and for me to disable it. Relevant conversation about severity levels https://github.com/charliermarsh/ruff/issues/1256
+
+---
+
+_Comment by @charliermarsh on 2023-03-25 23:24_
+
+Ah yeah. I mean, we definitely could disable this rule in `.pyi` files. It's just that the logic could also apply to `.py` files. But if no one would ever want this enforced in a `.pyi` file (but some _would_ want it enforced in `.pyi` files), then I'd err on the side of disabling it in `.pyi` files.
+
+---
+
+_Referenced in [astral-sh/ruff#3761](../../astral-sh/ruff/pulls/3761.md) on 2023-03-27 18:17_
+
+---
+
+_Closed by @charliermarsh on 2023-03-27 18:27_
+
+---
+
+_Comment by @charliermarsh on 2023-03-27 18:39_
+
+Figured why not fix, better than flagging the `.pyi` files.
+
+---
+
+_Referenced in [astral-sh/ruff#5698](../../astral-sh/ruff/issues/5698.md) on 2023-07-11 23:39_
+
+---

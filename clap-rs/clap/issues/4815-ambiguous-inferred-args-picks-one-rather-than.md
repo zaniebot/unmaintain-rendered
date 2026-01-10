@@ -1,0 +1,311 @@
+---
+number: 4815
+title: Ambiguous inferred args picks one, rather than errors
+type: issue
+state: closed
+author: SUPERCILEX
+labels:
+  - C-bug
+  - A-parsing
+  - E-easy
+assignees: []
+created_at: 2023-03-31T18:35:30Z
+updated_at: 2023-07-19T14:51:50Z
+url: https://github.com/clap-rs/clap/issues/4815
+synced_at: 2026-01-10T01:28:01Z
+---
+
+# Ambiguous inferred args picks one, rather than errors
+
+---
+
+_Issue opened by @SUPERCILEX on 2023-03-31 18:35_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Minimal reproducible code
+
+```rust
+#!/usr/bin/env rust-script
+//! ```cargo
+//! [dependencies]
+//! clap = { version = "4.2.0", features = ["derive"] }
+//! ```
+
+use clap::*;
+
+#[derive(Parser, Debug)]
+#[command(infer_subcommands = true, infer_long_args = true)]
+struct Infer {
+    // Try ./clap.rs --a delete. This should fail since there's ambiguity.
+    #[arg(long, alias = "abc")]
+    first: bool,
+    #[arg(long, alias = "aaa")]
+    second: bool,
+
+    #[command(subcommand)]
+    cmd: Cmd,
+}
+
+#[derive(Subcommand, Debug)]
+enum Cmd {
+    // Try ./clap.rs d. This should work since the ambiguity is within the command.
+    #[command(alias = "destroy")]
+    Delete
+}
+
+fn main() {
+    dbg!(Infer::parse());
+}
+```
+
+### Actual Behaviour
+
+- Long args pick the first arg upon conflict.
+- Subcommands fail to infer if the conflicts occurred within aliases.
+
+### Expected Behaviour
+
+- Long args fail on conflicts
+- Subcommands works with inner conflicts
+
+### Additional Context
+
+Re-filing https://github.com/clap-rs/clap/issues/4603#issuecomment-1487892976 since it seems to have been missed.
+
+See also
+- #4584
+- #4583
+
+---
+
+_Comment by @epage on 2023-04-12 19:45_
+
+It was not missed; I just didn't have the focus time to give to this.  Re-filing issues like this feels a bit spammy.  The main reason I'm keeping this version is because it is actually using the template.
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2023-04-12 19:53_
+
+---
+
+_Label `A-parsing` added by @epage on 2023-04-12 19:53_
+
+---
+
+_Comment by @epage on 2023-04-12 20:06_
+
+Enumerating more conditions
+```rust
+#!/usr/bin/env rust-script
+//! ```cargo
+//! [dependencies]
+//! clap = { version = "4.2.0", features = ["derive"] }
+//! ```
+
+use clap::*;
+
+#[derive(Parser, Debug)]
+#[command(infer_subcommands = true, infer_long_args = true)]
+struct Infer {
+    // `--z` is ambiguous within an arg
+    #[arg(long, alias = "zoo")]
+    zany: bool,
+
+    // `--a` is ambiguous alias between args
+    #[arg(long, alias = "abc")]
+    first: bool,
+    #[arg(long, alias = "aaa")]
+    second: bool,
+
+    // `--b` is ambiguous flag between args
+    #[arg(long)]
+    bar: bool,
+    #[arg(long)]
+    baz: bool,
+
+    #[command(subcommand)]
+    cmd: Option<Cmd>,
+}
+
+#[derive(Subcommand, Debug)]
+enum Cmd {
+    // `z` is ambiguous within the command
+    #[command(alias = "zoo")]
+    Zany,
+
+    // `a` is ambiguous alias between commands
+    #[command(alias = "Abc")]
+    First,
+    #[command(alias = "Aaa")]
+    Second,
+
+    // `b` is ambiguous name between commands
+    Bar,
+    Baz,
+}
+
+fn main() {
+    dbg!(Infer::parse());
+}
+```
+```console
+$  ./clap-4815.rs --z
+[/home/epage/src/personal/dump/clap-4815.rs:50] Infer::parse() = Infer {
+    zany: true,
+    first: false,
+    second: false,
+    bar: false,
+    baz: false,
+    cmd: None,
+}
+$  ./clap-4815.rs --a
+[/home/epage/src/personal/dump/clap-4815.rs:50] Infer::parse() = Infer {
+    zany: false,
+    first: true,
+    second: false,
+    bar: false,
+    baz: false,
+    cmd: None,
+}
+$  ./clap-4815.rs --b
+[/home/epage/src/personal/dump/clap-4815.rs:50] Infer::parse() = Infer {
+    zany: false,
+    first: false,
+    second: false,
+    bar: true,
+    baz: false,
+    cmd: None,
+}
+$ ./clap-4815.rs z
+error: unrecognized subcommand 'z'
+
+  tip: some similar subcommands exist: 'zany', 'zoo'
+  tip: to pass 'z' as a value, use 'clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a -- z'
+
+Usage: clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+
+$ ./clap-4815.rs a
+error: unrecognized subcommand 'a'
+
+  tip: a similar subcommand exists: 'zany'
+  tip: to pass 'a' as a value, use 'clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a -- a'
+
+Usage: clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+
+$ ./clap-4815.rs b
+error: unrecognized subcommand 'b'
+
+  tip: some similar subcommands exist: 'bar', 'baz'
+  tip: to pass 'b' as a value, use 'clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a -- b'
+
+Usage: clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+```
+
+---
+
+_Comment by @epage on 2023-04-12 20:22_
+
+So the behavior is independent of `alias`.
+
+it sounds like there are two requests here
+- Args should error like commands
+- Args and commands should not error if the options point to the same arg/command via aliases
+
+For me, I see this as separate and would likely want separate issues for deciding them.  I am willing to wait on that for now until we have further information.
+
+Next steps I see for this
+- Digging into the history to find related issues / PRs (the ones that introduced it, any significant changes to ambiguity) to get any context for what led to the current behavior
+- Identifying prior art for `infer_subcommands = true, infer_long_args = true` and see how they handle these cases (note: this doesn't have to be super exhaustive as it might not be clear and its not worth digging into the implementation to find out)
+
+---
+
+_Comment by @SUPERCILEX on 2023-04-12 21:31_
+
+> * Args should error like commands
+> * Args and commands should not error if the options point to the same arg/command via aliases
+
+Yes, that was clear months ago and is repeated in the issue description.
+
+> Digging into the history to find related issues / PRs (the ones that introduced it, any significant changes to ambiguity) to get any context for what led to the current behavior
+
+The current behavior for args is to pick an effectively random argument on a conflict. That's so obviously a bug. Similarly, not accepting conflicting aliases is also an extremely obvious bug.
+
+Here's the history: https://github.com/clap-rs/clap/issues/863.
+
+---
+
+_Comment by @epage on 2023-04-14 15:01_
+
+Interesting that #863 requested subcommands and long args (with the erroring behavior described in this issue) but only the subcommand side of it was implemented.  The flag side of this was re-raised in #1786 to mirror `getopt_long` behavior.  It was implemented in #2525 for the uutils project and was released in v3.0.0 (just over a year ago).   `getopt_long`  is documented as allowing unique abbreviations.
+
+Looking at the discussion for the two features, I'm not seeing anything that would demonstrate that this was intentional and to be compatible with one of the intended use cases, we should change this.
+
+Currently, long arg ambiguity is resolved roughly by argument definition order.  Looking at the [docs](https://docs.rs/clap/latest/clap/struct.Command.html#method.infer_long_args), they say arguments should not be ambiguous to succeed, so we aren't even matching the documented behavior.
+
+Due to the deviation from documentation and the two requesters, deviation from precedence, the lower usage of this feature, and the likely user-unpredictability of the current behavior, I'm leaning towards the chance of changing this during the 4.x.y series to be relatively low that we could do it now.
+
+At this time, I would ask that not erroring between the main item and their alias be split out as a separate issue for doing its own consideration.
+
+> Yes, that was clear months ago and is repeated in the issue description.
+
+No, it wasn't.  Very little information was communicated and instead you were putting the burden on us to figure out what all was left out.
+
+> The current behavior for args is to pick an effectively random argument on a conflict. That's so obviously a bug. Similarly, not accepting conflicting aliases is also an extremely obvious bug.
+
+I hope the above analysis gives you an idea of why I was wanting that information.  Its not just a matter of whether it is a bug but trying to find out the original intent and determining the impact of changing behavior on breaking people.
+
+---
+
+_Label `S-waiting-on-decision` removed by @epage on 2023-04-14 15:01_
+
+---
+
+_Label `E-easy` added by @epage on 2023-04-14 15:01_
+
+---
+
+_Renamed from "Argument and command inference are buggy" to "Ambiguous inferred args picks one, rather than errors" by @epage on 2023-04-14 15:02_
+
+---
+
+_Referenced in [clap-rs/clap#4914](../../clap-rs/clap/issues/4914.md) on 2023-05-18 13:09_
+
+---
+
+_Comment by @SUPERCILEX on 2023-06-17 20:33_
+
+> I hope the above analysis gives you an idea of why I was wanting that information. Its not just a matter of whether it is a bug but trying to find out the original intent and determining the impact of changing behavior on breaking people.
+
+Yes, this is extremely helpful, thank you! Sorry for getting pissed off, I genuinely thought you were trying to stall/waste time.
+
+---
+
+I re-opened the long args PR: https://github.com/clap-rs/clap/pull/4971 and then in a while I'll do the research to figure out why the command name aliases were written to error out.
+
+---
+
+_Comment by @epage on 2023-07-19 14:51_
+
+Since args and subcommands are separate problems, let's keep the issues isolated.
+
+The title for this is already about args and args is fixed, so I think I'll close this.  We can further discuss subcommands in #5021
+
+---
+
+_Closed by @epage on 2023-07-19 14:51_
+
+---
+
+_Referenced in [clap-rs/clap#5021](../../clap-rs/clap/issues/5021.md) on 2023-07-19 14:53_
+
+---

@@ -1,0 +1,766 @@
+---
+number: 1206
+title: "Iterating over `ArgMatches`"
+type: issue
+state: closed
+author: neysofu
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - A-parsing
+  - E-medium
+assignees: []
+created_at: 2018-03-09T12:04:34Z
+updated_at: 2022-08-15T16:15:32Z
+url: https://github.com/clap-rs/clap/issues/1206
+synced_at: 2026-01-10T01:26:45Z
+---
+
+# Iterating over `ArgMatches`
+
+---
+
+_Issue opened by @neysofu on 2018-03-09 12:04_
+
+Maintainer's notes
+- This is blocked on https://github.com/clap-rs/clap/issues/1041 / https://github.com/clap-rs/clap/issues/2150 where we move away from opaque, non-public `Id`s for arguments to something the user can programmatically act on
+
+---
+
+Hi, I am using Clap in a little side project and I would like to suggest a minor feature. I am ready to implement it myself and send a PR if needed, I just need a few pointers. The feature at hand is an ordered iterator over `ArgMatches`: as far as my understanding goes, Clap doesn't allow to freely iterate over the parsed arguments. What if my application APIs are dependent upon the order of the arguments? GNU `find` comes to my mind. Calling `index_of` for every argument can be expensive if you have a lot of them.
+
+If this feature were to be implemented, what would the return type and name of the method be?
+
+---
+
+_Comment by @kbknapp on 2018-03-19 17:58_
+
+Sorry for the wait, I've been on vacation with my kids this past week :)
+
+Do you mean iterating over only positional values, or over *all* args that have been used? Also, do you envision this iterating over *non*-matched args as well?
+
+If you'd like to take a stab at implementing I'd be happy to mentor you! This is how I'd attack it:
+
+* Draw out how you see this working, including the questions I listed above (including any edge cases you can think of)
+* I start with some usage code (such as in a test) to make sure the ergonomics are correct/comfortable
+* Write some tests in `tests/matches.rs` for the various uses you've drawn up in step one
+* I then just test *that* file alone with `cargo test --test matches` or can further test just a single function in that file with `cargo test --test matches -- name_of_function`
+* Start the implementation (this will vary greatly depending on how you've designed it)
+
+For the implementation once we have a good design I can give you some pointers as to where the changes you'll want to make are located / any particulars associated with those changes.
+
+Once all your new tests pass, I'd run a full test suite `cargo test --features "yaml vec_map wrap_help unstable"` and make sure nothing broke.
+
+If you need to see the debug output while you're building testing a single function use `cargo test --test matches --features debug -- name_of_function`
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2018-03-19 17:58_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2018-03-19 17:58_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2018-03-19 17:58_
+
+---
+
+_Label `C: matches` added by @kbknapp on 2018-03-19 17:58_
+
+---
+
+_Comment by @neysofu on 2018-03-19 19:54_
+
+First of all, thanks for taking the time to address this! I hope you enjoyed your vacation.
+
+The API I had in mind wouldn't be constrained only to positional arguments, but to all the arguments that have been used. Currently `ArgMatches` allows you to know which arguments have been used and their index in respect to all other arguments, yet it lacks a way to actually iterate over them.
+
+I mean adding an API to access the order in which options are given. Ex.:
+
+    cmd --abc --xyz
+    cmd --xyz --abc
+
+Let's say my command's behavior is specific to the order in which the options `abc` and `xyz` are given. As long as it's only two arguments I can get away with calling `index_of` for one of the two and figuring out which comes first. But what if I provide many another options? My idea is offer a method over `ArgMatches` that gives an iterator over the arguments in an ordered fashion:
+
+    arg_matches_1.iter_raw() == vec!["abc", "xyz"];
+    arg_matches_2.iter_raw() == vec!["xyz", "abc"];
+
+This example is just off the top of my head and I am sure it could be improved.
+
+Please correct me if I talked nonsense at any point because I am not very familiar with the API.
+
+---
+
+_Comment by @kbknapp on 2018-03-19 20:25_
+
+To make sure it's not an `XY` problem, how does your CLI work with the order of args? I've always seen conflicts/overrides as the main driving factor for when order matters. Both of which handled in the parsing logic.
+
+The only other form I've seen is for things like include/exclude logic where there aren't really hard conflicts/overrides at the parsing level, but further up the execution stack there are. I've only seen this between a handlful of args at the most, and hence iterating over the indices isn't an issue.
+
+This is of course not to say my list is exhaustive, I'm sure there are other use cases out there!
+
+This actually wouldn't be a *huge* change for clap to implement this, but it would introduce an additional dep (such as [`indexmap`](https://github.com/bluss/indexmap) ) and thus would need to be behind a non-default cargo feature.
+
+The change you'd make is using `cfg` statements to change the [`hashmap` to an `indexmap`](https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/arg_matches.rs#L62) and provide an `ArgMatches` method to simply return an Iterator of the requested info, perhaps as a tuple? (Such as `(name, &[vals])`?) This could be similar to how [`Arg::values_of`](https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/arg_matches.rs#L211-L220) works.
+
+For the iterator itself, it'd fine to use the [`Values` impl as a guide.](https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/arg_matches.rs#L791-L818)
+
+---
+
+_Comment by @kbknapp on 2018-03-19 20:28_
+
+Another more lengthy option (but arguably more correct) is instead of returning an Iterator of some custom data type tuple, returning the [`MatchedArg`](https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/matched_arg.rs) itself. I say more lengthy because you'd have to document `MatchedArg` and provide the appropriate methods to get at it's internals such as values, occurrences, and indices. However, this is more flexible in the long run as you wouldn't need to add more `ArgMatches` methods in order to deal with different types of iteration...you'd just let the calling code deal with it has it wants.
+
+---
+
+_Comment by @neysofu on 2018-03-20 15:22_
+
+My application has a custom `version` subcommand that works this way:
+
+    // Prints human readable version if no options are given
+    $ cmd version
+    Cmd 2.42.1-rc1 (fj23o83b)
+
+    // Switches to line-by-line format if options are given, to facilitate machine readability. The requested data is printed in the specified order.
+    $ cmd version --tags --major
+    rc1
+    2
+
+However there are many other use cases. Tasks execution order in a Gulp-like application, apply filters in a specific order in GNU find, ecc.
+
+---
+
+_Comment by @neysofu on 2018-03-20 15:24_
+
+> This actually wouldn't be a huge change for clap to implement this, but it would introduce an additional dep (such as indexmap ) and thus would need to be behind a non-default cargo feature.
+
+That's a pity. I thought it would be as simple as adding a method to `ArgMatches`, with no fundamental changes to the actual program.
+
+---
+
+_Comment by @kbknapp on 2018-03-21 00:33_
+
+Right now, clap uses a `HashMap` to hold the matches, which is inherently not in order. Switching to an `IndexMap` would be basically a drop in replacement, but because it's another dep I'd want people to have to opt-in to it.
+
+So it basically would be just a cfg statement which adds the method on the matches struct and uses an indexmap instead of hashmap.  And I'd create a struct to act as the iterator, and impl Iterator for it. 
+
+Something like (details left out for brevity):
+
+```rust
+#[cfg(not(feature = "indexmap"))]
+struct ArgMatches {
+    args: HashMap
+}
+
+#[cfg(feature = "indexmap")]
+struct ArgMatches {
+    args: IndexMap
+}
+
+impl ArgMatches {
+    #[cfg(feature = "indexmap")]
+    fn iter(&self) -> MatchIter {
+        MatchIter { iter: self.args.iter() }
+    }
+}
+
+#[cfg(feature = "indexmap")]
+struct MatchIter {
+    iter: // whatever IndexMap::iter returns
+}
+
+#[cfg(feature = "indexmap")]
+impl Iterator for MatchIter {
+    type Item = // whatever args.iter().next() returns
+
+    fn next(&mut self) -> Self::Item {
+        self.iter().next()
+    }
+}
+```
+
+So it's a pretty straight forward change.
+
+---
+
+_Comment by @neysofu on 2018-03-21 04:44_
+
+Thanks for the tips, I'll start working on a prototype then. 👍
+
+---
+
+_Comment by @neysofu on 2018-03-24 21:49_
+
+I feel hesitant adding an `iter` method to `ArgMatches`; it feels like a duplicate of `indexmap`'s functionality. `ArgMatches.args: IndexMap` is already public, so what's wrong with the user doing `matches.args.iter()`?
+
+---
+
+_Comment by @neysofu on 2018-03-24 23:19_
+
+You can take a look at the prototype [here](https://github.com/neysofu/clap-rs). There is some more work to do, specifically:
+
+- write documentation for both the feature and the `iter` method;
+- remove the feature from the default set (it was a quick hack to make it build every time without passing arguments);
+- add some more tests.
+
+Please let me know how you like the API and if you want any changes. Congrats on the codebase BTW, I know this is a small change but still, it is a pleasure to dive in.
+
+---
+
+_Comment by @kbknapp on 2018-03-25 03:17_
+
+> I feel hesitant adding an iter method to ArgMatches; it feels like a duplicate of indexmap's functionality. ArgMatches.args: IndexMap is already public, so what's wrong with the user doing matches.args.iter()?
+
+My current policy is public, but undocumented internals are effectively private and should not be relied on. Sure, I can't stop anyone from using them directly, but there's the caveat that if I change them without warning it's considered a breaking change. Hence the `#[doc(hidden)]`
+
+Most of the time public but undocumented is because it needs to be public because other mods (or eventually crates) need to touch it, but those mods (or crates) are maintained by myself or other clap members and thus it's essentially just a private API.
+
+---
+
+_Comment by @kbknapp on 2018-03-25 03:22_
+
+Looks like a good start! It's a small nit, but let's change the feature name to `iter_matches` because `iter` is somewhat ambiguous and may conflict with other types of iteration we may do in the future.
+
+Let me know if you have any other questions :+1: 
+
+---
+
+_Comment by @neysofu on 2018-03-25 05:18_
+
+I'll create a PR for discussing further details, sounds good?
+
+---
+
+_Comment by @kbknapp on 2018-03-25 19:21_
+
+Yep, I'd actually prefer it that way because it's easier to comment and review :smile:  :+1: 
+
+---
+
+_Referenced in [clap-rs/clap#1240](../../clap-rs/clap/pulls/1240.md) on 2018-04-01 07:20_
+
+---
+
+_Comment by @XX on 2018-04-14 20:07_
+
+I also need this functionality
+
+---
+
+_Comment by @bradwood on 2020-04-26 19:57_
+
+Hi all, I'm also looking to use something like this. I'd like to process my args in a functional fashion. The PR, however, seems to have died a death. Given that 3.0 is on the horizon how much of a bad idea is it for me to just use `matches.args.iter()` in 2.x?  Also, will this make it into 3.0?
+
+PS, I don't need ordering.
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-27 07:59_
+
+@bradwood Not as bad as you'd think: 2.x branch is frozen. I'd be really surprised if we change something regarding publicity of those fields because there is plenty of code out there relying on those, ugh. So, if you aren't planning on switching to 3.0 and you're OK with the fact that every time you use private API god kills a kitten, you can do that, yes.
+
+Beware: those will be truly private in 3.0.
+
+I suspect it won't make it into 3.0. The main question is: what are you going to iterate through? You can't have `&Arg` from `ArgMatches` because it stores `Id`s, basically a hash of those. On doesn't simply restore the Arg from the hash.
+
+---
+
+_Comment by @bradwood on 2020-04-27 12:32_
+
+i am trying to call `map()` on each arg I find to invoke the appropriate handler function based on the argument passed...
+
+And, as regards the kittens, I'm cool with that!  :)
+
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-27 12:39_
+
+clap has `Arg::validator` that is called on every _value_ passed in. And of course, you can always iterate over `std::env::args()` and map it as you please; you don't really need clap for that.
+
+---
+
+_Comment by @pksunkara on 2020-04-27 14:48_
+
+I think I can see a certain use case for this where people want to do dependency injection pattern for evaluating their args.
+
+---
+
+_Comment by @kbknapp on 2020-04-27 15:37_
+
+> [I] am trying to call map() on each arg I find to invoke the appropriate handler function based on the argument passed...
+
+For a while I was floating around the idea of adding filter/map capabilities to arguments themselves, in a similar manner to the current `validator`. In essence it's just a chance for people to call a function when a particular argument/value is used and do something with its value persistently. Some use cases were, "I want my CLI to accept options `yes|no` but I want the value held my context struct to be some concrete type." 
+
+But others also wanted more a "handler" type functionality (which is something some python libraries offer). This can be done already by (hackily) using the validator functionality.
+
+Currently, the mapping of values can be done pretty easily after the parsing in user code manually, but not *during* parsing.
+
+I'm not 100% sure where I fall on the thinking of this one though, as is the added complexity and public API space worth the small benefit of doing something at *parse time* instead of manually afterwards? 
+
+Also perhaps more importantly, have users thought through what happens if a particular map/filter/handler whatever we'd call it has side affects, but parsing ultimately fails? Maybe that's just a, "hey probably best you don't have side affects, but if you do be aware it can have XYZ consequences." I mean you can already (mis)use the validators for handlers, so I'd be less inclined to include that functionality.
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-27 17:02_
+
+> I want my CLI to accept options yes|no but I want the value held my context struct to be some concrete type
+
+Resolved by derive (and partially by `value_of_t*` methods).
+
+I'm not sure I get your "handlers" idea, I imagine it's something akin https://github.com/clap-rs/clap/issues/1185:
+
+> a single Arg::custom_parse which accepts a function that takes the arg/value currently being parsed, and returns an Option<T> where None is skip this value (i.e. parse it as a different arg), or Some(T) is "save this to the matches" it could be the value as passed in, or it could be something different entirely (i.e. a map).
+
+Some thoughts:
+* When is it ran, exactly? Before default values/environment variables were populated or after? What about required/conflicts stuff? How does it interact with old-style validators? With groups? Possible values?
+
+  I'm not sure I'm ready to answer these questions.
+
+* We've already got [the flush-related bug](https://github.com/clap-rs/clap/issues/1871). The problem here that clap exits with `sys::exit()` which implies that no destructors are being accounted for, no finallizers are being run, the text still awaiting to be processed by `IO` facilities is lost, etc... When I'm reading the description above, I'm given impression that "heavy" side-effect functions are OK, so will be users. 
+
+In nutshell: I think this kind of tool is too vague and too powerful for a command line parsing library to provide. I don't think clap should be trying to accommodate _every single_ CLI in existence, the number of well-supported designs is quite enough already. 
+
+---
+
+_Comment by @bradwood on 2020-04-27 17:38_
+
+FWIW, I'm not needing these `map()`s to run _during_ arg parsing, I'm happy to pass an iterator of matched arguments into a function pipeline. I'll take a look at the `validator`, as I've not really looked properly at that. It might work for my use case.
+
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-27 17:47_
+
+@bradwood Out of morbid curiosity, what is the core problem you're trying to solve? Why do you think `map` is  a good way to approach this kind of problem?
+
+I suspect you're just "doing it wrong".
+
+---
+
+_Comment by @kbknapp on 2020-04-27 18:48_
+
+> Resolved by derive (and partially by value_of_t* methods).
+
+Exactly. I'm describing a problem/issue that existed prior to derive macros. The "handlers" was just a common theme that popped up every so often, especially when people were moving from Python based CLIs which offer a "when this argument is used, run this function." Although that's a totally different way to build/design a CLI and thus I don't think it's really applicable to how clap runs.
+
+> I don't think clap should be trying to accommodate every single CLI in existence, the number of well-supported designs is quite enough already.
+
+100% agree. I'm just providing some historic context :wink: 
+
+---
+
+@bradwood I agree with @CreepySkeleton it sounds like you may be approaching the problem from a particular design angle and we may be seeing it as an XY problem.
+
+Some of the principal issues with a feature mapping over arguments (and their values) is:
+
+* For us (clap) to provide it, it needs to be general enough to fit all (or most) use cases, and with feature in particular there are a *lot* of things to consider and edge cases
+* If we're talking about true map (i.e. `T->U`), that can essentially already be done easily as @CreepySkeleton mentioned
+* If we're talking about handlers (i.e. perform some action for each argument); unless these actions are only blind side affects they: 
+  * need some sort of context passed to/from them (other args, maybe application context, etc.)
+  * cannot rely on deterministic order or hierarchy 
+  * most likely need the concept of fallibility (what happens on failure)
+
+Those final three bullets are some of what making this feature a general clap feature difficult. If you *don't* have any of those requirements and are truly only wanting blind side affects, I'd question if there may be a better way to represent the CLI.
+
+If you can give some examples of what you're trying to do, we may be able to either point you in a direction or give you a way to accomplish that task with existing features.
+
+---
+
+_Comment by @bradwood on 2020-04-27 19:02_
+
+Heh. Given that I'm only 3 weeks in and coming from Python, I'm almost _certainly_ doing it wrong! :smile: 
+
+Here's the situation:
+* I have a subcommand with 1 positional and about 20 non-positional arguments (some are just flags, and some take 1 or more values). 
+* I want to drive another builder API with arguments passed in via clap. There is (almost) a 1-to-1 relationship between clap argument and the other API's builder methods
+* I could do a massive chain of `if` statement (although maybe a `match` would be better) that goes something like the below pseudo-code
+
+```
+if arg_n passed then:
+     builder = builder.fn_n(arg's value[s]);
+ else if..
+(repeat 30 times)
+```
+Instead, more as a academic exercise than anything else, I'm trying to figure out if there's a more elegant way of doing in in a functional style... something like:
+
+```rust
+    // NOTE: args.args is a public, but _undocumented_ field in clap.rs
+    args.args.iter()
+        .map(
+            |(k,v)| println!("{} {:?}",*k ,v) //replace this with a mechanism that I can use to call the appropriate builder method
+            ).count(); // I'm using this to drive the function pipeline, purely for the side effects, rather than for the resulting value (I accept that this is probably not idiomatic)
+```
+What the aforementioned mechanism is, I'm not quite sure (yet)... but I was hoping to figure out a way to look up the other API's builder method that I need to call using the name of the clap argument passed...
+
+I wait with bated breath for you to give me some beautiful idiomatic pattern that'll make this into anything other than 30 if statements!  
+
+Thanks!
+
+---
+
+_Comment by @kbknapp on 2020-04-27 19:17_
+
+Yours is not a super common case. Essentially, your CLI is a facade for a builder API? A few things about what you mention stood out to me (emphasis mine): 
+
+1) 
+
+>There is (**almost**) a 1-to-1 relationship between clap argument and the other API's builder methods
+
+Unless you have a way of mapping those non 1:1 arguments, you'll end up with errors. So dealing with those errors is the *fallible* requirement I mentioned above.
+
+2) In your example you use `println!` which kind of hides the problem, but in your pythonesque example you have `builder = builder.fn_n` which means each of these maps/handlers/whatever need to receive context, mutate it, and send it to the next fn (in this case its the `builder`). This is the  context sending I mentioned above.
+
+---
+
+Although it's not the 2 line map you're hoping for, the most idiomatic way to deal with this type of situation is via the clap derive macros. Your CLI would evaluate to some type, lets call it `MyRawOpts`, and your other builder would then impl `From<MyRawOpts>`. And by using some combination of macros you could decrease the verbosity of the `From<..>` impl to essentially a loop and map.
+
+---
+
+_Comment by @kbknapp on 2020-04-27 19:21_
+
+Although it's a more advanced topic, and probably defeats the purpose of what you're trying to do, you could combine your own Custom Derive macro, and do something like `#[derive(Clap, IntoMyBuilderApi)]` which would instead impl `Into<MyBuilderApi> for MyRawOpts` automatically, and using things like the `syn` crate loop through the struct fields of `MyRawOpts` simply applying them to your builder.
+
+---
+
+_Comment by @bradwood on 2020-04-27 19:27_
+
+I'm still reeling from everything you just wrote below the horizontal rule 2 comments above... :thinking:.  I'm going to have to do a whole lot of research on this, which is no bad thing... Thanks for your help (and patience) here!
+
+As a final question, if I may, where would I look for examples of Clap and derive macros. Is this documented somewhere? I'm digging through the docs but not finding much on this topic (but I might not be looking in the right place).
+
+---
+
+_Comment by @kbknapp on 2020-04-27 19:39_
+
+The clap derive macros are the new big feature of clap 3.x which is still in beta and thus not formally released yet. So the documentation is still lacking.  The source is under the `clap_derive` crate in the root of this repository. You can look at the [examples directory of `clap_derive`](https://github.com/clap-rs/clap/tree/master/clap_derive/examples) for some ideas.
+
+If you'd prefer, you can use [`structopt`](https://crates.io/crates/structopt) which is well documented, until clap 3x is released. `structopt` uses clap 2.x internally, and all the clap 3.x macros are based on `structopt` (i.e. for clap 3.x we combined efforts between the two crates :wink:).
+
+For info on writing Custom Derive macros:
+
+* [Rust book section on macros](https://doc.rust-lang.org/book/ch19-06-macros.html)
+* [`clap_derive` source](https://github.com/clap-rs/clap/tree/master/clap_derive)
+* [`structopt` source](https://github.com/TeXitoi/structopt)
+* You'll need to reference the docs for the following two crates which are pretty critical to procedural macros:
+  *  [`syn`](https://docs.rs/crate/syn)
+  * [`quote`](https://docs.rs/quote)
+
+---
+
+_Comment by @bradwood on 2020-04-27 19:51_
+
+Okay. 
+
+I'm still using clap 2.x and have been holding off going to 3.x... I had a cursory look at `structopt` a week or 2 ago, but decided I'd go for vanilla clap 2.x.  I've also read some of your blog posts on merging the 2 and the rationale for that, which makes a lot of sense to me. I'll have a dig through both the 3.x codebase and `structopt` again and have a further think. As regards macros, I've read the chapter in the book, but am yet to try writing a declarative one, let along a procedural one... so definitely some homework to do.  Thanks again to all of you for taking the time to respond to me on this thread. 
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-28 09:24_
+
+@bradwood Should you decide to take a stab at proc-macros, I recommend to start with [`proc-macro-orkshop`](https://github.com/dtolnay/proc-macro-workshop/) which is a set of very good intro-level (and not so intro) exercises .
+
+And if I may, I would humbly recommend [`proc-macro-error`](https://crates.io/crates/proc-macro-error) for error reporting.
+
+---
+
+_Comment by @dynaxis on 2020-06-05 04:29_
+
+I've arrived here trying to write a crate to adapt some or all of command line arguments matched with Clap into a configuration to be built with config-rs. I just don't want to let users specify the same argument specifications as given to Clap twice. That is, arguments information from Clap + rules to map arguments to configuration items should minimize hassles from user side.
+
+For my case, it's good to iterate through matched arguments with a bit of information given to an `App`. But only the access to the argument specifications in `App` will also do. My idea is to let users choose whatever means to specify arguments information among those provided by Clap Ithat is, YAML, builder API, macro, and derive).
+
+Alternatively, I can design my own way of specifying arguments and their mappings into a configuration in one shot and generate arguments specification for Clap behind. But considering various ways Clap supports for specifying arguments, I'm afraid my crate might be limiting user choices or become more complicated than necessary to mimick Clap's ways of specifying arguments.
+
+In conclusion, IMHO, exposing argument specification and/or matches should open doors to more crates augmenting Clap.
+
+---
+
+_Comment by @CreepySkeleton on 2020-06-05 06:11_
+
+@dynaxis What you described sounds  a lot like `get_name`, `get_subcommand`, `get_...` methods in clap 3. you can just take the `App` and query all the info you might need.
+
+> argument specifications
+
+And that is the big question: what the specification would be? 
+
+---
+
+_Comment by @dynaxis on 2020-06-05 06:32_
+
+@CreepySkeleton yes, those `get_...` methods are what I want. Thank you very much. I only looked into the doc of `3.0.0-beta.1` and they seem added afterwards. 
+
+**UPDATE**: I looked only into the doc of `clap-v3`, which was published on Mar. 30 this year. And what I get from `crates.io` is `3.0.0-beta.1` of `clap` crate, which was published on May 3 this year. That was the source of the confusion.
+
+And regarding "argument specifications", I just mean specifying what arguments are expected (i.e. in the form of YAML, calls of builder methods, or whatever `Clap` supports).
+
+**UPDATE**: I decide to use `3.0.0-beta.1` for my crate in the hope that release of version `3` is close enough. Thanks again.
+
+---
+
+_Comment by @lucasfernog on 2020-06-07 00:47_
+
+I'm also interested in this feature, because I'm writing a library that uses Clap and since everything is dynamic, I'd also to know the "big picture" of the matched args, so something like exposing the IndexMap `args` inside `ArgMatches` would be useful to me. What's the status here?
+
+---
+
+_Comment by @CreepySkeleton on 2020-06-07 05:50_
+
+The status is, we need to decide on this problem:
+
+> The main question is: what are you going to iterate over? You can't have an `&Arg` from `ArgMatches` because it stores `Id`s, basically a hash of those. One doesn't simply restore the `Arg` from the hash.
+
+Maybe we could export `Id` as an "opaque identifier" so you can iterate over them, but that would be as far as we can go.
+
+> exposing the IndexMap args inside ArgMatches
+
+I'm currently working on rearranging the layout so that global arguments are stored separately from normal ones. I am opposed to exposing these details since there are plans to change them (inside my head mostly), but could you clarify what you mean by "big picture"? Maybe we can get away with an extra getter or two.
+
+---
+
+_Comment by @lucasfernog on 2020-06-07 12:30_
+
+I'd like to have something like a JSON serialization of ArgMatches, so a mapping between each arg name and its value, number of occurrences, etc. The reason is that I'm trying to expose the parsed results to a different language (JavaScript), and this kind of structure would help me, since I can't just expose Clap's interface because it's recursive (subcommands inside subcommands).
+
+---
+
+_Comment by @CreepySkeleton on 2020-06-07 15:22_
+
+> arg name and its value
+
+`Id`, not name.
+
+Anyway, stable serialization of ArgMatches is beyound the scope of this issue. I encourage you to file a separate issue for that. Frankly, if I were you, I would just conver the matches into `HashMap` or something.
+
+Out of curiosity, why do you need the serialization in the first place? It sounds weird.
+
+---
+
+_Comment by @lucasfernog on 2020-06-07 19:51_
+
+Writing the matches to a `HashMap` is exactly what I need.
+
+But the thing is, i'm extending clap with my library, so the dev gives me a structure defining its CLI args, and I'd like to give them back a HashMap with every id and its value. But I'd prefer not iterating over this structure and calling `ArgMatches::get_value_of` or something like that, since there's a lot of edge cases to cover (like global args, multiple values, etc).
+
+Then I'm going to serialize this HashMap to send it to a JavaScript layer (and yeah, this is a weird use case, I'm doing it for [Tauri](https://github.com/tauri-apps/tauri)).
+
+---
+
+_Comment by @fosskers on 2020-11-13 16:27_
+
+> But I'd prefer not iterating over this structure and calling `ArgMatches::get_value_of` or something like that, since there's a lot of edge cases to cover
+
+This is essentially my issue as well. I'm in a situation where it's as if I don't know all the available fields to be able to even call `get_value_of`. To be able to generically iterate would be very convenient.
+
+---
+
+_Referenced in [fosskers/aura#671](../../fosskers/aura/pulls/671.md) on 2020-11-22 07:42_
+
+---
+
+_Referenced in [clap-rs/clap#2332](../../clap-rs/clap/issues/2332.md) on 2021-02-06 22:12_
+
+---
+
+_Referenced in [uutils/coreutils#2304](../../uutils/coreutils/issues/2304.md) on 2021-05-30 00:06_
+
+---
+
+_Referenced in [clap-rs/clap#2759](../../clap-rs/clap/issues/2759.md) on 2021-09-23 12:54_
+
+---
+
+_Referenced in [clap-rs/clap#2683](../../clap-rs/clap/issues/2683.md) on 2021-10-18 22:23_
+
+---
+
+_Referenced in [epage/clapng#90](../../epage/clapng/issues/90.md) on 2021-12-06 16:40_
+
+---
+
+_Label `C: matches` removed by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:17_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:17_
+
+---
+
+_Label `P4: nice to have` removed by @epage on 2021-12-09 18:12_
+
+---
+
+_Label `D: medium` removed by @epage on 2021-12-09 18:12_
+
+---
+
+_Label `S-triage` added by @epage on 2021-12-09 18:15_
+
+---
+
+_Referenced in [clap-rs/clap#3286](../../clap-rs/clap/issues/3286.md) on 2022-01-12 15:34_
+
+---
+
+_Comment by @antonshkurenko on 2022-01-18 11:59_
+
+Writing this comment because of #3286: absence of iterator blocks our update from 2x to 3x
+
+---
+
+_Comment by @epage on 2022-01-18 16:25_
+
+@tonyshkurenko can you expand on the use case for why this blocks updating?
+
+---
+
+_Comment by @antonshkurenko on 2022-01-25 15:26_
+
+I mean we literally used field https://github.com/clap-rs/clap/blob/d51ae89656fda527ef1bccf53fca0ad78ecb8c29/src/args/arg_matches.rs#L66
+
+Part of our app was based on this. Now it's not available (correct me, if I'm wrong) without any alternative. That's why we can't update
+
+---
+
+_Comment by @epage on 2022-01-25 15:40_
+
+Yes, I am asking for your use case or why you use the field.  What problem are you trying to solve by accessing `args`?
+
+---
+
+_Comment by @fosskers on 2022-01-25 18:05_
+
+I was attempting this about a year ago, and my particular use case was either:
+
+- to be able to filter back out matched flags under certain circumstances
+- to be able to convert all the matched flags back into their original string forms
+
+---
+
+_Comment by @epage on 2022-02-01 22:02_
+
+I was looking at exposing a `present_arg_ids() -> impl Iterator` but it looks like this is not something we'd fix in clap3 but have to wait for clap4.
+
+We only store an `Id` for args, so this is the most of what we can return.  We can make it so users can check that its a specific arg.  The problem is then using this to do any dynamic operations on `ArgMatches`.  The problem is that `ArgMatches` functions take a `impl Key`.  To properly initialize a new `Id` from the `Key`, we have to add a `impl Display for Id`.  `Id` only has a reasonable `Display` in debug mode.  If we expose `Id` **and** `impl Display`, there is a good chance users will leverage the `Display` and being able to catch that not working depends on how thorough they test.  Alternatively, we could look to drop the `Display` bounds in release modes and only `impl Display for Id` in debug mode.
+
+In general, resolving this is getting hairy and something we are unlikely to want to take on.  Our current plan is to wait around 6 months at minimum between major breaking releases (which this change would probably be part of), so we are looking around June for resolving this.
+
+---
+
+_Added to milestone `4.0` by @epage on 2022-02-01 22:02_
+
+---
+
+_Label `S-triage` removed by @epage on 2022-02-01 22:02_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2022-02-01 22:02_
+
+---
+
+_Label `E-medium` added by @epage on 2022-02-01 22:02_
+
+---
+
+_Comment by @epage on 2022-02-01 22:06_
+
+Also, when implementing this, my expectation is that we'll provide something like:
+```rust
+pub fn present_arg_ids(&self) -> Iterator<Item=&Id>
+```
+- The order will be undefined.  If at the time, we are still using `IndexMap` internally, we should intentionally mix up the values via a `HashSet` in debug builds.
+  - Use of `IndexMap` is an implementation detail and we are considering removing it to reduce our dependencies
+  - We aren't using `IndexMap` correctly for ensuring ordering is preserved, so seeing it there is misleading
+  - Ordering of the first occurrence of each arg id is only meaningful if multiple occurrences is not used but in most schemes where ordering matters, multiple occurrences will likely be used.  Providing ordering is a trap for people to not consider this
+- I suggest the function's example creates a `Vec<(Id, &str)>` to show how to order all occurrences of all args by index.
+
+---
+
+_Comment by @omarabid on 2022-02-06 12:54_
+
+So if I want to iterate over matched arguments (flags) how should I approach this today?
+
+---
+
+_Comment by @epage on 2022-02-07 15:33_
+
+You'll need to define a slice of all of you argument IDs (names) and iterate through that.
+
+---
+
+_Comment by @omarabid on 2022-02-07 17:12_
+
+> You'll need to define a slice of all of you argument IDs (names) and iterate through that.
+
+Does that mean I have to check *if* the flag was set. Because I have dozens of flags, so it seems to me to be a waste to check for all flags when I only want to know which flags were set.
+
+---
+
+_Comment by @epage on 2022-02-07 17:19_
+
+Yes.  This is just a workaround.  Like I said, we cannot fix this until clap 4.0.
+
+---
+
+_Referenced in [maurocordioli/viperus#5](../../maurocordioli/viperus/pulls/5.md) on 2022-05-29 00:59_
+
+---
+
+_Comment by @nyurik on 2022-06-03 18:11_
+
+@epage thx for all the hard work on this! Is there a PR or some other work being done in this space? Per https://github.com/clap-rs/clap/discussions/2763#discussioncomment-2834309, it seems all layered configuration projects need to be able to enumerate over `ArgMatches` to support Clap3+derive. Thanks!
+
+---
+
+_Comment by @epage on 2022-06-03 18:19_
+
+From my note I added in the issue
+
+> This is blocked on https://github.com/clap-rs/clap/issues/1041 / https://github.com/clap-rs/clap/issues/2150 where we move away from opaque, non-public Ids for arguments to something the user can programmatically act on
+
+We cannot make these changes in clap v3 and but this should be available in clap v4.0.0.  My expectation is that I'm going to soon wrap up the work I'm doing for clap 3.2, give time to collect and handle any feedback, and then start on v4.0.0.  v3.2 is a big change, see https://github.com/clap-rs/clap/pull/3732.  My intention is to make this big change right before 4.0 so we don't have to live a long time with any mistakes identified through feedback.
+
+---
+
+_Referenced in [storyfeet/clap_conf#4](../../storyfeet/clap_conf/issues/4.md) on 2022-06-05 18:35_
+
+---
+
+_Referenced in [clap-rs/clap#3876](../../clap-rs/clap/issues/3876.md) on 2022-07-16 02:46_
+
+---
+
+_Referenced in [clap-rs/clap#4072](../../clap-rs/clap/pulls/4072.md) on 2022-08-12 21:48_
+
+---
+
+_Referenced in [clap-rs/clap#4080](../../clap-rs/clap/pulls/4080.md) on 2022-08-15 15:41_
+
+---
+
+_Closed by @epage on 2022-08-15 16:15_
+
+---
+
+_Referenced in [bnjjj/twelf#15](../../bnjjj/twelf/issues/15.md) on 2022-08-15 17:31_
+
+---
+
+_Referenced in [clap-rs/clap#4093](../../clap-rs/clap/issues/4093.md) on 2022-08-19 13:25_
+
+---
+
+_Referenced in [clap-rs/clap#5727](../../clap-rs/clap/issues/5727.md) on 2024-09-11 13:02_
+
+---

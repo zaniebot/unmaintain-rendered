@@ -1,0 +1,285 @@
+---
+number: 8745
+title: uv offers wrong Python when inside Docker with Rosetta in AMD linux on Mac ARM
+type: issue
+state: closed
+author: bepuca
+labels:
+  - question
+assignees: []
+created_at: 2024-11-01T06:44:22Z
+updated_at: 2024-11-02T15:48:24Z
+url: https://github.com/astral-sh/uv/issues/8745
+synced_at: 2026-01-10T01:24:32Z
+---
+
+# uv offers wrong Python when inside Docker with Rosetta in AMD linux on Mac ARM
+
+---
+
+_Issue opened by @bepuca on 2024-11-01 06:44_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+The situation is a bit special: I usually work on [devcontainers](https://code.visualstudio.com/docs/devcontainers/containers). Sadly, there are still many packages that do not have support for ARM architecture. Thus, many times I end up within a Docker container running rosetta since my Mac is sillicon.
+
+## Minimal Example
+
+```Dockerfile
+# devcontainer/Dockerfile
+FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/base:jammy
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:0.4.29 /uv /uvx /bin/
+```
+
+```json
+// devcontainer/devcontainer.json
+{
+    "name": "minimal",
+    "build": { "dockerfile": "Dockerfile" },
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "remoteEnv": {
+        // Ensure venv is always first in PATH
+        "PATH": "${containerWorkspaceFolder}/.venv/bin:${containerEnv:PATH}",
+    },
+    "remoteUser": "vscode",
+}
+```
+
+To reproduce you will need:
+- A Mac with AppleSillicon
+- VSCode with the [devcontainer extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed
+- Docker in your machine
+
+Then, open the command palette of VSCode (if not directly prompted) and "reopen in container".
+
+Once it builds, if I go to the terminal and run:
+```shell
+$uv python list
+
+cpython-3.13.0+freethreaded-linux-aarch64-gnu    <download available>
+cpython-3.12.7-linux-aarch64-gnu                 <download available>
+cpython-3.11.10-linux-aarch64-gnu                <download available>
+cpython-3.10.15-linux-aarch64-gnu                <download available>
+cpython-3.10.12-linux-x86_64-gnu                 /usr/bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                 /usr/bin/python3 -> python3.10
+cpython-3.10.12-linux-x86_64-gnu                 /bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                 /bin/python3 -> python3.10
+cpython-3.9.20-linux-aarch64-gnu                 <download available>
+cpython-3.8.20-linux-aarch64-gnu                 <download available>
+pypy-3.10.14-linux-aarch64-gnu                   <download available>
+pypy-3.9.19-linux-aarch64-gnu                    <download available>
+pypy-3.8.16-linux-aarch64-gnu                    <download available>
+pypy-3.7.13-linux-aarch64-gnu                    <download available>
+```
+
+As we can see, it finds the AMD arch python that comes pre-installed but everything else it offers is ARM. Thus, nothing works because it crashes when trying to use any of these pythons because they have the wrong architecture. For reference, this is the error:
+
+```shell
+$uv sync
+
+error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/python/cpython-3.11.10-linux-aarch64-gnu/bin/python3.11`
+  Caused by: No such file or directory (os error 2)
+```
+
+I am not sure if I am installing uv wrong somehow or if I can do something to direct it to the right arch. Any help will be super appreciated, thank you!
+
+---
+
+_Referenced in [astral-sh/uv#8746](../../astral-sh/uv/issues/8746.md) on 2024-11-01 07:01_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-01 13:31_
+
+---
+
+_Comment by @zanieb on 2024-11-01 13:40_
+
+Can you share verbose logs for `uv sync`? It's not clear to me why we're trying to query that specific interpreter.
+
+Does `uv sync -p cpython-3.11.10-linux-x86_64-gnu` work?
+
+---
+
+_Comment by @bepuca on 2024-11-01 16:52_
+
+[Edited as some cache was causing less logs than expected]
+
+The logs with verbose (if I understand correctly how to get them):
+
+```shell
+$ uv sync -v
+
+DEBUG uv 0.4.29
+DEBUG Found project root: `/workspaces/minimal`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/workspaces/minimal/.python-version`
+DEBUG Searching for Python 3.11 in managed installations or system path
+DEBUG Searching for managed installations at `/home/vscode/.local/share/uv/python`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.11`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/bin/python3` (search path)
+DEBUG Skipping interpreter at `/bin/python3` from search path: does not satisfy request `3.11`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/home/vscode/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.11.10%2B20241016-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /home/vscode/.local/share/uv/python/.cache/.tmpInXmxQ
+DEBUG Extracting cpython-3.11.10%2B20241016-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Moving /home/vscode/.local/share/uv/python/.cache/.tmpInXmxQ/python to /home/vscode/.local/share/uv/python/cpython-3.11.10-linux-aarch64-gnu
+DEBUG Released lock at `/home/vscode/.local/share/uv/python/.lock`
+error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/python/cpython-3.11.10-linux-aarch64-gnu/bin/python3.11`
+  Caused by: No such file or directory (os error 2)
+ ```
+ 
+ And running the command you suggest:
+ 
+ ```shell
+ $ uv sync -p cpython-3.11.10-linux-x86_64-gnu -v
+
+DEBUG uv 0.4.29
+DEBUG Found project root: `/workspaces/minimal`
+DEBUG No workspace root found, using project root
+DEBUG Searching for cpython-3.11.10-linux-x86_64-gnu in managed installations or system path
+DEBUG Searching for managed installations at `/home/vscode/.local/share/uv/python`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.11.10`
+DEBUG Found `cpython-3.10.12-linux-x86_64-gnu` at `/bin/python3` (search path)
+DEBUG Skipping interpreter at `/bin/python3` from search path: does not satisfy request `3.11.10`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/home/vscode/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+DEBUG Downloading https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.11.10%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /home/vscode/.local/share/uv/python/.cache/.tmpPCQxbN
+DEBUG Extracting cpython-3.11.10%2B20241016-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Moving /home/vscode/.local/share/uv/python/.cache/.tmpPCQxbN/python to /home/vscode/.local/share/uv/python/cpython-3.11.10-linux-x86_64-gnu
+DEBUG Released lock at `/home/vscode/.local/share/uv/python/.lock`
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: minimal @ file:///workspaces/minimal
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.11.10
+DEBUG Solving with target Python version: >=3.11
+DEBUG Adding direct dependency: minimal*
+DEBUG Searching for a compatible version of minimal @ file:///workspaces/minimal (*)
+DEBUG Tried 1 versions: minimal 1
+DEBUG Split universal resolution took 0.000s
+Resolved 1 package in 4ms
+DEBUG Using request timeout of 30s
+Audited in 0.03ms
+```
+
+Alright, so the command you suggested does work. For my understanding, this is a bug then? Is there a way I can specify this somewhere so I do not have to pass it every time? Or I only need this add init time?
+
+Let me know if there is anything else I can do to provide more info. Thank you very much for the prompt response!
+ 
+ 
+
+---
+
+_Comment by @zanieb on 2024-11-01 23:27_
+
+I think it's a bug, in that when we fill the platform information at
+
+https://github.com/astral-sh/uv/blob/893257bb0b2a0df4196410f279d5a837effafee0/crates/uv-python/src/downloads.rs#L192-L194
+
+and
+
+https://github.com/astral-sh/uv/blob/2b0e16cb75911bc291c92f7186512223c2d2d899/crates/uv-python/src/platform.rs#L76-L78
+
+we think it's `aarch64` instead of `x86_64`. I'm not really sure why yet.
+
+You could put that full version tag in a `UV_PYTHON` environment variable and we should respect it.
+
+---
+
+_Comment by @zanieb on 2024-11-01 23:31_
+
+Are you copying uv from the right image? I wonder if you need the `--platform` flag there? You can also specify the SHA.
+
+https://github.com/astral-sh/uv/pkgs/container/uv/298017082?tag=latest
+
+<img width="830" alt="Screenshot 2024-11-01 at 6 30 24 PM" src="https://github.com/user-attachments/assets/b7a578e2-af18-4226-afa1-b9c81f61de98">
+
+
+---
+
+_Comment by @samypr100 on 2024-11-02 01:42_
+
+Agreed with @zanieb. Usually you'd pass `--platform` to your `docker buildx build --platform=linux/amd64 -t foo-linux-amd64 /path/to/context` to resolve this as it will then pick the right manifest entry.
+
+That would allow you to cleanup the `Dockerfile`
+
+```dockerfile
+# devcontainer/Dockerfile
+FROM mcr.microsoft.com/devcontainers/base:jammy
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:0.4.29 /uv /uvx /bin/
+```
+
+Alternatively would be using raw sha
+
+```dockerfile
+# devcontainer/Dockerfile
+FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/base:jammy
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:0.4.29@sha256:c17127bc372350d61bae20be54c85540a8937eaa691c61840a7abc80e284fc8d /uv /uvx /bin/
+```
+
+
+---
+
+_Comment by @samypr100 on 2024-11-02 01:47_
+
+On VSCode, you may be able to do this by leveraging devcontainers extension [build.options](https://containers.dev/implementors/json_reference/#image-specific) setting. e.g.
+
+```json
+    "build": { 
+        ...
+        "options": [
+            "--platform=linux/amd64"
+        ]
+    },
+```
+
+Alternatively, you could also try the approach shown in https://github.com/astral-sh/uv/issues/8737
+
+---
+
+_Label `bug` removed by @zanieb on 2024-11-02 02:21_
+
+---
+
+_Label `question` added by @zanieb on 2024-11-02 02:21_
+
+---
+
+_Comment by @zanieb on 2024-11-02 02:22_
+
+We should add some notes to the documentation about using cross-platform images.
+
+---
+
+_Comment by @bepuca on 2024-11-02 15:44_
+
+It does seem I might have been using the wrong uv using a naive copy. I would still have expected that to work but using curl is an option and does seem to solve the issue. Thank you very much for the help!
+
+---
+
+_Closed by @zanieb on 2024-11-02 15:48_
+
+---

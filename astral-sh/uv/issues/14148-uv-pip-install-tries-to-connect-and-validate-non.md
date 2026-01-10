@@ -1,0 +1,100 @@
+---
+number: 14148
+title: "`uv pip install` tries to connect and validate non-default indexes."
+type: issue
+state: closed
+author: m-walters
+labels:
+  - question
+assignees: []
+created_at: 2025-06-20T07:33:48Z
+updated_at: 2025-07-04T02:14:43Z
+url: https://github.com/astral-sh/uv/issues/14148
+synced_at: 2026-01-10T01:25:43Z
+---
+
+# `uv pip install` tries to connect and validate non-default indexes.
+
+---
+
+_Issue opened by @m-walters on 2025-06-20 07:33_
+
+### Summary
+
+I have a `default=false` index in my `pyproject.toml`. It points to an internal index at my company, but I can't use that index externally (and simply want the default pypi index).
+Running `uv pip install .` fails because it tries to connect to the non-default index but can't, even though I have explicitly included the standard pypi index as `default=true` in my `toml`.
+
+### Platform
+
+Darwin 24.5.0 x86_64
+
+### Version
+
+uv 0.7.13 (62ed17b23 2025-06-12)
+
+### Python version
+
+Python 3.12
+
+---
+
+_Label `bug` added by @m-walters on 2025-06-20 07:33_
+
+---
+
+_Comment by @konstin on 2025-06-20 07:43_
+
+Are you looking for `explicit = true`? Non-default indexes are still used, but at lower priority and they don't replace the default (PyPI if not changed).
+
+---
+
+_Label `bug` removed by @konstin on 2025-06-20 07:43_
+
+---
+
+_Label `question` added by @konstin on 2025-06-20 07:43_
+
+---
+
+_Comment by @m-walters on 2025-06-20 10:12_
+
+Ah, thanks @konstin, slightly different use-case, but this is a good solution.  
+
+btw, if I have this explicit index as:
+
+```
+[[tool.uv.index]]
+name = "company"
+url = <company_index_url>
+default = false
+explicit = true
+```
+
+but then want to use it when installing it at `company`, do I have to put in the full url: `uv pip install --extra-index-url=<company_index_url> .`  
+Or is there a more elegant way?
+
+---
+
+_Closed by @charliermarsh on 2025-06-20 20:02_
+
+---
+
+_Reopened by @charliermarsh on 2025-06-20 20:02_
+
+---
+
+_Comment by @charliermarsh on 2025-06-20 20:03_
+
+What do you mean by "when installing at `company`"? Like, when installing specific packages? If you want to use it situationally, then you likely need to specify it on the CLI to tell uv to use it, yeah.
+
+---
+
+_Comment by @m-walters on 2025-06-21 07:27_
+
+Not specific packages, but the whole dep list. basically i will be installing my project in two different places and want to use a specific index for each (PyPI vs. company index). 
+
+---
+
+_Closed by @charliermarsh on 2025-07-04 02:14_
+
+---

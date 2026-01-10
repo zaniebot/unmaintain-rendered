@@ -1,0 +1,44 @@
+---
+number: 39
+title: RustPython parser crashes when multiprocessing over certain files
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2022-08-28T15:01:43Z
+updated_at: 2022-09-05T14:21:25Z
+url: https://github.com/astral-sh/ruff/issues/39
+synced_at: 2026-01-10T01:22:37Z
+---
+
+# RustPython parser crashes when multiprocessing over certain files
+
+---
+
+_Issue opened by @charliermarsh on 2022-08-28 15:01_
+
+Tracked here: https://github.com/RustPython/RustPython/issues/4099
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-08-28 15:01_
+
+---
+
+_Comment by @charliermarsh on 2022-08-28 15:02_
+
+It would be nice if we somehow checked those files sequentially, and didn't panic.
+
+---
+
+_Comment by @charliermarsh on 2022-09-05 14:21_
+
+No longer seeing this after RustPython changes.
+
+---
+
+_Closed by @charliermarsh on 2022-09-05 14:21_
+
+---

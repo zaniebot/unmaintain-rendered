@@ -1,0 +1,65 @@
+---
+number: 8303
+title: Convention on pip installing uv
+type: issue
+state: closed
+author: paulf81
+labels:
+  - question
+assignees: []
+created_at: 2024-10-17T19:35:20Z
+updated_at: 2024-10-17T21:10:34Z
+url: https://github.com/astral-sh/uv/issues/8303
+synced_at: 2026-01-10T01:24:26Z
+---
+
+# Convention on pip installing uv
+
+---
+
+_Issue opened by @paulf81 on 2024-10-17 19:35_
+
+On a shared cluster I am using, the only available install option for users to install uv at the moment is to pip install uv into a virtual environment, for example via:
+
+```
+python -m venv ~/uvevn
+. ~/uvevn/bin/activate
+pip install --upgrade --no-cache-dir pip
+pip3 install uv
+```
+I can see how this method will work to have uv installed, but then isn't there a problem when I start wanting to use uv with seperate projects on that cluster, each with its own .venv folder, since I will need the `uvevn` environment activated to use uv.  Is the convention in cases like this to install uv separately into each project's virtual environment and then activate that environment?  Or is the convention to install uv into single virtual environment and then refer to uv without the virtual environment activated?
+
+
+---
+
+_Comment by @bluss on 2024-10-17 19:57_
+
+You don't need to activate the environment to call a binary installed there. This is true even for python scripts, and for uv. That means you can create an alias to uv where it is installed which is `~/uvevn/bin/uv` here. (Something that's particular to uv is that you can relocate it wherever you want after install. Just move both uv and uvx together so that they both work.)
+
+---
+
+_Comment by @paulf81 on 2024-10-17 19:59_
+
+That makes a lot of sense, and good to know, thank you!
+
+---
+
+_Comment by @bluss on 2024-10-17 19:59_
+
+Other workarounds include: pip-install pipx then install uv using pipx, or pip-install uv and then `uv tool install uv` to install uv again as a tool :)
+
+---
+
+_Comment by @paulf81 on 2024-10-17 20:00_
+
+Thank you, this is very helpful!!
+
+---
+
+_Label `question` added by @zanieb on 2024-10-17 21:10_
+
+---
+
+_Closed by @zanieb on 2024-10-17 21:10_
+
+---

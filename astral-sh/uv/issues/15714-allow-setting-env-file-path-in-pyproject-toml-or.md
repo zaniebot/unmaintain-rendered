@@ -1,0 +1,49 @@
+---
+number: 15714
+title: Allow setting .env file path in pyproject.toml or self-contained script front-matter
+type: issue
+state: open
+author: strangemonad
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-09-07T18:07:20Z
+updated_at: 2025-09-08T13:45:49Z
+url: https://github.com/astral-sh/uv/issues/15714
+synced_at: 2026-01-10T01:25:58Z
+---
+
+# Allow setting .env file path in pyproject.toml or self-contained script front-matter
+
+---
+
+_Issue opened by @strangemonad on 2025-09-07 18:07_
+
+### Summary
+
+It would be very convenient to pre-configure projects to load an env file without having to instruct people to set `[UV_ENV_FILE](https://docs.astral.sh/uv/reference/environment/#uv_env_file)=... uv .` or `uv run --env-file...`. Instead, the project (or standalone script) could be optionally configured with a default `[tool.uv] env-file=...`
+
+1. This would continue the tradition of making `uv run ...` a convenient and easy entry-point to projects
+2. Continue allowing the env-vars and config file settings to match for most options.
+
+**Security concerns**
+Since this potentially exposes a security concerns (beyond the existing exposure of executing code) a few different approaches could be taken if the `env-file` setting is set in config:
+
+1. Create a new setting eg `UV_ALLOW_ENV_FILE=NEVER_ALLOW | ALWAYS_PROMPT | PROMPT_ONCE_PER_PROJECT (first time) | ALWAYS`
+2. Potentially restrict the path of `env-file` when set in config (e.g. to be contained in the project directory) to prevent exposures like a self-contained script loading `~/.env-secrets` 
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @strangemonad on 2025-09-07 18:07_
+
+---
+
+_Comment by @zanieb on 2025-09-08 13:45_
+
+Related https://github.com/astral-sh/uv/issues/14500
+
+---

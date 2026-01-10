@@ -1,0 +1,66 @@
+---
+number: 13491
+title: "Failed to parse: `cpython-3.13.3+freethreaded-windows-x86_64-none`"
+type: issue
+state: closed
+author: Sergo1217
+labels:
+  - question
+assignees: []
+created_at: 2025-05-16T14:03:27Z
+updated_at: 2025-05-16T22:06:40Z
+url: https://github.com/astral-sh/uv/issues/13491
+synced_at: 2026-01-10T01:25:34Z
+---
+
+# Failed to parse: `cpython-3.13.3+freethreaded-windows-x86_64-none`
+
+---
+
+_Issue opened by @Sergo1217 on 2025-05-16 14:03_
+
+### Summary
+
+![Image](https://github.com/user-attachments/assets/6b6424ea-854f-4f35-ad1a-b6c49c8212a5)
+
+### Platform
+
+Windows
+
+### Version
+
+uv 0.7.4 (6fbcd09b5 2025-05-15)
+
+### Python version
+
+Python 3.13.3
+
+---
+
+_Label `bug` added by @Sergo1217 on 2025-05-16 14:03_
+
+---
+
+_Comment by @konstin on 2025-05-16 14:48_
+
+This is a Python interpreter, not a too, you need `uv python install`
+
+---
+
+_Label `bug` removed by @konstin on 2025-05-16 14:49_
+
+---
+
+_Label `question` added by @konstin on 2025-05-16 14:49_
+
+---
+
+_Comment by @Sergo1217 on 2025-05-16 22:06_
+
+Ooopa
+
+---
+
+_Closed by @Sergo1217 on 2025-05-16 22:06_
+
+---

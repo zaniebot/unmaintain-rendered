@@ -1,0 +1,243 @@
+---
+number: 4824
+title: Dependency Dashboard
+type: issue
+state: open
+author: renovate
+labels: []
+assignees: []
+created_at: 2023-04-03T21:33:03Z
+updated_at: 2025-12-30T12:59:55Z
+url: https://github.com/clap-rs/clap/issues/4824
+synced_at: 2026-01-10T01:28:02Z
+---
+
+# Dependency Dashboard
+
+---
+
+_Issue opened by @renovate on 2023-04-03 21:33_
+
+This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/clap-rs/clap).
+
+## Open
+
+The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
+
+ - [ ] <!-- rebase-branch=renovate/compatible-(dev) -->[chore(deps): Update compatible (dev)](../pull/6083) (`divan`, `jiff`, `rustversion`, `semver`, `snapbox`, `trybuild`, `trycmd`)
+ - [ ] <!-- rebase-branch=renovate/clap-cargo-0.x -->[chore(deps): Update Rust crate clap-cargo to 0.18.0](../pull/6145)
+ - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
+
+## Detected Dependencies
+
+<details><summary>cargo (8)</summary>
+<blockquote>
+
+<details><summary>Cargo.toml (9)</summary>
+
+ - `trybuild 1.0.91` → [Updates: `1.0.91`]
+ - `rustversion 1.0.15` → [Updates: `1.0.15`]
+ - `trycmd 0.15.3` → [Updates: `0.15.3`]
+ - `jiff 0.2.3` → [Updates: `0.2.3`]
+ - `snapbox 0.6.16` → [Updates: `0.6.16`]
+ - `shlex 1.3.0`
+ - `automod 1.0.14`
+ - `clap-cargo 0.15.0` → [Updates: `0.18.0`]
+ - `semver 1.0.26` → [Updates: `1.0.26`]
+
+</details>
+
+<details><summary>clap_bench/Cargo.toml (2)</summary>
+
+ - `divan 0.1.14` → [Updates: `0.1.14`]
+ - `lazy_static 1.4.0`
+
+</details>
+
+<details><summary>clap_builder/Cargo.toml (11)</summary>
+
+ - `unicase 2.6.0` → [Updates: `2.6.0`]
+ - `strsim 0.11.0`
+ - `anstream 0.6.7` → [Updates: `0.6.7`]
+ - `anstyle 1.0.8` → [Updates: `1.0.8`]
+ - `terminal_size 0.4.0` → [Updates: `0.4.0`]
+ - `backtrace 0.3.73` → [Updates: `0.3.73`]
+ - `unicode-width 0.2.0` → [Updates: `0.2.0`]
+ - `static_assertions 1.1.0`
+ - `unic-emoji-char 0.9.0`
+ - `color-print 0.3.6`
+ - `snapbox 0.6.16` → [Updates: `0.6.16`]
+
+</details>
+
+<details><summary>clap_complete_nushell/Cargo.toml (3)</summary>
+
+ - `completest 0.4.0`
+ - `completest-nu 0.4.0`
+ - `snapbox 0.6.0` → [Updates: `0.6.0`]
+
+</details>
+
+<details><summary>clap_complete/Cargo.toml (7)</summary>
+
+ - `is_executable 1.0.1` → [Updates: `1.0.1`]
+ - `shlex 1.3.0`
+ - `completest 0.4.2`
+ - `completest-pty 0.5.5`
+ - `snapbox 0.6.0` → [Updates: `0.6.0`]
+ - `trycmd 0.15.1` → [Updates: `0.15.1`]
+ - `automod 1.0.14`
+
+</details>
+
+<details><summary>clap_derive/Cargo.toml (6)</summary>
+
+ - `syn 2.0.8` → [Updates: `2.0.8`]
+ - `quote 1.0.9` → [Updates: `1.0.9`]
+ - `proc-macro2 1.0.69` → [Updates: `1.0.69`]
+ - `heck 0.5.0`
+ - `pulldown-cmark 0.13.0`
+ - `anstyle 1.0.10` → [Updates: `1.0.10`]
+
+</details>
+
+<details><summary>clap_lex/Cargo.toml (1)</summary>
+
+ - `automod 1.0.14`
+
+</details>
+
+<details><summary>clap_mangen/Cargo.toml (3)</summary>
+
+ - `roff 0.2.1` → [Updates: `0.2.1`]
+ - `snapbox 0.6.0` → [Updates: `0.6.0`]
+ - `automod 1.0.14`
+
+</details>
+
+</blockquote>
+</details>
+
+<details><summary>github-actions (8)</summary>
+<blockquote>
+
+<details><summary>.github/workflows/audit.yml (4)</summary>
+
+ - `actions/checkout v6`
+ - `actions-rs/audit-check v1`
+ - `actions/checkout v6`
+ - `EmbarkStudios/cargo-deny-action v2`
+
+</details>
+
+<details><summary>.github/workflows/bench-baseline.yml (2)</summary>
+
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+
+</details>
+
+<details><summary>.github/workflows/ci.yml (21)</summary>
+
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `citation-file-format/cffconvert-github-action 2.0.0`
+
+</details>
+
+<details><summary>.github/workflows/committed.yml (1)</summary>
+
+ - `actions/checkout v6`
+
+</details>
+
+<details><summary>.github/workflows/post-release.yml (2)</summary>
+
+ - `actions/checkout v6`
+ - `actions/create-release v1`
+
+</details>
+
+<details><summary>.github/workflows/pre-commit.yml (4)</summary>
+
+ - `actions/checkout v6`
+ - `actions/setup-python v6`
+ - `pre-commit/action v3.0.1`
+ - `python 3.x`
+
+</details>
+
+<details><summary>.github/workflows/rust-next.yml (4)</summary>
+
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+ - `actions/checkout v6`
+ - `Swatinem/rust-cache v2`
+
+</details>
+
+<details><summary>.github/workflows/spelling.yml (1)</summary>
+
+ - `actions/checkout v6`
+
+</details>
+
+</blockquote>
+</details>
+
+<details><summary>regex (3)</summary>
+<blockquote>
+
+<details><summary>.github/workflows/ci.yml (4)</summary>
+
+ - `STABLE 1.92`
+ - `STABLE 1.92`
+ - `STABLE 1.92`
+ - `STABLE 1.92`
+
+</details>
+
+<details><summary>Makefile (1)</summary>
+
+ - `STABLE 1.92`
+
+</details>
+
+<details><summary>tests/derive_ui.rs (1)</summary>
+
+ - `STABLE 1.92`
+
+</details>
+
+</blockquote>
+</details>
+
+---
+
+- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository
+
+
+
+---
+
+_Referenced in [rust-lang/cargo#13255](../../rust-lang/cargo/pulls/13255.md) on 2024-01-06 02:09_
+
+---

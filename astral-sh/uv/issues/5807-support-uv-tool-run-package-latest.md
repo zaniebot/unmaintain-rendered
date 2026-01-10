@@ -1,0 +1,65 @@
+---
+number: 5807
+title: "Support `uv tool run {package}@latest`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - cli
+  - preview
+assignees: []
+created_at: 2024-08-06T02:36:10Z
+updated_at: 2024-08-19T16:58:38Z
+url: https://github.com/astral-sh/uv/issues/5807
+synced_at: 2026-01-10T01:23:52Z
+---
+
+# Support `uv tool run {package}@latest`
+
+---
+
+_Issue opened by @charliermarsh on 2024-08-06 02:36_
+
+We support, e.g., `uv tool run ruff@0.4.0`. We may want to add `uv tool run ruff@latest`. What should the semantics be, though?
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2024-08-06 02:36_
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-08-06 02:36_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-08-06 02:36_
+
+---
+
+_Label `help wanted` removed by @charliermarsh on 2024-08-06 02:38_
+
+---
+
+_Comment by @zanieb on 2024-08-06 14:47_
+
+I think: implies `--refresh` (i.e. do not use the cache) and `--isolated` (ignores installed tools).
+
+---
+
+_Comment by @charliermarsh on 2024-08-15 20:53_
+
+As part of this, we also want to remove `--upgrade` from `uv tool run`...
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-16 02:22_
+
+---
+
+_Referenced in [astral-sh/uv#6138](../../astral-sh/uv/pulls/6138.md) on 2024-08-16 03:06_
+
+---
+
+_Closed by @charliermarsh on 2024-08-19 16:58_
+
+---

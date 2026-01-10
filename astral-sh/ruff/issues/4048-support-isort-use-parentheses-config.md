@@ -1,0 +1,115 @@
+---
+number: 4048
+title: "support isort `use_parentheses` config"
+type: issue
+state: open
+author: andykais
+labels:
+  - isort
+  - needs-decision
+assignees: []
+created_at: 2023-04-20T15:56:05Z
+updated_at: 2023-07-10T01:16:03Z
+url: https://github.com/astral-sh/ruff/issues/4048
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# support isort `use_parentheses` config
+
+---
+
+_Issue opened by @andykais on 2023-04-20 15:56_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+by default, isort will format the following imports:
+```py
+from foo.bar.baz import AndOneLastThing, AnotherThing, Baz, Foo, FooBar, FooBarBaz, OneMoreThing, SomeConfigurationThing, Something
+```
+
+as this:
+`isort .`
+```py
+from foo.bar.baz import AndOneLastThing, AnotherThing, Baz, Foo, FooBar, FooBarBaz, OneMoreThing, \
+    SomeConfigurationThing, Something
+```
+
+while `ruff check . --fix` formats them as this:
+```py
+from foo.bar.baz import (
+    AndOneLastThing,
+    AnotherThing,
+    Baz,
+    Foo,
+    FooBar,
+    FooBarBaz,
+    OneMoreThing,
+    SomeConfigurationThing,
+    Something,
+)
+```
+
+Imo ruff has a better opinion about how these should be formatted, but we have a very large codebase, and we ideally we can migrate from flake8 and isort to ruff without any code changes necessary. The feature request here, would be if ruff could support the following config:
+```toml
+
+[isort]
+use-parenthesis = false
+```
+ruff could keep `use-parenthesis = true` by default, to keep ruff's existing behavior
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-04-21 01:26_
+
+---
+
+_Comment by @charliermarsh on 2023-04-21 01:30_
+
+I'm generally comfortable with adding configurable isort options as long as they don't introduce "excessive" complexity (an entirely subjective measure). The main source of complexity I see here is around comments, since the continuation-line format doesn't support inline (per-member) comments.
+
+Trying to test it out locally, but do you have anything else set in your isort configuration? If I run isort with `use_parentheses = false` on that file, I get this output:
+
+```py
+from foo.bar.baz import (AndOneLastThing, AnotherThing, Baz, Foo, FooBar,
+                         FooBarBaz, OneMoreThing, SomeConfigurationThing,
+                         Something)
+```
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-04-21 01:30_
+
+---
+
+_Comment by @andykais on 2023-04-21 18:43_
+
+ah. I actually think I was looking at the wrong piece of config. This is our actual config:
+```setup.cfg
+[isort]
+multi_line_output=2
+```
+
+which, I believe still has the comment issue you mentioned.
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-07-10 01:16_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:16_
+
+---
+
+_Referenced in [astral-sh/ruff#11290](../../astral-sh/ruff/issues/11290.md) on 2024-05-05 13:41_
+
+---

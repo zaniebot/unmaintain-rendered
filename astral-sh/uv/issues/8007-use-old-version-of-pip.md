@@ -1,0 +1,88 @@
+---
+number: 8007
+title: Use old version of pip
+type: issue
+state: closed
+author: JhonatanRian
+labels:
+  - question
+assignees: []
+created_at: 2024-10-08T15:58:33Z
+updated_at: 2024-10-10T21:03:32Z
+url: https://github.com/astral-sh/uv/issues/8007
+synced_at: 2026-01-10T01:24:22Z
+---
+
+# Use old version of pip
+
+---
+
+_Issue opened by @JhonatanRian on 2024-10-08 15:58_
+
+Is it possible to configure uv to use an old version of pip?
+
+In a legacy project, there are certain libraries that are not installed with a more recent pip version. I can only install them using an old version of pip, such as 21.1.1, for example.
+
+I need to use uv to manage the project, but it always updates the virtual environment's pip to the most recent version, making it impossible to run commands such as: `uv sync` or  `uv pip sync requirements.txt`.
+
+an example of the error when I'm using the most current pip:
+```bash
+ >>> uv pip sync requirements.txt      
+Resolved 81 packages in 1.72s
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: django-allauth==0.40.0
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/Users/jhonatanryan/.cache/uv/builds-v0/.tmpY8W3jk/lib/python3.8/site-packages/setuptools/build_meta.py", line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+  File "/Users/jhonatanryan/.cache/uv/builds-v0/.tmpY8W3jk/lib/python3.8/site-packages/setuptools/build_meta.py", line 302, in _get_build_requires
+    self.run_setup()
+  File "/Users/jhonatanryan/.cache/uv/builds-v0/.tmpY8W3jk/lib/python3.8/site-packages/setuptools/build_meta.py", line 503, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/Users/jhonatanryan/.cache/uv/builds-v0/.tmpY8W3jk/lib/python3.8/site-packages/setuptools/build_meta.py", line 318, in run_setup
+    exec(code, locals())
+  File "<string>", line 7, in <module>
+ImportError: cannot import name 'convert_path' from 'setuptools' (/Users/jhonatanryan/.cache/uv/builds-v0/.tmpY8W3jk/lib/python3.8/site-packages/setuptools/__init__.py)
+---
+```
+
+I checked the documentation to see if it was possible to configure this, but I didn't find anything about it.
+https://docs.astral.sh/uv/reference/settings/
+
+Remembering that even if I downgrade pip, uv itself updates it when a command that uses pip is run
+
+---
+
+_Comment by @konstin on 2024-10-08 16:16_
+
+For this case, you can try installing an old setuptools version manually, then disabling build isolation (https://docs.astral.sh/uv/concepts/projects/#build-isolation) before the build.
+
+---
+
+_Label `question` added by @konstin on 2024-10-08 16:16_
+
+---
+
+_Comment by @JhonatanRian on 2024-10-10 21:03_
+
+I work as @konstin mentioned, I needed to install `setuptools` and `wheel` with `pip` manually. like this:
+```shell
+uv pip install setuptools==56.0.0 wheel>=0.44.0
+```
+Then I synchronized the requirements packages to pyproject:
+```
+uv add -r requirements.txt
+```
+
+OBSERVATION: For each new environment, it is always necessary to first install `setuptools` and `wheel` manually with `pip` and only then use "pip sync". After this process, the next time you delete uv.lock or .venv, `uv sync` will not break, it is as if it saves the processes performed in cache (I don't know what actually happens).
+
+
+---
+
+_Closed by @JhonatanRian on 2024-10-10 21:03_
+
+---

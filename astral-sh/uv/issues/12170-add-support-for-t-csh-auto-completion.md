@@ -1,0 +1,36 @@
+---
+number: 12170
+title: Add support for t/csh Auto-Completion
+type: issue
+state: open
+author: PathosV
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-14T16:35:48Z
+updated_at: 2025-03-14T16:35:48Z
+url: https://github.com/astral-sh/uv/issues/12170
+synced_at: 2026-01-10T01:25:16Z
+---
+
+# Add support for t/csh Auto-Completion
+
+---
+
+_Issue opened by @PathosV on 2025-03-14 16:35_
+
+### Summary
+
+As of v0.6.6, generate-shell-completion only states support for bash, elvish, fish, nushell, powershell, zsh. Will tcsh/csh be available at some point in the future?
+
+I have team members that unfortunately have not moved onto bash.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @PathosV on 2025-03-14 16:35_
+
+---

@@ -1,0 +1,82 @@
+---
+number: 7401
+title: Completion should fall back to default shell completion behavior when input does not match  
+type: issue
+state: closed
+author: dandavison
+labels: []
+assignees: []
+created_at: 2024-09-14T22:39:04Z
+updated_at: 2025-01-02T14:42:11Z
+url: https://github.com/astral-sh/uv/issues/7401
+synced_at: 2026-01-10T01:24:14Z
+---
+
+# Completion should fall back to default shell completion behavior when input does not match  
+
+---
+
+_Issue opened by @dandavison on 2024-09-14 22:39_
+
+I'm using zsh. Given a file `./hello.py`, I think that e.g. `uv run python he<TAB>` should complete to `uv run python hello.py` (assuming that no other paths match `./he*`). I.e., I think that `uv`'s completion should fall back to some appropriate "normal shell completion" behavior when the input cannot be completed in a uv-specific way.
+
+---
+
+_Comment by @shirayu on 2024-11-03 12:32_
+
+I have noticed the same problem.
+I have't coded Rust at all, but I did a little looking into it.
+
+It looks like adding ``#[clap(value_hint(ValueHint::AnyPath))]`` to the following is needed, but that is not possible due to `#[command(subcommand)] ` .
+https://github.com/astral-sh/uv/blob/2ed94745a2cba996c617ffbb686a2d99baf7fecc/crates/uv-cli/src/lib.rs#L2659-L2664
+
+
+
+
+
+---
+
+_Comment by @zanieb on 2024-11-03 15:07_
+
+Is this the same as https://github.com/astral-sh/uv/issues/8432 ?
+
+---
+
+_Comment by @shirayu on 2024-11-03 15:11_
+
+@zanieb  I think so, thank you.
+
+---
+
+_Comment by @zanieb on 2024-11-03 15:16_
+
+Please let us know if this is broken outside of Zsh
+
+---
+
+_Comment by @hmrc87 on 2024-11-19 07:50_
+
+I have the same problem but **it works in bash** (on Mac OS) but not on zsh (MacOs). Seems like a UV + ZSH Problem
+
+---
+
+_Comment by @dandavison on 2024-11-19 14:17_
+
+Sorry I forgot to say when I opened the issue, yes I'm using zsh (I don't use oh-my-zsh). I agree this is a duplicate of #8432 (could remove oh-my-zsh from that title). Since GH lets me do so, I'll go ahead and close as a dup.
+
+---
+
+_Closed by @dandavison on 2024-11-19 14:17_
+
+---
+
+_Comment by @phaabe on 2025-01-02 14:42_
+
+> Please let us know if this is broken outside of Zsh
+
+@zanieb 
+yes it does also break on ghostty
+
+https://github.com/astral-sh/uv/issues/8432#issuecomment-2567865617
+
+---

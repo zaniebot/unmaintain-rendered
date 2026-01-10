@@ -1,0 +1,71 @@
+---
+number: 13693
+title: "[red-knot] infer types from parameter annotations"
+type: issue
+state: closed
+author: carljm
+labels:
+  - ty
+assignees: []
+created_at: 2024-10-09T17:19:47Z
+updated_at: 2024-12-06T20:55:58Z
+url: https://github.com/astral-sh/ruff/issues/13693
+synced_at: 2026-01-10T01:22:54Z
+---
+
+# [red-knot] infer types from parameter annotations
+
+---
+
+_Issue opened by @carljm on 2024-10-09 17:19_
+
+Currently we have Definitions for function parameters (that is, inside the function body we know that those names are defined), but we only infer `@Todo` types for those names, even if the parameter has a type annotation.
+
+The tricky part of implementing this inference correctly is that we have to handle PEP 695 generic type parameter scopes, e.g. `def f[T](x: T): ...` has a special implicit scope in between the containing scope and the function's body scope, in which `T` is defined. So for generic functions we have to do inference of the parameter type annotations in that scope, not in the outer scope.
+
+
+---
+
+_Label `red-knot` added by @carljm on 2024-10-09 17:19_
+
+---
+
+_Referenced in [astral-sh/ruff#13672](../../astral-sh/ruff/issues/13672.md) on 2024-10-09 17:22_
+
+---
+
+_Referenced in [astral-sh/ruff#13758](../../astral-sh/ruff/pulls/13758.md) on 2024-10-15 10:58_
+
+---
+
+_Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 15:19_
+
+---
+
+_Assigned to @AlexWaygood by @carljm on 2024-11-07 16:00_
+
+---
+
+_Referenced in [astral-sh/ruff#14303](../../astral-sh/ruff/pulls/14303.md) on 2024-11-13 00:47_
+
+---
+
+_Referenced in [astral-sh/ruff#14304](../../astral-sh/ruff/pulls/14304.md) on 2024-11-13 03:07_
+
+---
+
+_Assigned to @carljm by @carljm on 2024-11-14 17:37_
+
+---
+
+_Unassigned @AlexWaygood by @carljm on 2024-11-14 17:37_
+
+---
+
+_Referenced in [astral-sh/ruff#14802](../../astral-sh/ruff/pulls/14802.md) on 2024-12-06 01:19_
+
+---
+
+_Closed by @carljm on 2024-12-06 20:55_
+
+---

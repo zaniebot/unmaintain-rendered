@@ -1,0 +1,93 @@
+---
+number: 1760
+title: Question about space efficiency of the git cache
+type: issue
+state: open
+author: sbidoul
+labels:
+  - performance
+  - cache
+assignees: []
+created_at: 2024-02-20T15:10:28Z
+updated_at: 2025-01-09T18:21:04Z
+url: https://github.com/astral-sh/uv/issues/1760
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# Question about space efficiency of the git cache
+
+---
+
+_Issue opened by @sbidoul on 2024-02-20 15:10_
+
+If I understand correctly, installing from git URL creates the following in the uv cache:
+1. the git objects in `git-v0/db`
+2. a git checkout in `git-v0/checkouts` (with hardlinks to the git objects but copies of the source files)
+3. the built wheel in `wheels-v0`
+4. an extract of the built wheel `archive-v0`, from which the installed files are hard linked (or CoW'ed)
+
+My question is: is it important to keep (2) when we have (3), and maybe (3) when we have (4)?
+Are there situations where checkouts (2) are actually read again in subsequent installs?
+
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-20 15:11_
+
+---
+
+_Comment by @charliermarsh on 2024-02-20 15:13_
+
+I'm the right person to answer this but I need to think a bit on some of the questions (and am trying to prioritize correctness issues). My initial reaction is that (3) is _probably_ not necessary (but we tend to avoid trying to delete from the cache to prevent against concurrency issues).
+
+---
+
+_Label `question` added by @charliermarsh on 2024-02-20 15:13_
+
+---
+
+_Label `cache` added by @charliermarsh on 2024-02-20 15:13_
+
+---
+
+_Comment by @sbidoul on 2024-02-21 17:09_
+
+> My initial reaction is that (3) is probably not necessary
+
+In connection with `pip wheel` (#1681), I think (3) is useful, probably more than (2).
+
+---
+
+_Comment by @zanieb on 2025-01-07 20:10_
+
+Is this still something we should be considering?
+
+---
+
+_Comment by @sbidoul on 2025-01-09 17:54_
+
+> Is this still something we should be considering?
+
+For folks working with several different git refs to a big repo, this is relevant, even though disk space is cheap.
+
+My understanding is that the checkouts in `/git-v0/checkouts` are used during the build but never accessed again afterwards, since the resulting build for the corresponding commit is cached. This assumption may be incorrect, but if it is, discarding the checkouts after build might be a quick win.
+
+If you are ready to download ~5GB, you can try with
+
+```
+uv pip install --cache-dir ./cache --no-deps git+https://github.com/oca/ocb@17.0
+uv pip install --cache-dir ./cache --no-deps git+https://github.com/oca/ocb@18.0
+```
+
+and see the space used by the git checkouts. When I switch between dozens of projects each pinning a different commit of that repo, disk space usage starts to grow significantly.
+
+---
+
+_Label `question` removed by @zanieb on 2025-01-09 18:21_
+
+---
+
+_Label `performance` added by @zanieb on 2025-01-09 18:21_
+
+---

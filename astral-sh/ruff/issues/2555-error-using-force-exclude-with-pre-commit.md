@@ -1,0 +1,81 @@
+---
+number: 2555
+title: "Error using '--force-exclude' with pre-commit"
+type: issue
+state: closed
+author: ilya-grigoriev
+labels:
+  - question
+assignees: []
+created_at: 2023-02-03T20:14:03Z
+updated_at: 2023-02-03T20:55:30Z
+url: https://github.com/astral-sh/ruff/issues/2555
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# Error using '--force-exclude' with pre-commit
+
+---
+
+_Issue opened by @ilya-grigoriev on 2023-02-03 20:14_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+When I run pre-commit, this error comes out:
+```
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 2
+
+error: the argument '--force-exclude' cannot be used multiple times
+
+Usage: ruff.EXE check [OPTIONS] [FILES]...
+
+For more information, try '--help'.
+```
+Using ruff with pre-commit.
+```
+rev: v0.0.240
+    hooks:
+      - id: ruff
+        args:
+          - --force-exclude
+          - --extend-ignore=E501
+```
+`pyproject.toml`
+```
+[tool.ruff]
+line-length = 80
+```
+
+---
+
+_Comment by @charliermarsh on 2023-02-03 20:50_
+
+We changed the pre-commit hook to include `--force-exclude` by default. You should be able to omit it now. Can you try removing the argument?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-03 20:50_
+
+---
+
+_Comment by @ilya-grigoriev on 2023-02-03 20:53_
+
+> We changed the pre-commit hook to include `--force-exclude` by default. You should be able to omit it now. Can you try removing the argument?
+
+Thanks. It works.
+
+---
+
+_Closed by @ilya-grigoriev on 2023-02-03 20:55_
+
+---

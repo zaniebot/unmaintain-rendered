@@ -1,0 +1,65 @@
+---
+number: 1907
+title: pip.conf/pip.ini and Artifactory compatability
+type: issue
+state: closed
+author: Muhtasham
+labels:
+  - duplicate
+  - question
+assignees: []
+created_at: 2024-02-23T10:51:07Z
+updated_at: 2024-02-23T18:52:00Z
+url: https://github.com/astral-sh/uv/issues/1907
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# pip.conf/pip.ini and Artifactory compatability
+
+---
+
+_Issue opened by @Muhtasham on 2024-02-23 10:51_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+Thanks for another great package!
+
+Wanted to ask anybody tested if `uv` also honors `pip.conf/pip.ini` and plays nicely with Artifactory?
+
+
+---
+
+_Comment by @zanieb on 2024-02-23 15:56_
+
+Hi!
+
+We don't read `pip.conf` or `pip.ini` (and probably won't since we're a separate tool). The next release will play nicely with Arficatory though (see #1709)
+
+---
+
+_Label `question` added by @zanieb on 2024-02-23 15:56_
+
+---
+
+_Comment by @astrojuanlu on 2024-02-23 16:12_
+
+For users `pip.conf` see https://github.com/astral-sh/uv/issues/1404
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-02-23 16:14_
+
+---
+
+_Closed by @Muhtasham on 2024-02-23 18:52_
+
+---

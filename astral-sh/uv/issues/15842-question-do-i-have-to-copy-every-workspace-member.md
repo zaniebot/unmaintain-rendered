@@ -1,0 +1,112 @@
+---
+number: 15842
+title: "[Question] Do I have to copy every workspace member in my Dockerfile?"
+type: issue
+state: closed
+author: vaibhavmano
+labels:
+  - question
+assignees: []
+created_at: 2025-09-14T16:55:23Z
+updated_at: 2025-09-25T02:45:27Z
+url: https://github.com/astral-sh/uv/issues/15842
+synced_at: 2026-01-10T01:26:00Z
+---
+
+# [Question] Do I have to copy every workspace member in my Dockerfile?
+
+---
+
+_Issue opened by @vaibhavmano on 2025-09-14 16:55_
+
+### Question
+
+I'm currently in the process of migrating an existing codebase in my org to use uv as a package manager. It's a monorepo and having the ability to setup workspaces within a single repo was amazing. I'm still running into an issue for building a Docker image with the `uv.lock` file.
+
+Below is my folder structure.
+```
+org-backend 
+└── src
+    └── base
+        └── ..
+        └── pyproject.toml
+    └── bo
+        └── ..
+        └── pyproject.toml
+└── application
+   └── ..
+   └── pyproject.toml
+└── pyproject.toml
+```
+
+Here's the root `pyproject.toml`
+```
+[project]
+name = "org-backend"
+version = "0.1.0"
+description = ".."
+readme = "README.md"
+requires-python = "==3.12.*"
+
+[tool.uv.workspace]
+members = ["src/base", "src/bo", "application"]
+
+[tool.uv.sources]
+base = { workspace = true }
+bo = { workspace = true }
+application = { workspace = true }
+```
+
+
+The root `pyproject.toml` contains `base`, `bo` and `application` as a workspace member. While building the Docker image for `application` service, I only copy the following `/src/base` and `/application`.
+
+
+```
+# Dockerfile for application
+RUN pip install uv==0.8.17
+
+COPY ./src/base /org-backend/src/base
+
+COPY application /org-backend/application
+
+COPY pyproject.toml /org-backend/
+COPY uv.lock /org-backend/
+
+
+WORKDIR /org-backend
+RUN uv sync --locked --active --no-group dev --package application
+```
+
+Here's the error message when building with above docker file, ` The lockfile at 'uv.lock' needs to be updated, but '--locked' was provided. To update the lockfile, run 'uv lock'.`
+
+I have not copied the `/bo`. Even though it's a workspace member, `application` service has no need of this package. I assumed `--package` flag will resolve this but since `bo` is mentioned in the root pyproject.toml, the docker image build keeps failing because it wants to regenerate the lock file.
+
+My question is do I have to copy every workspace member? If not, what would be the best approach to build an image?
+
+If yes, this is going to be a hassle since I have 4-5 packages and over 15 services. Everything will be defined as a workspace member and the 15 services will not even be related to each other. Having to copy them is going to wreak havoc and also contain unnecessary code!
+
+
+
+### Platform
+
+macOS 15.6.1
+
+### Version
+
+uv 0.8.17 (10960bc13 2025-09-10)
+
+---
+
+_Label `question` added by @vaibhavmano on 2025-09-14 16:55_
+
+---
+
+_Comment by @vaibhavmano on 2025-09-25 02:45_
+
+Follow up: I can run `uv sync`
+
+---
+
+_Closed by @vaibhavmano on 2025-09-25 02:45_
+
+---

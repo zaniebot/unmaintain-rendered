@@ -1,0 +1,59 @@
+---
+number: 5754
+title: "Incorrect default value for python-preference in ``docs/reference/settings.md``"
+type: issue
+state: closed
+author: FishAlchemist
+labels:
+  - bug
+  - documentation
+assignees: []
+created_at: 2024-08-03T18:20:10Z
+updated_at: 2024-08-03T23:37:41Z
+url: https://github.com/astral-sh/uv/issues/5754
+synced_at: 2026-01-10T01:23:52Z
+---
+
+# Incorrect default value for python-preference in ``docs/reference/settings.md``
+
+---
+
+_Issue opened by @FishAlchemist on 2024-08-03 18:20_
+
+According to  https://github.com/astral-sh/uv/pull/5637 , the default value in the document should be changed to "``only-managed``" because the managed behavior requires ``--preview``. However, if the document is intended for post-stabilization behavior (without ``--preview``), it should also be changed to "``managed``" instead of using a removed value.
+I'm not sure which one should be changed to so I won't create a PR for it
+https://github.com/astral-sh/uv/blob/257007ccaf0912a41dfe91b534527a7b1f54e19a/docs/reference/settings.md?plain=1#L646
+
+https://github.com/astral-sh/uv/blob/257007ccaf0912a41dfe91b534527a7b1f54e19a/crates/uv-python/src/discovery.rs#L61-L69
+
+Edit (according to my PR):
+After referring to https://github.com/astral-sh/uv/pull/5637 and doing additional testing.
+The default value in a stable state seems more reasonable to be only-system. managed in preview.
+
+---
+
+_Comment by @charliermarsh on 2024-08-03 18:27_
+
+Apologies, this changed recently. PR welcome. We can include both the stable and preview value in the default field.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-03 18:28_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-08-03 18:28_
+
+---
+
+_Referenced in [astral-sh/uv#5755](../../astral-sh/uv/pulls/5755.md) on 2024-08-03 18:50_
+
+---
+
+_Closed by @charliermarsh on 2024-08-03 23:37_
+
+---
+
+_Closed by @charliermarsh on 2024-08-03 23:37_
+
+---

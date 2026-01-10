@@ -1,0 +1,125 @@
+---
+number: 8536
+title: uv fails to install correct odrive version on old macOS
+type: issue
+state: closed
+author: alec-bike
+labels:
+  - question
+assignees: []
+created_at: 2024-10-24T18:01:01Z
+updated_at: 2024-10-24T19:53:00Z
+url: https://github.com/astral-sh/uv/issues/8536
+synced_at: 2026-01-10T01:24:29Z
+---
+
+# uv fails to install correct odrive version on old macOS
+
+---
+
+_Issue opened by @alec-bike on 2024-10-24 18:01_
+
+I'm using `uv` on two macOS systems -- a newer M1 on macOS `15.1`, and an old Intel pegged to `11.7`. I'm trying to install the `odrive` package. Newer `odrive` packages (`>0.6.8`) require macOS 12+, so I can install `0.6.9.post0` on the M1 but only `0.6.8` on the Intel.
+
+If I don't use `uv` (and use `requirements.txt` and `pip` instead) I can specify `odrive >= 0.6.8` in `requirements.txt` and `pip install -r requirements.txt` will choose the correct package version on both platforms (`0.6.8` on the Intel, `0.6.9.post0` on the M1). 
+
+If I use `uv` with `odrive>=0.6.8` in pyproject.toml, `uv` will try to install `0.6.9.pos0` on the Intel and will fail. 
+
+I can force `uv` to install `0.6.8` on the Intel using `uv pip install -r requirements.txt` but `uv tree` still shows `0.6.9.post0` and some functionality (`uv run` for example) is broken.
+
+I can edit the `pyproject.toml` on the Intel to force `"odrive==0.6.8"` and keep the changes local, but I'm hoping to find a cross-platform solution.
+
+Any recommendations?
+
+---
+
+_Renamed from "uv sync fails to install correct odrive package version on old macOS" to "uv sync fails to install correct odrive version on old macOS" by @alec-bike on 2024-10-24 18:01_
+
+---
+
+_Renamed from "uv sync fails to install correct odrive version on old macOS" to "uv fails to install correct odrive version on old macOS" by @alec-bike on 2024-10-24 18:01_
+
+---
+
+_Comment by @charliermarsh on 2024-10-24 18:04_
+
+Are you installing from PyPI?
+
+---
+
+_Comment by @alec-bike on 2024-10-24 18:06_
+
+Yes
+
+---
+
+_Comment by @charliermarsh on 2024-10-24 18:54_
+
+This is an area where the package isn't well-setup for uv's model of universal resolution: there's no source distribution, and some set of wheels, but the wheels don't cover the entire set of possible platforms. We basically have to assume that they do, since the set of possible platforms is infinite and not known in advance. So the resolver picks 0.6.9, but we then fail (I assume) to find a compatible wheel when you're on Intel.
+
+> I can force uv to install 0.6.8 on the Intel using uv pip install -r requirements.txt but uv tree still shows 0.6.9.post0 and some functionality (uv run for example) is broken.
+
+This works because `uv pip install -r requirements.txt` will only install and resolve for the current platform, whereas `uv tree` and `uv run` use the universal resolver. They're two different modes of working that you typically don't want to mix-and-match -- you should either use the `uv pip` interface or `uv run` (plus `uv sync`, `uv lock`). (They _can_ be mixed and matched, but that's mostly for power users.)
+
+I think what you want here is to declare a different version for Intel macOS, like:
+
+```toml
+[project]
+dependencies = [
+    "odrive < 0.6.9 ; platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "odrive >= 0.6.9; platform_system != 'Darwin' or platform_machine != 'x86_64'",
+]
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-24 18:54_
+
+---
+
+_Comment by @alec-bike on 2024-10-24 19:46_
+
+Thanks for the suggestion, that worked. I tweaked it to use `platform_release` instead of `_machine`:
+
+```zsh
+dependencies = [
+    "odrive == 0.6.8 ; platform_system == 'Darwin' and platform_release <= '20.6.0'",
+    "odrive > 0.6.8; platform_system == 'Darwin' and platform_release > '20.6.0'",
+]
+```
+
+---
+
+_Comment by @charliermarsh on 2024-10-24 19:52_
+
+Nice! The underlying limitation around wheels-without-source-distributions is tracked here: https://github.com/astral-sh/uv/issues/5182. Gonna close in favor of that issue.
+
+---
+
+_Closed by @charliermarsh on 2024-10-24 19:52_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-10-24 19:52_
+
+---
+
+_Referenced in [astral-sh/uv#8603](../../astral-sh/uv/issues/8603.md) on 2024-10-27 18:56_
+
+---
+
+_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-30 20:52_
+
+---
+
+_Referenced in [astral-sh/uv#8746](../../astral-sh/uv/issues/8746.md) on 2024-11-01 13:23_
+
+---
+
+_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
+
+---
+
+_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
+
+---

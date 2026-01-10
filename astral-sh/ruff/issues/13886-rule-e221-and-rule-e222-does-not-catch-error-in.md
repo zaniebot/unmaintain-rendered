@@ -1,0 +1,97 @@
+---
+number: 13886
+title: Rule E221 and Rule E222 does not catch error in if condition 
+type: issue
+state: closed
+author: samratashok87
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2024-10-23T10:25:46Z
+updated_at: 2024-10-23T13:02:30Z
+url: https://github.com/astral-sh/ruff/issues/13886
+synced_at: 2026-01-10T01:22:54Z
+---
+
+# Rule E221 and Rule E222 does not catch error in if condition 
+
+---
+
+_Issue opened by @samratashok87 on 2024-10-23 10:25_
+
+Rule E221 ([multiple-spaces-before-operator] and Rule E222 ([multiple-spaces-after-operator) work for normal assignment operators.
+But If multiples spaces are present in if condition either before or after '==' operator Ruff does not catch.
+
+```
+#!/usr/bin/env python3
+a  =  1
+if a  ==  1:
+    print(a)
+
+In the above code Ruff flags the line a = 1 as error as it contains more space before and after operator where as it does not catch the error on the if condition.
+
+/home/ashok/.local/bin/ruff check hello_world.py                                                                                    
+
+hello_world.py:6:2: E221 [*] Multiple spaces before operator
+  |
+5 | print('Hello World')
+6 | a  =  1
+  |  ^^ E221
+7 | if a  ==  1:
+8 |     print(a)
+  |
+  = help: Replace with single space
+
+hello_world.py:6:5: E222 [*] Multiple spaces after operator
+  |
+5 | print('Hello World')
+6 | a  =  1
+  |     ^^ E222
+7 | if a  ==  1:
+8 |     print(a)
+  |
+  = help: Replace with single space
+```
+
+This issue is caught by flake8. 
+
+Ruff.toml
+```toml
+target-version = "py310"
+[lint]
+preview = true
+extend-select = [
+  "E",
+  "PL",  # pylint
+  "UP",  # pyupgrade
+  "D",   # pydocstyle
+  "C4",
+  "SIM",
+]
+```
+ruff version :  0.7.0
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-10-23 12:14_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-10-23 12:14_
+
+---
+
+_Comment by @MichaReiser on 2024-10-23 12:34_
+
+The rule correctly detects leading whitespace for `<=`. For some reason, `EqEqual` is missing from https://github.com/astral-sh/ruff/blob/fc7fa59e5fcdef7f83fbf8e6228be434930af66c/crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/space_around_operator.rs#L292-L327
+
+---
+
+_Referenced in [astral-sh/ruff#13890](../../astral-sh/ruff/pulls/13890.md) on 2024-10-23 12:45_
+
+---
+
+_Closed by @MichaReiser on 2024-10-23 13:02_
+
+---

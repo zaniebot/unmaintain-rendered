@@ -1,0 +1,38 @@
+---
+number: 2562
+title: Incorrect version of torchvision is installed
+type: issue
+state: closed
+author: hovnatan
+labels:
+  - question
+assignees: []
+created_at: 2024-03-20T12:30:23Z
+updated_at: 2024-03-31T08:48:49Z
+url: https://github.com/astral-sh/uv/issues/2562
+synced_at: 2026-01-10T01:23:19Z
+---
+
+# Incorrect version of torchvision is installed
+
+---
+
+_Issue opened by @hovnatan on 2024-03-20 12:30_
+
+When trying `uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu` older than necessary version of `torchvision` is installed and the installed version is without `+cpu` flag. Running `pip install ...` without `uv` works fine. I think this can be related to https://github.com/python-poetry/poetry/issues/2543.
+
+---
+
+_Comment by @charliermarsh on 2024-03-20 13:54_
+
+For PyTorch with uv, you generally need to be specifying the `+` suffixes directly. There's more on the limitations and differences from pip here: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers.
+
+---
+
+_Label `question` added by @zanieb on 2024-03-20 14:03_
+
+---
+
+_Closed by @hovnatan on 2024-03-31 08:48_
+
+---

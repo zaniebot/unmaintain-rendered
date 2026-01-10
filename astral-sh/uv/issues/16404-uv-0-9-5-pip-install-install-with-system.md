@@ -1,0 +1,154 @@
+---
+number: 16404
+title: "uv-0.9.5: `pip_install::install_with_system_interpreter` fails (over `EXTERNALLY-MANAGED`?)"
+type: issue
+state: closed
+author: mgorny
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-22T02:34:14Z
+updated_at: 2025-10-22T18:24:03Z
+url: https://github.com/astral-sh/uv/issues/16404
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# uv-0.9.5: `pip_install::install_with_system_interpreter` fails (over `EXTERNALLY-MANAGED`?)
+
+---
+
+_Issue opened by @mgorny on 2025-10-22 02:34_
+
+### Summary
+
+```
+failures:
+
+---- pip_install::install_with_system_interpreter stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+Using Python 3.12.12 environment at: /usr
+error: The interpreter at /usr is externally managed, and indicates the following:
+
+
+  The system-wide Python installation in Gentoo should be maintained
+  using the system package manager (e.g. emerge).
+
+  If the package in question is not packaged for Gentoo, please
+  consider installing it inside a virtual environment, e.g.:
+
+  python -m venv /path/to/venv
+  . /path/to/venv/bin/activate
+  pip install mypackage
+
+  To exit the virtual environment, run:
+
+  deactivate
+
+  The virtual environment is not deleted, and can be re-entered by
+  re-sourcing the activate file.
+
+Consider creating a virtual environment with `uv venv`.
+hint: This happens because the `--system` flag was used, which selected the system Python interpreter.
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: install_with_system_interpreter
+Source: crates/uv/tests/it/pip_install.rs:13013
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    2     2 │ exit_code: 2
+    3     3 │ ----- stdout -----
+    4     4 │ 
+    5     5 │ ----- stderr -----
+    6       │-Using Python 3.12.[X] environment at: [PYTHON-PATH]
+    7       │-error: The interpreter at [PYTHON-PATH] is externally managed, and indicates the following:
+          6 │+Using Python 3.12.[X] environment at: /usr
+          7 │+error: The interpreter at /usr is externally managed, and indicates the following:
+          8 │+
+          9 │+
+         10 │+  The system-wide Python installation in Gentoo should be maintained
+         11 │+  using the system package manager (e.g. emerge).
+         12 │+
+         13 │+  If the package in question is not packaged for Gentoo, please
+         14 │+  consider installing it inside a virtual environment, e.g.:
+         15 │+
+         16 │+  python -m venv /path/to/venv
+         17 │+  . /path/to/venv/bin/activate
+         18 │+  pip install mypackage
+    8    19 │ 
+    9       │-  This Python installation is managed by uv and should not be modified.
+         20 │+  To exit the virtual environment, run:
+         21 │+
+         22 │+  deactivate
+         23 │+
+         24 │+  The virtual environment is not deleted, and can be re-entered by
+         25 │+  re-sourcing the activate file.
+   10    26 │ 
+   11    27 │ Consider creating a virtual environment with `uv venv`.
+   12    28 │ hint: This happens because the `--system` flag was used, which selected the system Python interpreter.
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+
+thread 'pip_install::install_with_system_interpreter' panicked at /var/tmp/portage/dev-python/uv-0.9.5/work/cargo_home/gentoo/insta-1.4
+3.2/src/runtime.rs:694:13:
+snapshot assertion for 'install_with_system_interpreter' failed in line 13013
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    pip_install::install_with_system_interpreter
+
+test result: FAILED^O. 2236 passed; 1 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1423.22s
+
+error: test failed, to rerun pass `--test it`
+```
+
+### Platform
+
+Gentoo Linux amd64
+
+### Version
+
+0.9.5
+
+### Python version
+
+3.12.12
+
+---
+
+_Label `bug` added by @mgorny on 2025-10-22 02:34_
+
+---
+
+_Comment by @zanieb on 2025-10-22 04:10_
+
+Yep, I noticed this would fail after merge and immediately fixed it https://github.com/astral-sh/uv/pull/16392
+
+---
+
+_Comment by @mgorny on 2025-10-22 06:10_
+
+Ah, sorry, was in a hurry and didn't check main.
+
+---
+
+_Comment by @zanieb on 2025-10-22 18:24_
+
+No problem
+
+---
+
+_Closed by @zanieb on 2025-10-22 18:24_
+
+---

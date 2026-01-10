@@ -1,0 +1,116 @@
+---
+number: 6142
+title: Respect display order
+type: pull_request
+state: merged
+author: thomas-zahner
+labels: []
+assignees: []
+merged: true
+base: master
+head: respect-display-order
+created_at: 2025-09-26T22:19:04Z
+updated_at: 2025-10-22T16:10:28Z
+url: https://github.com/clap-rs/clap/pull/6142
+synced_at: 2026-01-10T01:28:28Z
+---
+
+# Respect display order
+
+---
+
+_Pull request opened by @thomas-zahner on 2025-09-26 22:19_
+
+This is branched off #6072 and fixes #3362. The work over at #6072 seems to have stalled. With this PR, I'd like to get the feature ready and merged.
+
+My changes (see last commit) should resolve the comments left on the original PR. Additionally, I noticed that `option_sort_key` was fully copy/pasted on the original PR. I tried to reuse the logic and ended up creating `ArgOrder`. Not fully sure if this is the way to go, but I think it's quite a bit better than the current state. Especially the bit with the `BTreeMap` was unnecessary and `positional_sort_key` was a overly complicated way of saying "don't do anything".
+
+Maybe you would like to implement or name`ArgOrder` differently? Also I'm not sure where I should place `ArgOrder` in order to be usable in both places.
+
+---
+
+_@epage reviewed on 2025-10-10 15:40_
+
+---
+
+_Review comment by @epage on `clap_mangen/tests/testsuite/roff.rs`:174 on 2025-10-10 15:40_
+
+Please add all new tests in the first commit
+
+---
+
+_@epage reviewed on 2025-10-10 15:40_
+
+---
+
+_Review comment by @epage on `clap_mangen/src/render.rs`:38 on 2025-10-10 15:40_
+
+Please squash this into the main commit
+
+---
+
+_Review comment by @epage on `clap_mangen/tests/testsuite/roff.rs`:174 on 2025-10-10 16:57_
+
+Looks like all of the commits had been squashed.  What you did with the test commit before the main commit was right, just more tests had been added in the "fixup".
+
+---
+
+_@epage reviewed on 2025-10-10 16:57_
+
+---
+
+_@thomas-zahner reviewed on 2025-10-11 14:49_
+
+---
+
+_Review comment by @thomas-zahner on `clap_mangen/tests/testsuite/roff.rs`:174 on 2025-10-11 14:49_
+
+Ah I see, I misunderstood then. I've now split the commit into everything test related and then the fix itself.
+
+---
+
+_@epage reviewed on 2025-10-13 17:14_
+
+---
+
+_Review comment by @epage on `clap_mangen/tests/testsuite/roff.rs`:174 on 2025-10-13 17:14_
+
+Note that the the commits should still be atomic, including each commit passing tests.  The first commit should pass, showing the current behavior.  The second commit should still pass, showing the new behavior.
+
+The intent with this split is to
+1. Verify the tests test the right behavior by seeing them change
+2. Provide a visual demonstration of what this PR accomplishes by the diff between the two commits
+
+---
+
+_@thomas-zahner reviewed on 2025-10-20 07:51_
+
+---
+
+_Review comment by @thomas-zahner on `clap_mangen/tests/testsuite/roff.rs`:174 on 2025-10-20 07:51_
+
+Ah okay :sweat_smile: The two commits are atomic now. The tests for both commits pass.
+
+---
+
+_Review comment by @epage on `clap_mangen/tests/testsuite/common.rs`:290 on 2025-10-20 16:24_
+
+Sorry I had missed this before.  The commit changes made this more obvious.
+
+Why is this here instead of relying on inspecting the snapshots?  Not thrilled with doing post-processing on the roff output.
+
+---
+
+_@epage reviewed on 2025-10-20 16:24_
+
+---
+
+_@thomas-zahner reviewed on 2025-10-22 08:00_
+
+---
+
+_Review comment by @thomas-zahner on `clap_mangen/tests/testsuite/common.rs`:290 on 2025-10-22 08:00_
+
+True, I don't think there is a point in doing this as this is covered by `assert_matches` already. I've removed it.
+
+---

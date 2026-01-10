@@ -1,0 +1,70 @@
+---
+number: 9858
+title: "[DOC]: Clarification Request: `pip`/`brew`/etc installed `uv` takes precedence over standalone installer"
+type: issue
+state: closed
+author: adam-grant-hendry
+labels: []
+assignees: []
+created_at: 2024-12-13T01:48:21Z
+updated_at: 2025-01-07T19:07:50Z
+url: https://github.com/astral-sh/uv/issues/9858
+synced_at: 2026-01-10T01:24:47Z
+---
+
+# [DOC]: Clarification Request: `pip`/`brew`/etc installed `uv` takes precedence over standalone installer
+
+---
+
+_Issue opened by @adam-grant-hendry on 2024-12-13 01:48_
+
+### System Info
+`OS`: Windows 10 22H2
+`Terminal`: PowerShell Core 7.4.6
+`uv`: 0.5.8
+
+### The Problem
+After installing `uv` with the [standalone installer](https://docs.astral.sh/uv/getting-started/installation/):
+
+```
+> powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+`uv` did not perform `self update` because it was also installed under `python 3.11` on my system with `pip`:
+
+```
+> uv self update
+warning: Self-update is only available for uv binaries installed via the standalone installation scripts.
+
+If you installed uv with pip, brew, or another package manager, update uv with `pip install --upgrade`, `brew upgrade`, or similar.
+```
+
+### Screenshot
+![Image](https://github.com/user-attachments/assets/b259be54-772b-403a-8223-d90f5ce1a1ec)
+
+### Request
+Can the docs be updated slightly only to clarify that `pip`/`brew`/etc. installs take precedence over the standalone installer? I think this was implied, but in my case having `uv` installed with my `python 3.11` using `pip` was an accident.
+
+Alternatively, it would be helpful if the error message could state whether multiple installations of `uv` were found.
+
+---
+
+_Comment by @zanieb on 2024-12-13 04:00_
+
+> Can the docs be updated slightly only to clarify that pip/brew/etc. installs take precedence over the standalone installer?
+
+This isn't necessarily true, it depends on how your `PATH` is setup.
+
+We should definitely warn on install though if the just-installed uv isn't the first in the `PATH`. I recently improved the warning for `uv self update` in https://github.com/astral-sh/uv/pull/9487 but the warning on install will need to be implemented upstream in `cargo-dist`.
+
+---
+
+_Comment by @adam-grant-hendry on 2024-12-13 05:14_
+
+Oh interesting, okay, it's path based. That makes sense. My python install was higher in my PATH than my `.local/bin`.
+
+---
+
+_Closed by @zanieb on 2025-01-07 19:07_
+
+---

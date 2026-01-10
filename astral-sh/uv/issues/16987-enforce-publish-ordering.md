@@ -1,0 +1,67 @@
+---
+number: 16987
+title: Enforce publish ordering
+type: issue
+state: closed
+author: woodruffw
+labels:
+  - internal
+assignees: []
+created_at: 2025-12-04T19:19:18Z
+updated_at: 2025-12-09T21:20:22Z
+url: https://github.com/astral-sh/uv/issues/16987
+synced_at: 2026-01-10T01:26:12Z
+---
+
+# Enforce publish ordering
+
+---
+
+_Issue opened by @woodruffw on 2025-12-04 19:19_
+
+For consistency/idempotency/recovery purposes, we want to enforce a consistent order in our publish steps during uv releases. Right now all of our publish workflows (which are reusable workflows) get scheduled in parallel, and race to win.
+
+This is because we have the following in our dist configuration:
+
+```toml
+publish-jobs = ["./publish-pypi", "./publish-crates"]
+```
+
+Instead, we should probably do:
+
+```toml
+publish-jobs = ["./publish"]
+```
+
+...where `publish.yml` is a reusable workflow that then dispatches to `publish-pypi.yml` and `publish-crates.yml` in an ordered manner.
+
+In effect, our stagger would be:
+
+```
+release.yml
+|
+\__ publish.yml
+     |
+     \__ 
+        \ publish-pypi.yml
+        |
+        \ publish-crates.yml
+```
+
+---
+
+_Assigned to @woodruffw by @woodruffw on 2025-12-04 19:19_
+
+---
+
+_Label `internal` added by @woodruffw on 2025-12-04 19:19_
+
+---
+
+_Referenced in [astral-sh/uv#16989](../../astral-sh/uv/pulls/16989.md) on 2025-12-04 19:30_
+
+---
+
+_Closed by @zanieb on 2025-12-09 21:20_
+
+---

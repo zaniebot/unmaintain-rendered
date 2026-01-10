@@ -1,0 +1,82 @@
+---
+number: 9792
+title: "Is there a way to suppress `Invalid # noqa directive on`  warnings?"
+type: issue
+state: open
+author: Vulwsztyn
+labels:
+  - question
+assignees: []
+created_at: 2024-02-02T17:42:54Z
+updated_at: 2024-02-02T19:19:55Z
+url: https://github.com/astral-sh/ruff/issues/9792
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Is there a way to suppress `Invalid # noqa directive on`  warnings?
+
+---
+
+_Issue opened by @Vulwsztyn on 2024-02-02 17:42_
+
+They clog up the output of the check command.
+
+---
+
+_Renamed from "Is there a way to suppress `Invalid `# noqa` directive on`  warnings?" to "Is there a way to suppress `Invalid # noqa directive on`  warnings?" by @Vulwsztyn on 2024-02-02 17:43_
+
+---
+
+_Comment by @charliermarsh on 2024-02-02 17:47_
+
+Can I ask why you want to suppress it, rather than address the warnings? Are the warnings invalid?
+
+---
+
+_Comment by @Vulwsztyn on 2024-02-02 17:50_
+
+Not every `noqa` is a ruff `noqa`. Sometimes I'm telling pycharm not to underline my code with `# noqa: pycharm`
+
+especially in the http endpoints test when doing `response.json()` since apparently it's impossible to type it correctly:
+https://stackoverflow.com/questions/76858314/how-to-properly-type-client-post-response-in-django-test
+ 
+
+---
+
+_Comment by @Vulwsztyn on 2024-02-02 17:57_
+
+workaround `| grep -v ^warning`
+
+---
+
+_Comment by @zanieb on 2024-02-02 18:33_
+
+Hey @Vulwsztyn it sounds like you're looking for the [`external`](https://docs.astral.sh/ruff/settings/#lint_external) setting.
+
+---
+
+_Label `question` added by @zanieb on 2024-02-02 18:33_
+
+---
+
+_Comment by @Vulwsztyn on 2024-02-02 18:43_
+
+@zanieb I do not see how I can suppress this message with this setting. I do not have e.g. `# noqa: VXXX` so as to suppress `V` by this settings. I have `# noqa: PyCharm` or `# noqa bla bla reasoning`
+
+---
+
+_Comment by @charliermarsh on 2024-02-02 19:15_
+
+You should be able to pass whatever you want to `external`. E.g., `external = ["PyCharm"]` should be supported.
+
+---
+
+_Comment by @zanieb on 2024-02-02 19:18_
+
+@charliermarsh unfortunately that doesn't work because the error is that the noqa statement is invalid due to its format
+
+https://github.com/astral-sh/ruff/blob/1ae67f44872c2c08ffe21a907a35765374c1cde8/crates/ruff_linter/src/noqa.rs#L244-L250
+
+We should probably try to support `external` here though
+
+---

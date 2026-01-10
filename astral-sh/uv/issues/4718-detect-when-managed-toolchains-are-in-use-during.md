@@ -1,0 +1,98 @@
+---
+number: 4718
+title: Detect when managed toolchains are in use during uninstall
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+  - needs-design
+assignees: []
+created_at: 2024-07-02T02:23:40Z
+updated_at: 2025-10-06T09:29:32Z
+url: https://github.com/astral-sh/uv/issues/4718
+synced_at: 2026-01-10T01:23:40Z
+---
+
+# Detect when managed toolchains are in use during uninstall
+
+---
+
+_Issue opened by @zanieb on 2024-07-02 02:23_
+
+We should track our uses of managed toolchains (e.g. when used in `uv venv`, `uv tool install` and `uv sync`) then ensure that the toolchain is no longer in use before removing it during uninstall or require opt-in to force removal.
+
+---
+
+_Label `needs-design` added by @zanieb on 2024-07-02 02:23_
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-07-02 02:23_
+
+---
+
+_Referenced in [astral-sh/uv#4646](../../astral-sh/uv/pulls/4646.md) on 2024-07-02 02:48_
+
+---
+
+_Referenced in [astral-sh/uv#6011](../../astral-sh/uv/issues/6011.md) on 2024-08-11 18:49_
+
+---
+
+_Referenced in [astral-sh/uv#7287](../../astral-sh/uv/issues/7287.md) on 2024-09-11 11:41_
+
+---
+
+_Referenced in [astral-sh/uv#7892](../../astral-sh/uv/issues/7892.md) on 2024-10-03 14:15_
+
+---
+
+_Referenced in [astral-sh/uv#8028](../../astral-sh/uv/issues/8028.md) on 2024-10-09 01:22_
+
+---
+
+_Referenced in [astral-sh/uv#8514](../../astral-sh/uv/issues/8514.md) on 2024-10-24 12:31_
+
+---
+
+_Referenced in [astral-sh/uv#9579](../../astral-sh/uv/issues/9579.md) on 2025-01-06 05:09_
+
+---
+
+_Comment by @aretrace on 2025-01-07 04:23_
+
+Could tools invoke a separate interpreter copy (e.g., `cpython-3.12.8-macos-aarch64-none-<TOOL_NAME>`)?
+An additional option for interpreter selection during tool installation would make sense  under this scenario.
+
+---
+
+_Comment by @zanieb on 2025-01-07 17:26_
+
+Yeah we could have each tool get a dedicated interpreter, but I don't think that's ideal unless we can use hard-links?
+
+I would rather:
+
+- Not allow uninstall unless you change the tools (or use a force flag)
+- Make it easy to change tools to another Python version
+- Link tools to a "stable" directory of minor Python interpreter versions so patch upgrades do not affect them
+
+---
+
+_Comment by @aretrace on 2025-01-07 23:16_
+
+👆 yes
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-03-15 18:46_
+
+---
+
+_Referenced in [topgrade-rs/topgrade#1122](../../topgrade-rs/topgrade/pulls/1122.md) on 2025-04-13 08:00_
+
+---
+
+_Unassigned @jtfmumm by @konstin on 2025-10-06 09:29_
+
+---

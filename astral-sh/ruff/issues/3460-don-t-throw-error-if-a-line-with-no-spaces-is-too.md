@@ -1,0 +1,72 @@
+---
+number: 3460
+title: "don't throw error if a line with no spaces is too long"
+type: issue
+state: closed
+author: YoniChechik
+labels:
+  - question
+assignees: []
+created_at: 2023-03-12T12:09:16Z
+updated_at: 2023-03-13T13:04:37Z
+url: https://github.com/astral-sh/ruff/issues/3460
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# don't throw error if a line with no spaces is too long
+
+---
+
+_Issue opened by @YoniChechik on 2023-03-12 12:09_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Here is an example code that can throw an error:
+```python
+# NOTE this 2 lines are a hack to make numba work:
+# https://numba.readthedocs.io/en/stable/user/troubleshoot.html#my-code-has-an-untyped-list-problem
+```
+The code in the second line can't be trimmed down but ruff still outputs a bug of "line too long"
+    
+
+---
+
+_Comment by @charliermarsh on 2023-03-12 17:16_
+
+I thought we _did_ allow this, I'll take a look.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-12 17:44_
+
+---
+
+_Comment by @charliermarsh on 2023-03-12 18:00_
+
+So I'm not able to reproduce an E501 error on that code. `ruff --isolated --select E501 foo.py` produces no output. (If I add some spaces within the URL, I _do_ get an error as expected.) Are you able to reproduce?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-03-12 18:00_
+
+---
+
+_Comment by @YoniChechik on 2023-03-13 13:04_
+
+Correct it was some other problem on my side.
+
+Thnaks!
+
+---
+
+_Closed by @YoniChechik on 2023-03-13 13:04_
+
+---

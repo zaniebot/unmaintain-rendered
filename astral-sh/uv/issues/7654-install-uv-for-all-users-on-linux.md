@@ -1,0 +1,131 @@
+---
+number: 7654
+title: Install uv for all users on Linux
+type: issue
+state: closed
+author: bolinocroustibat
+labels:
+  - question
+  - releases
+assignees: []
+created_at: 2024-09-24T08:14:25Z
+updated_at: 2024-10-29T00:51:46Z
+url: https://github.com/astral-sh/uv/issues/7654
+synced_at: 2026-01-10T01:24:17Z
+---
+
+# Install uv for all users on Linux
+
+---
+
+_Issue opened by @bolinocroustibat on 2024-09-24 08:14_
+
+- Platform: Linux and/or MacOS
+- uv version: 0.4.15
+
+When installing uv with `curl -LsSf https://astral.sh/uv/install.sh | sh`, it puts the executables in a `~/.cargo/` directory under current user's home directory, which is loaded by the current user's shell.
+Therefore, no other users can use uv unless they install it.
+
+Is there a simple way to install user for all users?
+Wouldn't that be useful for the install script to ask if it needs to be installed for the current user or for all users?
+
+
+
+---
+
+_Comment by @woutervh on 2024-09-24 11:02_
+
+@bolinocroustibat 
+
+this is my current solution using a justfile  (see https://just.systems/man/en/)
+by manipulating env-vars CARGO_HOME and HOME
+
+```
+BIN_DIR := env('BIN_DIR', '/opt/bin')
+
+CARGO_HOME := env('CARGO_HOME', '/opt/cargo')
+
+CURL_FLAGS := env("CURL_FLAGS", "--create-dirs --fail --location --no-progress-bar --show-error")
+
+# install uv/uvx directly in /opt/bin
+export UV_INSTALL_DIR := parent_directory(BIN_DIR)
+
+
+# install uv/uvx systemwide in $BIN_DIR
+uv-install: 
+    curl {{CURL_FLAGS}} --proto '=https' --tlsv1.2 https://astral.sh/uv/install.sh | HOME={{CARGO_HOME}} bash -s -- --verbose --no-modify-path
+
+alias install-uv := uv-install
+
+# update uv to specific version or latest release
+uv-update target_version="":
+    HOME={{CARGO_HOME}} uv self update {{target_version}}
+
+alias update-uv := uv-update
+
+```
+
+---
+
+_Comment by @charliermarsh on 2024-09-24 12:19_
+
+Does setting `UV_INSTALL_DIR` directly not work? As in https://docs.astral.sh/uv/getting-started/installation/#configuring-installation.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-24 12:19_
+
+---
+
+_Comment by @woutervh on 2024-09-24 12:50_
+
+@charliermarsh 
+
+UV_INSTALL_DIR works great for the executables, 
+but the receipt is still hardcoded to go to ~/.config/uv  (which was a problem for my usecase) 
+
+rye has RYE_HOME,  
+poetry has POETRY_HOME, 
+pipx has PIPX_HOME, 
+ansible has ANSIBLE_HOME,....
+
+so why not UV_HOME (or UV_CONFIG_HOME)  to be able to override the hardcoded location?
+
+
+---
+
+_Label `releases` added by @zanieb on 2024-09-24 12:51_
+
+---
+
+_Comment by @bolinocroustibat on 2024-09-24 13:37_
+
+@charliermarsh 
+
+Thanks, sorry I should have better RTFM, indeed `UV_INSTALL_DIR` works fine.
+
+Although I would suggest that the installer would optionally automate the process and use a hardcoded install path for all users (`/usr/local/bin/uv` for example), as many users like myself might not be proficient enough in sysadmin to choose the right location in a Linux system for this.
+
+---
+
+_Comment by @zanieb on 2024-10-21 22:15_
+
+There's also now `UV_UNMANAGED_INSTALL`
+
+> as many users like myself might not be proficient enough in sysadmin to choose the right location in a Linux system for this.
+
+I don't think it's feasible for us to choose a proper path either, that stuff differs per Linux distribution.
+
+---
+
+_Closed by @zanieb on 2024-10-21 22:15_
+
+---
+
+_Comment by @amoralesc on 2024-10-29 00:51_
+
+> Does setting `UV_INSTALL_DIR` directly not work? As in https://docs.astral.sh/uv/getting-started/installation/#configuring-installation.
+
+Now documented here: https://docs.astral.sh/uv/configuration/installer/#changing-the-install-path
+
+---

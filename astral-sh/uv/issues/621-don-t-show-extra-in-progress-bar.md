@@ -1,0 +1,49 @@
+---
+number: 621
+title: "Don't show extra in progress bar"
+type: issue
+state: closed
+author: konstin
+labels: []
+assignees: []
+created_at: 2023-12-12T16:43:07Z
+updated_at: 2023-12-12T17:41:20Z
+url: https://github.com/astral-sh/uv/issues/621
+synced_at: 2026-01-10T01:23:04Z
+---
+
+# Don't show extra in progress bar
+
+---
+
+_Issue opened by @konstin on 2023-12-12 16:43_
+
+When resolving a package with many extras the progress bar will switch between extras, e.g.
+```
+⠼ transformers[dev]==4.8.2
+```
+```
+⠴ transformers[dev-tensorflow]==4.36.0 
+```
+or
+```
+⠦ transformers[modelcreation]==4.36.0 
+```
+
+[Screencast from 2023-12-12 17-42-15.webm](https://github.com/astral-sh/puffin/assets/6826232/58be1334-4082-4910-8070-fa73ccceb789)
+
+We should show the package name without extra instead.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-12 16:50_
+
+---
+
+_Referenced in [astral-sh/uv#623](../../astral-sh/uv/pulls/623.md) on 2023-12-12 16:54_
+
+---
+
+_Closed by @charliermarsh on 2023-12-12 17:41_
+
+---

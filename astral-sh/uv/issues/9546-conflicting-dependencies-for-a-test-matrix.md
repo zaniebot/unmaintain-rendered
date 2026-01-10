@@ -1,0 +1,244 @@
+---
+number: 9546
+title: Conflicting dependencies for a test matrix
+type: issue
+state: closed
+author: delfick
+labels:
+  - bug
+assignees: []
+created_at: 2024-12-01T01:41:43Z
+updated_at: 2024-12-10T20:28:58Z
+url: https://github.com/astral-sh/uv/issues/9546
+synced_at: 2026-01-10T01:24:42Z
+---
+
+# Conflicting dependencies for a test matrix
+
+---
+
+_Issue opened by @delfick on 2024-12-01 01:41_
+
+Hi,
+
+I want to make it so that I can run the tests for my project against `django==4.2` and separately against `django==5.1`, which means if I want that represented in the uv.lock I need to create conflicting dependencies.
+
+But I can't figure out how to make this work and I end up with both versions of django in the virtualenv, which means it's always running the tests with django 5.1
+
+```
+old-django = [
+    "django-stubs==5.1.1",
+    "django==4.2.16"
+]
+new-django = [
+    "django-stubs==5.1.1",
+    "django==5.1.3"
+]
+
+[tool.uv]
+conflicts = [
+    [
+      { group = "old-django" },
+      { group = "new-django" },
+    ],
+]
+```
+
+Seems to be enough to make `uv lock` work, but then I do `uv run --group old-django pytest` and it is still using django 5.1
+
+My branch where I'm trying to work this out is over at https://github.com/delfick/extended-mypy-django-plugin/pull/65
+
+The way I'm doing it currently is `uv run --with django==4.2.16 pytest` and `uv run --with django==5.1.3 pytest` but this means it doesn't end up in the uv.lock.
+
+---
+
+_Comment by @samypr100 on 2024-12-02 00:56_
+
+Related https://github.com/astral-sh/uv/issues/6830
+
+---
+
+_Comment by @zanieb on 2024-12-03 00:37_
+
+I tried to reproduce this, but could not:
+
+```
+❯ uv init example
+❯ cd example
+❯ uv add --group old django==4.2.16
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+Resolved 5 packages in 337ms
+Prepared 3 packages in 651ms
+Installed 3 packages in 76ms
+ + asgiref==3.8.1
+ + django==4.2.16
+ + sqlparse==0.5.2
+❯ uv add --group new django==5.1.3
+  × No solution found when resolving dependencies:
+  ╰─▶ Because example:new depends on django==5.1.3 and example:old depends on django==4.2.16, we can conclude that example:new and example:old are incompatible.
+      And because your project depends on example:new and example:old, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+
+❯ vi pyproject.toml
+❯ cat pyproject.toml
+[project]
+name = "example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+old = [
+    "django==4.2.16",
+]
+new = [
+    "django==5.1.3",
+]
+dev = [
+    "pytest>=8.3.4",
+]
+
+[tool.uv]
+conflicts = [
+    [
+      { group = "old" },
+      { group = "new" },
+    ],
+]
+
+❯ uv add --group new django==5.1.3
+Resolved 6 packages in 159ms
+Prepared 1 package in 717ms
+Uninstalled 1 package in 280ms
+Installed 1 package in 58ms
+ - django==4.2.16
+ + django==5.1.3
+
+❯ touch conftest.py
+❯ vi conftest.py
+
+❯ cat conftest.py
+import importlib
+
+import pytest
+
+
+def pytest_report_header(config: pytest.Config) -> list[str] | None:
+    return [f"Django: {importlib.metadata.version('django')}"]
+
+❯ uv add --dev pytest
+Resolved 11 packages in 267ms
+Prepared 4 packages in 109ms
+Installed 4 packages in 8ms
+ + iniconfig==2.0.0
+ + packaging==24.2
+ + pluggy==1.5.0
+ + pytest==8.3.4
+
+❯ uv run pytest
+==================================================================================================================== test session starts =====================================================================================================================
+platform darwin -- Python 3.12.7, pytest-8.3.4, pluggy-1.5.0
+Django: 5.1.3
+rootdir: /Users/mz/workspace/example
+configfile: pyproject.toml
+collected 0 items                                                                                                                                                                                                                                            
+
+=================================================================================================================== no tests ran in 0.00s ====================================================================================================================
+❯ uv run --group old pytest
+Uninstalled 1 package in 267ms
+Installed 1 package in 59ms
+==================================================================================================================== test session starts =====================================================================================================================
+platform darwin -- Python 3.12.7, pytest-8.3.4, pluggy-1.5.0
+Django: 4.2.16
+rootdir: /Users/mz/workspace/example
+configfile: pyproject.toml
+collected 0 items                                                                                                                                                                                                                                            
+
+=================================================================================================================== no tests ran in 0.00s ====================================================================================================================
+```
+
+---
+
+_Comment by @zanieb on 2024-12-03 00:37_
+
+Ah actually I'm successful if I add the stubs package
+
+```
+❯ uv add django-stubs==5.1.1
+Resolved 15 packages in 277ms
+Prepared 4 packages in 155ms
+Installed 5 packages in 694ms
+ + django==5.1.3
+ + django-stubs==5.1.1
+ + django-stubs-ext==5.1.1
+ + types-pyyaml==6.0.12.20240917
+ + typing-extensions==4.12.2
+❯ uv run --group old pytest
+Uninstalled 2 packages in 264ms
+Installed 2 packages in 741ms
+==================================================================================================================== test session starts =====================================================================================================================
+platform darwin -- Python 3.12.7, pytest-8.3.4, pluggy-1.5.0
+Django: 5.1.3
+rootdir: /Users/mz/workspace/example
+configfile: pyproject.toml
+collected 0 items                                                                                                                                                                                                                                            
+
+=================================================================================================================== no tests ran in 0.00s ====================================================================================================================
+```
+
+---
+
+_Comment by @zanieb on 2024-12-03 00:40_
+
+I believe this is a bug with the same root cause as https://github.com/astral-sh/uv/issues/9289
+
+We're writing ambiguous entries to the lockfile.
+
+Will be resolved by a solution like https://github.com/astral-sh/uv/pull/9370
+
+---
+
+_Assigned to @BurntSushi by @zanieb on 2024-12-03 00:40_
+
+---
+
+_Comment by @delfick on 2024-12-03 01:47_
+
+awesome, thanks :)
+
+---
+
+_Comment by @BurntSushi on 2024-12-04 19:56_
+
+Yup, I can confirm that this will be fixed by #9370.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-12-06 00:34_
+
+---
+
+_Referenced in [astral-sh/uv#9370](../../astral-sh/uv/pulls/9370.md) on 2024-12-06 17:13_
+
+---
+
+_Closed by @BurntSushi on 2024-12-10 15:57_
+
+---
+
+_Closed by @BurntSushi on 2024-12-10 15:57_
+
+---
+
+_Comment by @delfick on 2024-12-10 20:28_
+
+🥳 
+
+---
+
+_Referenced in [delfick/extended-mypy-django-plugin#65](../../delfick/extended-mypy-django-plugin/pulls/65.md) on 2024-12-11 23:30_
+
+---

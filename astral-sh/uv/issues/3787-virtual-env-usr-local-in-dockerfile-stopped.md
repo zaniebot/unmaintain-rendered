@@ -1,0 +1,129 @@
+---
+number: 3787
+title: "VIRTUAL_ENV=/usr/local in dockerfile stopped working for uv 0.2 (error: No Python interpreters found in virtual environments)"
+type: issue
+state: closed
+author: przecze
+labels:
+  - duplicate
+  - question
+assignees: []
+created_at: 2024-05-23T11:07:48Z
+updated_at: 2024-05-23T12:45:19Z
+url: https://github.com/astral-sh/uv/issues/3787
+synced_at: 2026-01-10T01:23:31Z
+---
+
+# VIRTUAL_ENV=/usr/local in dockerfile stopped working for uv 0.2 (error: No Python interpreters found in virtual environments)
+
+---
+
+_Issue opened by @przecze on 2024-05-23 11:07_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+
+this used to work:
+```
+FROM python:3.11-slim-bookworm
+
+ENV VIRTUAL_ENV=/usr/local
+RUN pip install --no-cache-dir uv && \
+    uv pip install --no-cache-dir pandas
+```
+
+but now it results in
+```
+error: No Python interpreters found in virtual environments
+```
+
+
+I was able to pin it down to recent uv 0.2 release, namely:
+this works
+```
+FROM python:3.11-slim-bookworm
+
+ENV VIRTUAL_ENV=/usr/local
+RUN pip install --no-cache-dir "uv<0.2" && \
+    uv pip install --no-cache-dir pandas
+
+```
+
+but this throws the error:
+
+```
+FROM python:3.11-slim-bookworm
+
+ENV VIRTUAL_ENV=/usr/local
+RUN pip install --no-cache-dir "uv>=0.2" && \
+    uv pip install --no-cache-dir pandas
+
+```
+
+
+Output with verbose:
+
+
+```
+Step 3/3 : RUN pip install --no-cache-dir "uv>=0.2" &&     uv pip install --verbose --no-cache-dir pandas
+ ---> [Warning] The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+ ---> Running in f211bab5e4dc
+Collecting uv>=0.2
+  Downloading uv-0.2.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (32 kB)
+Downloading uv-0.2.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.0/13.0 MB 24.3 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.2.2
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+<jemalloc>: MADV_DONTNEED does not work (memset will be used instead)
+<jemalloc>: (This is the expected behaviour if you are running under QEMU)
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Searching for interpreter that fulfills Python @ default
+INFO Found active virtual environment (via VIRTUAL_ENV) at: /usr/local
+DEBUG Ignoring Python interpreter at `/usr/local/bin/python`: system intepreter not allowed
+error: No Python interpreters found in virtual environments
+```
+
+Looks like `system interpreter not allowed` is the root cause in v0.2, how to work around it in Dockerfile?
+
+
+
+
+
+
+---
+
+_Comment by @przecze on 2024-05-23 11:13_
+
+note: seems to be fixed by adding the `--system` flag in `uv pip install` instead of VIRTUAL_ENV
+
+---
+
+_Comment by @zanieb on 2024-05-23 12:45_
+
+Hi! This is a duplicate of https://github.com/astral-sh/uv/issues/3782 and #3765.
+
+I think it's better to opt-in to system modification than to pretend you're in a virtual environment.
+
+---
+
+_Closed by @zanieb on 2024-05-23 12:45_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-05-23 12:45_
+
+---
+
+_Label `question` added by @zanieb on 2024-05-23 12:45_
+
+---

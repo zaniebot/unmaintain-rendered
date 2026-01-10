@@ -1,0 +1,56 @@
+---
+number: 10589
+title: "`uv init --script` changes line endings"
+type: issue
+state: open
+author: leimgruberf
+labels:
+  - bug
+assignees: []
+created_at: 2025-01-14T09:58:20Z
+updated_at: 2025-10-28T10:47:17Z
+url: https://github.com/astral-sh/uv/issues/10589
+synced_at: 2026-01-10T01:24:55Z
+---
+
+# `uv init --script` changes line endings
+
+---
+
+_Issue opened by @leimgruberf on 2025-01-14 09:58_
+
+As a Windows user, if I run `uv init --script script.py` on an existing `script.py` file the line endings of that file are changed from LF to CRLF. I assume uv queries a Windows setting to determine which EOL characters to use? For an existing script I expect that the line endings are not changed.
+
+---
+
+_Label `bug` added by @charliermarsh on 2025-01-14 13:40_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2025-01-14 13:40_
+
+---
+
+_Renamed from "uv init --script changes line endings" to "`uv init --script` changes line endings" by @charliermarsh on 2025-01-14 13:40_
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-01-14 13:57_
+
+---
+
+_Comment by @Gankra on 2025-01-14 13:57_
+
+I've found the only thing that doesn't bring endless sadness here is forcing any output we generate through a "replace all crlf with lf" pass. Often the issue here is git doing crlf auto-rewrites on checkout and that polluting the data when we read it in and write it back, which then convinces git the crlfs are "real" and should be checked in. I'll take a look at this.
+
+---
+
+_Label `help wanted` removed by @charliermarsh on 2025-01-14 16:32_
+
+---
+
+_Comment by @tooruu on 2025-10-28 10:47_
+
+Using Windows too. If I run `uv sync`, everything is fine, but if I do `uv sync --upgrade`, it changes all line endings in uv.lock to LF with no other changes in the file.
+
+---

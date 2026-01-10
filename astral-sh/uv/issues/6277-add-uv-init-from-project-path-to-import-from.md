@@ -1,0 +1,132 @@
+---
+number: 6277
+title: "Add `uv init --from-project <path>` to import from other tools"
+type: issue
+state: open
+author: zanieb
+labels:
+  - enhancement
+  - cli
+assignees: []
+created_at: 2024-08-20T21:21:33Z
+updated_at: 2025-08-22T03:16:15Z
+url: https://github.com/astral-sh/uv/issues/6277
+synced_at: 2026-01-10T01:23:57Z
+---
+
+# Add `uv init --from-project <path>` to import from other tools
+
+---
+
+_Issue opened by @zanieb on 2024-08-20 21:21_
+
+As previously discussed for `uv add -r pyproject.toml` but without any of the controversy about what to do with extras. We can copy all of the dependencies as reported by the build backend.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-20 21:21_
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-20 21:21_
+
+---
+
+_Comment by @charliermarsh on 2024-08-20 21:32_
+
+I'll look into this tonight unless someone beats me to it.
+
+---
+
+_Closed by @charliermarsh on 2024-08-20 21:32_
+
+---
+
+_Reopened by @charliermarsh on 2024-08-20 21:33_
+
+---
+
+_Comment by @charliermarsh on 2024-08-20 21:33_
+
+I have no idea why I closed this.
+
+---
+
+_Comment by @charliermarsh on 2024-08-20 23:24_
+
+Related: https://github.com/astral-sh/uv/issues/6164
+
+---
+
+_Comment by @blueraft on 2024-08-21 14:32_
+
+Is this up for grabs? 
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 15:37_
+
+Yes!
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 15:38_
+
+You can use `SourceTreeResolver` to get the metadata. But one challenge is... we probably need to preserve extras rather than resolving them. For example, if the user's `pyproject.toml` has:
+
+```
+[project.optional-dependencies]
+foo = "bar"
+```
+
+Then in the project we create, we'd _also_ want to create a `foo` extra with `bar` in it.
+
+---
+
+_Comment by @blueraft on 2024-08-21 15:51_
+
+I'll take a look soon. 
+
+> we'd also want to create a foo extra with bar in it.
+
+This makes sense, a similar PR would then resolve #6164 right?
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 15:53_
+
+Yeah, it's possible that we want to skip #6164 for now since it brings up some confusing questions, like what does `--extra` mean in `uv add --extra baz -r pyproject.toml`. So let's start with support here in `uv init`.
+
+---
+
+_Referenced in [astral-sh/uv#6374](../../astral-sh/uv/pulls/6374.md) on 2024-08-21 20:07_
+
+---
+
+_Referenced in [astral-sh/uv#6520](../../astral-sh/uv/issues/6520.md) on 2024-08-23 14:54_
+
+---
+
+_Comment by @mrijken on 2024-09-02 06:17_
+
+What is needed to get this merged/released? It will help converting a lot of users  from Poetry to UV, at least for companies which have large number of repo's.
+
+---
+
+_Comment by @mrcljx on 2024-09-19 15:45_
+
+Shameless plug (in case someone stumbles over this issue here and `--from-project` is still WIP): I wrote a script to migrate our Poetry monorepo project to `uv` (keeping versions pinned). I doubt it will work immediately on other projects, but could be a good start.
+
+https://gist.github.com/mrcljx/8e99a7f9fb924a573416f4365ee15873
+
+---
+
+_Referenced in [astral-sh/uv#7199](../../astral-sh/uv/issues/7199.md) on 2024-12-31 18:37_
+
+---
+
+_Comment by @Defiect on 2025-08-22 03:16_
+
+Any update on this?
+
+---

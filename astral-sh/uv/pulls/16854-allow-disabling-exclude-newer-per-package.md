@@ -1,0 +1,243 @@
+---
+number: 16854
+title: "Allow disabling `exclude-newer` per package"
+type: pull_request
+state: open
+author: terror
+labels:
+  - enhancement
+assignees: []
+base: main
+head: allow-disable-exclude-newer
+created_at: 2025-11-26T00:19:56Z
+updated_at: 2025-12-11T15:56:30Z
+url: https://github.com/astral-sh/uv/pull/16854
+synced_at: 2026-01-10T01:26:18Z
+---
+
+# Allow disabling `exclude-newer` per package
+
+---
+
+_Pull request opened by @terror on 2025-11-26 00:19_
+
+Resolves https://github.com/astral-sh/uv/issues/16846, https://github.com/astral-sh/uv/issues/16813
+
+This diff adds support for disabling `exclude-newer` for specific packages using `<name>=false`. This allows packages
+without upload dates (e.g., CPU-only PyTorch wheels from custom indices) to be resolved when a global `exclude-newer` is set, without disabling it globally.
+
+---
+
+_Review requested from @zanieb by @konstin on 2025-11-26 14:35_
+
+---
+
+_Label `enhancement` added by @konstin on 2025-11-26 14:36_
+
+---
+
+_Referenced in [astral-sh/uv#14992](../../astral-sh/uv/issues/14992.md) on 2025-11-26 15:10_
+
+---
+
+_Comment by @zanieb on 2025-11-26 16:28_
+
+We should update https://docs.astral.sh/uv/concepts/resolution/#reproducible-resolutions too
+
+---
+
+_Comment by @terror on 2025-12-04 18:52_
+
+@zanieb This is ready for a look, when you have the time 🤠
+
+---
+
+_Comment by @acdha on 2025-12-08 15:56_
+
+I've found it'd be really useful if this had environmental-variable support so there was a way to have something like `UV_EXCLUDE_NEWER=$(date -v -1w -I) UV_EXCLUDE_NEWER_PACKAGE_ruff=false` to allow pre-commit hooks to install.
+
+
+---
+
+_Comment by @zanieb on 2025-12-09 22:16_
+
+Thanks for dealing with those merge conflicts!
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:18_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:123 on 2025-12-09 22:18_
+
+Maybe?
+```suggestion
+                write!(f, "addition of exclude newer exception for package `{name}`")
+```
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:19_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:431 on 2025-12-09 22:19_
+
+Why do we have a backwards compatible alias? We don't need to maintain Rust API compatibility 
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:443 on 2025-12-09 22:19_
+
+I think we'll need to rename this variant now that the value can be things other than a timestamp
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:19_
+
+---
+
+_@terror reviewed on 2025-12-09 22:20_
+
+---
+
+_Review comment by @terror on `crates/uv-resolver/src/exclude_newer.rs`:443 on 2025-12-09 22:20_
+
+Something like `Cutoff`?
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:20_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:436 on 2025-12-09 22:20_
+
+(I think this comment might need update too)
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:23_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:443 on 2025-12-09 22:23_
+
+Maybe just `Enabled`?
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:24_
+
+---
+
+_Review comment by @zanieb on `docs/concepts/resolution.md`:657 on 2025-12-09 22:24_
+
+Let's move this down below the new documentation I added for specific packages
+
+> Values may also be specified for specific packages, e.g., ...
+
+---
+
+_@terror reviewed on 2025-12-09 22:25_
+
+---
+
+_Review comment by @terror on `crates/uv-resolver/src/exclude_newer.rs`:443 on 2025-12-09 22:25_
+
+Ah yeah I think this is more clear
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:473 on 2025-12-09 22:29_
+
+I think this error needs edit
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:29_
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:29_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:473 on 2025-12-09 22:29_
+
+(though maybe that was pre-existing)
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:30_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:507 on 2025-12-09 22:30_
+
+This shouldn't say "a timestamp string", that doesn't capture the options well.
+
+Why "false/null"?
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:30_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:584 on 2025-12-09 22:30_
+
+Should this match the other message, i.e., with "addition of exclude newer exception"?
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:31_
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:587 on 2025-12-09 22:31_
+
+Maybe this should also say something like... "removal of exclude newer exception"?
+
+---
+
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:742 on 2025-12-09 22:33_
+
+We should update this comment to use "value" instead of "timestamp" too while we're changing it.
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:33_
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:34_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/lock.rs`:31116 on 2025-12-09 22:34_
+
+Can we pick some packages with less dependencies? like `idna` and `ini-config`?
+
+---
+
+_@zanieb reviewed on 2025-12-09 22:34_
+
+---
+
+_Review comment by @zanieb on `docs/concepts/resolution.md`:692 on 2025-12-09 22:34_
+
+This first sentence is captured above.
+
+---
+
+_@terror reviewed on 2025-12-11 15:53_
+
+---
+
+_Review comment by @terror on `crates/uv-resolver/src/exclude_newer.rs`:473 on 2025-12-11 15:53_
+
+Updated this! I believe we got all instances now.
+
+---

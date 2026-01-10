@@ -1,0 +1,104 @@
+---
+number: 14719
+title: cache-control override not working as expected
+type: issue
+state: closed
+author: davidszotten
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-18T12:50:55Z
+updated_at: 2025-07-19T07:04:26Z
+url: https://github.com/astral-sh/uv/issues/14719
+synced_at: 2026-01-10T01:25:48Z
+---
+
+# cache-control override not working as expected
+
+---
+
+_Issue opened by @davidszotten on 2025-07-18 12:50_
+
+### Summary
+
+i'm trying out the new cache-control index setting but it's not working as i expect (i may be misunderstanding or doing something wrong)
+
+the index is running devpi-server 6.5.1
+
+```
+[[tool.uv.index]]
+name = "private"
+url = "https://private.example.com/org/dev/+simple"
+cache-control = { api = "max-age=600", files = "max-age=365000000, immutable" }
+default = true
+```
+
+(index renamed to remove private dns names etc, hopefully correctly applied the same change in the logs snippet)
+
+```
+$ uv --version
+uv 0.7.22 (78d6d1134 2025-07-17)
+```
+
+
+bumping the minor version of a `pytest` dependency up and down i see this in the logs from `uv run -vvv pytest --version`
+
+```
+DEBUG reuse idle connection for ("https", private.example.com)
+TRACE Cached request https://private.example.com/org/dev/+simple/colorama/ is storable because its response has a heuristically cacheable status code 200                      TRACE Could not determine freshness lifetime, assuming none exists
+TRACE Cached request https://private.example.com/org/dev/+simple/colorama/ has a cached response that does not allow staleness
+TRACE Request https://private.example.com/org/dev/+simple/colorama/ does not have a fresh cache because its age is 22 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: https://private.example.com/org/dev/+simple/colorama/
+DEBUG Sending revalidation request for: https://private.example.com/org/dev/+simple/colorama/                                                                                  TRACE Handling request for https://private.example.com/org/dev/+simple/colorama/ with authentication policy auto
+TRACE Request for https://private.example.com/org/dev/+simple/colorama/ is unauthenticated, checking cache                                                                     TRACE No credentials in cache for URL https://private.example.com/org/dev/+simple/colorama/                                                                                    TRACE Attempting unauthenticated request for https://private.example.com/org/dev/+simple/colorama/
+```
+
+`22 seconds` < `600`?
+
+### Platform
+
+Darwin 23.6.0 arm64
+
+### Version
+
+uv 0.7.22 (78d6d1134 2025-07-17)
+
+### Python version
+
+Python 3.13.1
+
+---
+
+_Label `bug` added by @davidszotten on 2025-07-18 12:50_
+
+---
+
+_Assigned to @charliermarsh by @zanieb on 2025-07-18 12:53_
+
+---
+
+_Comment by @zanieb on 2025-07-18 12:53_
+
+Thanks for the report!
+
+---
+
+_Comment by @charliermarsh on 2025-07-18 14:45_
+
+Sorry, I think I wired this up in the wrong place (the request, not the response).
+
+---
+
+_Referenced in [astral-sh/uv#14736](../../astral-sh/uv/pulls/14736.md) on 2025-07-18 17:43_
+
+---
+
+_Closed by @charliermarsh on 2025-07-18 20:32_
+
+---
+
+_Comment by @davidszotten on 2025-07-19 07:04_
+
+thanks! seems to be working with that patch for me too
+
+---

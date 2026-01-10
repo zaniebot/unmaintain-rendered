@@ -1,0 +1,62 @@
+---
+number: 16975
+title: Uv undo
+type: issue
+state: open
+author: SimonVervisch
+labels:
+  - enhancement
+  - wish
+assignees: []
+created_at: 2025-12-03T20:15:29Z
+updated_at: 2025-12-04T16:56:32Z
+url: https://github.com/astral-sh/uv/issues/16975
+synced_at: 2026-01-10T01:26:12Z
+---
+
+# Uv undo
+
+---
+
+_Issue opened by @SimonVervisch on 2025-12-03 20:15_
+
+### Summary
+
+possible to return to the last 5 environments for example? It would be nice to have a snapshot.
+
+uv undo
+
+> do you really want to change back
+
+> yes
+> changes back to the old version
+
+### Example
+
+The issue I had, is that one, is that a new pip install changed versions of other packages. 
+
+I preferred the old version, but I think I cannot look back at that one. 
+
+Thank you
+
+---
+
+_Label `enhancement` added by @SimonVervisch on 2025-12-03 20:15_
+
+---
+
+_Comment by @zanieb on 2025-12-03 20:48_
+
+In general, I'd recommend using version control and a lockfile for this purpose. But it's a fun idea!
+
+---
+
+_Label `wish` added by @zanieb on 2025-12-03 20:48_
+
+---
+
+_Comment by @notatallshaw on 2025-12-04 16:56_
+
+As prior art conda keeps a full revision history and allows you to restore to any previous revision: https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html#restoring-an-environment
+
+---

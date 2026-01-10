@@ -1,0 +1,87 @@
+---
+number: 1876
+title: Pip installs working depencies, uv doesnt.
+type: issue
+state: closed
+author: GJBoth
+labels: []
+assignees: []
+created_at: 2024-02-22T16:07:24Z
+updated_at: 2024-02-22T16:31:45Z
+url: https://github.com/astral-sh/uv/issues/1876
+synced_at: 2026-01-10T01:23:09Z
+---
+
+# Pip installs working depencies, uv doesnt.
+
+---
+
+_Issue opened by @GJBoth on 2024-02-22 16:07_
+
+Hi, 
+
+I'm having a slightly weird issue where an environment created through pip install runs fine, whereas an environment setup through uv doesnt, failing with the following trace:
+
+`env_uv/lib/python3.12/site-packages/tensorflow_probability/python/internal/backend/jax/nest.py:30: in <module>`
+
+and 
+`ImportError: dlopen(/Users/gert-janboth/Documents/bodymodel/code/drosophilax/venv_uv/lib/python3.12/site-packages/tree/_tree.cpython-312-darwin.so, 0x0002): symbol not found in flat namespace '__ZN4absl12lts_2021032416strings_internal9CatPiecesESt16initializer_listINS0_11string_viewEE'`
+
+which implies something wrong with `tree`, (the dm-tree package) or `tensorflow-probability`. However, pip shows both packages have the same version installed. 
+
+My dependencies are
+
+```
+dependencies = [
+  "jax[cpu]>=0.4",
+  "mujoco>=3.1",
+  "equinox>=0.11",
+  "tensorflow-probability>=0.23",
+  "chex >=0.1.85",
+  "dm_control>=1.0.16"
+]
+```
+
+Here's the two pip lockfiles:
+[pip_uv.txt](https://github.com/astral-sh/uv/files/14376240/pip_uv.txt)
+[pip.txt](https://github.com/astral-sh/uv/files/14376241/pip.txt)
+
+showing that while there are some (minor) differences, all the packages related to `dm_tree` and `tensorflow-probability` are the same? Please let me know what else you need to help debug this?
+
+Thanks!
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 16:11_
+
+Do you mind confirming your version? I thought I fixed this in the version released last night.
+
+---
+
+_Comment by @GJBoth on 2024-02-22 16:23_
+
+I was on 0.1.5. Just updated to 0.1.7, but same issue.
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 16:25_
+
+@GJBoth - Just confirming, did you run in a fresh virtual environment, and clear the cache beforehand (`uv cache clean`)?
+
+---
+
+_Comment by @GJBoth on 2024-02-22 16:30_
+
+@charliermarsh I did run in a fresh environment, but I did not clear the cache beforehand. Clearing it has solved the error! Thanks for your help, next time I have issues I'll clear the cache :).
+
+---
+
+_Closed by @GJBoth on 2024-02-22 16:30_
+
+---
+
+_Comment by @charliermarsh on 2024-02-22 16:31_
+
+Thanks, sorry for the trouble @GJBoth! Basically, we were downloading the "wrong" wheel, and the installer would continue to use it since technically it's a compatible wheel based on the metadata (although for whatever reason it doesn't work in practice :))
+
+---

@@ -1,0 +1,101 @@
+---
+number: 12960
+title: Can we speed up installation/pyc compilation for reused inline packages.
+type: issue
+state: closed
+author: Light2Dark
+labels:
+  - question
+assignees: []
+created_at: 2025-04-18T03:41:59Z
+updated_at: 2025-04-23T13:58:20Z
+url: https://github.com/astral-sh/uv/issues/12960
+synced_at: 2026-01-10T01:25:27Z
+---
+
+# Can we speed up installation/pyc compilation for reused inline packages.
+
+---
+
+_Issue opened by @Light2Dark on 2025-04-18 03:41_
+
+### Question
+
+Hey, I'm from the marimo team. We've noticed that if we create two python files with the same inline script deps, it takes a similar amount of time for the script to run. Here's the test script:
+
+`new.py`
+```python
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "scikit-learn==1.6.1",
+# ]
+# ///
+
+import time
+
+start = time.perf_counter()
+import sklearn
+
+sklearn.__version__
+elapsed = time.perf_counter() - start
+print(f"Time taken: {elapsed} seconds")
+```
+```shell
+uv run --compile-bytecode new.py
+Installed 5 packages in 39ms
+Bytecode compiled 1968 files in 738ms
+Time taken: 12.03030412492808 seconds
+```
+
+Now, if I create another file, with the exact same content as the above and rename it to new_copy.py
+```shell
+uv run --compile-bytecode new_copy.py
+Installed 5 packages in 40ms
+Bytecode compiled 1968 files in 706ms
+Time taken: 18.827942791976966 seconds
+```
+
+What I expect is that the second script would take a much shorter time, because if I reran the first script again, it would be much much faster (~500ms). It'd be nice to understand what's happening 😅. cc @akshayka
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.6.14 (Homebrew 2025-04-09)
+
+---
+
+_Label `question` added by @Light2Dark on 2025-04-18 03:42_
+
+---
+
+_Comment by @charliermarsh on 2025-04-21 01:48_
+
+Thanks for filing. I don't think the `.pyc` files are the issue here -- notice that bytecode compilation only takes 700ms, but `import sklearn` takes 12s and 18s. I think almost all of the time in `import sklearn` is spent loading shared objects into memory. You can watch this (on macOS at least) with `DYLD_PRINT_LIBRARIES=1 uv run new.py` -- you'll just see a stream like:
+
+```
+dyld[10806]: <E3A31AB3-3AE5-3371-87D0-7FD870A41A0D> /Users/crmarsh/.cache/uv/environments-v2/baz-9c365906405eec04/lib/python3.13/site-packages/sklearn/.dylibs/libomp.dylib
+```
+
+If you run across a second environment, you'll see:
+
+```
+dyld[10905]: <E3A31AB3-3AE5-3371-87D0-7FD870A41A0D> /Users/crmarsh/.cache/uv/environments-v2/bar-80505d6015bc5369/lib/python3.13/site-packages/sklearn/.dylibs/libomp.dylib
+```
+
+Note that the UUIDs are the same, but I guess the OS doesn't treat them as the same physical file and so they get loaded twice.
+
+---
+
+_Comment by @Light2Dark on 2025-04-23 13:56_
+
+Thank you, that makes sense. Likely using a common env is suitable for this use case. Happy to close this.
+
+---
+
+_Closed by @konstin on 2025-04-23 13:58_
+
+---

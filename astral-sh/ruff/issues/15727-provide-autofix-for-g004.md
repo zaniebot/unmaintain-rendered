@@ -1,0 +1,42 @@
+---
+number: 15727
+title: Provide autofix for G004
+type: issue
+state: closed
+author: ktbarrett
+labels:
+  - fixes
+assignees: []
+created_at: 2025-01-24T18:02:43Z
+updated_at: 2025-01-24T18:27:33Z
+url: https://github.com/astral-sh/ruff/issues/15727
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Provide autofix for G004
+
+---
+
+_Issue opened by @ktbarrett on 2025-01-24 18:02_
+
+### Description
+
+I'm at the crossroads of manually updating 5000+ G004 errors or simply not enabling it. It would be nice if an autofix for this error could be provided.
+
+The supermajority of the f-string in logging calls I see use basic formats like `f"{val}"` or `f"{val!r}`, so starting with that (assuming format spec conversion isn't already available) would be a godsend. I think it should be safe to move expressions from in an f-string out of it as f-strings only support a subset of expressions within brackets.
+
+---
+
+_Label `fixes` added by @dylwil3 on 2025-01-24 18:27_
+
+---
+
+_Comment by @ntBre on 2025-01-24 18:27_
+
+Thanks for the report! This looks closely related to #15555, so I might close this one for now.
+
+---
+
+_Closed by @ntBre on 2025-01-24 18:27_
+
+---

@@ -1,0 +1,60 @@
+---
+number: 2481
+title: "Should `--reinstall` default to true  with `uv pip install --editable .`?"
+type: issue
+state: closed
+author: tlambert03
+labels: []
+assignees: []
+created_at: 2024-03-15T19:13:27Z
+updated_at: 2024-03-17T21:29:34Z
+url: https://github.com/astral-sh/uv/issues/2481
+synced_at: 2026-01-10T01:23:18Z
+---
+
+# Should `--reinstall` default to true  with `uv pip install --editable .`?
+
+---
+
+_Issue opened by @tlambert03 on 2024-03-15 19:13_
+
+If you run `pip install -e .` in a directory that has already been installed, I believe the default behavior is to re-install the package.  That's my observation, but please correct me if I'm wrong, or if I've missed something.
+
+With uv pip, it does not reinstall unless you explicitly pass the `--reinstall` flag:
+
+```
+$ uv pip install -e .
+Audited 1 package in 4ms
+
+$ uv pip install -e . --reinstall
+Building file:///Users/...
+░░░░░░░░░░░░░░░░░░░░ [0/1] Fetching packages...
+```
+
+I think whenever I'm doing `pip install -e .`, I usually *want* it to do anything it might normally do during installation (such as re-compiling c extensions, etc...).  So, with `uv`, I regularly find myself needing re-enter the command with `--reinstall`.
+
+I'm curious whether that was a conscious decision to use a different behavior from `pip`?  Explicit is always clearer of course, but muscle memory is strong too :)
+
+---
+
+_Comment by @charliermarsh on 2024-03-17 21:28_
+
+We use some heuristics to decide whether to rebuild the package (e.g., if the `pyproject.toml` or `setup.py` has changed), but then expect users to use `--reinstall` if they have out-of-band changes that need to be respected.
+
+---
+
+_Comment by @charliermarsh on 2024-03-17 21:28_
+
+This is basically the same as https://github.com/astral-sh/uv/issues/2152, so I'll merge in there.
+
+---
+
+_Closed by @charliermarsh on 2024-03-17 21:28_
+
+---
+
+_Comment by @tlambert03 on 2024-03-17 21:29_
+
+thanks.  missed that issue
+
+---

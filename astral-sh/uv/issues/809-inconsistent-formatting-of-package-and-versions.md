@@ -1,0 +1,48 @@
+---
+number: 809
+title: Inconsistent formatting of package and versions in error messages
+type: issue
+state: closed
+author: zanieb
+labels:
+  - error messages
+assignees: []
+created_at: 2024-01-05T22:47:19Z
+updated_at: 2024-07-09T14:26:54Z
+url: https://github.com/astral-sh/uv/issues/809
+synced_at: 2026-01-10T01:23:04Z
+---
+
+# Inconsistent formatting of package and versions in error messages
+
+---
+
+_Issue opened by @zanieb on 2024-01-05 22:47_
+
+we use backticks in the unusable dependencies incompatibility message
+
+https://github.com/astral-sh/puffin/blob/88adba83a01357dec22bc7e2a0d79ab53e589d5c/crates/puffin-cli/tests/pip_install_scenarios.rs#L1906
+
+and in the package not found message
+
+https://github.com/astral-sh/puffin/blob/88adba83a01357dec22bc7e2a0d79ab53e589d5c/crates/puffin-cli/tests/pip_install_scenarios.rs#L1626
+
+but generally we do not e.g.
+
+https://github.com/astral-sh/puffin/blob/88adba83a01357dec22bc7e2a0d79ab53e589d5c/crates/puffin-cli/tests/pip_install_scenarios.rs#L1793
+
+---
+
+_Label `error messages` added by @zanieb on 2024-01-05 22:47_
+
+---
+
+_Comment by @zanieb on 2024-07-09 14:26_
+
+See #4896 
+
+---
+
+_Closed by @zanieb on 2024-07-09 14:26_
+
+---

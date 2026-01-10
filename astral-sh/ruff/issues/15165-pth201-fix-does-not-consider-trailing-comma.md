@@ -1,0 +1,86 @@
+---
+number: 15165
+title: "`PTH201` fix does not consider trailing comma"
+type: issue
+state: closed
+author: InSyncWithFoo
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2024-12-28T08:09:18Z
+updated_at: 2024-12-30T03:31:37Z
+url: https://github.com/astral-sh/ruff/issues/15165
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# `PTH201` fix does not consider trailing comma
+
+---
+
+_Issue opened by @InSyncWithFoo on 2024-12-28 08:09_
+
+```python
+from pathlib import Path
+
+# Before:
+_ = Path(".",)
+#        ^^^ PTH201
+
+# After:
+_ = Path(,)
+```
+
+This happens because [the fix is a simple range deletion](https://github.com/astral-sh/ruff/blob/2288cc74789108bdc854f09d813b51662ff4e1d8/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/path_constructor_current_directory.rs#L65-L73):
+
+```rust
+let [Expr::StringLiteral(ast::ExprStringLiteral { value, range })] = &*arguments.args else {
+    return;
+};
+
+if matches!(value.to_str(), "" | ".") {
+    let mut diagnostic = Diagnostic::new(PathConstructorCurrentDirectory, *range);
+    diagnostic.set_fix(Fix::safe_edit(Edit::range_deletion(*range)));
+    checker.diagnostics.push(diagnostic);
+}
+```
+
+Perhaps it should instead replace `arguments.range` with `()`?
+
+---
+
+_Comment by @MichaReiser on 2024-12-28 09:02_
+
+We could also just search for a trailing comma using the `checker.tokens` or the `SimpleLexer`. It might also be worth to see if there's an existing helper method for removing an argument
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-12-28 09:02_
+
+---
+
+_Label `fixes` added by @MichaReiser on 2024-12-28 09:02_
+
+---
+
+_Comment by @dylwil3 on 2024-12-28 13:01_
+
+>It might also be worth to see if there's an existing helper method for removing an argument
+
+There is! It's here:
+
+https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/fix/edits.rs#L207
+
+---
+
+_Referenced in [astral-sh/ruff#15177](../../astral-sh/ruff/pulls/15177.md) on 2024-12-29 02:33_
+
+---
+
+_Closed by @charliermarsh on 2024-12-30 03:31_
+
+---
+
+_Closed by @charliermarsh on 2024-12-30 03:31_
+
+---

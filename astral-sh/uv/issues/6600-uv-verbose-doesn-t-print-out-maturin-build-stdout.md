@@ -1,0 +1,70 @@
+---
+number: 6600
+title: "UV --verbose doesn't print out maturin build stdout"
+type: issue
+state: closed
+author: ion-elgreco
+labels:
+  - tracing
+assignees: []
+created_at: 2024-08-25T11:20:35Z
+updated_at: 2024-08-25T11:42:23Z
+url: https://github.com/astral-sh/uv/issues/6600
+synced_at: 2026-01-10T01:24:03Z
+---
+
+# UV --verbose doesn't print out maturin build stdout
+
+---
+
+_Issue opened by @ion-elgreco on 2024-08-25 11:20_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+I ran uv sync --verbose in our delta-rs repo, but I don't get any stdout of maturin, only get DEBUG stuff from uv self. 
+
+Without verbose:
+
+```
+ion@DESKTOP-OB410HS:~/delta-rs/python$ uv sync --reinstall-package deltalake
+Resolved 63 packages in 1.94s
+Building deltalake @ file:///home/ion/delta-rs/python
+⠸ Preparing packages... (0/1) 
+```
+
+With verbose
+```
+DEBUG Requirement already cached: maturin==1.7.1
+DEBUG Requirement already cached: tomli==2.0.1
+DEBUG Installing build requirements: maturin==1.7.1, tomli==2.0.1
+DEBUG Calling `maturin.get_requires_for_build_editable()`
+DEBUG Calling `maturin.build_editable("/home/ion/.cache/uv/built-wheels-v3/editable/eb5bde2e6253a7d8/hd5kxfPkwqCgryioauZRN/.tmpXckacG", {}, None)`
+```
+I would also like to be able to see the build progress of maturin here: 
+![image](https://github.com/user-attachments/assets/f62f151e-9d74-4774-b844-8b1fdc153410)
+
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-25 11:42_
+
+Thanks! I think this is the same as https://github.com/astral-sh/uv/issues/5893.
+
+---
+
+_Closed by @charliermarsh on 2024-08-25 11:42_
+
+---
+
+_Label `tracing` added by @charliermarsh on 2024-08-25 11:42_
+
+---

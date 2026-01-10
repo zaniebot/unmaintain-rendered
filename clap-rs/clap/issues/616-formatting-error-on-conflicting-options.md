@@ -1,0 +1,84 @@
+---
+number: 616
+title: Formatting error on conflicting options
+type: issue
+state: closed
+author: guiniol
+labels:
+  - C-bug
+assignees: []
+created_at: 2016-08-07T19:41:41Z
+updated_at: 2018-08-02T03:29:52Z
+url: https://github.com/clap-rs/clap/issues/616
+synced_at: 2026-01-10T01:26:33Z
+---
+
+# Formatting error on conflicting options
+
+---
+
+_Issue opened by @guiniol on 2016-08-07 19:41_
+
+Hello,
+
+The code displaying this issue is here: guiniol/dnsmole@cc868c1
+
+If I do `dnsmole --serve -k 34 toto`, I get an error because `--serve` and `-k` are conflicting. The problem is the error message:
+
+```
+error: The argument '--serve' cannot be used with '--socket <socket>'
+
+USAGE:
+    dnsmole <target> --connect --socket <socket> <--serve|--connect>
+
+For more information try --help
+```
+
+The usage line displays `--serve` twice when it can only be specified once. Also, `--serve` and `--connect` are part of an arggroup which is required.
+
+EDIT: Ideally, `<target>` should be at the end since it is a positional argument
+
+
+---
+
+_Comment by @kbknapp on 2016-08-20 22:08_
+
+Thanks for filing this, I'll look into the root cause and post back with what I find.
+
+
+---
+
+_Label `T: bug` added by @kbknapp on 2016-08-20 22:08_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2016-08-20 22:08_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-08-20 22:08_
+
+---
+
+_Label `C: errors` added by @kbknapp on 2016-08-20 22:08_
+
+---
+
+_Label `C: arg groups` added by @kbknapp on 2016-08-20 22:08_
+
+---
+
+_Added to milestone `2.10.5` by @kbknapp on 2016-08-26 15:28_
+
+---
+
+_Closed by @kbknapp on 2016-08-28 03:42_
+
+---
+
+_Comment by @guiniol on 2016-08-28 11:13_
+
+Thanks a lot! ^^
+
+
+---

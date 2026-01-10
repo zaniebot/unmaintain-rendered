@@ -1,0 +1,169 @@
+---
+number: 14835
+title: uv installation via cargo fails
+type: issue
+state: closed
+author: MohanaManikandan
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-23T05:37:51Z
+updated_at: 2025-07-23T12:11:18Z
+url: https://github.com/astral-sh/uv/issues/14835
+synced_at: 2026-01-10T01:25:49Z
+---
+
+# uv installation via cargo fails
+
+---
+
+_Issue opened by @MohanaManikandan on 2025-07-23 05:37_
+
+### Summary
+
+I tried installing uv through cargo with the following command
+
+```bash
+cargo install --git https://github.com/astral-sh/uv uv
+```
+
+This is the output
+
+```bash
+Updating git repository `https://github.com/astral-sh/uv`
+error: could not find `uv` in https://github.com/astral-sh/uv with version `*`
+```
+
+### Platform
+
+Linux 6.1.0-37-amd64 x86_64 GNU/Linux
+
+### Version
+
+latest
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @MohanaManikandan on 2025-07-23 05:37_
+
+---
+
+_Comment by @MohanaManikandan on 2025-07-23 05:38_
+
+Installation succeeds when using the standalone installer
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+downloading uv 0.8.2 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /home/manikandan/.local/bin
+  uv
+  uvx
+everything's installed!
+```
+
+---
+
+_Comment by @edmorley on 2025-07-23 07:03_
+
+Hi! 
+
+Installing via Cargo works for me:
+
+```
+$ cargo install --git https://github.com/astral-sh/uv uv
+    Updating git repository `https://github.com/astral-sh/uv`
+  Installing uv v0.8.2 (https://github.com/astral-sh/uv#21fadbcc)
+    Updating git repository `https://github.com/astral-sh/reqwest-middleware`
+    Updating crates.io index
+...
+   Compiling uv v0.8.2 (/Users/emorley/.cargo/git/checkouts/uv-c9e40703e19509a8/21fadbc/crates/uv)
+    Finished `release` profile [optimized] target(s) in 4m 05s
+  Installing /Users/emorley/.cargo/bin/uv                                                 Installing /Users/emorley/.cargo/bin/uvx
+   Installed package `uv v0.8.2 (https://github.com/astral-sh/uv#21fadbcc)` (executables `uv`, `uvx`)
+```
+
+What version of Rust are you using? (`cargo --version`)
+
+
+---
+
+_Comment by @MohanaManikandan on 2025-07-23 10:16_
+
+I am at 1.83.0
+
+```bash
+cargo --version
+cargo 1.83.0 (5ffbef321 2024-10-29)
+```
+
+---
+
+_Comment by @MohanaManikandan on 2025-07-23 10:20_
+
+Ahh. It works after i updated to Rust 1.88.0
+
+```bash
+
+cargo install --git https://github.com/astral-sh/uv uv
+    Updating git repository `https://github.com/astral-sh/uv`
+  Installing uv v0.8.2 (https://github.com/astral-sh/uv#21fadbcc)
+    Updating git repository `https://github.com/astral-sh/reqwest-middleware`
+    Updating crates.io index
+    Updating git repository `https://github.com/astral-sh/pubgrub`
+    Updating git repository `https://github.com/astral-sh/rs-async-zip`
+    Updating git repository `https://github.com/astral-sh/tl.git`
+     Locking 458 packages to latest compatible versions
+      Adding async-compression v0.4.19 (available: v0.4.27)
+      Adding console v0.15.11 (available: v0.16.0)
+      Adding windows v0.59.0 (available: v0.61.3)
+      Adding windows-core v0.59.0 (available: v0.61.2)
+      Adding windows-sys v0.59.0 (available: v0.60.2)
+      Adding zip v2.4.2 (available: v4.3.0)
+```
+
+---
+
+_Comment by @MohanaManikandan on 2025-07-23 10:22_
+
+Makes sense as the minimum required version is set to 1.86 in the repo.
+
+
+`rust-version = "1.86"`
+
+---
+
+_Comment by @edmorley on 2025-07-23 10:27_
+
+Thank you for confirming!
+
+I wonder if the Cargo install method should be discouraged in the uv install docs? It's an advanced install method (requires Rust toolchain of a compatible version, compiles from scratch so is much slower, plus presumably doesn't support self updates) so it seems like the other options (install script, Homebrew, PyPI, ...) are what most people would be best using?
+
+Perhaps the Cargo section should (a) be moved lower down the install page, (b) have a hint that it's not recommended?
+
+---
+
+_Comment by @MohanaManikandan on 2025-07-23 10:34_
+
+I agree @edmorley. 
+
+Moving the Cargo install section lower on the install page sounds like a good idea. Since uv is a package manager, it also feels more natural for most users to install it through channels that are easier (and faster) to keep up to date. 
+
+---
+
+_Referenced in [astral-sh/uv#14842](../../astral-sh/uv/pulls/14842.md) on 2025-07-23 12:08_
+
+---
+
+_Closed by @zanieb on 2025-07-23 12:11_
+
+---
+
+_Referenced in [astral-sh/uv#14709](../../astral-sh/uv/issues/14709.md) on 2025-07-23 13:26_
+
+---

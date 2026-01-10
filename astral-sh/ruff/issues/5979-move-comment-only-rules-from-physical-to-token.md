@@ -1,0 +1,47 @@
+---
+number: 5979
+title: Move comment-only rules from physical to token checker
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+created_at: 2023-07-22T13:50:23Z
+updated_at: 2023-07-26T22:42:38Z
+url: https://github.com/astral-sh/ruff/issues/5979
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Move comment-only rules from physical to token checker
+
+---
+
+_Issue opened by @charliermarsh on 2023-07-22 13:50_
+
+E.g., anything in the:
+
+```rust
+while commented_lines_iter
+    .next_if(|comment_range| line.range().contains_range(**comment_range))
+    .is_some()
+{
+  ...
+}
+```
+
+block of `crates/ruff/src/checkers/physical_lines.rs` can probably be moved to a token-based rule, which should be simpler (and more robust, actually, since those rules right now could erroneously match on comment-like syntax within strings).
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-07-22 13:50_
+
+---
+
+_Referenced in [astral-sh/ruff#6110](../../astral-sh/ruff/pulls/6110.md) on 2023-07-26 22:36_
+
+---
+
+_Closed by @charliermarsh on 2023-07-26 22:42_
+
+---

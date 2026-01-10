@@ -1,0 +1,199 @@
+---
+number: 2385
+title: "'no entry found for key' while doing `uv pip compile`"
+type: issue
+state: closed
+author: strickvl
+labels:
+  - bug
+assignees: []
+created_at: 2024-03-12T16:37:26Z
+updated_at: 2024-03-13T08:49:58Z
+url: https://github.com/astral-sh/uv/issues/2385
+synced_at: 2026-01-10T01:23:16Z
+---
+
+# 'no entry found for key' while doing `uv pip compile`
+
+---
+
+_Issue opened by @strickvl on 2024-03-12 16:37_
+
+Using the following requirements in a file:
+
+```
+sagemaker==2.117.0
+kubernetes
+aws-profile-manager
+openai>=1.0.0
+whylogs[viz]~=1.0.5
+whylogs[whylabs]~=1.0.5
+scipy
+langchain>=0.1.0
+torch
+Pillow>=9.2.0
+scikit-learn
+kfp==1.8.22
+gcsfs
+google-cloud-secret-manager
+google-cloud-container>=2.21.0
+google-cloud-storage>=2.9.0
+google-cloud-aiplatform>=1.34.0
+google-cloud-build>=3.11.0
+kubernetes
+polars>=0.19.5
+pyarrow>=12.0.0
+transformers<=4.31
+datasets
+huggingface_hub>0.19.0
+pygithub
+python-gitlab
+deepchecks[vision]==0.8.0
+torchvision>=0.14.0
+pandas<2.0.0
+opencv-python==4.5.5.64
+opencv-python-headless==4.5.5.64
+tensorflow==2.11
+tensorflow_io>=0.24.0
+protobuf>=3.6.0,<4.0.0
+lightgbm>=1.0.0
+kfp==1.8.22
+wandb>=0.12.12
+Pillow>=9.1.0
+neptune
+paramiko>=3.4.0
+great-expectations>=0.15.0,<=0.15.47
+typing_extensions<4.6.0
+sqlmodel>=0.0.9,<=0.0.16
+pyspark==3.2.1
+evidently>0.2.6,<0.4.5
+sqlmodel>=0.0.9,<=0.0.16
+tensorboard==2.11
+protobuf>=3.6.0,<4.0.0
+xgboost>=1.0.0
+kubernetes>=21.7,<26
+llama_index>=0.10.0
+kfp-tekton==1.7.1
+neuralprophet>=0.3.2,<0.5.0
+holidays>=0.4.1,<0.25.0
+slack-sdk>=3.16.1
+aiohttp>=3.8.1
+s3fs>2022.3.0
+boto3
+aws-profile-manager
+pytorch_lightning
+adlfs>=2021.10.0
+azure-keyvault-keys
+azure-keyvault-secrets
+azure-identity==1.10.0
+azureml-core==1.54.0.post1
+azure-mgmt-containerservice>=20.0.0
+azure-storage-blob==12.17.0
+kubernetes
+discord.py>=2.3.2
+aiohttp>=3.8.1
+asyncio
+facets-overview>=1.0.0
+pandas
+apache-airflow~=2.4.0
+pendulum<3.0.0
+sqlmodel>=0.0.9,<=0.0.16
+mlflow>=2.1.1,<=2.10.2
+mlserver>=1.3.3
+mlserver-mlflow>=1.3.3
+python-rapidjson<1.15
+```
+
+and I run
+
+```
+RUST_BACKTRACE=full uv pip compile integration-requirements.txt
+```
+
+and I get the following failure / error:
+
+```
+thread 'main' panicked at crates/uv-resolver/src/resolution.rs:230:50:
+no entry found for key
+stack backtrace:
+   0:        0x1071da955 - <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt::hbd71adb7a72f4105
+   1:        0x107203c13 - core::fmt::write::h30346430340bc336
+   2:        0x1071d636e - std::io::stdio::_eprint::h9e7b70d2bf85f38d
+   3:        0x1071da729 - <std::time::SystemTimeError as core::fmt::Display>::fmt::he4f97500eefa4691
+   4:        0x1071dc765 - std::panicking::default_hook::hf980b1da49948523
+   5:        0x1071dc4de - std::panicking::default_hook::hf980b1da49948523
+   6:        0x1071dcbe3 - std::panicking::rust_panic_with_hook::h683bce980186bbbe
+   7:        0x1071dcaf4 - <std::panicking::begin_panic_handler::StaticStrPayload as core::panic::PanicPayload>::take_box::h57be379136467e4c
+   8:        0x1071dae49 - <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt::hbd71adb7a72f4105
+   9:        0x1071dc832 - _rust_begin_unwind
+  10:        0x107284835 - core::panicking::panic_fmt::hff768cef35397791
+  11:        0x1072847fa - core::option::expect_failed::h5780f71909b1c2b4
+  12:        0x10682dd20 - uv_resolver::resolution::ResolutionGraph::from_state::had8d15d2186a0a1c
+  13:        0x1062399a4 - __mh_execute_header
+  14:        0x1063f2ba5 - __mh_execute_header
+  15:        0x10652c557 - __mh_execute_header
+  16:        0x1063081b3 - __mh_execute_header
+  17:        0x10633b496 - __mh_execute_header
+  18:        0x106360971 - __mh_execute_header
+  19:        0x10632e0b9 - __mh_execute_header
+  20:        0x1063d3367 - __mh_execute_header
+  21:        0x10638d7c2 - __mh_execute_header
+  22:        0x10664f401 - __mh_execute_header
+  23:        0x10650cac6 - __mh_execute_header
+  24:        0x1065869dc - __mh_execute_header
+  25:        0x1071ccd00 - std::rt::lang_start_internal::hba631f1493ca29ca
+  26:        0x10669da2c - _main
+  27:     0x7ff8188f9386 - <unknown>
+```
+
+Am running it on a Mac, in case that makes any difference.
+
+---
+
+_Comment by @charliermarsh on 2024-03-12 16:44_
+
+I think this is fixed on main.
+
+---
+
+_Comment by @charliermarsh on 2024-03-12 16:45_
+
+https://github.com/astral-sh/uv/pull/2360
+
+---
+
+_Comment by @charliermarsh on 2024-03-12 16:45_
+
+I'm really surprised that this hadn't come up sooner, and then came up multiple times this week. Maybe some package was published that made it more common.
+
+---
+
+_Comment by @strickvl on 2024-03-12 16:46_
+
+Yeah this came up because I just relaxed the zenml langchain dependencies and I guess hit whatever #2360 mentions, so I found it because of exactly the same reason :)
+
+---
+
+_Comment by @charliermarsh on 2024-03-12 16:52_
+
+Hopefully fixed in today's release! Feel free to re-open if not :)
+
+---
+
+_Closed by @charliermarsh on 2024-03-12 16:52_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-12 16:52_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-03-12 16:52_
+
+---
+
+_Comment by @strickvl on 2024-03-13 08:49_
+
+New release indeed fixes this. Thanks.
+
+---

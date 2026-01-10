@@ -1,0 +1,139 @@
+---
+number: 8789
+title: "S105: Exclude variable names containing `token` but also `suffix` or `prefix`"
+type: issue
+state: open
+author: ThiefMaster
+labels:
+  - needs-decision
+assignees: []
+created_at: 2023-11-20T16:02:47Z
+updated_at: 2024-11-07T14:23:55Z
+url: https://github.com/astral-sh/ruff/issues/8789
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# S105: Exclude variable names containing `token` but also `suffix` or `prefix`
+
+---
+
+_Issue opened by @ThiefMaster on 2023-11-20 16:02_
+
+https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_bandit/helpers.rs
+
+For example, it currently triggers on these 3 definitions:
+
+```py
+# The prefix for OAuth tokens
+TOKEN_PREFIX_OAUTH = 'indo_'
+# The prefix for personal tokens
+TOKEN_PREFIX_PERSONAL = 'indp_'
+# The prefix for service tokens (not handled by this module)
+TOKEN_PREFIX_SERVICE = 'inds_'
+```
+
+However, clearly those are not hardcoded tokens and having suffixes/prefixes for tokens (especially since github's secret scanning becamea thing) is quite common, so maybe it'd be nice to resemble this in the regex that checks for token/password-like variable names instead of just noqa'ing it.
+
+---
+
+_Comment by @charliermarsh on 2023-11-20 16:05_
+
+For security-oriented checks, I would personally accept some false positives over risking false negatives. It seems reasonable to me to require users to explicitly `# noqa: S105` these, but I'd like to hear others' opinions.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-11-20 16:05_
+
+---
+
+_Comment by @zanieb on 2023-11-20 16:10_
+
+I agree I prefer false positives over negatives in security related rules. I wouldn't be _opposed_ to an exception for`PREFIX` and `SUFFIX` unless there's a case someone has where it'd cause a false negative.
+
+Overall, the complexity of adding exceptions to the rule is a little contrived though and probably too specific.
+
+---
+
+_Comment by @ashrub-holvi on 2023-11-23 13:31_
+
+Perhaps it's possible to make it more configurable, for example, we would be adding variable names like `public_token`, `token_service_path` to the list of non-secret variables in config file if such would be exists.
+That much easier and clear than tons of noqa.
+
+---
+
+_Referenced in [astral-sh/ruff#7816](../../astral-sh/ruff/issues/7816.md) on 2023-11-23 13:32_
+
+---
+
+_Comment by @ThiefMaster on 2023-11-23 13:38_
+
+A regex setting to whitelist variable names (and dict keys!) for "possible plaintext token/password" would be excellent :)
+
+---
+
+_Comment by @ashrub-holvi on 2023-11-23 13:45_
+
+Also, not sure it make sense to try to find real passwords in unit tests, so, perhaps some exclude path can be also configured.
+
+---
+
+_Comment by @ashrub-holvi on 2023-11-23 14:06_
+
+Hm, perhaps my last comment can be solved by `per-file-ignores`.
+UPD. yes:
+```
+[tool.ruff.per-file-ignores]
+"**/tests/**.py" = [
+    "S105",  # don't search hardcoded passwords in tests
+    "S106",  # don't search hardcoded passwords in tests
+    "S107",  # don't search hardcoded passwords in tests
+]
+```
+
+---
+
+_Comment by @MichaReiser on 2023-11-27 03:07_
+
+How frequent are these false positives? I'm asking because requiring additional configuration may be as much work as suppressing the few occurrences in your code (assuming there are only a few), and have the benefit that they are never outdated. 
+
+---
+
+_Comment by @ashrub-holvi on 2023-11-27 07:57_
+
+> How frequent are these false positives?
+
+I have no any statistics, but I would expect for such check, false positives rate are expected to be high, because price of false negative is also high.
+In repo I am playing now I got couple of places where variables were really about passwords and about 50 cases when variables are not related to any secrets, just have mentions of some words like "password", "secret" or "token" in the name or value.
+
+---
+
+_Comment by @ashrub-holvi on 2023-11-27 09:41_
+
+Sorry, I forgot to count cases which are excluded by `per-file-ignores` - there are some files where a lot of false positives, so will be at least twice more false positives.
+But it might be that this repo it not an average case - it has an integration with third-party API where word `payment_token` is actively used in field names.
+
+---
+
+_Comment by @IdoPort on 2024-11-07 09:53_
+
+We are also experiencing some issues like that but from another angle.
+We are  writing parsing code for several kind of files and we have functions that are looking or handling some behavior of specific tokens in the file.
+In those functions we get FP alerts for each such constant so if we could suppress those by having some prefix to the `token` it would save us many `#noqa`.
+
+---
+
+_Comment by @MichaReiser on 2024-11-07 10:19_
+
+@IdoPort have you considered disabling the rule for those files? It seems very unlikely that they'll ever contain any real authentication token. 
+
+---
+
+_Comment by @IdoPort on 2024-11-07 14:23_
+
+@MichaReiser I didn't know I can disable lints per file, that awesome! Thank!
+
+---
+
+_Referenced in [astral-sh/ruff#14365](../../astral-sh/ruff/issues/14365.md) on 2024-11-15 17:36_
+
+---

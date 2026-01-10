@@ -1,0 +1,115 @@
+---
+number: 12006
+title: "Redundant output of activate.bat due to changes made with #11831"
+type: issue
+state: closed
+author: petermbauer
+labels:
+  - bug
+  - windows
+assignees: []
+created_at: 2025-03-06T14:09:52Z
+updated_at: 2025-03-14T03:49:19Z
+url: https://github.com/astral-sh/uv/issues/12006
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# Redundant output of activate.bat due to changes made with #11831
+
+---
+
+_Issue opened by @petermbauer on 2025-03-06 14:09_
+
+### Summary
+
+Due to the changes made to the `activate.bat` script with #11831, the output looks like this:
+```
+λ .venv\Scripts\activate.bat
+
+()
+```
+instead of 
+```
+λ .venv\Scripts\activate.bat
+
+```
+
+### Platform
+
+Windows 11
+
+### Version
+
+0.6.4
+
+### Python version
+
+Python 3.10
+
+---
+
+_Label `bug` added by @petermbauer on 2025-03-06 14:09_
+
+---
+
+_Comment by @charliermarsh on 2025-03-06 14:41_
+
+Thanks, we'll take a look. \cc @flaribbit if you know what's going on :)
+
+---
+
+_Label `windows` added by @charliermarsh on 2025-03-06 15:15_
+
+---
+
+_Comment by @flaribbit on 2025-03-06 16:20_
+
+After some debug, I find that the `()` is printed by the paren after do in [this line](https://github.com/astral-sh/uv/pull/11831/files#diff-e854abd832dd31118941265ebf94317720b737e75d4723ae5e1deafbf0e24816R23)
+
+Write the for loop in a single line should fix this.
+
+```diff
++ @for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do @set _OLD_CODEPAGE=%%a
+- @for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do (
+-     @set _OLD_CODEPAGE=%%a
+- )
+```
+
+
+---
+
+_Comment by @charliermarsh on 2025-03-06 16:41_
+
+Does CPython not suffer from this problem?
+
+---
+
+_Comment by @flaribbit on 2025-03-06 16:52_
+
+venv module in CPython has a `@echo off` command, which prevent the commands from being printed.
+
+But I can not fully understand the strange behavior of bat script why the paren was printed...
+
+---
+
+_Referenced in [astral-sh/uv#12160](../../astral-sh/uv/pulls/12160.md) on 2025-03-14 01:25_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-03-14 01:27_
+
+---
+
+_Closed by @charliermarsh on 2025-03-14 01:35_
+
+---
+
+_Closed by @charliermarsh on 2025-03-14 01:35_
+
+---
+
+_Comment by @petermbauer on 2025-03-14 03:49_
+
+Thanks a lot!
+
+---

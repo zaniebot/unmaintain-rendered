@@ -1,0 +1,249 @@
+---
+number: 278
+title: Allow final argument to be a command
+type: issue
+state: closed
+author: Diggsey
+labels:
+  - A-parsing
+assignees: []
+created_at: 2015-09-24T17:26:25Z
+updated_at: 2018-08-02T03:29:45Z
+url: https://github.com/clap-rs/clap/issues/278
+synced_at: 2026-01-10T01:26:27Z
+---
+
+# Allow final argument to be a command
+
+---
+
+_Issue opened by @Diggsey on 2015-09-24 17:26_
+
+AFAICT, it's not possible to define a CLI such as the following:
+`myprogram <arg> <command>`
+
+Here, `command` may include any number of arguments or flags, which clap should not attempt to interpret.
+
+The first argument which does not begin with `-`, when all positional arguments have already been encountered, indicates the start of the command, and all subsequent arguments will be passed-through unchanged.
+
+Alternatively, if `--` occurred previously, and all positional arguments have already been encountered, then the next argument, regardless of whether it starts with `-`, indicates the start of the command.
+
+eg.
+`myprogram a -t b` - Error, `-t` is not recognised
+`myprogram -- a -t b` - Valid, command is `-t b`
+`myprogram a` - Error: no command present (if command is a required arg)
+`myprogram a b -t` - Valid, command is `b -t`
+
+
+---
+
+_Comment by @sru on 2015-09-25 01:14_
+
+@Diggsey is it possible to pass the command as one argument? i.e. using double quotes
+
+Currently, Clap cannot allow the final argument to have the rest of argument to pass off as one argument.
+
+We could also expose the arguments the are left over as extra.
+
+
+---
+
+_Comment by @Diggsey on 2015-09-25 01:20_
+
+>  Is it possible to pass the command as one argument? i.e. using double quotes
+
+No, that would make escaping too painful, and I'm trying to mirror an existing CLI.
+
+> Currently, Clap cannot allow the final argument to have the rest of argument to pass off as one argument.
+
+That's why I opened the issue... Or do you mean it can't add support for that for some reason? I had a brief look at the parsing code and it didn't seem particularly problematic to add support for this.
+
+
+---
+
+_Comment by @sru on 2015-09-25 01:39_
+
+I see. No, I think it should be easy to add support for this.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-25 23:32_
+
+This is already somewhat possible with `--`. 
+
+Example:
+
+``` rust
+let m = App::new("test").arg_from_usage("<cmd>... 'some cmd'").get_matches();
+if let Some(v) = m.values_of("cmd") {
+    for cmd in v {
+        println!("{}", cmd);
+    }
+}
+```
+
+Then running
+
+```
+$ test -- some -a -t cmd this that --long=this --testing
+some
+-a
+-t
+cmd
+this
+that
+--long=this
+--testing
+```
+
+
+---
+
+_Comment by @kbknapp on 2015-09-29 00:47_
+
+@Diggsey is the current `--` enough for your usage? If so, we can close this issue.
+
+I am hesitant to add special case rules for this problem set which I would imagine is a rare case. Reason being, there may be cases when a user typos more positional than expected, and to have it automatically start parsing as a command could have very undesirable results.
+
+I'm not saying we wouldn't add it, but that we'd need to discuss the implementation before-hand.
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2015-09-29 00:48_
+
+---
+
+_Label `W: maybe` added by @kbknapp on 2015-09-29 00:48_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2015-09-29 00:48_
+
+---
+
+_Label `C: parsing` added by @kbknapp on 2015-09-29 00:48_
+
+---
+
+_Label `W: 1.x` added by @kbknapp on 2015-09-29 00:48_
+
+---
+
+_Comment by @Diggsey on 2015-09-29 01:00_
+
+> is the current -- enough for your usage? If so, we can close this issue.
+
+Not really - for the moment I've worked around it by detecting that case and intercepting it before I invoke clap.
+
+> there may be cases when a user typos more positional than expected, and to have it automatically start parsing as a command could have very undesirable results.
+
+Presumably it would be opt-in: it would only start parsing as a command if the current subcommand expected to take a command as input.
+
+
+---
+
+_Comment by @kbknapp on 2015-09-29 01:27_
+
+> Presumably it would be opt-in: it would only start parsing as a command if the current subcommand expected to take a command as input.
+
+I'm OK with it being an opt-in setting. I'll set this for the 1.4.4 release, since it may take a little more time to implement.
+
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2015-09-29 01:27_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2015-09-29 01:27_
+
+---
+
+_Label `T: RFC / question` removed by @kbknapp on 2015-09-29 01:27_
+
+---
+
+_Label `W: maybe` removed by @kbknapp on 2015-09-29 01:27_
+
+---
+
+_Added to milestone `1.4.4` by @kbknapp on 2015-09-29 01:28_
+
+---
+
+_Referenced in [clap-rs/clap#298](../../clap-rs/clap/issues/298.md) on 2015-10-01 16:45_
+
+---
+
+_Comment by @kbknapp on 2015-10-01 18:26_
+
+Here's the implementation that #301 contains:
+
+Using the `AppSettings::TrailingVarArg` setting enables:
+- Final positional argument "eats" all other arguments without the need for `--`
+
+``` rust
+extern crate clap;
+
+use clap::{App, AppSettings};
+
+fn main() {
+    let m = App::new("test")
+        .setting(AppSettings::TrailingVarArg)
+        .args_from_usage(
+         "[arg1]         'some arg'
+          [CMD]...       'arguments to pass to the CMD'")
+        .get_matches();
+    for a in m.values_of("CMD").unwrap() {
+        println!("{}", a);
+    }
+}
+```
+
+Running with:
+
+```
+$ test some_arg cmd -H 20 --long value
+cmd
+-H
+20
+--long
+value
+```
+
+The initial `arg1` is just to show that it works even with other positional args defined.
+
+@Diggsey @matklad
+
+**IF THIS DOES NOT SOLVE THIS ISSUE**: let me know so that we can fix before the merge. One caveat, is I don't want to special case too heavily if there are things that can be done in downstream code.
+
+
+---
+
+_Referenced in [clap-rs/clap#301](../../clap-rs/clap/pulls/301.md) on 2015-10-01 18:30_
+
+---
+
+_Comment by @Diggsey on 2015-10-01 18:35_
+
+@kbknapp Wow that looks perfect, thanks. Feel free to close this when those changes get merged in.
+
+
+---
+
+_Comment by @kbknapp on 2015-10-01 18:36_
+
+@Diggsey will do, let us know if you have any issues :wink: 
+
+
+---
+
+_Closed by @kbknapp on 2015-10-01 18:49_
+
+---
+
+_Referenced in [clap-rs/clap#558](../../clap-rs/clap/issues/558.md) on 2016-07-01 16:15_
+
+---

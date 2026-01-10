@@ -1,0 +1,253 @@
+---
+number: 2293
+title: Flatten with prefix
+type: issue
+state: closed
+author: stevefan1999-personal
+labels:
+  - C-enhancement
+  - A-derive
+  - S-duplicate
+assignees: []
+created_at: 2021-01-15T15:12:20Z
+updated_at: 2022-01-11T18:28:52Z
+url: https://github.com/clap-rs/clap/issues/2293
+synced_at: 2026-01-10T01:27:15Z
+---
+
+# Flatten with prefix
+
+---
+
+_Issue opened by @stevefan1999-personal on 2021-01-15 15:12_
+
+### Make sure you completed the following tasks
+
+- [x] Searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] Searched the closed issues
+
+### Describe your use case
+Add prefixes to a struct so that we can separate them nice and clean. 
+
+Not only that, if we have logically separated the option structure well, we can integrate serde to load config file seamlessly.
+
+For example, we can use a Clap console option `log_console_enabled` for the equivalent of `log.console.enabled` in YAML/JSON variable form or `[[log]] [console] enabled` in TOML. This of course is not limited to just these three languages (happy HCL noises). This can be seen as an analogy of what [spf13/viper](https://github.com/spf13/viper) already capable of doing on the Go land.
+
+### Describe the solution you'd like
+Let us do this:
+```rust
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[clap(name = "untitled", author, about, version)]
+#[get = "pub"]
+pub struct GlobalOption {
+    #[clap(flatten, prefix = "log")]
+    log: LogOptions,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = "pub"]
+pub struct LogOptions {
+    // 1. prefix should be recursive
+    #[clap(flatten, prefix = "console")]
+    console: LogConsoleOptions,
+    #[clap(flatten, prefix = "file")]
+    file: LogFileOptions,
+}
+
+// 2. so for each of the variables in this struct, in CLI options it should have a prefix of "log-console", e.g. "log-console-enabled"
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = "pub"]
+pub struct LogConsole {
+    #[clap(long, parse(try_from_str), default_value = "true", env)]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(arg_enum, short = 'v', long, default_value = "info", env)]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = "pub"]
+pub struct LogFile {
+    #[clap(long, parse(try_from_str), default_value = "true", env)]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(arg_enum, long, default_value = "trace", env)]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+    #[clap(long, default_value = "log/application.log", env, parse(from_os_str))]
+    /// (optional) where will the log file be stored
+    name: PathBuf,
+}
+```
+But each of the substructure will have their command line option name prepending with the corresponding prefix, hence promoting a much cleaner code structure, as a side effect, it can also be separated into different crate for better reusing/modularization.
+
+### Alternatives, if applicable
+This is the current workaround:
+```rust
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[clap(name = "untitled", author, about, version)]
+#[get = "pub"]
+pub struct GlobalOption {
+    #[clap(flatten)]
+    log: LogOptions,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = "pub"]
+pub struct LogOptions {
+    #[clap(flatten)]
+    console: LogConsoleOptions,
+    #[clap(flatten)]
+    file: LogFileOptions,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = "pub"]
+pub struct LogConsoleOptions {
+    #[clap(
+        default_value = "true",
+        env = "LOG_CONSOLE_ENABLED",
+        long = "log-console-enabled",
+        name = "log_console_enabled",
+        parse(try_from_str)
+    )]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(
+        arg_enum,
+        default_value = "info",
+        env = "LOG_CONSOLE_LEVEL",
+        long = "log-console-level",
+        name = "log_console_level",
+        short = 'v'
+    )]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = "pub"]
+pub struct LogFileOptions {
+    #[clap(
+        default_value = "true",
+        env = "LOG_FILE_ENABLED",
+        long = "log-file-enabled",
+        name = "log_file_enabled",
+        parse(try_from_str)
+    )]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(
+        arg_enum,
+        default_value = "trace",
+        env = "LOG_FILE_LEVEL",
+        long = "log-file-level",
+        name = "log_file_level"
+    )]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+    #[clap(
+        default_value = "log/application.log",
+        env = "LOG_FILE_NAME",
+        long = "log-file-name",
+        name = "log_file_name",
+        parse(from_os_str)
+    )]
+    /// (optional) where will the log file be stored
+    name: PathBuf,
+}
+```
+Repetitive, painful, and oftentimes prone to miss referentially (e.g. name and struct name not in sync). Also needs to rely on using String Manipulation plugin so much.
+
+Also please look at the additional comment, I have extra reason why I need to specify both name and long together. I have expanded the option file to see what does clap-derive generates in cases like this. 
+
+As it turns out, we did found something like this:
+```
+let app = app.arg(
+                    clap::Arg::new("<insert name here>")
+```
+and it Is influenced by name option, which by default is the struct item identifier itself, so by exploiting `name` and `long` derive option we can manipulating it to change name while still look like a command line option. 
+
+I have also gave an updated look of what the workaround is, and put some precursors to what should be generated.
+
+### Additional context
+
+Prior issue in structopt: https://github.com/TeXitoi/structopt/issues/114
+
+### Issues
+
+However, it does not come without issue. Short option is now getting confusing, as should it get the prefix prepended or not as well. Using verbose "-v" for example, if there is another struct that also use "-v" for version, they will get in conflict and we can't just do both, yet adding prefix to short options is also an unsound solution, so I suggest to delete short option for flattened substructures.
+
+---
+
+_Label `T: new feature` added by @stevefan1999-personal on 2021-01-15 15:12_
+
+---
+
+_Comment by @stevefan1999-personal on 2021-01-15 15:17_
+
+~~Also, it seems like you cannot recursively flatten from struct, as I tried to nest the log prefix into its own struct and try to contain `file` and `console` in them, the macro generated shows the name assignment is gone.~~ It's because Clap can't flatten the same name of other struct, for example we have two `enabled` here and it is not gonna work.
+
+So this is also a blocker for the prefix feature to work.
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2021-01-15 17:00_
+
+---
+
+_Comment by @pksunkara on 2021-01-15 17:00_
+
+> so I suggest to delete short option for flattened substructures.
+
+Dude, that is anarchy.
+
+`short` flags are not generated if you don't add `short` attribute. That is enough. So, I don't actually see any issue with proposal. Obviously this would only be supported on flatten.
+
+Marking it for 3.1 since it is not priority for 3.0 (unless someone submits a PR).
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-06-09 07:46_
+
+---
+
+_Referenced in [epage/clapng#173](../../epage/clapng/issues/173.md) on 2021-12-06 20:19_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:11_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:11_
+
+---
+
+_Comment by @epage on 2021-12-13 15:19_
+
+This appears to be a duplicate of #3117.  I'd recommend further discussion happening there.  If there is something unique about this that we should keep it open, let us know!
+
+---
+
+_Closed by @epage on 2021-12-13 15:19_
+
+---
+
+_Label `S-duplicate` added by @epage on 2022-01-11 18:28_
+
+---
+
+_Referenced in [clap-rs/clap#3443](../../clap-rs/clap/issues/3443.md) on 2022-02-11 01:03_
+
+---

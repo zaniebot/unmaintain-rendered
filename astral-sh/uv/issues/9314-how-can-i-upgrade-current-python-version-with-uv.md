@@ -1,0 +1,119 @@
+---
+number: 9314
+title: how can I upgrade current python version with uv
+type: issue
+state: closed
+author: zffocussss
+labels:
+  - question
+assignees: []
+created_at: 2024-11-21T12:49:09Z
+updated_at: 2025-09-03T09:03:12Z
+url: https://github.com/astral-sh/uv/issues/9314
+synced_at: 2026-01-10T01:24:39Z
+---
+
+# how can I upgrade current python version with uv
+
+---
+
+_Issue opened by @zffocussss on 2024-11-21 12:49_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+the project was created by uv init.
+suppose that my current python version is 3.12.1,how can it be upgrade to 3.12.4.I am not sure if I can make it by changing pyproject.toml or .python-version.or I just use uv to manage dependencies?
+
+```
+uv --version
+uv 0.4.27 (36b729e92 2024-10-25)
+```
+
+
+---
+
+_Comment by @FishAlchemist on 2024-11-21 13:02_
+
+Even though patch versions can cause compatibility issues, you can still switch the Python version for your virtual environment. Here's how: ``uv venv -p 3.12.4 --allow-existing``
+```
+      --allow-existing                       Preserve any existing files or directories at the target path
+ ```
+ However, I got this method from this comment (https://github.com/astral-sh/uv/issues/8217#issuecomment-2455693139), so for more detailed information, you might need to refer to it.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-11-21 13:51_
+
+---
+
+_Comment by @zffocussss on 2024-11-22 01:46_
+
+> Even though patch versions can cause compatibility issues, you can still switch the Python version for your virtual environment. Here's how: `uv venv -p 3.12.4 --allow-existing`
+> 
+> ```
+>       --allow-existing                       Preserve any existing files or directories at the target path
+> ```
+> 
+> However, I got this method from this comment ([#8217 (comment)](https://github.com/astral-sh/uv/issues/8217#issuecomment-2455693139)), so for more detailed information, you might need to refer to it.
+
+what is the best practise,if the python version is required to be updated?I only use **uv pip** to manage packages now.
+I am using conda as virtual env manager.when I want to change the python env,just issue **conda activate {env}**
+uv is a tools to manage python packages and python environments,which can be recorded in file and committed in vcs.
+how can I migrate from conda/venv  projects to uv projects?
+
+---
+
+_Comment by @samypr100 on 2024-11-23 02:54_
+
+> what is the best practise,if the python version is required to be updated
+
+If you want specificity at the patch level, I'd say update your `.python-version` to be explicit with `3.12.4`
+
+---
+
+_Comment by @FishAlchemist on 2024-11-23 03:50_
+
+> how can I migrate from conda/venv projects to uv projects?
+
+@zffocussss If you only use conda for managing virtual environments and don't need to install any dependencies with conda or have a centralized need for managing virtual environments, then you can use ``uv venv`` to create virtual environments instead.
+As for the document of ``uv pip``: https://docs.astral.sh/uv/pip/
+In essence, the choice to migrate is determined by your reliance on conda-specific features that are not offered by alternative tools.
+
+
+---
+
+_Assigned to @jtfmumm by @jtfmumm on 2025-06-10 20:53_
+
+---
+
+_Comment by @raphaelauv on 2025-09-02 15:22_
+
+@zffocussss can we close ?
+
+---
+
+_Comment by @zanieb on 2025-09-02 19:54_
+
+We added `uv python upgrade` for this purpose.
+
+---
+
+_Closed by @zanieb on 2025-09-02 19:54_
+
+---
+
+_Comment by @zffocussss on 2025-09-03 09:03_
+
+> [@zffocussss](https://github.com/zffocussss) can we close ?
+
+yes we can.
+
+---

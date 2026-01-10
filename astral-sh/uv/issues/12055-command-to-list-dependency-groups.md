@@ -1,0 +1,136 @@
+---
+number: 12055
+title: Command to list dependency groups
+type: issue
+state: open
+author: jpgoldberg
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-03-07T18:48:36Z
+updated_at: 2025-08-21T15:32:45Z
+url: https://github.com/astral-sh/uv/issues/12055
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# Command to list dependency groups
+
+---
+
+_Issue opened by @jpgoldberg on 2025-03-07 18:48_
+
+### Summary
+
+I sometimes forget precisely how I named various dependency groups. And while I can, of course, inspect my `pyproject.toml` to see how I named named them, I would rather have a quick cli way to do so.
+
+If there is some way to do this already available, then please point me to it. If not, I would very much like to see this measure added.
+
+## Reasons to reject this request
+
+I am making this request and would like to see it add, but I want to acknowledge potential reasons to reject this this request.
+
+1. Not a uv problem. A case could be made this isn't a responsibility of uv.
+
+    I would disagree with such an argument, given that uv provides other tools for managing dependency groups.
+
+3. It's not obvious what the command, sub-command, or options would be.
+
+    IT isn't obvious to me, but I'm confident that people here could figure it out
+
+3. There are other ways to do this.
+
+   Sure I could create a shell alias or script that uses something like toml-cli or tomllib, and that is what I will do if the feature request is rejected, but I doubt that I am the only one with this need.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @jpgoldberg on 2025-03-07 18:48_
+
+---
+
+_Comment by @zanieb on 2025-03-07 18:56_
+
+Thanks for sharing your use-case.
+
+Loosely related to https://github.com/astral-sh/uv/issues/6298 where I'm considering adding a generic interface for project metadata.
+
+---
+
+_Comment by @zanieb on 2025-03-07 18:57_
+
+When do you need the groups? `uv run`? `uv add`? `uv sync`?
+
+---
+
+_Comment by @jpgoldberg on 2025-03-07 19:23_
+
+> When do you need the groups? uv run? uv add? uv sync?
+
+Both, but what sparked this is that I wanted to use
+
+```console
+uv add --group MY_DOCUMENTATION_GROUP argparse-manpage
+```
+but I couldn't remember what I had called my documentation group. 
+
+I anticipate this coming up with `uv run` as sometimes I might put type checking in my `lint` group, but sometimes it might be in its own `types` group.
+
+None of this is a bit problem. I can find the name a group easily enough, but I was surprised that I couldn't find them through a uv command.
+
+---
+
+_Comment by @quentin-sommer on 2025-08-20 21:10_
+
+I have another usecase: we are using `uv pip compile pyproject.toml` to compile to requirements.txt for a external service that doesn't support anything else and our dependencies are split into various group. We want to compile most of them but not all of them. We currently have to write the groups manually or parse them from the `pyproject.toml`.
+
+Another option for us would be to add more group filtering options to this command. Basically a way to do `--all-groups-except=X,Y,Z`
+
+---
+
+_Comment by @zanieb on 2025-08-20 23:04_
+
+@quentin-sommer you can already do that, e.g., `--all-groups --no-group baz`
+
+---
+
+_Comment by @quentin-sommer on 2025-08-21 13:32_
+
+Doesn't seem like I can:
+```
+uv pip compile pyproject.toml --all-groups
+error: unexpected argument '--all-groups' found
+
+  tip: a similar argument exists: '--group'
+
+Usage: uv pip compile <SRC_FILE|--group <GROUP>>
+
+For more information, try '--help'.
+```
+
+```
+uv --version
+uv 0.8.12 (36151df0e 2025-08-18)
+```
+
+---
+
+_Comment by @zanieb on 2025-08-21 13:40_
+
+I guess we don't support that in `uv pip compile`? We do in `run`, `sync`, `tree`, and `export`. I think it might be more ambiguous in the `pip` case because people might expect it to include all groups from all sources but that's not how it'd work.
+
+---
+
+_Comment by @zanieb on 2025-08-21 13:40_
+
+Can you use `export` instead?
+
+---
+
+_Comment by @quentin-sommer on 2025-08-21 15:32_
+
+I'll take a look at that thanks!
+
+---

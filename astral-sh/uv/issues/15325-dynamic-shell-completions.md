@@ -1,0 +1,72 @@
+---
+number: 15325
+title: Dynamic shell completions
+type: issue
+state: open
+author: andrewaylett
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-16T14:59:49Z
+updated_at: 2026-01-07T10:00:00Z
+url: https://github.com/astral-sh/uv/issues/15325
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# Dynamic shell completions
+
+---
+
+_Issue opened by @andrewaylett on 2025-08-16 14:59_
+
+### Summary
+
+As a user of `uv`, I would like my shell to be able to auto-complete dynamic parameters.
+
+For context, see #8432 -- users are looking to autocomplete filenames as parameters to `uv run`, but we often want to complete a project script name, or an installed tool, and the collection of tools that will be available varies between projects so it's not possible to statically list the available completions at shell start-up.
+
+As an extreme example, `jj` uses fully-dynamic autocomplete -- so the entire fish completion script is:
+
+```
+complete -k --exclusive jj -a '(COMPLETE=fish jj -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))'
+```
+
+This means jj can generate completions appropriate for the current operation and status, so if I type `jj log -r <tab>` then it'll give me a list of all current revisions, like so:
+
+```
+> COMPLETE=fish jj -- jj log -r ""
+main    Update pre-commit hook renovatebot/pre-commit-hooks to v41.74.2 (#853)
+push-xylttmtspktr       A smidge of tidying of remark stuff
+<snip lots of other revisions>
+```
+
+It would be _really nice_ if `uv` could do something similar, enabling features along the lines of auto-completing `uv run <tab>` giving you a selection of the different commands available in the project, or even `uv run poe <tab>` giving you the completions you'd get from activating the venv and completing `poe <tab>`.
+
+### Example
+
+A user has more useful autocompletions, for example:
+
+```
+> uv run <tab>
+poe pre-commit pytest ruff
+```
+
+---
+
+_Label `enhancement` added by @andrewaylett on 2025-08-16 14:59_
+
+---
+
+_Referenced in [astral-sh/uv#8432](../../astral-sh/uv/issues/8432.md) on 2025-12-28 10:24_
+
+---
+
+_Referenced in [astral-sh/uv#17246](../../astral-sh/uv/issues/17246.md) on 2025-12-31 09:07_
+
+---
+
+_Comment by @GideonBear on 2026-01-07 09:59_
+
+`uv tool uninstall` and `uv tool upgrade` completing installed tools would be nice as well
+
+---

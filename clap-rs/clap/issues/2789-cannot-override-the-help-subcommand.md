@@ -1,0 +1,183 @@
+---
+number: 2789
+title: Cannot override the help subcommand
+type: issue
+state: closed
+author: jonathanmorley
+labels:
+  - C-bug
+  - A-parsing
+  - ":money_with_wings: $10"
+assignees: []
+created_at: 2021-09-24T17:00:01Z
+updated_at: 2021-10-04T14:01:09Z
+url: https://github.com/clap-rs/clap/issues/2789
+synced_at: 2026-01-10T01:27:25Z
+---
+
+# Cannot override the help subcommand
+
+---
+
+_Issue opened by @jonathanmorley on 2021-09-24 17:00_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+1.54.0
+
+### Clap Version
+
+master
+
+### Minimal reproducible code
+
+```rust
+
+use clap::Clap;
+
+#[derive(Clap)]
+#[clap(
+    global_setting = AppSettings::DisableHelpSubcommand
+)]
+enum Helper {
+    Help {
+        arg: String
+    },
+    NotHelp {
+        arg: String
+    }
+}
+
+impl Helper {
+    fn handle(&self) -> String {
+        match self {
+            Helper::Help { arg } => format!("Helping {}", arg),
+            Helper::NotHelp { arg } => format!("Not Helping {}", arg)
+        }
+    }
+}
+
+fn main() {
+    // Test with a subcommand that is not `help`.
+    let command = Helper::parse_from(["help_cmd", "not-help", "foo"]).handle();
+    assert_eq!(command, "Not Helping foo");
+
+    // Test with the `help` subcommand.
+    let command = Helper::parse_from(["help_cmd", "help", "foo"]).handle();
+    assert_eq!(command, "Helping foo");
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run
+
+### Actual Behaviour
+
+The second assertion fails, and outputs a help message for the builtin Help subcommand:
+
+```
+error:  The subcommand 'foo' wasn't recognized
+
+USAGE:
+    help_cmd <subcommands>
+
+For more information try --help
+```
+
+### Expected Behaviour
+
+The tests should pass
+
+### Additional Context
+
+https://github.com/clap-rs/clap/pull/2788
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `T: bug` added by @jonathanmorley on 2021-09-24 17:00_
+
+---
+
+_Referenced in [clap-rs/clap#2788](../../clap-rs/clap/pulls/2788.md) on 2021-09-24 17:00_
+
+---
+
+_Label `C: subcommands` added by @pksunkara on 2021-09-24 19:14_
+
+---
+
+_Comment by @pksunkara on 2021-09-24 19:28_
+
+> outputs a help message for the builtin Help subcommand:
+
+That is wrong. You are seeing an error. What's happening is that our parser is treating `help` as a command with subcommands during parsing instead of looking at what the user gave.
+
+---
+
+_Label `C: settings` added by @pksunkara on 2021-09-24 19:28_
+
+---
+
+_Label `:money_with_wings: $10` added by @pksunkara on 2021-09-24 19:28_
+
+---
+
+_Label `D: easy` added by @pksunkara on 2021-09-24 19:28_
+
+---
+
+_Label `C: parsing` added by @pksunkara on 2021-09-24 19:30_
+
+---
+
+_Referenced in [clap-rs/clap#2796](../../clap-rs/clap/pulls/2796.md) on 2021-09-28 01:18_
+
+---
+
+_Comment by @kbknapp on 2021-10-02 01:03_
+
+I think what's happening here is that `DisableHelpSubcommand` only keeps `clap` from *creating* a `help` subcommand. However, in the example code, a `help` subcommand is created by the user. And since a help subcommand exists, clap uses it as if it, itself, had created the help subcommand. This is more why I created `NoAutoHelp`. Although I can see how these two settings are confusing and either need to be re-named, or have better docs explaining what they're for and how they're used.
+
+It could also be argued this is a bug where if the user says to disable the help command, clap could *also* not try to parse one.
+
+I think the original intention was if a user wanted to create their own `help` subcommand details (i.e. about message, etc.) but still wanted clap to do all the normal parsing. There previously wasn't a way for someone to tell clap, "Don't build the help subcommand because I'll do that for you....but yeah go ahead and use it like normal."
+
+---
+
+_Comment by @kbknapp on 2021-10-02 01:07_
+
+> I think what's happening here is that DisableHelpSubcommand only keeps clap from creating a help subcommand. However, in the example code, a help subcommand is created by the user. And since a help subcommand exists, clap uses it as if it, itself, had created the help subcommand.
+
+To expand and clarify a little; when clap detects a `help` subcommand, the next argument(s) must also be subcommands, because clap will then display the help message of *those* subcommands. What's happening in the example code is `foo` is not a subcommand, but clap expected one because thats how the normal `help` subcommand works.
+
+
+I.e. using a fictional `git` CLI as an example:
+
+```
+# To get the `--help` of `git push`
+$ git push --help
+
+# OR clap allows
+$ git help push
+```
+
+---
+
+_Closed by @pksunkara on 2021-10-04 14:01_
+
+---
+
+_Referenced in [mrswastik-robot/pixi#2](../../mrswastik-robot/pixi/pulls/2.md) on 2025-07-03 09:20_
+
+---

@@ -1,0 +1,200 @@
+---
+number: 2056
+title: "--system doesn't work on Windows on Python <3.12 in GitHub Actions"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - bug
+  - windows
+assignees: []
+created_at: 2024-02-28T21:59:38Z
+updated_at: 2024-02-29T15:06:30Z
+url: https://github.com/astral-sh/uv/issues/2056
+synced_at: 2026-01-10T01:23:11Z
+---
+
+# --system doesn't work on Windows on Python <3.12 in GitHub Actions
+
+---
+
+_Issue opened by @AlexWaygood on 2024-02-28 21:59_
+
+See https://github.com/AlexWaygood/typeshed-stats/pull/200 for a repro. It's possible this is a just-in-GitHub Actions thing.
+
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-02-28 21:59_
+
+---
+
+_Label `windows` added by @AlexWaygood on 2024-02-28 21:59_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-28 22:02_
+
+---
+
+_Referenced in [astral-sh/uv#2057](../../astral-sh/uv/pulls/2057.md) on 2024-02-28 22:02_
+
+---
+
+_Comment by @AlexWaygood on 2024-02-28 22:03_
+
+It appears to work fine on Python 3.12, but on Python 3.11/3.10 in CI, running `coverage -m pytest` leads to this error message (despite `coverage` and `pytest` having both been installed by uv using `--system`):
+
+```
+coverage: D:\a\_temp\2100b3f7-7035-42ca-a241-f5034d096de8.ps1:2
+Line |
+   2 |  coverage run -m pytest --doctest-modules
+     |  ~~~~~~~~
+     | The term 'coverage' is not recognized as a name of a cmdlet, function, script file, or executable program. Check
+     | the spelling of the name, or if a path was included, verify that the path is correct and try again.
+Error: Process completed with exit code 1.
+```
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 22:07_
+
+I've confirmed that this works as expected locally. If I install Python 3.10 from python.org, I can globally install binaries like `isort`, and they get picked up in my PATH.
+
+---
+
+_Renamed from "--system doesn't work on Windows on Python <3.12" to "--system doesn't work on Windows on Python <3.12 in GitHub Actions" by @AlexWaygood on 2024-02-28 22:09_
+
+---
+
+_Referenced in [ispg-group/harmonwig#3](../../ispg-group/harmonwig/pulls/3.md) on 2024-02-28 22:58_
+
+---
+
+_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-28 23:02_
+
+---
+
+_Comment by @charliermarsh on 2024-02-29 00:15_
+
+It looks like the problem is that `--system` is installing into Python 3.12 (which is already installed in the image, I assume?) rather than the version installed via the setup action.
+
+---
+
+_Comment by @charliermarsh on 2024-02-29 00:37_
+
+The problem is that we first look in `py --list-paths`, and that returns:
+
+```text
+-V:3.12 *        C:\hostedtoolcache\windows\Python\3.12.2\x64\python.exe
+-V:3.12-32       C:\hostedtoolcache\windows\Python\3.12.2\x86\python.exe
+-V:3.11          C:\hostedtoolcache\windows\Python\3.11.8\x64\python.exe
+-V:3.11-32       C:\hostedtoolcache\windows\Python\3.11.8\x86\python.exe
+-V:3.10          C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+-V:3.10-32       C:\hostedtoolcache\windows\Python\3.10.11\x86\python.exe
+-V:3.9           C:\hostedtoolcache\windows\Python\3.9.13\x64\python.exe
+-V:3.9-32        C:\hostedtoolcache\windows\Python\3.9.13\x86\python.exe
+-V:3.8           C:\hostedtoolcache\windows\Python\3.8.10\x64\python.exe
+-V:3.8-32        C:\hostedtoolcache\windows\Python\3.8.10\x86\python.exe
+-V:3.7           C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe
+-V:3.7-32        C:\hostedtoolcache\windows\Python\3.7.9\x86\python.exe
+```
+
+So that ends up returning the Python 3.12.2 interpreter that comes pre-bundled in the cache.
+
+---
+
+_Comment by @charliermarsh on 2024-02-29 00:37_
+
+I'm not sure how to fix this. Should we be looking in `PATH` first? \cc @konstin 
+
+---
+
+_Comment by @ofek on 2024-02-29 01:35_
+
+Yes, please look in PATH first as in the majority of scenarios the `py` launcher will not be used or even available (as I was trying to express in the other issue).
+
+---
+
+_Comment by @charliermarsh on 2024-02-29 01:36_
+
+There's a PR open for it here: https://github.com/astral-sh/uv/pull/2057.
+
+---
+
+_Comment by @charliermarsh on 2024-02-29 01:36_
+
+Do you have a link to the other issue? I'd like to read (but was focused on other things at the time).
+
+---
+
+_Comment by @ofek on 2024-02-29 01:44_
+
+https://github.com/astral-sh/uv/issues/1310#issuecomment-1951464381
+
+---
+
+_Comment by @charliermarsh on 2024-02-29 02:09_
+
+I know you mention this in your comment but I'm surprised because virtualenv does seem to do registry-based lookups before PATH.
+
+---
+
+_Comment by @ofek on 2024-02-29 02:30_
+
+Nothing will be added to one's registry without an installer that does that. So for example if you build from source or use a prebuilt distribution and merely unpack then you have to just rely on PATH.
+
+---
+
+_Comment by @konstin on 2024-02-29 08:32_
+
+When installing the defaults from the official build from python.org build, you get the py launcher but no `PATH` modification. This means that the great majority of users - especially those who don't have expertise around `PATH` - will have no `python.exe` in `PATH`
+
+![Python 3.12 installer](https://github.com/astral-sh/uv/assets/6826232/ba1b8f6d-8b77-438a-b518-573af581eb12)
+
+Above is the preset configuration.
+
+---
+
+_Referenced in [CederGroupHub/chgnet#133](../../CederGroupHub/chgnet/pulls/133.md) on 2024-02-29 12:18_
+
+---
+
+_Comment by @ofek on 2024-02-29 14:01_
+
+Yes, that is true. However almost everyone enables that checkbox to add to PATH because you only install with that GUI if you're an average user and the vast majority of folks have no idea about the registry PEP (why would they) so in order to make it usable you check the box not even so much for external tools but so you have a `python` available on the command line. So, that group will always have PATH updated.
+
+The other, far far larger group, will install Python on servers. In this case they will disable the `py` launcher because it's irrelevant or not even have it because they are building from source to get optimizations, either themselves or fetching some prebuilt distribution to unpack.
+
+I have been exclusively a Windows user my entire life. I cannot express enough how few people use the `py` launcher and how often the registry stuff is unused.
+
+In the official documentation, their example updates PATH https://docs.python.org/3/using/windows.html#installing-without-ui:
+
+```
+python-3.9.0.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+```
+
+You will be hard-pressed to find code on GitHub (and in private) that does not rely on PATH. Some examples:
+
+- Here is the official Python Docker image adding to PATH https://github.com/docker-library/python/blob/5906158d277460e04837c45f5b22051bbf28af92/3.12/windows/windowsservercore-ltsc2022/Dockerfile#L28
+- Here is TensorFlow's build infra adding to PATH https://github.com/tensorflow/tensorflow/blob/6ce973f15f0d02331b74efdb59b4cf3526e3db4a/ci/devinfra/docker_windows/Dockerfile#L80
+- Here is Microsoft's build image for their standard library adding to PATH https://github.com/microsoft/STL/blob/517b7830c235ce2844081594abddc7c684a1ec32/azure-devops/provision-image.ps1#L231 (they also do that in all of their other repos)
+- Here is Nvidia's Triton Inference Server image adding to PATH https://github.com/triton-inference-server/server/blob/5630efe6e0d8b74b72a793678722f89112240f76/Dockerfile.win10.min#L64
+- Here is Google's type checker CI adding to PATH https://github.com/google/pytype/blob/5201c541c7611f70b0c83c63aea09c1ce4d8078e/.github/workflows/ci-windows.yml#L34
+- Here is the GRPC build image adding to PATH https://github.com/grpc/grpc/blob/e39bd5071671d099c587580bddafb117601a4e30/tools/internal_ci/helper_scripts/install_python_interpreters.ps1#L42
+
+---
+
+_Comment by @AlexWaygood on 2024-02-29 14:07_
+
+Yeah, having been exclusively a Windows user until very recently, I agree with basically everything @ofek is saying here
+
+---
+
+_Closed by @charliermarsh on 2024-02-29 15:06_
+
+---
+
+_Referenced in [zenml-io/zenml#2442](../../zenml-io/zenml/pulls/2442.md) on 2024-03-01 17:16_
+
+---

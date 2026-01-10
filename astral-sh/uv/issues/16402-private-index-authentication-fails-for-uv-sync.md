@@ -1,0 +1,186 @@
+---
+number: 16402
+title: "Private index authentication fails for `uv sync`"
+type: issue
+state: open
+author: lachiewalker
+labels:
+  - needs-mre
+assignees: []
+created_at: 2025-10-22T00:43:53Z
+updated_at: 2025-12-16T12:12:13Z
+url: https://github.com/astral-sh/uv/issues/16402
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# Private index authentication fails for `uv sync`
+
+---
+
+_Issue opened by @lachiewalker on 2025-10-22 00:43_
+
+### Summary
+
+`uv sync` fails to authenticate to my private index (Gitlab). 
+
+After updating `uv` a few days ago and running `uv auth login [gitlab-domain] --token [token]` I was able to `uv sync` without issue. Today, I could not get sync to work at all. Interestingly, the very first alternative strategy I tried, `uv pip install --index https://[gitlab-domain]/api/v4/groups/XX/-/packages/pypi/simple sandbox`, worked without issue. However, this is not ideal for my workflow and I wanted to be able to `sync` from my pyproject.toml so I tried the following:
+
+- `uv auth logout [gitlab-domain]` && logging back in
+- Cycling my gitlab PAT and running the above to update uv auth
+- Creating an entirely new PAT with all scopes enabled and the above to update uv auth
+- deleting the uv credentials file and logging in again to recreate it
+- restarting my shell
+- using VSCode integrated vs Ubuntu native terminal
+- Providing the name of my token as --username and my token as password with `uv auth login [domain] --username ... --password ...`
+- Providing my gitlab username as --username in the above approach
+- Uninstalling and reinstalling uv
+
+The only approach other than `uv pip install --index` which worked was setting `UV_INDEX_GITLAB_USERNAME=__token__` and `UV_INDEX_GITLAB_PASSWORD=[token]` and re-running uv sync.
+
+My `.toml` looks like this:
+
+```
+dependencies = [
+    ...
+    "sandbox>=0.1.0",
+    ...
+]
+
+[[tool.uv.index]]
+name = "gitlab"
+url = "https://[gitlab-domain]/api/v4/groups/XXX/-/packages/pypi/simple"
+explicit = true
+authenticate = "always"
+
+[tool.uv.sources]
+sandbox = { index = "gitlab" }
+```
+
+And uv throws this error:
+```
+× No solution found when resolving dependencies:
+  ╰─▶ Because sandbox was not found in the package registry and your project depends on sandbox>=0.1.0, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://[gitlab-domain]/api/v4/groups/XXX/-/packages/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+```
+
+The above error indicating that no package could be found at the index is false; running `uv sync -vv` makes it clear that uv never actually authenticates to the index to list the packages available there.
+
+### Platform
+
+Ubuntu 24.04.3 amd64
+
+### Version
+
+0.9.5
+
+### Python version
+
+Python 3.12.3
+
+---
+
+_Label `bug` added by @lachiewalker on 2025-10-22 00:43_
+
+---
+
+_Comment by @jzazo on 2025-10-23 19:04_
+
+I see similar behaviour as well with private index url. My solution is to delete the virtual folder and re-sync:
+```
+rm -rf .venv
+uv sync
+```
+
+It would be nice that `uv sync` worked without needing to delete the virtual env folder.
+
+---
+
+_Comment by @charliermarsh on 2025-10-28 23:48_
+
+Are you able to share the (redacted) `--verbose` logs from this run?
+
+---
+
+_Comment by @jzazo on 2025-10-29 09:21_
+
+Is this helpful?
+```
+Traceback (most recent call last):
+  File "/home/******/repos/******/.venv/bin/keyring", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py", line 216, in main
+    return cli.run(argv)
+           ^^^^^^^^^^^^^
+  File "/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py", line 120, in run
+    return method()
+           ^^^^^^^^
+  File "/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py", line 129, in do_get
+    credential = getattr(self, f'_get_{self.get_mode}')()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/cli.py", line 145, in _get_password
+    password = get_password(self.service, self.username)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/core.py", line 63, in get_password
+    return get_keyring().get_password(service_name, username)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/******/repos/******/.venv/lib/python3.12/site-packages/keyring/backends/fail.py", line 28, in get_password
+    raise NoKeyringError(msg)
+keyring.errors.NoKeyringError: No recommended backend was available. Install a recommended 3rd party backend package; or, install the keyrings.alt package if you want to use the non-recommended backends. See https://pypi.org/project/keyring for details.
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+DEBUG Searching for a compatible version of *** (*)
+DEBUG No compatible version found for: ***
+DEBUG Recording unit propagation conflict of ** from incompatibility of (******)
+DEBUG Searching for a compatible version of aml @ file:///home/******/repos/******/packages/aml (*)
+DEBUG Searching for a compatible version of cli @ file:///home/******/repos/******/packages/cli (*)
+DEBUG Searching for a compatible version of context @ file:///home/******/repos/******/packages/context (*)
+DEBUG Searching for a compatible version of ddm @ file:///home/******/repos/****** (<0.0.0 | >0.0.0)
+DEBUG No compatible version found for: ddm
+  × No solution found when resolving dependencies for split (markers: python_full_version >= '3.12' and
+  │ python_full_version < '4.0' and sys_platform == 'linux'; included: ******[cuda]; excluded: ******[cpu]):
+  ╰─▶ Because ****** was not found in the package registry and ****** depends on ******, we can conclude that ******'s
+      requirements are unsatisfiable.
+      And because your workspace requires ******, we can conclude that your workspace's requirements are unsatisfiable.
+
+      hint: An index URL
+      (https://******.pkgs.visualstudio.com/_packaging/*****-****-****-*****-********/pypi/simple/)
+      could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+DEBUG Released lock at `/home/******/repos/******/.venv/.lock`
+DEBUG Released lock at `/home/******/.cache/uv/.lock`
+```
+Note that I have keyring with artifacts-keyring installed (`uv tool install keyring --with artifacts-keyring`), and if I run `rm -rf .venv` and `uv sync`, I am asked to authenticate and uv installs everything.
+
+---
+
+_Comment by @jekel on 2025-12-04 18:38_
+
+I have same issue with python 3.12 anv uv 0.9.15
+auth does not work with private repositories via https, but works via http
+it does not matter how it is done via .netrc or uv auth login...
+
+---
+
+_Comment by @jzazo on 2025-12-04 21:37_
+
+I believe I found the source of my issue. One of the packages I was installing in my environment had a dependency on keyring, so when I run `uv sync` empty, it was using the global keyring, installed via `uv tool install`, with proper plugin. When the environment was built and I called `uv sync` a second time, it used the local version without the plugin, and failed. I always solved the issue by deleting `.venv`.
+
+I solved it by removing my dependency on keyring. Thanks.
+
+---
+
+_Comment by @konstin on 2025-12-16 12:12_
+
+@lachiewalker Can you still reproduce this problem?
+
+@jekel Please provide more details, such as your specific setup, the commands you ran, and - if possible - verbose logs. If the problem is different from the original report, please open a new issue.
+
+---
+
+_Label `bug` removed by @konstin on 2025-12-16 12:12_
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-12-16 12:12_
+
+---

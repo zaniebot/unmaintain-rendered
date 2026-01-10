@@ -1,0 +1,48 @@
+---
+number: 1167
+title: Improve error message for missing Python version
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - error messages
+assignees: []
+created_at: 2024-01-29T11:59:28Z
+updated_at: 2024-01-30T09:52:47Z
+url: https://github.com/astral-sh/uv/issues/1167
+synced_at: 2026-01-10T01:23:05Z
+---
+
+# Improve error message for missing Python version
+
+---
+
+_Issue opened by @charliermarsh on 2024-01-29 11:59_
+
+E.g.:
+
+```
+puffin venv -p 3.10
+  × Couldn't find `python3.10` in PATH
+  ╰─▶ cannot find binary path
+```
+
+Should include something like "Do you have Python 3.10 installed?"
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-01-29 11:59_
+
+---
+
+_Assigned to @konstin by @konstin on 2024-01-29 12:06_
+
+---
+
+_Referenced in [astral-sh/uv#1169](../../astral-sh/uv/pulls/1169.md) on 2024-01-29 12:14_
+
+---
+
+_Closed by @konstin on 2024-01-30 09:52_
+
+---

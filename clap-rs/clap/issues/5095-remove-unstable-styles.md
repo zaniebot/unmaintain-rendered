@@ -1,0 +1,49 @@
+---
+number: 5095
+title: "Remove `unstable-styles`"
+type: issue
+state: open
+author: epage
+labels:
+  - A-meta
+  - E-easy
+assignees: []
+created_at: 2023-08-28T15:12:03Z
+updated_at: 2024-06-07T06:48:39Z
+url: https://github.com/clap-rs/clap/issues/5095
+synced_at: 2026-01-10T01:28:07Z
+---
+
+# Remove `unstable-styles`
+
+---
+
+_Issue opened by @epage on 2023-08-28 15:12_
+
+#3234 was stabilized in #5094 but we can't remove the feature flag until at least the next minor version
+
+---
+
+_Label `A-meta` added by @epage on 2023-08-28 15:12_
+
+---
+
+_Label `E-easy` added by @epage on 2023-08-28 15:12_
+
+---
+
+_Renamed from "Remove `unstable-styling`" to "Remove `unstable-styles`" by @pksunkara on 2024-03-26 00:38_
+
+---
+
+_Label `E-help-wanted` added by @pksunkara on 2024-03-26 00:38_
+
+---
+
+_Referenced in [clap-rs/clap#5481](../../clap-rs/clap/pulls/5481.md) on 2024-05-02 03:45_
+
+---
+
+_Label `E-help-wanted` removed by @pksunkara on 2024-06-07 06:48_
+
+---

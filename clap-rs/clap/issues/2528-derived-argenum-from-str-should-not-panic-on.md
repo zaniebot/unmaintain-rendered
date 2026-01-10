@@ -1,0 +1,111 @@
+---
+number: 2528
+title: "Derived ArgEnum::from_str should not panic on invalid input "
+type: issue
+state: closed
+author: edlanglois
+labels:
+  - C-bug
+  - A-derive
+assignees: []
+created_at: 2021-06-08T17:30:57Z
+updated_at: 2021-06-08T23:08:18Z
+url: https://github.com/clap-rs/clap/issues/2528
+synced_at: 2026-01-10T01:27:20Z
+---
+
+# Derived ArgEnum::from_str should not panic on invalid input 
+
+---
+
+_Issue opened by @edlanglois on 2021-06-08 17:30_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Rust Version
+
+rustc 1.52.1
+
+### Clap Version
+
+clap 3.0.0-beta.2
+
+### Minimal reproducible code
+
+```rust
+use clap::ArgEnum;
+
+#[derive(ArgEnum)]
+pub enum MyEnum {
+    Foo,
+    Bar,
+}
+
+fn main() {
+    let _ = MyEnum::from_str("baz", true).unwrap_or(MyEnum::Foo);
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+`cargo run`
+
+### Actual Behaviour
+
+thread 'main' panicked at 'internal error: entered unreachable code: The impossible variant have been spotted: baz', src/main.rs:3:10
+
+### Expected Behaviour
+
+The code completes without crashing and `MyEnum::Foo` is assigned to `_`.
+
+### Additional Context
+
+`ArgEnum::from_str` is defined as returning a `Result` so the derived implementation should follow that interface and return an `Err` on failure. Currently the derived implementation always returns `Ok` or panics with the `unreachable!` macro.
+
+Since `ArgEnum` is public, it is not correct to assume that clap code will be the only caller, so the invalid input code-path is not actually unreachable.
+
+In my case, I am defining an argument type that internally contains an enum and when implementing `FromStr` it is convenient to re-use `ArgEnum::from_str` so that I do not have to duplicate the enum parsing. However, this panics when passed an invalid argument on the command line.
+
+### Debug Output
+
+No change, but here is the output with `RUST_BACKTRACE=1`:
+```
+thread 'main' panicked at 'internal error: entered unreachable code: The impossible variant have been spotted: baz', src/main.rs:3:10
+stack backtrace:
+   0: rust_begin_unwind
+             at /build/rust/src/rustc-1.52.1-src/library/std/src/panicking.rs:493:5
+   1: core::panicking::panic_fmt
+             at /build/rust/src/rustc-1.52.1-src/library/core/src/panicking.rs:92:14
+   2: <clap_bug::MyEnum as clap::derive::ArgEnum>::from_str
+             at ./src/main.rs:3:10
+   3: clap_bug::main
+             at ./src/main.rs:10:14
+   4: core::ops::function::FnOnce::call_once
+             at /build/rust/src/rustc-1.52.1-src/library/core/src/ops/function.rs:227:5
+```
+
+---
+
+_Label `T: bug` added by @edlanglois on 2021-06-08 17:30_
+
+---
+
+_Referenced in [clap-rs/clap#2529](../../clap-rs/clap/pulls/2529.md) on 2021-06-08 17:55_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-06-08 22:13_
+
+---
+
+_Label `C: derive macros` added by @pksunkara on 2021-06-08 22:13_
+
+---
+
+_Closed by @pksunkara on 2021-06-08 23:08_
+
+---

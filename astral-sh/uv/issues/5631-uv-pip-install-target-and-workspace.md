@@ -1,0 +1,284 @@
+---
+number: 5631
+title: uv pip install --target and workspace
+type: issue
+state: open
+author: jpambrun-vida
+labels: []
+assignees: []
+created_at: 2024-07-30T19:18:24Z
+updated_at: 2025-07-30T19:23:08Z
+url: https://github.com/astral-sh/uv/issues/5631
+synced_at: 2026-01-10T01:23:51Z
+---
+
+# uv pip install --target and workspace
+
+---
+
+_Issue opened by @jpambrun-vida on 2024-07-30 19:18_
+
+I am struggling to understand the expected behavior of `uv pip install --target /dest` in conjunction with workspaces. 
+
+with 
+```
+[tool.uv.sources]
+lambda_utils = { workspace = true }
+```
+
+I want to use --target in my docker build step, but it will only create a `.pth`. If I add  `editable = false`, `-- target` works as expect, but then I loose linking with developing. Shouldn't --target always copy? 
+
+
+---
+
+_Comment by @dmbonsall on 2025-01-08 02:41_
+
+I also have this issue, and have thrown together a repo that can easily demonstrate it: https://github.com/dmbonsall/reproduce-uv-issue-5631
+
+After cloning the repo, I can try to run `uv pip install --target /dest $REPO_PATH/ws_two` and all the dependencies are installed as expected, except for the dependency workspace which is "installed" with a `.pth` file. Interestingly enough, the package that is the argument to the install command is installed from a wheel. The example repo has the structure:
+
+```
+.
+|-- README.md
+|-- pyproject.toml
+|-- uv.lock
+|-- ws-one/
+|   |-- pyproject.toml
+|   `-- src/
+|       `-- ws_one/
+|           |-- __init__.py
+|           `-- module.py
+`-- ws-two/
+    |-- pyproject.toml
+    `-- src/
+        `-- ws_two/
+            |-- __init__.py
+            `-- service.py
+```
+
+And the `--target` directory from the install has the structure:
+
+```
+.
+|-- _ws_one.pth
+|-- annotated_types/
+|-- annotated_types-0.7.0.dist-info/
+|-- pydantic/
+|-- pydantic-2.10.4.dist-info/
+|-- pydantic_core/
+|-- pydantic_core-2.27.2.dist-info/
+|-- typing_extensions-4.12.2.dist-info/
+|-- typing_extensions.py
+|-- ws_one-0.1.0.dist-info/
+|-- ws_two/
+|   |-- __init__.py
+|   `-- service.py
+`-- ws_two-0.1.0.dist-info/
+```
+
+The expected behavior is to not have `_ws_one.pth` and instead have that package installed as a wheel with the `ws_one/` directory and associated `ws_one-0.1.0.dist-info/` directory.
+
+My version of uv is `uv 0.5.11 (c4d0caaee 2024-12-19)`
+
+Thanks!
+
+---
+
+_Comment by @charliermarsh on 2025-01-08 03:07_
+
+Yeah this makes sense as a problem. There are two directions from which we could solve it: (1) adding some kind of `--no-editable` flag to `uv pip install`, or (2) adding a more first-class `--target` interface to `uv sync`.
+
+---
+
+_Comment by @charliermarsh on 2025-01-08 03:07_
+
+I'm more inclined to do (2).
+
+---
+
+_Comment by @dmbonsall on 2025-01-08 03:18_
+
+I personally like the idea of adding some sort of `--target` flag to `uv sync` because it would allow the package versions to be tied to the lock-file. I'd like to use this to create a directory I can zip up and upload to a lambda, so ensuring the dependency versions are the same everywhere would be great.
+
+My only ask would be that the specified `--target` directory would be fully standalone so it can ship as a single unit.
+
+---
+
+_Comment by @Sillocan on 2025-03-18 02:44_
+
+I just ran into this when trying to build a zipfile for AWS Lambda. When the Lambda function isn't at the root of the workspace then it will install the members as editable.
+
+I think (2) would be the most natural solution via `--target ${TARGET} --no-editable`. I just don't know if it would get confused with `UV_PROJECT_ENVIRONMENT`.
+
+---
+
+_Comment by @Sillocan on 2025-03-18 03:05_
+
+I made a reproducible script for this issue:
+
+```sh
+cd $(mktemp -d)
+uv init
+
+# setup library in the workspace
+uv init --lib library
+uv add library
+
+# setup the lambda function referencing the library in the workspace above
+uv init --lib lambda_function
+uv add lambda_function
+echo "def handler(): ..." > lambda_function/src/lambda_function/handler.py
+uv add --directory="lambda_function" requests ../library
+
+# update the lock file
+uv sync --all-packages
+
+# export the requirements file with `--no-editable` specified
+uv export \
+    --frozen \
+    --no-dev \
+    --no-editable \
+    --package="lambda_function" \
+    -o requirements.txt
+
+uv pip install \
+    --no-installer-metadata \
+    --no-compile-bytecode \
+    --python-platform x86_64-manylinux2014 \
+    --python 3.13 \
+    --target "_lambda_build" \
+    -r requirements.txt
+ls _lambda_build
+```
+
+
+The output above is that `lambda_function` is correct, but `library` is editable.
+```sh
+$ ls _lambda_build
+...
+lambda_function
+lambda_function-0.1.0.dist-info
+library-0.1.0.dist-info
+_library.pth
+...
+```
+
+---
+
+_Comment by @ochaoui on 2025-05-05 20:28_
+
+Hello folks,
+
+I just fasted the same issue in my monorepo.
+What is the workaround for this bug ?
+
+---
+
+_Comment by @AndyReifman on 2025-07-22 20:36_
+
+I'm running into this issue as well.
+
+Has anyone been able to find a good workaround in the meantime while the functionality doesn't exist?
+
+---
+
+_Comment by @zanieb on 2025-07-22 20:40_
+
+Does `--no-sources` work?
+
+---
+
+_Comment by @AndyReifman on 2025-07-22 20:58_
+
+Hmm. Not sure if it's a lack of uv knowledge or an actual issue but I'm hitting an error trying to resolve dependencies with `--no-sources`
+
+Basic outline of the project is
+
+```toml
+# pyproject.toml
+# ...
+[tool.uv.workspace]
+members = [
+    "packages/*"
+]
+
+# packages/package_a/pyproject.toml
+# ...
+[tool.uv.sources]
+"package_b" = { workspace = true } 
+
+# packages/package_c/pyproject.toml
+# ...
+[tool.uv.sources]
+"package_b" = { workspace = true }
+```
+
+Run with the command
+`uv export --no-dev --no-editable --no-sources --package="package-a" -o requirements.txt`
+
+The error I'm getting 
+
+```
+No solution found when resolving dependencies:
+    Because package_c depends on package_b and your workspace requires package_c, we can conclude that your workspace's requirements are unsatisfiable"
+```
+
+I'm not even sure why it's trying to resolve dependencies for `package_c` as it's not used at all in `package-a`
+
+---
+
+_Comment by @zanieb on 2025-07-22 21:05_
+
+We solve for the entire workspace to generate the `uv.lock` regardless of the selected subset of packages.
+
+In this case, I'm suggesting `--no-sources` on the `uv pip install` invocation. You'll need sources to load your workspace members from the local source tree.
+
+---
+
+_Comment by @AndyReifman on 2025-07-22 21:31_
+
+Ah. That does look to be working! 
+
+Thanks! I wasted way too much time trying to get that work previously.
+
+---
+
+_Comment by @zanieb on 2025-07-22 21:37_
+
+Ah great, glad that works. This is roughly the problem discussed in https://github.com/astral-sh/uv/issues/14617 as well.
+
+---
+
+_Referenced in [astral-sh/uv#14963](../../astral-sh/uv/issues/14963.md) on 2025-07-29 23:24_
+
+---
+
+_Comment by @jtdb-pariveda on 2025-07-30 19:07_
+
+bumping this, what is the solution in the context of exporting some package to bundle into a lambda?
+in particular, I'm personally interested in bundling all DEPENDENCIES of my lambda app, including local libraries, which get uploaded to a lambda layer... but the same question still applies if trying to bundle it all together for a lambda zip with all dependencies including a workspace library.
+
+I've confirmed that you can do it from the project root by doing something like:
+```
+uv export --no-emit-project --project=my_project --no-dev --format requirements-txt > my-project/test-build/requirements.txt
+
+uv pip install \
+    --requirement my-project/test-build/requirements.txt \
+    --target my-project/test-build/common_layer/python \
+    --python-platform x86_64-manylinux_2_28 \
+    --no-deps
+```
+
+Like, the output, whether running from workspace root or from within a workspace project is always going to be:
+```
+-e ./shared-lib
+    # via my_project
+```
+
+But I'd like to be able to run this from within my workspace project for the lambda, and be able to resolve the exported requirements.txt with `../shared-lib` (correct vs project) instead of `./shared-lib` which is incorrect vs. project and correct vs, workspace root.
+
+---
+
+_Referenced in [astral-sh/uv#15297](../../astral-sh/uv/issues/15297.md) on 2025-08-15 15:45_
+
+---

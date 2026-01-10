@@ -1,0 +1,116 @@
+---
+number: 7537
+title: "[rule] replace `if key in dict: del dict[key]` with `dict.pop(key, None)`"
+type: issue
+state: closed
+author: dorschw
+labels:
+  - rule
+  - accepted
+assignees: []
+created_at: 2023-09-20T08:31:48Z
+updated_at: 2024-12-11T11:12:25Z
+url: https://github.com/astral-sh/ruff/issues/7537
+synced_at: 2026-01-10T01:22:47Z
+---
+
+# [rule] replace `if key in dict: del dict[key]` with `dict.pop(key, None)`
+
+---
+
+_Issue opened by @dorschw on 2023-09-20 08:31_
+
+I'd suggest it to flake8-simplify, but their repo seems inactive since late March 😞 
+If there's a better place to suggest it, please let me know and I'll copy it there.
+
+```diff
+- if key in dictionary:
+-     del dictionary[key]
++ dictionary.pop(key, None)
+```
+
+
+---
+
+_Referenced in [demisto/content#29756](../../demisto/content/pulls/29756.md) on 2023-09-20 08:33_
+
+---
+
+_Renamed from "replace `if key in dict: del dict[key]` with `dict.pop(key, None)`" to "[rule] replace `if key in dict: del dict[key]` with `dict.pop(key, None)`" by @dorschw on 2023-09-20 08:41_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-09-20 13:22_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-09-20 13:22_
+
+---
+
+_Label `needs-decision` removed by @charliermarsh on 2023-09-21 00:52_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-09-21 00:52_
+
+---
+
+_Comment by @charliermarsh on 2023-09-21 00:52_
+
+Seems reasonable to me as a `ruff` rule.
+
+---
+
+_Comment by @Skylion007 on 2023-09-27 13:26_
+
+You should bring this rule up to the flake8-simplify folks too, they love this kind of stuff and if they implement it, we have a nice rule code for us to build on.
+
+---
+
+_Comment by @ScDor on 2023-09-27 13:37_
+
+Some PRs there were merged recently, I may be able to implement it in
+python there.
+
+On Wed, 27 Sept 2023, 16:26 Aaron Gokaslan, ***@***.***>
+wrote:
+
+> You should bring this rule up to the flake8-simplify folks too, they love
+> this kind of stuff and if they implement it, we have a nice rule code for
+> us to build on.
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/astral-sh/ruff/issues/7537#issuecomment-1737396912>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AEKVIESFRBBB3HYVO4JPC6DX4QSRJANCNFSM6AAAAAA47QSN2Q>
+> .
+> You are receiving this because you are subscribed to this thread.Message
+> ID: ***@***.***>
+>
+
+
+---
+
+_Comment by @harupy on 2023-10-14 02:59_
+
+@charliermarsh Can I work on this?
+
+---
+
+_Referenced in [astral-sh/ruff#14553](../../astral-sh/ruff/pulls/14553.md) on 2024-11-23 04:29_
+
+---
+
+_Referenced in [MartinThoma/flake8-simplify#195](../../MartinThoma/flake8-simplify/issues/195.md) on 2024-11-25 09:19_
+
+---
+
+_Closed by @MichaReiser on 2024-12-11 11:12_
+
+---
+
+_Closed by @MichaReiser on 2024-12-11 11:12_
+
+---

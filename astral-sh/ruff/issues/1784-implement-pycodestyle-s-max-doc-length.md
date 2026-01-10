@@ -1,0 +1,110 @@
+---
+number: 1784
+title: "Implement pycodestyle's `max-doc-length`"
+type: issue
+state: closed
+author: stinodego
+labels:
+  - rule
+assignees: []
+created_at: 2023-01-11T13:48:52Z
+updated_at: 2023-02-11T04:17:35Z
+url: https://github.com/astral-sh/ruff/issues/1784
+synced_at: 2026-01-10T01:22:39Z
+---
+
+# Implement pycodestyle's `max-doc-length`
+
+---
+
+_Issue opened by @stinodego on 2023-01-11 13:48_
+
+As described in the pycodestyle config:
+https://pycodestyle.pycqa.org/en/latest/intro.html
+
+I prefer not setting a max line length, as I let `black` handle this automatically, but want to enforce line lengths on docstrings. pycodestyle can do this in the form of `--max-doc-length`. It would be nice to have this option in ruff!
+
+---
+
+_Comment by @charliermarsh on 2023-01-11 14:16_
+
+Oh, I haven’t seen this before! Can definitely support it.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-01-11 15:34_
+
+---
+
+_Comment by @baggiponte on 2023-01-11 16:56_
+
+If you feel like "globbing" another tool, `docformatter` might have some [similar rules](https://docformatter.readthedocs.io/en/latest/usage.html#use-from-the-command-line): to either implement, or whose code might be of inspiration! 🚀 
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-12 01:14_
+
+---
+
+_Referenced in [astral-sh/ruff#1804](../../astral-sh/ruff/pulls/1804.md) on 2023-01-12 03:28_
+
+---
+
+_Closed by @charliermarsh on 2023-01-12 03:32_
+
+---
+
+_Comment by @sterlinm on 2023-02-11 03:56_
+
+Thanks so much for this! Quick question regarding how it compares to flake8's [`max-doc-length`](https://flake8.pycqa.org/en/latest/user/options.html#cmdoption-flake8-max-doc-length) option.
+
+> By default, there is no limit on documentation line length.
+
+If you set `max-line-length` but not `max-doc-length`, flake8 will not complain about any lines in docstrings regardless of the length.
+
+`ruff` by default checks the docstring line lengths, and this option allows you to disable code line-length checking while enabling doc line-length checking.
+
+But it does not allow you to enable line-length checking for code while disabling line-length checking for docstrings (or using a higher threshold for docstrings). Would it be possible to have the max-doc-length take precedence over the line-length? Something like this:
+
+```toml
+line-length = 120
+
+[tool.ruff.pycodestyle]
+max-doc-length = 180
+```
+
+The goal would be to allow docstring lines to exceed 120 but not 180, or to effectively disable line-length checking in docstrings or comments to mimic the default behavior of flake8 by setting max-doc-length to an arbitrarily high number.
+
+[Here's an example of playing around with this in the ruff playground.](https://play.ruff.rs/#N4KABGBECGA2sHsDuBTAJgWgMYIHYDMBXAZ2gCNYVjIAuMAbQF0AacKMwgS1gBdPdqdJqwiQ0hALYSAnhgBu0AE6dylDIoDmAD1pQAegAoA+gGoAPsZP1oGAF4BBDAC0ADBgCcRxgCprdx64ejCYA-ACUYQAkkCJQKFo8KLiYnBq4CIoousJskPGJyRjEKJRYPNksufkoirhwFbGQqemZDbmw-CgYlLgaPAAWugCsLo3FpeVCbKIAojHTUABi8xCiAOqQbJWiPEoaKDzyNcSceLqQAA7SAMwAjC4rUPiw0ADWKAAcGNC46bt8eEEYFAqygMiuGH4nEOmR4hFqunwcGKsVExEIFwumWIxAw4iksj2QKRsBRC0g6Mx2Nx6VwXVh8Nw-A0iORKFRUDgiCQRV2im+mm+uGkrNJ7PJzQyXSI8FkhFwPGkF3QouKbAAvo1nm9PhgyD80NDdCDVpB+ko0Dg0OgMDwJBc8ZxMmUMiKpqDRAB6O0XR6gyCehSKb32v2mz3WuSe4j9CSbUHbU1YfooLCvW1Km3xLAoC4A3CqlAarUvd5fDgaMgoJTG8nVQqcKSEXYULpYLlApjF3Last6ri8fhAk2iDjcPgCSFpKUdYiTBiMbuiXu6mqKCTEFl0Edg6BaXnKXrdJJ9QZ0FxLp6l3UAR0ICESw4luA6dIwd4fVHOaAQhFbYcgCRCEHV8ug-R9v1-f8OTEBAsDnQ8NHfe8ILoWC-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)
+
+Apologies if I misunderstood something!
+
+---
+
+_Comment by @charliermarsh on 2023-02-11 04:05_
+
+> If you set max-line-length but not max-doc-length, flake8 will not complain about any lines in docstrings regardless of the length.
+
+Wow TIL. Yeah I'll revisit the interplay between these and ensure that they match Flake8. Thanks for the heads up.
+
+---
+
+_Referenced in [astral-sh/ruff#2756](../../astral-sh/ruff/issues/2756.md) on 2023-02-11 04:06_
+
+---
+
+_Comment by @sterlinm on 2023-02-11 04:15_
+
+Thanks! I haven't learned rust yet so can't help much at the moment, but hope to be able to in the future. Amazing project, thanks so much!
+
+---
+
+_Comment by @charliermarsh on 2023-02-11 04:17_
+
+Thank you for the kind words :) I'm tracking in #2756.
+
+---
+
+_Referenced in [scipy/scipy#19491](../../scipy/scipy/pulls/19491.md) on 2023-11-08 10:54_
+
+---

@@ -1,0 +1,36 @@
+---
+number: 15435
+title: "Update `show_settings` test to use shared isolation env vars from `TestContext`"
+type: issue
+state: open
+author: zanieb
+labels:
+  - internal
+  - testing
+assignees: []
+created_at: 2025-08-21T22:10:50Z
+updated_at: 2025-08-21T22:10:57Z
+url: https://github.com/astral-sh/uv/issues/15435
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# Update `show_settings` test to use shared isolation env vars from `TestContext`
+
+---
+
+_Issue opened by @zanieb on 2025-08-21 22:10_
+
+I think we'll want to do a larger refactor such that this uses the shared environment variables from the test context and removes what it needs to, but we can track that separately.
+
+_Originally posted by @zanieb in https://github.com/astral-sh/uv/issues/15434#issuecomment-3212149886_
+            
+
+---
+
+_Label `internal` added by @zanieb on 2025-08-21 22:10_
+
+---
+
+_Label `testing` added by @zanieb on 2025-08-21 22:10_
+
+---

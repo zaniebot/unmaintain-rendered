@@ -1,0 +1,122 @@
+---
+number: 12940
+title: "N817 not correctly detecting `from xml.etree import ElementTree as ET`"
+type: issue
+state: closed
+author: lengau
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-16T18:31:20Z
+updated_at: 2024-08-17T14:51:11Z
+url: https://github.com/astral-sh/ruff/issues/12940
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# N817 not correctly detecting `from xml.etree import ElementTree as ET`
+
+---
+
+_Issue opened by @lengau on 2024-08-16 18:31_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+In ruff 0.6.1, this file:
+
+```python
+from xml.etree import ElementTree as ET
+
+_ = ET
+```
+
+causes N817 to trigger an error with the default ruff settings,even though the default value of `lint.flake8-import-conventions` contains that mapping and it's supposed to be ignored according to [the docs](https://docs.astral.sh/ruff/rules/camelcase-imported-as-acronym/).
+
+```
+$ ruff check --fix --unsafe-fixes --select ICN001,N817 sample.py 
+sample.py:2:23: N817 CamelCase `ElementTree` imported as acronym `ET`
+  |
+2 | from xml.etree import ElementTree as ET
+  |                       ^^^^^^^^^^^^^^^^^ N817
+3 | 
+4 | _ = ET
+  |
+
+Found 1 error.
+```
+
+```python
+import xml.etree.ElementTree as ET
+
+_ = ET
+```
+
+failed in 0.6.0 but is fixed in 0.6.1
+
+---
+
+_Comment by @MichaReiser on 2024-08-16 18:46_
+
+Thanks for reporting. This was fixed in 0.6.1. Can you try upgrading?
+
+---
+
+_Comment by @lengau on 2024-08-16 18:49_
+
+Thanks! I saw the 0.6.1 upgrade after reporting and will do so as soon as my [build completes](https://github.com/snapcrafters/ruff/actions/runs/10424701636/job/28874026510)
+
+---
+
+_Comment by @lengau on 2024-08-16 19:02_
+
+@MichaReiser thanks for the quick turnaround! I've amended the bug report, as the `from ... import ... as ...` form still fails.
+
+I personally consider it low priority since I've just gone ahead and changed them to `import ... as ...` and let the auto-fixer fix them :-)
+
+---
+
+_Renamed from "N817 not correctly detecting `xml.etree.ElementTree`" to "N817 not correctly detecting `from xml.etree import ElementTree as ET`" by @lengau on 2024-08-16 19:10_
+
+---
+
+_Comment by @MichaReiser on 2024-08-17 11:20_
+
+Ohh I see. Thanks for updating the issue and sorry for the oversight
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-08-17 11:33_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2024-08-17 11:33_
+
+---
+
+_Referenced in [astral-sh/ruff#12946](../../astral-sh/ruff/pulls/12946.md) on 2024-08-17 11:34_
+
+---
+
+_Closed by @MichaReiser on 2024-08-17 12:05_
+
+---
+
+_Comment by @lengau on 2024-08-17 14:51_
+
+That was quick! Thank you! 
+
+---
+
+_Referenced in [astral-sh/ruff#12916](../../astral-sh/ruff/issues/12916.md) on 2024-08-19 18:51_
+
+---

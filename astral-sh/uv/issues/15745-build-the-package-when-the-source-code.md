@@ -1,0 +1,139 @@
+---
+number: 15745
+title: Build the package when the source code directories are on a read-only file system
+type: issue
+state: open
+author: luzfcb
+labels:
+  - question
+assignees: []
+created_at: 2025-09-08T22:27:29Z
+updated_at: 2025-09-09T12:49:08Z
+url: https://github.com/astral-sh/uv/issues/15745
+synced_at: 2026-01-10T01:25:59Z
+---
+
+# Build the package when the source code directories are on a read-only file system
+
+---
+
+_Issue opened by @luzfcb on 2025-09-08 22:27_
+
+### Question
+
+
+The old setup.py has the ability to change some directories so that, during the build process, nothing is written to the source code directory. This can be achieved with something like
+
+```bash
+
+export SDIST_BASE_PARENT="/tmp/build_dir"
+export SDIST_DIST_DIR="/tmp/build_dir/dist"
+export BDIST_WHEEL_DIST_DIR="/tmp/build_dir/dist"
+export BDIST_WHEEL_BDIST_DIR="/tmp/build_dir/bdist"
+export BUILD_BUILD_BASE="/tmp/build_dir/build"
+export EGG_INFO_EGG_BASE="/tmp/build_dir/build"
+
+
+export PYTHON_EGG_CACHE="/tmp/build_dir/egg-cache"
+
+
+mkdir -p ${SDIST_DIST_DIR} ${BDIST_WHEEL_BDIST_DIR} ${BUILD_BUILD_BASE} ${PYTHON_EGG_CACHE}
+
+python setup.py egg_info --egg-base ${EGG_INFO_EGG_BASE} build --build-base ${BUILD_BUILD_BASE} sdist --dist-dir ${SDIST_DIST_DIR} bdist_wheel --dist-dir ${BDIST_WHEEL_DIST_DIR} --bdist-dir ${BDIST_WHEEL_BDIST_DIR}
+
+```
+
+
+  Note:
+  
+  <details>
+  
+  <summary>About the egg-info: distutils's egg-info built into setuptools is somewhat inconsistent and doesn't respect egg-base in all stages. I have a patch that modifies sdist source code to force it to respect it. Click here
+  </summary>
+ 
+ 
+  ```python
+     # replace the by make_distribution on site-packages/setuptools/_distutils/command/sdist.py
+     # by
+      def make_distribution(self) -> None:
+          """Create the source distribution(s).  First, we create the release
+          tree with 'make_release_tree()'; then, we create all required
+          archive files (according to 'self.formats') from the release tree.
+          Finally, we clean up by blowing away the release tree (unless
+          'self.keep_temp' is true).  The list of archive files created is
+          stored so it can be retrieved later by 'get_archive_files()'.
+          """
+          # Minimal change: compute base_dir under a writable parent (outside the project root).
+          from pathlib import Path
+          fullname = self.distribution.get_fullname()
+          dist_dir = getattr(self, "dist_dir", None) or "dist"
+          base_parent = os.environ.get("SDIST_BASE_PARENT") or str(Path(dist_dir).parent)
+          base_dir = os.path.join(base_parent, fullname)
+          base_name = os.path.join(dist_dir, fullname)
+  
+          self.make_release_tree(base_dir, self.filelist.files)
+          archive_files = []  # remember names of files we create
+          # tar archive must be created last to avoid overwrite and remove
+          if 'tar' in self.formats:
+              self.formats.append(self.formats.pop(self.formats.index('tar')))
+  
+          for fmt in self.formats:
+              file = self.make_archive(
+                  base_name, fmt, base_dir=base_dir, owner=self.owner, group=self.group
+              )
+              archive_files.append(file)
+              self.distribution.dist_files.append(('sdist', '', file))
+  
+          self.archive_files = archive_files
+  
+          if not self.keep_temp:
+              dir_util.remove_tree(base_dir, dry_run=self.dry_run)
+  
+  ```
+  
+  </details>
+
+
+
+
+How to perform the same, but with use on a setup.py project using `uv build --sdist` and `uv build --wheel`
+
+currently, `uv` only provides  `--out-dir`
+
+
+```
+buildserver@10e2ea701264:/apps/tools/mylib$ uv build --sdist --out-dir /tmp/build_dir/dist
+Building source distribution...
+running sdist
+running egg_info
+creating mylib.egg-info
+error: could not create 'mylib.egg-info': Read-only file system
+  × Failed to build `/apps/tools/mylib`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_sdist` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+
+```
+
+
+
+
+### Platform
+
+Linux 6.11.0-26-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.8.15
+
+---
+
+_Label `question` added by @luzfcb on 2025-09-08 22:27_
+
+---
+
+_Comment by @konstin on 2025-09-09 12:49_
+
+It is a decision of the build backend whether to write to the source directory at all. setuptools is the exception in that it writes to the build directory by default, other build backends usually only write to temp files, the output directory and occasionally a build cache for native code (which may be in- or outside the source tree). I'm not sure if setuptools can be configured to not write to the source tree, I'd recommend asking in https://github.com/pypa/setuptools/discussions, uv as build frontend does not control. It's also possible that a different build backend solves this.
+
+---

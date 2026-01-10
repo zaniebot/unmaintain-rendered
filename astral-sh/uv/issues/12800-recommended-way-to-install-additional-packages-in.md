@@ -1,0 +1,102 @@
+---
+number: 12800
+title: Recommended way to install additional packages in existing unmanaged environment
+type: issue
+state: open
+author: KukumavMozolo
+labels:
+  - question
+assignees: []
+created_at: 2025-04-10T08:08:48Z
+updated_at: 2025-04-11T06:54:34Z
+url: https://github.com/astral-sh/uv/issues/12800
+synced_at: 2026-01-10T01:25:25Z
+---
+
+# Recommended way to install additional packages in existing unmanaged environment
+
+---
+
+_Issue opened by @KukumavMozolo on 2025-04-10 08:08_
+
+### Question
+
+Hi there,
+i have a base python environment in a docker image created by uv.
+What i want to do is to dynamically install packages to that environment defined in a separate pyproject.toml, but only those that are not already present in the base python environment.
+The goal is to do as little work as possible when installing additional packages.
+I also have the constraints that i am using a specific torch index as well as github repositorys that require auth tokens environment variable substitution.
+
+I am looking for a method that ideally would compare hashes and only installs those packages that have no matching hash.
+If that is not possible than locking to versions would also be ok.
+I tried `uv pip install  -r pyproject.toml`, however this re-installs torch.
+`uv pip compile pyproject.toml --emit-index-url --extra test -o requirements.txt` and then installing from that fails because this for some reason doesn't include the pythorch index.
+I also tried `uv export --extra test --format requirements-txt > requirements.txt` but this removes the environment variables from the github repositorys leading to an error during install.
+So are there any other suggestions?
+
+This is how the pytorch index is defined in the pyproject.toml:
+```
+[tool.uv.sources]
+torch = { index = "pytorch" }
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+```
+
+### Platform
+
+Ubuntu
+
+### Version
+
+uv 0.6.13
+
+---
+
+_Label `question` added by @KukumavMozolo on 2025-04-10 08:08_
+
+---
+
+_Comment by @KukumavMozolo on 2025-04-10 11:05_
+
+I figured part of the problem was that before running the install command i created a virtual env with `python -m venv .venv --system-site-packages` but the system-site-packages seem to be ignored by `uv pip install  -r pyproject.toml`.
+Is that intentional and is there a workaround?
+
+---
+
+_Comment by @konstin on 2025-04-10 11:07_
+
+This is known (hard) problem, it's tracked in #2500
+
+---
+
+_Comment by @KukumavMozolo on 2025-04-10 12:56_
+
+as a workaround i tried: creating symlinks:
+`ln -s /path/to/sys/python/lib/python3.11/site-packages/* .venv/lib/python3.11/site-packages/`
+however this shows uv still only sees the default packages:
+```bash
+(.venv) root@12d4c2d07f26:/project# uv pip list  
+Package    Version
+---------- -------
+pip        24.0
+setuptools 65.5.0
+setuptools 75.8.0
+zstandard  0.23.0
+
+```
+Any hints how to make this work?
+
+---
+
+_Comment by @KukumavMozolo on 2025-04-11 06:54_
+
+What does work is getting ride of the .venv and extending the docker image with another stage and then 
+using:
+`COPY --from=installer --chmod=a+w /path/to/pyhon/ /path/to/pyhon/ `
+This will keep the container image small and make it so that every user can edit the python environment,
+E.g. `uv pip install --system  -r pyproject.toml` will work
+
+---

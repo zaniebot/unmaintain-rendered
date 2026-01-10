@@ -1,0 +1,113 @@
+---
+number: 3703
+title: "Feature request: When using `uv pip compile` or `uv pip install --dry-run` warn and display yank message on selecting a yanked package"
+type: issue
+state: closed
+author: notatallshaw-gts
+labels:
+  - error messages
+assignees: []
+created_at: 2024-05-21T16:41:09Z
+updated_at: 2024-05-22T16:37:12Z
+url: https://github.com/astral-sh/uv/issues/3703
+synced_at: 2026-01-10T01:23:30Z
+---
+
+# Feature request: When using `uv pip compile` or `uv pip install --dry-run` warn and display yank message on selecting a yanked package
+
+---
+
+_Issue opened by @notatallshaw-gts on 2024-05-21 16:41_
+
+uv does not seem to display the the yank message when a yanked package is selected:
+
+```
+$ python -V
+Python 3.10.4
+$ pip -V
+pip 24.0 from ...
+$ uv -V
+uv 0.1.45
+
+$ pip install --dry-run python-daemon==2.3.1
+Collecting python-daemon==2.3.1
+  Using cached python_daemon-2.3.1-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting docutils (from python-daemon==2.3.1)
+  Using cached docutils-0.21.2-py3-none-any.whl.metadata (2.8 kB)
+Collecting lockfile>=0.10 (from python-daemon==2.3.1)
+  Using cached lockfile-0.12.2-py2.py3-none-any.whl.metadata (2.4 kB)
+Requirement already satisfied: setuptools in /home/STRIKETECH/dshaw/miniforge3/envs/uv_recon/lib/python3.10/site-packages (from python-daemon==2.3.1) (69.5.1)
+WARNING: The candidate selected for download or install is a yanked version: 'python-daemon' candidate (version 2.3.1 at https://files.pythonhosted.org/packages/aa/b0/bc79d8ff019c2583d839e0143b1f91eafd4cfe92f86fb9d378a515dfb612/python_daemon-2.3.1-py2.py3-none-any.whl (from https://pypi.org/simple/python-daemon/))
+Reason for being yanked: Incorrectly declares Python 2 support
+Using cached python_daemon-2.3.1-py2.py3-none-any.whl (34 kB)
+Using cached lockfile-0.12.2-py2.py3-none-any.whl (13 kB)
+Using cached docutils-0.21.2-py3-none-any.whl (587 kB)
+Would install docutils-0.21.2 lockfile-0.12.2 python-daemon-2.3.1
+
+$ uv pip install --dry-run python-daemon==2.3.1
+Resolved 4 packages in 3ms
+Would download 3 packages
+Would install 3 packages
+ + docutils==0.21.2
+ + lockfile==0.12.2
+ + python-daemon==2.3.1
+```
+
+---
+
+_Renamed from "Warn and display yank message on selecting a yanked package" to "Feature request: Warn and display yank message on selecting a yanked package" by @notatallshaw-gts on 2024-05-21 16:41_
+
+---
+
+_Renamed from "Feature request: Warn and display yank message on selecting a yanked package" to "Feature request: When using `pip compile` or `pip install --dry-run` warn and display yank message on selecting a yanked package" by @notatallshaw-gts on 2024-05-21 16:42_
+
+---
+
+_Renamed from "Feature request: When using `pip compile` or `pip install --dry-run` warn and display yank message on selecting a yanked package" to "Feature request: When using `uv pip compile` or `uv pip install --dry-run` warn and display yank message on selecting a yanked package" by @notatallshaw-gts on 2024-05-21 16:42_
+
+---
+
+_Comment by @notatallshaw-gts on 2024-05-21 16:43_
+
+uv does display when doing regular install:
+
+```
+uv pip install  python-daemon==2.3.1
+Resolved 4 packages in 3ms
+Downloaded 3 packages in 486ms
+Installed 3 packages in 7ms
+ + docutils==0.21.2
+ + lockfile==0.12.2
+ + python-daemon==2.3.1
+warning: python-daemon==2.3.1 is yanked (reason: "Incorrectly declares Python 2 support").
+```
+
+But if the yanked version is being pinned in a constraint or requirement file it may be too late, or not noticed, for it to be displayed at install time, instead of requirement build time.
+
+---
+
+_Comment by @charliermarsh on 2024-05-21 16:49_
+
+It would be useful to enumerate the specific cases in which we're not showing this but should (e.g., `--dry-run`).
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-05-21 16:49_
+
+---
+
+_Referenced in [astral-sh/uv#3740](../../astral-sh/uv/pulls/3740.md) on 2024-05-22 16:07_
+
+---
+
+_Closed by @charliermarsh on 2024-05-22 16:37_
+
+---
+
+_Referenced in [astral-sh/uv#3766](../../astral-sh/uv/issues/3766.md) on 2024-05-22 20:02_
+
+---
+
+_Referenced in [astral-sh/uv#3768](../../astral-sh/uv/issues/3768.md) on 2024-05-22 20:11_
+
+---

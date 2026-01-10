@@ -1,0 +1,134 @@
+---
+number: 6039
+title: Hide Argument as CLI, Show as Environment Variable
+type: issue
+state: closed
+author: naftulikay
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2025-06-19T20:17:10Z
+updated_at: 2025-06-19T20:24:19Z
+url: https://github.com/clap-rs/clap/issues/6039
+synced_at: 2026-01-10T01:28:21Z
+---
+
+# Hide Argument as CLI, Show as Environment Variable
+
+---
+
+_Issue opened by @naftulikay on 2025-06-19 20:17_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.5.40
+
+### Describe your use case
+
+Any application can accept configuration from a number of sources, and clap supports accepting values from command-line arguments and from environment variables with the `env` feature enabled.
+
+There are certain environment variables that will not be accepted as CLI arguments, such as `RUST_LOG`, but the user should still be made aware of them when invoking the help option, as they modify what happens at runtime during program execution.
+
+### Describe the solution you'd like
+
+First, let's talk about the desired output. For environment arguments that are not registered as CLI parameters, output help text could look like this:
+
+```text
+Usage: clap-demo --action <ACTION> <NAME>
+
+Arguments:
+  <NAME>  The name of the foo to bar
+
+Options:
+      --action <ACTION>  
+  -h, --help             Print help
+
+Environment Variables:
+  RUST_LOG=  Comma-delimited log directives to be used for filtering telemetry
+```
+
+Now, let's discuss how to go about it. There are a couple ways I could imagine this working.
+
+### Solution A: Arg Type is `()` and Only `env` is Defined
+
+If:
+ - argument type is `()`
+ - `env` feature is enabled
+ - `env` is defined on the argument and nothing else
+
+Then display it exclusively as an environment variable. Example struct:
+
+```rust
+#[derive(Debug, Clone, Parser)]
+struct Args {
+    //// Comma-delimited log directives to be used for filtering telemetry
+    #[clap(env = "RUST_LOG")]
+    _rust_log: (),
+}
+```
+
+### Solution B: Hide is True, Hide Env is False
+
+If:
+ - `env` feature is enabled
+ - `env` is defined on the argument
+ - `hide` is true
+ - `hide_env` is false
+
+Then display it exclusively as an environment variable. Example struct:
+
+```rust
+#[derive(Debug, Clone, Parser)]
+struct Args {
+    //// Comma-delimited log directives to be used for filtering telemetry
+    #[clap(hide(true), hide_env(false), env = "RUST_LOG")]
+    _rust_log: (),
+}
+```
+
+### Solution C: Add `only_env` Boolean to Argument
+
+In this solution, simply add another flag to an argument `only_env: bool`, which will mark the argument as being exclusively an environment variable:
+
+
+```rust
+#[derive(Debug, Clone, Parser)]
+struct Args {
+    //// Comma-delimited log directives to be used for filtering telemetry
+    #[clap(only_env(true), env = "RUST_LOG")]
+    _rust_log: (),
+}
+```
+
+### Alternatives, if applicable
+
+Alternatives listed above.
+
+### Additional Context
+
+I came across [this discussion](https://github.com/clap-rs/clap/discussions/5978) but I want to make clear that my intention with this is _not_ to make clap an application configuration management system as mentioned in the discussion, rather to extend help text to improve the user-experience of being able to know about environment variables that will affect the application at runtime.
+
+---
+
+_Label `C-enhancement` added by @naftulikay on 2025-06-19 20:17_
+
+---
+
+_Comment by @epage on 2025-06-19 20:24_
+
+Note that any feature would at its core need to be described in terms of the builder API.
+
+I would consider it a misuse to hide an argument for the sake of having the environment variable read.  At the point that we are talking about reading environment variables independent of arguments, I feel like we are treading into the territory of #2763 and would prefer the discussion to be focused there.  As such, I'm going to be closing this issue.
+
+When discussing this there, keep in mind that the core machinery of clap is the builder API and functionality would need to be discussed in terms of that.
+
+---
+
+_Closed by @epage on 2025-06-19 20:24_
+
+---

@@ -1,0 +1,97 @@
+---
+number: 16991
+title: "Honor `--refresh` when reusing cached tool environments for `uvx`/`uv` tool run"
+type: pull_request
+state: open
+author: terror
+labels: []
+assignees: []
+base: main
+head: uv-tool-cache
+created_at: 2025-12-04T21:00:05Z
+updated_at: 2025-12-09T04:02:57Z
+url: https://github.com/astral-sh/uv/pull/16991
+synced_at: 2026-01-10T01:26:19Z
+---
+
+# Honor `--refresh` when reusing cached tool environments for `uvx`/`uv` tool run
+
+---
+
+_Pull request opened by @terror on 2025-12-04 21:00_
+
+Resolves https://github.com/astral-sh/uv/issues/16974
+
+This diff consults the cache’s freshness policy before reusing a cached tool environment, so `--refresh` (and package-specific refresh flags) actually invalidate stale envs instead of silently reusing them. Previously, local projects with unchanged versions kept running old code because the cached env was always treated as fresh; the change implemented here forces a rebuild when refresh is requested.
+
+---
+
+_@terror reviewed on 2025-12-04 21:04_
+
+---
+
+_Review comment by @terror on `crates/uv/src/commands/project/environment.rs`:177 on 2025-12-04 21:04_
+
+Previous errors were swallowed here... I'm thinking we should do the same for the freshness check? 🤔 
+
+---
+
+_@zanieb reviewed on 2025-12-04 21:16_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/environment.rs`:177 on 2025-12-04 21:16_
+
+What causes the freshness check to fail? `is_ok_and` could be fine 🤷‍♀️ but it depends on the failure conditions
+
+---
+
+_@zanieb reviewed on 2025-12-04 21:16_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/environment.rs`:180 on 2025-12-04 21:16_
+
+Note you can use chained if lets now
+
+---
+
+_@terror reviewed on 2025-12-04 21:20_
+
+---
+
+_Review comment by @terror on `crates/uv/src/commands/project/environment.rs`:180 on 2025-12-04 21:20_
+
+True! Clippy should enforce this 🤔 
+
+---
+
+_Comment by @terror on 2025-12-04 21:28_
+
+@zanieb Thinking about this change more (after looking at a few existing tests), it looks like re-using the cache for `--refresh` was deliberate? I can see this as an optimization for registry packages, but it kind of breaks down for local path dependencies. I would assume that users expect `--refresh` to give them fresh results everytime, so we're essentially prioritizing correctness over the existing optimization here.
+
+---
+
+_@terror reviewed on 2025-12-04 21:31_
+
+---
+
+_Review comment by @terror on `crates/uv/src/commands/project/environment.rs`:177 on 2025-12-04 21:31_
+
+Permission denied or other I/O related errors when reading the cache entry's metadata could occur. These are probably rare edge cases, and if we can't even read the metadata of a cache entry, falling through to rebuild seems reasonable to me.
+
+---
+
+_Comment by @zanieb on 2025-12-04 22:41_
+
+I think @charliermarsh probably has the most context on the existing behavior.
+
+---
+
+_Comment by @charliermarsh on 2025-12-09 04:02_
+
+Does this mean we would _always_ create a new environment with `@latest`?
+
+I am wondering if we should instead try to expand the content of the environment hash. Like, for registry dependencies, the effect of `--refresh` will already be reflected in the hash because it will lead to a different resolution, right?
+
+---

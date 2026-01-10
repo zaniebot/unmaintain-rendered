@@ -1,0 +1,262 @@
+---
+number: 8957
+title: CodeArtifact install - 500 Internal server error
+type: issue
+state: closed
+author: delicb
+labels:
+  - needs-mre
+assignees: []
+created_at: 2024-11-08T22:18:19Z
+updated_at: 2024-11-14T15:12:19Z
+url: https://github.com/astral-sh/uv/issues/8957
+synced_at: 2026-01-10T01:24:35Z
+---
+
+# CodeArtifact install - 500 Internal server error
+
+---
+
+_Issue opened by @delicb on 2024-11-08 22:18_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+At my company we are using CodeArtifact as python index. I have started to use `uv` heavily locally in the last couple of days. Currently I am on v0.5.0 (but this happened on v0.4.30 as well). 
+
+From time to time, install fails of a random package with the following error:
+
+```
+❯ uv --verbose pip install -r requirements-dev.txt
+
+<snip>
+
+DEBUG Transient request failure for: https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/spacy/3.8.0/spacy-3.8.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=de89ae42e4fab5d2cdc796f0d43b15a3b77df4ea4066a862aeae5ac3d1ffc5bc
+DEBUG Found fresh response for: https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/ddtrace/2.16.0/ddtrace-2.16.0-cp311-cp311-macosx_12_0_universal2.whl#sha256=5579532c8d2e73ae0be659cfd0df3d967b9916b7ffb90adc46d3de2089acff03
+DEBUG Transient request failure for: https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/spacy/3.8.0/spacy-3.8.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=de89ae42e4fab5d2cdc796f0d43b15a3b77df4ea4066a862aeae5ac3d1ffc5bc
+DEBUG Transient request failure for: https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/spacy/3.8.0/spacy-3.8.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=de89ae42e4fab5d2cdc796f0d43b15a3b77df4ea4066a862aeae5ac3d1ffc5bc
+DEBUG Transient request failure for: https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/spacy/3.8.0/spacy-3.8.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=de89ae42e4fab5d2cdc796f0d43b15a3b77df4ea4066a862aeae5ac3d1ffc5bc
+DEBUG Released lock at `/Users/<snip>/.venv/.lock`
+error: Failed to download `spacy==3.8.0`
+  Caused by: Failed to fetch: `https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/spacy/3.8.0/spacy-3.8.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=de89ae42e4fab5d2cdc796f0d43b15a3b77df4ea4066a862aeae5ac3d1ffc5bc`
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://xxx-xxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/<repo-name>/simple/spacy/3.8.0/spacy-3.8.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=de89ae42e4fab5d2cdc796f0d43b15a3b77df4ea4066a862aeae5ac3d1ffc5bc)
+```
+
+Usually rerunning the command helps and install passes. Sometimes it fails again, but rarely on the same package. 
+
+If I can provide more details, I am happy to. 
+
+---
+
+_Referenced in [astral-sh/python-build-standalone#390](../../astral-sh/python-build-standalone/issues/390.md) on 2024-11-08 22:18_
+
+---
+
+_Comment by @zanieb on 2024-11-08 22:58_
+
+In brief, we can't do much if your server returns a HTTP 500 — that's an error we can't retry on and sounds like a bug in CodeArtifact itself. There are a few other issues like this.
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-11-09 02:09_
+
+---
+
+_Comment by @delicb on 2024-11-09 12:20_
+
+I understand that and it totally makes sense. Thing is - using the same CodeArtifact repository and the same set of dependencies, this does not happen with `pip`. That is confusing me a bit. I will check with SRE if we can obtain some CodeArtifact logs that might be helpful do determine AWS side of things and maybe a reason for 500 response. 
+
+---
+
+_Comment by @delicb on 2024-11-11 21:48_
+
+No CodeArtifact logs (and google search does not show it is possible to obtain them, so if anyone knows how to get them, please do let me know, I am happy to try), but I did reproduce this on my personal AWS account and can reliably do so. 
+
+So far I figured that 
+* failures happen only when resolving packages, I never saw failure in download phase (not sure how `uv` calls these phases).
+* failures happen only when looking for package that is not available directly in repository and has to be fetched from upstream repository (pypi). To test this, I have:
+  * deleted and recretated repositories between every two runs
+  * executed did `rf -rf .venv && uv cache clean && uv venv -p 3.11 && uv pip install -r requirements.txt --default-index <code-artifact-index-url>`
+* I did not detect that some packages fail more often, it seems random. More packages being installed, higher the chance some will fail. In my example, I am using `requirements.txt` file with 64 packages, which resolve to 167 packages with all transient dependencies at the end. Size of the package might play a role (my current working theory is below). 
+ * in verbose `uv` output, `Transient request failure for` is quite common, but not all of the packages fail, only some of them. Is this even relevant log line? It seemed so, but I am not sure now. 
+ * Or is there some retry happening and install fails after number of retries?
+ * I have reproduced completely same setup with `pip` (empty CodeArtifact repository linked to upstream `pypi`, empty `pip` cache) and wasn't able to reproduce the problem, pip is always successful. 
+
+My working theory is that `uv` does things way faster than `pip` and CodeArtifact has some eventual consistent subsystem (that downloads packages from `pypi` upstream) which is not ready in time. If client is slower - this work. If client is faster, CodeArtifact gets into some unexpected state and returns HTTP 500. That is why rerunning command usually works (but often fails on some other package). Does that make sense?
+
+In support of this theory is that I never saw this happen on CI. In CI, in places where we are using `uv`, we are using `uv.lock` (not `uv pip` interface), which means that exact file version is known from lock file and was already downloaded at least once from upstream and available in CodeArtifact (when lock file was created). (btw, I did try both `uv pip install -r requirements.txt` and `uv add -r requirements.txt`, they equally fail, so I focused only of the first one).
+
+I am happy to debug locally with some guidance on `uv` codebase. E.g. adding some log lines or adding some sleep statements to make `uv` slower to see what happens. I just don't know where to start right now. 
+
+Attaching last couple of lines of command `uv --verbose pip install -r ./requirements-dev.txt --default-index <code-artifact-index-url>` where `Transient request failure for` visible.
+
+<details>
+<summary>uv pip install output</summary>
+
+```
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/segtok/1.5.11/segtok-1.5.11-py3-none-any.whl#sha256=910616b76198c3141b2772df530270d3b706e42ae69a5b30ef115c7bd5d1501a
+DEBUG Searching for a compatible version of backoff (>=1.10.0, <1.10.0+)
+DEBUG Selecting: backoff==1.10.0 [compatible] (backoff-1.10.0-py2.py3-none-any.whl)
+DEBUG Searching for a compatible version of botocore (>=1.35.57, <1.36.0)
+DEBUG Selecting: botocore==1.35.58 [compatible] (botocore-1.35.58-py3-none-any.whl)
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tabulate/0.9.0/tabulate-0.9.0-py3-none-any.whl#sha256=024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/nodeenv/1.9.1/nodeenv-1.9.1-py2.py3-none-any.whl#sha256=ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/ipython/8.29.0/ipython-8.29.0-py3-none-any.whl#sha256=0188a1bd83267192123ccea7f4a8ed0a78910535dbaa3f37671dca76ebd429c8
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/identify/2.6.2/identify-2.6.2-py2.py3-none-any.whl#sha256=c097384259f49e372f4ea00a19719d95ae27dd5ff0fd77ad630aa891306b82f3
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tqdm/4.67.0/tqdm-4.67.0-py3-none-any.whl#sha256=0cd8af9d56911acab92182e88d763100d4788bdf421d251616040cc4d44863be
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/smart-open/6.4.0/smart_open-6.4.0-py3-none-any.whl#sha256=8d3ef7e6997e8e42dd55c74166ed21e6ac70664caa32dd940b26d54a8f6b4142
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/iniconfig/2.0.0/iniconfig-2.0.0-py3-none-any.whl#sha256=b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/virtualenv/20.27.1/virtualenv-20.27.1-py3-none-any.whl#sha256=f11f1b8a29525562925f745563bfd48b189450f61fb34c4f9cc79dd5aa32a1f4
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pluggy/1.5.0/pluggy-1.5.0-py3-none-any.whl#sha256=44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/jellyfish/1.1.0/jellyfish-1.1.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=61a382ba8a3d3cd0bd50029062d54d3a0726679be248789fef6a3901eee47a60
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pydantic-core/2.23.4/pydantic_core-2.23.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=1b84d168f6c48fabd1f2027a3d1bdfe62f92cade1fb273a5d68e621da0e44e6d
+DEBUG Found fresh response for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/setuptools/75.4.0/setuptools-75.4.0-py3-none-any.whl#sha256=b3c5d862f98500b06ffdf7cc4499b48c46c317d8d56cb30b5c8bce4d88f5c216
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/rapidfuzz/3.10.1/rapidfuzz-3.10.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=ba7521e072c53e33c384e78615d0718e645cab3c366ecd3cc8cb732befd94967
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/coverage/7.6.4/coverage-7.6.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=51b44306032045b383a7a8a2c13878de375117946d68dcb54308111f39775a25
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/patsy/0.5.6/patsy-0.5.6-py2.py3-none-any.whl#sha256=19056886fd8fa71863fa32f0eb090267f21fb74be00f19f5c70b2e9d76c883c6
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/cfgv/3.4.0/cfgv-3.4.0-py2.py3-none-any.whl#sha256=b7265b1f29fd3316bfcd2b330d63d024f2bfd8bcb8b0272f8e19a504856c48f9
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/rapidfuzz/3.10.1/rapidfuzz-3.10.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=ba7521e072c53e33c384e78615d0718e645cab3c366ecd3cc8cb732befd94967
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/virtualenv/20.27.1/virtualenv-20.27.1-py3-none-any.whl#sha256=f11f1b8a29525562925f745563bfd48b189450f61fb34c4f9cc79dd5aa32a1f4
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/nodeenv/1.9.1/nodeenv-1.9.1-py2.py3-none-any.whl#sha256=ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/jellyfish/1.1.0/jellyfish-1.1.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=61a382ba8a3d3cd0bd50029062d54d3a0726679be248789fef6a3901eee47a60
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tabulate/0.9.0/tabulate-0.9.0-py3-none-any.whl#sha256=024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/identify/2.6.2/identify-2.6.2-py2.py3-none-any.whl#sha256=c097384259f49e372f4ea00a19719d95ae27dd5ff0fd77ad630aa891306b82f3
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pluggy/1.5.0/pluggy-1.5.0-py3-none-any.whl#sha256=44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/ipython/8.29.0/ipython-8.29.0-py3-none-any.whl#sha256=0188a1bd83267192123ccea7f4a8ed0a78910535dbaa3f37671dca76ebd429c8
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/iniconfig/2.0.0/iniconfig-2.0.0-py3-none-any.whl#sha256=b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tqdm/4.67.0/tqdm-4.67.0-py3-none-any.whl#sha256=0cd8af9d56911acab92182e88d763100d4788bdf421d251616040cc4d44863be
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/segtok/1.5.11/segtok-1.5.11-py3-none-any.whl#sha256=910616b76198c3141b2772df530270d3b706e42ae69a5b30ef115c7bd5d1501a
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pydantic-core/2.23.4/pydantic_core-2.23.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=1b84d168f6c48fabd1f2027a3d1bdfe62f92cade1fb273a5d68e621da0e44e6d
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/coverage/7.6.4/coverage-7.6.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=51b44306032045b383a7a8a2c13878de375117946d68dcb54308111f39775a25
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/smart-open/6.4.0/smart_open-6.4.0-py3-none-any.whl#sha256=8d3ef7e6997e8e42dd55c74166ed21e6ac70664caa32dd940b26d54a8f6b4142
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/weasel/0.3.4/weasel-0.3.4-py3-none-any.whl#sha256=ee48a944f051d007201c2ea1661d0c41035028c5d5a8bcb29a0b10f1100206ae
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/cfgv/3.4.0/cfgv-3.4.0-py2.py3-none-any.whl#sha256=b7265b1f29fd3316bfcd2b330d63d024f2bfd8bcb8b0272f8e19a504856c48f9
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/patsy/0.5.6/patsy-0.5.6-py2.py3-none-any.whl#sha256=19056886fd8fa71863fa32f0eb090267f21fb74be00f19f5c70b2e9d76c883c6
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/segtok/1.5.11/segtok-1.5.11-py3-none-any.whl#sha256=910616b76198c3141b2772df530270d3b706e42ae69a5b30ef115c7bd5d1501a
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pluggy/1.5.0/pluggy-1.5.0-py3-none-any.whl#sha256=44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tabulate/0.9.0/tabulate-0.9.0-py3-none-any.whl#sha256=024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/iniconfig/2.0.0/iniconfig-2.0.0-py3-none-any.whl#sha256=b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/weasel/0.3.4/weasel-0.3.4-py3-none-any.whl#sha256=ee48a944f051d007201c2ea1661d0c41035028c5d5a8bcb29a0b10f1100206ae
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/rapidfuzz/3.10.1/rapidfuzz-3.10.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=ba7521e072c53e33c384e78615d0718e645cab3c366ecd3cc8cb732befd94967
+DEBUG Adding transitive dependency for botocore==1.35.58: jmespath>=0.7.1, <2.0.0
+DEBUG Adding transitive dependency for botocore==1.35.58: python-dateutil>=2.1, <3.0.0
+DEBUG Adding transitive dependency for botocore==1.35.58: urllib3{python_full_version >= '3.10'}>=1.25.4, <2.2.0 | >=2.2.0+, <3
+DEBUG Searching for a compatible version of jmespath (>=0.7.1, <2.0.0)
+DEBUG Selecting: jmespath==1.0.1 [compatible] (jmespath-1.0.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of s3transfer (>=0.10.0, <0.11.0)
+DEBUG Selecting: s3transfer==0.10.3 [compatible] (s3transfer-0.10.3-py3-none-any.whl)
+DEBUG Adding transitive dependency for s3transfer==0.10.3: botocore>=1.33.2, <2.0a0
+DEBUG Searching for a compatible version of attrs (>=23.1.0)
+DEBUG Selecting: attrs==24.2.0 [compatible] (attrs-24.2.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (>=1.12)
+DEBUG Selecting: cffi==1.17.1 [compatible] (cffi-1.17.1-cp311-cp311-macosx_11_0_arm64.whl)
+DEBUG Adding transitive dependency for cffi==1.17.1: cffi==1.17.1
+DEBUG Adding transitive dependency for cffi==1.17.1: cffi{platform_python_implementation != 'PyPy'}==1.17.1
+DEBUG Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (==1.17.1)
+DEBUG Selecting: cffi==1.17.1 [compatible] (cffi-1.17.1-cp311-cp311-macosx_11_0_arm64.whl)
+DEBUG No cache entry for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/cffi/1.17.1/cffi-1.17.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=30c5e0cb5ae493c04c8b42916e52ca38079f1b235c2f8ae5f4527b963c401caf
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/ipython/8.29.0/ipython-8.29.0-py3-none-any.whl#sha256=0188a1bd83267192123ccea7f4a8ed0a78910535dbaa3f37671dca76ebd429c8
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/typer/0.9.4/typer-0.9.4-py3-none-any.whl#sha256=aa6c4a4e2329d868b80ecbaf16f807f2b54e192209d7ac9dd42691d63f7a54eb
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/nodeenv/1.9.1/nodeenv-1.9.1-py2.py3-none-any.whl#sha256=ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/cffi/1.17.1/cffi-1.17.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=30c5e0cb5ae493c04c8b42916e52ca38079f1b235c2f8ae5f4527b963c401caf
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/coverage/7.6.4/coverage-7.6.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=51b44306032045b383a7a8a2c13878de375117946d68dcb54308111f39775a25
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/virtualenv/20.27.1/virtualenv-20.27.1-py3-none-any.whl#sha256=f11f1b8a29525562925f745563bfd48b189450f61fb34c4f9cc79dd5aa32a1f4
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/ipython/8.29.0/ipython-8.29.0-py3-none-any.whl#sha256=0188a1bd83267192123ccea7f4a8ed0a78910535dbaa3f37671dca76ebd429c8
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/identify/2.6.2/identify-2.6.2-py2.py3-none-any.whl#sha256=c097384259f49e372f4ea00a19719d95ae27dd5ff0fd77ad630aa891306b82f3
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pluggy/1.5.0/pluggy-1.5.0-py3-none-any.whl#sha256=44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tqdm/4.67.0/tqdm-4.67.0-py3-none-any.whl#sha256=0cd8af9d56911acab92182e88d763100d4788bdf421d251616040cc4d44863be
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/jellyfish/1.1.0/jellyfish-1.1.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=61a382ba8a3d3cd0bd50029062d54d3a0726679be248789fef6a3901eee47a60
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pydantic-core/2.23.4/pydantic_core-2.23.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=1b84d168f6c48fabd1f2027a3d1bdfe62f92cade1fb273a5d68e621da0e44e6d
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/cffi/1.17.1/cffi-1.17.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=30c5e0cb5ae493c04c8b42916e52ca38079f1b235c2f8ae5f4527b963c401caf
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/rapidfuzz/3.10.1/rapidfuzz-3.10.1-cp311-cp311-macosx_11_0_arm64.whl#sha256=ba7521e072c53e33c384e78615d0718e645cab3c366ecd3cc8cb732befd94967
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/tabulate/0.9.0/tabulate-0.9.0-py3-none-any.whl#sha256=024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/smart-open/6.4.0/smart_open-6.4.0-py3-none-any.whl#sha256=8d3ef7e6997e8e42dd55c74166ed21e6ac70664caa32dd940b26d54a8f6b4142
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/patsy/0.5.6/patsy-0.5.6-py2.py3-none-any.whl#sha256=19056886fd8fa71863fa32f0eb090267f21fb74be00f19f5c70b2e9d76c883c6
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/coverage/7.6.4/coverage-7.6.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=51b44306032045b383a7a8a2c13878de375117946d68dcb54308111f39775a25
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/pydantic-core/2.23.4/pydantic_core-2.23.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=1b84d168f6c48fabd1f2027a3d1bdfe62f92cade1fb273a5d68e621da0e44e6d
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/segtok/1.5.11/segtok-1.5.11-py3-none-any.whl#sha256=910616b76198c3141b2772df530270d3b706e42ae69a5b30ef115c7bd5d1501a
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/cfgv/3.4.0/cfgv-3.4.0-py2.py3-none-any.whl#sha256=b7265b1f29fd3316bfcd2b330d63d024f2bfd8bcb8b0272f8e19a504856c48f9
+DEBUG Transient request failure for: https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/weasel/0.3.4/weasel-0.3.4-py3-none-any.whl#sha256=ee48a944f051d007201c2ea1661d0c41035028c5d5a8bcb29a0b10f1100206ae
+DEBUG Released lock at `/private/tmp/test-uv-codeartifact/.venv/.lock`
+error: Failed to download `weasel==0.3.4`
+  Caused by: Failed to fetch: `https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/weasel/0.3.4/weasel-0.3.4-py3-none-any.whl#sha256=ee48a944f051d007201c2ea1661d0c41035028c5d5a8bcb29a0b10f1100206ae`
+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://test-domain-xxxxxxxxxxxx.d.codeartifact.us-west-2.amazonaws.com/pypi/test/simple/weasel/0.3.4/weasel-0.3.4-py3-none-any.whl#sha256=ee48a944f051d007201c2ea1661d0c41035028c5d5a8bcb29a0b10f1100206ae)
+```
+</details>
+
+Bunch of things I wrote here are guessing - I don't have expertise on how `uv` or CodeArtifact or `pip` or PyPi work (just basic knowledge), so I might be way off here. If so - sorry. 
+
+As a last point - if my working theory is correct - this really does not seem like `uv` bug, but rather CodeArtifact one. However, I don't have a way to report it to AWS easily (if someone does, I am happy to help). Also, since goal of `uv pip` is to be drop-in replacement for `pip` (at least for these kind of use cases) there is probably something that could (or should) be done on `uv` side as well, maybe even special-casing CodeArtifact somehow. 
+
+---
+
+_Comment by @delicb on 2024-11-11 22:12_
+
+Further testing, I did:
+* `uv init`
+* `uv add -r requirements.txt --default-index <code-artifact-index-url>`
+  * this failed ~20 times, for 20 different packages out of 167 total packages, HTTP 500, always different package/version combination
+* repeated `rm -rf .venv && uv cache clean && uv venv -p 3.11 && uv sync --default-index <code-artifact-index-url>` multiple times, not a single failure
+* do the following three times
+  * recreated CodeArtifact repository, start with empty one, still with `pypi` upstream
+  * run `rm -rf .venv && uv cache clean && uv venv -p 3.11 && uv sync --default-index <code-artifact-index-url>`
+    * this failed once (downloading `setuptools`) after which it worked every time. All three times `setuptools` caused the failure
+
+Not sure what to make of it. It seems strange that on fresh CodeArtifact repository `setuptools` failed all three times. 
+
+Also, given that `uv add -r requirements.txt` failed over 20 times and `uv sync` only once seems to indicate that resolving is much more problematic for CodeArtifact compared to downloading artifacts. 
+
+---
+
+_Comment by @thoithoi58 on 2024-11-13 03:11_
+
+I’m experiencing the same issue on CodeArtifact version 0.5.1. Retrying resolves it, but the problem only occurs when packages need to be downloaded from the upstream repository (PyPI). Once they are fetched and stored in CodeArtifact, the issue no longer occurs.
+
+---
+
+_Comment by @zanieb on 2024-11-13 03:56_
+
+Please report these to AWS — these are bugs with the registry.
+
+You could try setting `UV_CONCURRENT_DOWNLOADS` to a smaller value if you think this is caused by our concurrent fetches.
+
+---
+
+_Comment by @iakasa on 2024-11-14 14:02_
+
+FWIW, we just got this from our Amazon rep after reporting the bug:
+
+> Hello,
+>
+> Thank you for your patience while we investigated this issue. Our service team identified an issue with server availability and implemented a fix on Wednesday, November 13, 2024, at 00:58:07 UTC in the us-west-2 region.
+>
+> Could you please check if the issue persists after this time?
+>
+> We apologize for any inconvenience this may have caused and appreciate your understanding. Should you have any further questions or need additional assistance, please don’t hesitate to reach out.
+
+---
+
+_Comment by @delicb on 2024-11-14 14:06_
+
+And I am wondering why I can't reproduce it any more. I just got a way to report it to AWS and tried to reproduce it on another AWS account and I can't. This is the reason :D .
+
+Thanks @iakasa for the update :) .
+
+---
+
+_Comment by @zanieb on 2024-11-14 15:12_
+
+I'll close this then, thanks!
+
+---
+
+_Closed by @zanieb on 2024-11-14 15:12_
+
+---

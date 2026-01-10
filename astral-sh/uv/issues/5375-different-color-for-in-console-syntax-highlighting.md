@@ -1,0 +1,51 @@
+---
+number: 5375
+title: "Different color for `$` in `console` syntax highlighting?"
+type: issue
+state: open
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-07-23T21:10:41Z
+updated_at: 2024-07-23T21:22:49Z
+url: https://github.com/astral-sh/uv/issues/5375
+synced_at: 2026-01-10T01:23:48Z
+---
+
+# Different color for `$` in `console` syntax highlighting?
+
+---
+
+_Issue opened by @zanieb on 2024-07-23 21:10_
+
+<img width="812" alt="Screenshot 2024-07-23 at 4 08 11 PM" src="https://github.com/user-attachments/assets/4a6f2ea5-afba-44da-851d-f232e411d822">
+
+It's all feels a little too similar here. 
+
+Check out this Discord highlighting for comparison:
+
+<img width="812" alt="Screenshot 2024-07-23 at 4 09 13 PM" src="https://github.com/user-attachments/assets/ceb25f61-04ec-47fa-be05-557323048ef1">
+
+Here's GitHub's rendering:
+
+```console
+$ foo # example stuff
+bar
+```
+
+---
+
+_Label `documentation` added by @zanieb on 2024-07-23 21:10_
+
+---
+
+_Renamed from "Different color for `$` in syntax highlighting?" to "Different color for `$` in `console` syntax highlighting?" by @zanieb on 2024-07-23 21:10_
+
+---
+
+_Comment by @BurntSushi on 2024-07-23 21:22_
+
+I like the different color personally. So :+1:
+
+---

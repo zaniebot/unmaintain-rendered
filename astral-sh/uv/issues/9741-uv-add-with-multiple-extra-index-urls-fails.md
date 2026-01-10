@@ -1,0 +1,115 @@
+---
+number: 9741
+title: uv add with multiple (extra-)index-urls fails
+type: issue
+state: closed
+author: legout
+labels: []
+assignees: []
+created_at: 2024-12-09T16:22:23Z
+updated_at: 2025-02-10T11:21:41Z
+url: https://github.com/astral-sh/uv/issues/9741
+synced_at: 2026-01-10T01:24:45Z
+---
+
+# uv add with multiple (extra-)index-urls fails
+
+---
+
+_Issue opened by @legout on 2024-12-09 16:22_
+
+Hi guys,
+
+we have multiple private gitlab repos with its own package index. 
+
+When I try to add two packages to my project, I always get an error, that a package can not be downloaded.
+
+I´ve tried the following:
+
+Add `[[tool.uv.index]]` entries to the pyproject.toml for each package (with and without additional `[tool.uv.sources]`)
+
+```toml
+
+[tool.uv.sources]
+package1 = { index = "package1" }
+package2 = { index = "package2" }
+
+[[tool.uv.index]]
+name = "package1"
+url = "https://token1:secret1@private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/simple"
+
+[[tool.uv.index]]
+name = "package2"
+url = "https://token1:secret1@private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/simple"
+
+```
+
+Set the env variable `UV_EXTRA_INDEX_URL to https://token1:secret1@private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/simple https://token1:secret1@private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/simple` (space seperated both package registries)
+
+Run each add command with its own --index 
+```bash
+uv add package1 --index https://token1:secret1@private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/simple
+uv add package2 --index https://token1:secret1@private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/simple
+```
+
+None of these worked. It alway fails to download one of the packages.
+
+```bash
+error: Failed to fetch: `https://private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/files/5558649d00d348f5f9486dcd7d309cfa9968f06cd0f40bf01fa06e4c758e67ef/package1-0.1.0-py3-none-any.whl#sha256=5558649d00d348f5f9486dcd7d309cfa9968f06cd0f40bf01fa06e4c758e67ef`
+  Caused by: HTTP status client error (404 Not Found) for url (https://private.gitlab-repo.com/api/v4/projects/12345/packages/pypi/files/5558649d00d348f5f9486dcd7d309cfa9968f06cd0f40bf01fa06e4c758e67ef/package1-0.1.0-py3-none-any.whl#sha256=5558649d00d348f5f9486dcd7d309cfa9968f06cd0f40bf01fa06e4c758e67ef)
+```
+
+---
+
+_Comment by @zanieb on 2024-12-09 19:08_
+
+xref https://discord.com/channels/1039017663004942429/1314574704866099300/1314574704866099300
+
+---
+
+_Comment by @hbeukers on 2024-12-09 22:12_
+
+This sounds very familiar, is this the same as my issue in #8565 ?
+
+---
+
+_Comment by @legout on 2024-12-10 09:01_
+
+This is how i got it working.
+
+- Removed the `[tool.uv.sources]` from the pyproject.toml
+- Run `uv lock` before `uv sync` or `uv add`.
+
+---
+
+_Closed by @zanieb on 2025-01-07 19:25_
+
+---
+
+_Comment by @legout on 2025-02-06 07:14_
+
+Hi guys,
+
+unfortunately, this issue isn´t solved for me yet. `uv lock` solves the problem sometimes. Unfortunately, it is completly unpredictable when and how this works. 
+
+@zanieb Can you please reopen this issue?
+
+---
+
+_Comment by @zanieb on 2025-02-08 02:01_
+
+@legout this seems like it should be fixed by #11074 
+
+---
+
+_Comment by @zanieb on 2025-02-08 02:01_
+
+Can you share a clear reproduction on the latest version?
+
+---
+
+_Comment by @legout on 2025-02-10 11:21_
+
+@zanieb I´ve updated uv and it seems to work now. Thanks a lot!
+
+---

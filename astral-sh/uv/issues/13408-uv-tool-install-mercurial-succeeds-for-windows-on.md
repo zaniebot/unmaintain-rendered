@@ -1,0 +1,160 @@
+---
+number: 13408
+title: uv tool install mercurial succeeds for Windows on GitHub Actions but fails to run
+type: issue
+state: open
+author: nth10sd
+labels:
+  - bug
+  - windows
+  - external
+assignees: []
+created_at: 2025-05-12T11:38:32Z
+updated_at: 2025-09-26T13:05:13Z
+url: https://github.com/astral-sh/uv/issues/13408
+synced_at: 2026-01-10T01:25:33Z
+---
+
+# uv tool install mercurial succeeds for Windows on GitHub Actions but fails to run
+
+---
+
+_Issue opened by @nth10sd on 2025-05-12 11:38_
+
+### Summary
+
+I first installed uv via on Windows on GitHub Actions:
+
+```
+Run pip install --upgrade uv
+  pip install --upgrade uv
+  shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+  env:
+    pythonLocation: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.10.11\x64/lib/pkgconfig
+    Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    SSH_AUTH_SOCK: /tmp/ssh-mFNvKyRcmejn/agent.1756
+    SSH_AGENT_PID: 1757
+Requirement already satisfied: uv in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (0.7.3)
+```
+
+I tried installing Mercurial 7.0.2 via `uv tool install`:
+
+```
+$env:PATH = "$env:USERPROFILE`\.local`\bin;$env:PATH" ; uv tool install mercurial ; hg --version -q
+```
+
+And got the following:
+
+```
+Resolved 1 package in 29ms
+Downloading mercurial (6.3MiB)
+ Downloading mercurial
+Prepared 1 package in 749ms
+Installed 1 package in 392ms
+ + mercurial==7.0.2
+Installed 2 executables: hg, hg.exe
+abort: couldn't find mercurial libraries in [C:\Users\runneradmin\.local\bin C:\hostedtoolcache\windows\Python\3.10.11\x64\python310.zip C:\hostedtoolcache\windows\Python\3.10.11\x64\Lib C:\hostedtoolcache\windows\Python\3.10.11\x64\DLLs C:\Users\runneradmin\.local\bin C:\hostedtoolcache\windows\Python\3.10.11\x64 C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages]
+(check your install and PYTHONPATH)
+```
+
+How should the "couldn't find mercurial libraries" message be solved? Mercurial installed via other methods (e.g. choco) seem to run fine.
+
+I'm not sure if this is a uv or a Mercurial or a GitHub Actions runner image issue:
+
+```
+Current runner version: '2.323.0'
+Operating System
+  Microsoft Windows Server 2022
+  10.0.20348
+  Datacenter
+Runner Image
+  Image: windows-2022
+  Version: 20250504.1.0
+  Included Software: https://github.com/actions/runner-images/blob/win22/20250504.1/images/windows/Windows2022-Readme.md
+  Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20250504.1
+Runner Image Provisioner
+  2.0.422.1
+```
+
+### Platform
+
+Windows
+
+### Version
+
+uv 0.7.3
+
+### Python version
+
+Python 3.10.11
+
+---
+
+_Label `bug` added by @nth10sd on 2025-05-12 11:38_
+
+---
+
+_Comment by @konstin on 2025-05-12 11:59_
+
+Does mercurial work after being installed with `pip install mercurial`? This can tell us whether it's a uv bug or a mercurial bug.
+
+---
+
+_Comment by @nth10sd on 2025-05-12 12:08_
+
+It seems to work properly via `pip install`.
+
+```
+Run pip install --upgrade mercurial ; which hg ; hg --version -q || true
+Collecting mercurial
+  Downloading mercurial-7.0.2-cp310-cp310-win_amd64.whl.metadata (2.3 kB)
+Downloading mercurial-7.0.2-cp310-cp310-win_amd64.whl (6.6 MB)
+   ---------------------------------------- 6.6/6.6 MB 101.2 MB/s eta 0:00:00
+Installing collected packages: mercurial
+Successfully installed mercurial-7.0.2
+/c/hostedtoolcache/windows/Python/3.10.11/x64/Scripts/hg
+Mercurial Distributed SCM (version 7.0.2)
+```
+
+---
+
+_Comment by @nth10sd on 2025-05-12 12:19_
+
+```
+$env:PATH = "$env:pythonLocation`\Scripts;$env:PATH" ; uv tool install mercurial ; hg --version -q || true
+```
+
+Didn't seem to work either. Neither did `uv tool update-shell`.
+
+---
+
+_Label `windows` added by @konstin on 2025-05-12 12:33_
+
+---
+
+_Assigned to @Gankra by @Gankra on 2025-06-12 16:59_
+
+---
+
+_Unassigned @Gankra by @konstin on 2025-09-26 12:55_
+
+---
+
+_Referenced in [astral-sh/uv#16034](../../astral-sh/uv/issues/16034.md) on 2025-09-26 13:04_
+
+---
+
+_Comment by @konstin on 2025-09-26 13:04_
+
+This seems to be an upstream bug: https://foss.heptapod.net/mercurial/mercurial-devel/-/issues/6635.
+
+As a workaround, `python -m mercurial` works.
+
+---
+
+_Label `external` added by @konstin on 2025-09-26 13:05_
+
+---

@@ -1,0 +1,122 @@
+---
+number: 2994
+title: D415 not triggering when it should
+type: issue
+state: closed
+author: cazador481
+labels: []
+assignees: []
+created_at: 2023-02-17T18:31:26Z
+updated_at: 2023-02-17T23:44:10Z
+url: https://github.com/astral-sh/ruff/issues/2994
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# D415 not triggering when it should
+
+---
+
+_Issue opened by @cazador481 on 2023-02-17 18:31_
+
+# Code snippet
+```python
+def create_and_verify_testrun_entries(
+    nvregress_post_client,
+    nvregress_crud_client,
+    nvregress_project,
+    regression_run_data=sample_regression_run_data,
+    test_run_data=sample_test_run_data,
+):
+    """Create testrun entries in NVRegress and verify that those
+    entries can be read back.
+
+    regression_run_data is layered on top of minimal_regression_run_data
+    """
+    pass
+```
+# Expected Results:
+I expect the docstring to cause a  D415 error but it isn't.
+What flake8 shows
+```sh
+poetry run flake8 --select D415 test.py
+test.py:8:1: D415 First line should end with a period, question mark, or exclamation point
+```
+# Actual results
+```sh
+ poetry run ruff --select D415 test.py
+
+```
+
+# poetry version
+```sh
+poetry run ruff --version
+ruff 0.0.247
+```
+
+# pyproject.toml
+```toml
+
+[tool.ruff.pycodestyle]
+max-doc-length = 120
+
+[tool.ruff]
+line-length = 120
+exclude = [".venv"]
+ignore = [
+    "D105",
+    "D107",
+    "D401",
+    "E501",
+    "W505",
+]
+select = [
+    "B",
+    # "C",
+    "D",
+    "E",
+    "F",
+    "N",
+    "W",
+]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.per-file-ignores]
+"dejavu/__init__.py" = ["F401"]
+```
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-17 18:56_
+
+This is actually an intentional deviation. We look for the first logical line, rather than the first physical line (so you should see an error if you remove the period from `back.`).
+
+---
+
+_Comment by @cazador481 on 2023-02-17 19:11_
+
+Thanks for the info.  Is that deviation documented anywhere?
+
+---
+
+_Comment by @charliermarsh on 2023-02-17 20:58_
+
+I don't think so, but it will be documented when we add documentation for that rule specifically.
+
+---
+
+_Closed by @charliermarsh on 2023-02-17 23:44_
+
+---

@@ -1,0 +1,155 @@
+---
+number: 6371
+title: "`uv lock` collapses relative paths to editable builds in monorepo, breaks `uv sync`"
+type: issue
+state: closed
+author: leddy231
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-21T19:17:10Z
+updated_at: 2024-08-24T02:19:12Z
+url: https://github.com/astral-sh/uv/issues/6371
+synced_at: 2026-01-10T01:23:59Z
+---
+
+# `uv lock` collapses relative paths to editable builds in monorepo, breaks `uv sync`
+
+---
+
+_Issue opened by @leddy231 on 2024-08-21 19:17_
+
+Hi there! Excited to move our monorepo from poetry to uv.
+
+There seems to be an issue with relative paths for editable installs in the lockfiles.
+Using the following demo structure:
+```
+root
+├-libs
+│  ├-liba
+│  └-libb
+└-projects
+   └-projecta
+```
+liba, libb, and projecta created with `uv init`
+
+libb depends on liba with an editable install
+```pyproject.toml
+dependencies = [
+    "liba"
+]
+
+[tool.uv.sources]
+liba = { path = "../../libs/liba", editable = true }
+```
+When locking libb with `uv lock` the path is resolved correctly, but also collapsed in the lockfile
+```toml
+[[package]]
+name = "liba"
+version = "0.1.0"
+source = { editable = "../liba" }
+```
+This works fine since the path it correct.
+
+However this does not work for projecta, which depends on libb:
+```pyproject.toml
+dependencies = [
+    "libb"
+]
+
+[tool.uv.sources]
+libb = { path = "../../libs/libb", editable = true }
+```
+
+uv lock produces this lockfile:
+```toml
+version = 1
+requires-python = ">=3.12"
+
+[[package]]
+name = "liba"
+version = "0.1.0"
+source = { editable = "../liba" }
+
+[[package]]
+name = "libb"
+version = "0.1.0"
+source = { editable = "../../libs/libb" }
+dependencies = [
+    { name = "liba" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "liba", editable = "../liba" }]
+
+[[package]]
+name = "projecta"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "libb" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "libb", editable = "../../libs/libb" }]
+```
+
+Where the collapsed relative path is still used for liba, which no longer works.
+This makes `uv sync` fail:
+```
+error: Failed to determine installation plan
+  Caused by: Distribution not found at: file:///home/martin/uv_monorepo_bug/projects/liba
+```
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-08-21 19:26_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-21 19:26_
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 19:28_
+
+Thanks, I'll take a look!
+
+---
+
+_Comment by @charliermarsh on 2024-08-21 19:46_
+
+Agree this is a bug, just reproduced.
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2024-08-22 00:46_
+
+---
+
+_Comment by @charliermarsh on 2024-08-22 00:47_
+
+@konstin -- Do you mind taking a look at this in the morning?
+
+---
+
+_Assigned to @konstin by @konstin on 2024-08-22 07:48_
+
+---
+
+_Referenced in [astral-sh/uv#6438](../../astral-sh/uv/pulls/6438.md) on 2024-08-22 14:08_
+
+---
+
+_Referenced in [astral-sh/uv#6490](../../astral-sh/uv/pulls/6490.md) on 2024-08-23 20:49_
+
+---
+
+_Closed by @charliermarsh on 2024-08-24 02:19_
+
+---
+
+_Closed by @charliermarsh on 2024-08-24 02:19_
+
+---

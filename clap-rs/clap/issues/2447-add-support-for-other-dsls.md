@@ -1,0 +1,70 @@
+---
+number: 2447
+title: Add support for other DSLs
+type: issue
+state: closed
+author: throwaway1037
+labels: []
+assignees: []
+created_at: 2021-04-20T15:12:31Z
+updated_at: 2021-04-20T15:21:34Z
+url: https://github.com/clap-rs/clap/issues/2447
+synced_at: 2026-01-10T01:27:17Z
+---
+
+# Add support for other DSLs
+
+---
+
+_Issue opened by @throwaway1037 on 2021-04-20 15:12_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+It would be good if the programmer could use other DSLs (data serialisation langauges) other than YAML, such as RON, JSON, TOML, etc.
+
+I would very much like to use RON or JSON instead of YAML.
+
+### Describe the solution you'd like
+
+There is a `ron` crate and I believe `serde` supports it.
+
+I think DSL support should only cost compile-time and be baked into the binary, with no cost at runtime since it's essentially a declarative specification of the command-line arguments for the program.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @throwaway1037 on 2021-04-20 15:12_
+
+---
+
+_Comment by @pksunkara on 2021-04-20 15:16_
+
+How did you not find https://github.com/clap-rs/clap/issues/1630? What were the terms you searched for?
+
+---
+
+_Closed by @pksunkara on 2021-04-20 15:16_
+
+---
+
+_Label `R: duplicate` added by @pksunkara on 2021-04-20 15:16_
+
+---
+
+_Comment by @throwaway1037 on 2021-04-20 15:21_
+
+I apologise. I searched for "support" because I expected something like "Add support for XYZ."
+
+---

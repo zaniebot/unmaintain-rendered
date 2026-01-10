@@ -1,0 +1,71 @@
+---
+number: 17049
+title: "Advice on sharing user's uv cache between non-docker and docker"
+type: issue
+state: open
+author: rzuckerm
+labels:
+  - question
+assignees: []
+created_at: 2025-12-09T17:16:34Z
+updated_at: 2025-12-11T16:53:08Z
+url: https://github.com/astral-sh/uv/issues/17049
+synced_at: 2026-01-10T01:26:13Z
+---
+
+# Advice on sharing user's uv cache between non-docker and docker
+
+---
+
+_Issue opened by @rzuckerm on 2025-12-09 17:16_
+
+### Question
+
+Our current poetry-based system supports both non-docker and docker mode. In non-docker mode, poetry commands and other tools run on the host system, and the user's poetry cache is used. In docker mode, a per-project directory holds the user's poetry cache, and poetry commands and other tools run in a docker container. The docker container could be running a vastly different Linux distros than the host system.
+
+I am trying to convert our poetry-based system to uv, and I would like some advice on whether the user's uv cache can be safely mounted in the docker container, or do I need to continue using the per-project directory to hold the uv cache? I'm concerned about how big the uv cache gets, and if I have to do per-project, then that could add a significant amount of space requirements for our users.
+
+### Platform
+
+Ubuntu 24.04 amd64
+
+### Version
+
+0.9.16
+
+---
+
+_Label `question` added by @rzuckerm on 2025-12-09 17:16_
+
+---
+
+_Comment by @konstin on 2025-12-11 10:34_
+
+A problem can be permissions, if docker runs with root, or as a different UID/GID as the local user, and the local session runs as non-root with their specific UID/GID, sharing the cache could lead to one that the other one can't read. Different linux distros shouldn't be a problem, the cache is keyed by wheel tag.
+
+If the having two caches isn't a critical space issue, I'd start with the cache mount guide at https://docs.astral.sh/uv/guides/integration/docker/#caching.
+
+---
+
+_Comment by @rzuckerm on 2025-12-11 12:55_
+
+@konstin Thanks for the information. We run our docker containers as the current user, so permissions and UID/GID should not be an issue.
+
+With regard to the docker caching user guide, we're not building docker images. Instead, we use pre-built docker images for the base functionality that most projects need (or the project provides it's own pre-built docker image when additional functionality is needed). Then, our build system runs the appropriate command in a docker container like this:
+```
+docker run <interactive and terminal options as appropriate> --rm \
+  -u <UID>:<GID> <all user groups> \
+  -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v <pwd>:/local <other volume mounts> \
+  -w /local \
+  <environment variables> \
+  <docker image>:<tag> \
+  <command> <args>
+```
+
+---
+
+_Comment by @konstin on 2025-12-11 16:53_
+
+If the permissions match, you can mount the uv cache into the container to share it.
+
+---

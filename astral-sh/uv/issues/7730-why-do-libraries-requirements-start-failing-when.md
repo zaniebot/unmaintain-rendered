@@ -1,0 +1,134 @@
+---
+number: 7730
+title: "Why do libraries requirements start failing when specifying python version in `uv run`?"
+type: issue
+state: closed
+author: gitgithan
+labels:
+  - question
+assignees: []
+created_at: 2024-09-27T05:57:48Z
+updated_at: 2024-09-28T19:10:12Z
+url: https://github.com/astral-sh/uv/issues/7730
+synced_at: 2026-01-10T01:24:18Z
+---
+
+# Why do libraries requirements start failing when specifying python version in `uv run`?
+
+---
+
+_Issue opened by @gitgithan on 2024-09-27 05:57_
+
+demo.py tweaked from docs with more prints: 
+
+```
+import requests
+from rich.pretty import pprint
+import sys
+
+print(sys.version)
+
+import importlib.metadata
+
+rich_version = importlib.metadata.version("rich")
+print("Rich Version: ", rich_version)
+
+resp = requests.get("https://peps.python.org/api/peps.json")
+data = resp.json()
+pprint([(k, v["title"]) for k, v in data.items()][:10])
+```
+
+Successful command: `uv run test_uv/demo.py `
+Failed command: `uv run --python 3.10 test_uv/demo.py`
+
+
+Successful Output: 
+```
+3.8.10 (default, Nov 22 2023, 10:22:35) 
+[GCC 9.4.0]
+Rich Version:  13.7.1
+[
+│   ('1', 'PEP Purpose and Guidelines'),
+│   ('2', 'Procedure for Adding New Modules'),
+│   ('3', 'Guidelines for Handling Bug Reports'),
+│   ('4', 'Deprecation of Standard Modules'),
+│   ('5', 'Guidelines for Language Evolution'),
+│   ('6', 'Bug Fix Releases'),
+│   ('7', 'Style Guide for C Code'),
+│   ('8', 'Style Guide for Python Code'),
+│   ('9', 'Sample Plaintext PEP Template'),
+│   ('10', 'Voting Guidelines')
+]
+```
+Failed Output:
+```
+Traceback (most recent call last):
+  File "/home/hanqi/code/test_search/test_uv/demo.py", line 2, in <module>
+    from rich.pretty import pprint
+ModuleNotFoundError: No module named 'rich'
+```
+I had to do `uv run --with rich --with requests --python 3.10 test_uv/demo.py`
+to get 
+```
+3.10.14 (main, Apr  6 2024, 18:45:05) [GCC 9.4.0]
+Rich Version:  13.8.1
+[
+│   ('1', 'PEP Purpose and Guidelines'),
+│   ('2', 'Procedure for Adding New Modules'),
+│   ('3', 'Guidelines for Handling Bug Reports'),
+│   ('4', 'Deprecation of Standard Modules'),
+│   ('5', 'Guidelines for Language Evolution'),
+│   ('6', 'Bug Fix Releases'),
+│   ('7', 'Style Guide for C Code'),
+│   ('8', 'Style Guide for Python Code'),
+│   ('9', 'Sample Plaintext PEP Template'),
+│   ('10', 'Voting Guidelines')
+]
+```
+
+--- 
+**Questions**
+1. Why does adding --python make uv stop creating temporary vm with all requirements automatically installed?
+2. My `demo.py` has no  `# /// script` section so how did `uv run` even work without --with in the 1st success case?
+3. Why was the default python used by `uv run` 3.8.10?
+- I read https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions but have trouble mapping 3.8.10 to 1 of the 3 bullet points. Is that the right place to look? I see `uv python find` returns `/usr/bin/python3` and `/usr/bin/python3 -V` is `Python 3.8.10`  
+
+Here is `uv python list --only-installed`:
+```
+cpython-3.13.0rc2-linux-x86_64-gnu    /home/hanqi/.local/share/uv/python/cpython-3.13.0rc2-linux-x86_64-gnu/bin/python3 -> python3.13
+cpython-3.10.14-linux-x86_64-gnu      /usr/bin/python3.10
+cpython-3.10.14-linux-x86_64-gnu      /usr/bin/python -> /etc/alternatives/python
+cpython-3.10.14-linux-x86_64-gnu      /bin/python3.10
+cpython-3.10.14-linux-x86_64-gnu      /bin/python -> /etc/alternatives/python
+cpython-3.8.10-linux-x86_64-gnu       /usr/bin/python3.8
+cpython-3.8.10-linux-x86_64-gnu       /usr/bin/python3 -> python3.8
+cpython-3.8.10-linux-x86_64-gnu       /bin/python3.8
+cpython-3.8.10-linux-x86_64-gnu       /bin/python3 -> python3.8
+```
+
+uv platform: WSL2
+uv version: uv 0.4.15
+
+---
+
+_Comment by @charliermarsh on 2024-09-27 12:29_
+
+If you do `uv run --python 3.10 test_uv/demo.py`, we likely had to create a virtual environment to satisfy that Python version, but there's nothing telling us to install those dependencies, so they're not present. The first case may have succeeded as `uv run` will use the `.venv` in the current directory by default. Perhaps it contained those dependencies already.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-27 12:29_
+
+---
+
+_Closed by @charliermarsh on 2024-09-28 19:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-28 19:10_
+
+---
+
+_Referenced in [astral-sh/uv#7890](../../astral-sh/uv/issues/7890.md) on 2024-10-03 08:27_
+
+---

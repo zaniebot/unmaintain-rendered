@@ -1,0 +1,142 @@
+---
+number: 6760
+title: "Formatter: Allow two empty lines after `import`"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+assignees: []
+created_at: 2023-08-22T09:17:24Z
+updated_at: 2023-08-22T16:27:42Z
+url: https://github.com/astral-sh/ruff/issues/6760
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Formatter: Allow two empty lines after `import`
+
+---
+
+_Issue opened by @MichaReiser on 2023-08-22 09:17_
+
+Black requires at least one empty line after an `import` statement but allows up to two empty lines. Ruff enforces one empty line
+
+```python
+import django.core.checks.urls  # NOQA isort:skip
+
+
+__all__ = [
+    "CheckMessage",
+    "Debug",
+    "Info",
+    "Warning",
+    "Error",
+    "Critical",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
+    "register",
+    "run_checks",
+    "tag_exists",
+    "Tags",
+]
+```
+
+## Actual
+
+```python
+import django.core.checks.urls  # NOQA isort:skip
+
+__all__ = [
+    "CheckMessage",
+    "Debug",
+    "Info",
+    "Warning",
+    "Error",
+    "Critical",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
+    "register",
+    "run_checks",
+    "tag_exists",
+    "Tags",
+]
+```
+
+## Expected
+
+```python
+import django.core.checks.urls  # NOQA isort:skip
+
+
+__all__ = [
+    "CheckMessage",
+    "Debug",
+    "Info",
+    "Warning",
+    "Error",
+    "Critical",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
+    "register",
+    "run_checks",
+    "tag_exists",
+    "Tags",
+]
+```
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-08-22 09:17_
+
+---
+
+_Comment by @MichaReiser on 2023-08-22 09:17_
+
+Or is this intentional @charliermarsh ?
+
+---
+
+_Comment by @charliermarsh on 2023-08-22 13:10_
+
+No, I believe this is a bug.
+
+---
+
+_Comment by @charliermarsh on 2023-08-22 13:11_
+
+The "allows at least two" should be the normal tolerance level though -- so if the import is in a nested block, it should be "at least one, allows one". If it's at the top level, it should be "at least one, allows two".
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-08-22 14:15_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-08-22 15:31_
+
+---
+
+_Referenced in [astral-sh/ruff#6777](../../astral-sh/ruff/pulls/6777.md) on 2023-08-22 15:55_
+
+---
+
+_Removed from milestone `Formatter: Beta` by @MichaReiser on 2023-08-22 16:18_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-08-22 16:18_
+
+---
+
+_Closed by @charliermarsh on 2023-08-22 16:27_
+
+---

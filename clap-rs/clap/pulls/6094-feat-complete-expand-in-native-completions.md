@@ -1,0 +1,37 @@
+---
+number: 6094
+title: "feat(complete): Expand ~ in native completions"
+type: pull_request
+state: merged
+author: epage
+labels: []
+assignees: []
+merged: true
+base: master
+head: home
+created_at: 2025-08-07T21:11:33Z
+updated_at: 2025-08-07T21:27:43Z
+url: https://github.com/clap-rs/clap/pull/6094
+synced_at: 2026-01-10T01:28:27Z
+---
+
+# feat(complete): Expand ~ in native completions
+
+---
+
+_Pull request opened by @epage on 2025-08-07 21:11_
+
+This is part of #6069
+
+<!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+
+---

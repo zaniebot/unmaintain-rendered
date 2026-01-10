@@ -1,0 +1,100 @@
+---
+number: 7058
+title: "Panicked at 'byte index 220 is not a char boundary; it is inside '�' (bytes 218..221) "
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2023-09-02T06:12:55Z
+updated_at: 2023-09-14T18:58:40Z
+url: https://github.com/astral-sh/ruff/issues/7058
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# Panicked at 'byte index 220 is not a char boundary; it is inside '�' (bytes 218..221) 
+
+---
+
+_Issue opened by @qarmin on 2023-09-02 06:12_
+
+Ruff 0.0.287 (latest changes from main branch)
+
+```
+ruff  *.py --select  D209 --no-cache
+```
+
+file content:
+```
+def raiseSoapError(e):
+    def GetParamTipoExpo(self):
+        "Recuperar lista de valores referenciales de c�digos de Tipo de \
+        exportaci�n"
+```
+
+error:
+```
+panicked at 'byte index 220 is not a char boundary; it is inside '�' (bytes 218..221) of `def raiseSoapError(e):
+    raise COMException(
+        source=u"SOAP "+unicode(e.faultcode))
+    def GetParamTipoExpo(self):
+        "Recuperar lista de valores referenciales de c�digos de Tipo de \
+        exportaci�n"`', /home/rafal/test/ruff/crates/ruff_source_file/src/locator.rs:447:10
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/alloc/src/boxed.rs:2007:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:597:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:67:14
+   7: core::str::slice_error_fail_rt
+   8: core::str::slice_error_fail
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/str/mod.rs:87:9
+   9: ruff::linter::lint_fix
+  10: ruff_cli::diagnostics::lint_path
+  11: rayon::iter::plumbing::bridge_producer_consumer::helper
+  12: ruff_cli::commands::check::check
+  13: ruff_cli::check
+  14: ruff_cli::run
+  15: ruff::main
+  16: std::sys_common::backtrace::__rust_begin_short_backtrace
+  17: main
+  18: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  19: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  20: _start
+```
+
+[452151.py.zip](https://github.com/astral-sh/ruff/files/12503283/452151.py.zip)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-09-02 08:09_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2023-09-02 08:09_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-14 18:41_
+
+---
+
+_Referenced in [astral-sh/ruff#7392](../../astral-sh/ruff/pulls/7392.md) on 2023-09-14 18:48_
+
+---
+
+_Closed by @charliermarsh on 2023-09-14 18:58_
+
+---

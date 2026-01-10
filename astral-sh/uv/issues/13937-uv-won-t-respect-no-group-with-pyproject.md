@@ -1,0 +1,292 @@
+---
+number: 13937
+title: "uv won't respect --no-group with pyproject dependency groups"
+type: issue
+state: open
+author: labeleddata
+labels:
+  - question
+assignees: []
+created_at: 2025-06-10T02:03:52Z
+updated_at: 2025-06-11T09:03:55Z
+url: https://github.com/astral-sh/uv/issues/13937
+synced_at: 2026-01-10T01:25:40Z
+---
+
+# uv won't respect --no-group with pyproject dependency groups
+
+---
+
+_Issue opened by @labeleddata on 2025-06-10 02:03_
+
+### Summary
+
+Hi,
+I am trying to set up my pyproject to include pacakages that depend on GPU (which I don't have locally). 
+I've tried a few variants but uv always tries to resolve these pacakages and fails (I am on mac). 
+It ends up  trying to and failing to resolve the `gpu` group 
+## Minimal pyproject.toml
+```toml
+
+
+
+
+
+# Add NVIDIA PyPI index for TensorRT-LLM
+[tool.uv]
+index-url = "https://pypi.org/simple"
+extra-index-url = ["https://pypi.nvidia.com"]
+
+[project]
+name = "minimal-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+
+dependencies = [
+    "typing_extensions>=4.0.0",
+]
+
+[dependency-groups]
+gpu = [
+    "tensorrt",
+]
+```
+
+## Output of uv tree  `uv tree --no-group ptc-gpu --verbose 2>&1 | pbcopy` 
+
+```
+DEBUG uv 0.7.12 (Homebrew 2025-06-06)
+DEBUG Found workspace root: `/private/tmp/b`
+DEBUG Adding root workspace member: `/private/tmp/b`
+DEBUG No Python version file found in workspace: /private/tmp/b
+DEBUG Using Python request `>=3.10` from `requires-python` metadata
+DEBUG Checking for Python environment at `.venv`
+DEBUG Searching for Python >=3.10 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/tal/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.11.11-macos-aarch64-none`
+DEBUG Found `cpython-3.11.11-macos-aarch64-none` at `/Users/tal/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11` (managed installations)
+Using CPython 3.11.11
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: minimal-example @ file:///private/tmp/b
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.11.11
+DEBUG Solving with target Python version: >=3.10
+DEBUG Adding direct dependency: minimal-example*
+DEBUG Adding direct dependency: minimal-example:gpu*
+DEBUG Searching for a compatible version of minimal-example @ file:///private/tmp/b (*)
+DEBUG Adding direct dependency: typing-extensions>=4.0.0
+DEBUG Searching for a compatible version of minimal-example @ file:///private/tmp/b (*)
+DEBUG Adding direct dependency: minimal-example:gpu==0.1.0
+DEBUG Searching for a compatible version of minimal-example @ file:///private/tmp/b (==0.1.0)
+DEBUG Adding direct dependency: tensorrt*
+DEBUG No cache entry for: https://pypi.nvidia.com/typing-extensions/
+DEBUG No cache entry for: https://pypi.nvidia.com/tensorrt/
+DEBUG Acquired lock for `/Users/tal/.cache/uv/sdists-v9/index/465242f9c20e7003/tensorrt/10.11.0.33`
+DEBUG No cache entry for: https://pypi.nvidia.com/tensorrt/tensorrt-10.11.0.33.tar.gz
+DEBUG No netrc file found
+DEBUG Found fresh response for: https://pypi.org/simple/typing-extensions/
+DEBUG Searching for a compatible version of typing-extensions (>=4.0.0)
+DEBUG Selecting: typing-extensions==4.14.0 [compatible] (typing_extensions-4.14.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/69/e0/552843e0d356fbb5256d21449fa957fa4eff3bbc135a74a691ee70c7c5da/typing_extensions-4.14.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of tensorrt (*)
+DEBUG Selecting: tensorrt==10.11.0.33 [compatible] (tensorrt-10.11.0.33.tar.gz)
+DEBUG Downloading source distribution: tensorrt==10.11.0.33
+DEBUG No `pyproject.toml` available for: tensorrt==10.11.0.33
+DEBUG No static `PKG-INFO` available for: tensorrt==10.11.0.33 (PkgInfo(UnsupportedMetadataVersion("2.1")))
+DEBUG Preparing metadata for: tensorrt==10.11.0.33
+DEBUG Assessing Python executable as base candidate: /Users/tal/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+DEBUG Using base executable for virtual environment: /Users/tal/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.11.11
+DEBUG Solving with target Python version: >=3.11.11
+DEBUG Adding direct dependency: setuptools>=40.8.0
+DEBUG No cache entry for: https://pypi.nvidia.com/setuptools/
+DEBUG Found fresh response for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=40.8.0)
+DEBUG Selecting: setuptools==80.9.0 [compatible] (setuptools-80.9.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG marker environment resolution took 0.239s
+DEBUG Installing in setuptools==80.9.0 in /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP
+DEBUG Registry requirement already cached: setuptools==80.9.0
+DEBUG Installing build requirement: setuptools==80.9.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+DEBUG /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/lib/python3.11/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+DEBUG !!
+DEBUG 
+DEBUG         ********************************************************************************
+DEBUG         Please consider removing the following classifiers in favor of a SPDX license expression:
+DEBUG 
+DEBUG         License :: Other/Proprietary License
+DEBUG 
+DEBUG         See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+DEBUG         ********************************************************************************
+DEBUG 
+DEBUG !!
+DEBUG   self._finalize_license_expression()
+DEBUG running egg_info
+DEBUG writing tensorrt.egg-info/PKG-INFO
+DEBUG writing dependency_links to tensorrt.egg-info/dependency_links.txt
+DEBUG writing requirements to tensorrt.egg-info/requires.txt
+DEBUG writing top-level names to tensorrt.egg-info/top_level.txt
+DEBUG reading manifest file 'tensorrt.egg-info/SOURCES.txt'
+DEBUG adding license file 'LICENSE.txt'
+DEBUG writing manifest file 'tensorrt.egg-info/SOURCES.txt'
+DEBUG Calling `setuptools.build_meta:__legacy__.prepare_metadata_for_build_wheel()`
+DEBUG /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/lib/python3.11/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+DEBUG !!
+DEBUG 
+DEBUG         ********************************************************************************
+DEBUG         Please consider removing the following classifiers in favor of a SPDX license expression:
+DEBUG 
+DEBUG         License :: Other/Proprietary License
+DEBUG 
+DEBUG         See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+DEBUG         ********************************************************************************
+DEBUG 
+DEBUG !!
+DEBUG   self._finalize_license_expression()
+DEBUG running dist_info
+DEBUG creating /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info
+DEBUG writing /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/PKG-INFO
+DEBUG writing dependency_links to /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/dependency_links.txt
+DEBUG writing requirements to /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/requires.txt
+DEBUG writing top-level names to /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/top_level.txt
+DEBUG writing manifest file '/Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/SOURCES.txt'
+DEBUG adding license file 'LICENSE.txt'
+DEBUG writing manifest file '/Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt.egg-info/SOURCES.txt'
+DEBUG creating '/Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/metadata_directory/tensorrt-10.11.0.33.dist-info'
+DEBUG /Users/tal/.cache/uv/builds-v0/.tmp8RpNeP/lib/python3.11/site-packages/setuptools/_distutils/cmd.py:135: SetuptoolsDeprecationWarning: bdist_wheel.universal is deprecated
+DEBUG !!
+DEBUG 
+DEBUG         ********************************************************************************
+DEBUG         With Python 2.7 end-of-life, support for building universal wheels
+DEBUG         (i.e., wheels that support both Python 2 and Python 3)
+DEBUG         is being obviated.
+DEBUG         Please discontinue using this option, or if you still need it,
+DEBUG         file an issue with pypa/setuptools describing your use case.
+DEBUG 
+DEBUG         By 2025-Aug-30, you need to update your project and remove deprecated calls
+DEBUG         or your builds will no longer be supported.
+DEBUG         ********************************************************************************
+DEBUG 
+DEBUG !!
+DEBUG   self.finalize_options()
+DEBUG Prepared metadata for: tensorrt==10.11.0.33
+DEBUG Released lock at `/Users/tal/.cache/uv/sdists-v9/index/465242f9c20e7003/tensorrt/10.11.0.33/.lock`
+DEBUG Adding transitive dependency for tensorrt==10.11.0.33: tensorrt-cu12>=10.11.0.33, <10.11.0.33+
+DEBUG No cache entry for: https://pypi.nvidia.com/tensorrt-cu12/
+DEBUG Searching for a compatible version of tensorrt-cu12 (>=10.11.0.33, <10.11.0.33+)
+DEBUG Selecting: tensorrt-cu12==10.11.0.33 [compatible] (tensorrt_cu12-10.11.0.33.tar.gz)
+DEBUG Acquired lock for `/Users/tal/.cache/uv/sdists-v9/index/465242f9c20e7003/tensorrt-cu12/10.11.0.33`
+DEBUG No cache entry for: https://pypi.nvidia.com/tensorrt-cu12/tensorrt_cu12-10.11.0.33.tar.gz
+DEBUG Downloading source distribution: tensorrt-cu12==10.11.0.33
+DEBUG No `pyproject.toml` available for: tensorrt-cu12==10.11.0.33
+DEBUG No static `PKG-INFO` available for: tensorrt-cu12==10.11.0.33 (PkgInfo(UnsupportedMetadataVersion("2.1")))
+DEBUG Preparing metadata for: tensorrt-cu12==10.11.0.33
+DEBUG Assessing Python executable as base candidate: /Users/tal/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+DEBUG Using base executable for virtual environment: /Users/tal/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Installing in setuptools==80.9.0 in /Users/tal/.cache/uv/builds-v0/.tmpzOMPBX
+DEBUG Registry requirement already cached: setuptools==80.9.0
+DEBUG Installing build requirement: setuptools==80.9.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
+DEBUG Traceback (most recent call last):
+DEBUG   File "<string>", line 14, in <module>
+DEBUG   File "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py", line 331, in get_requires_for_build_wheel
+DEBUG     return self._get_build_requires(config_settings, requirements=[])
+DEBUG            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+DEBUG   File "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+DEBUG     self.run_setup()
+DEBUG   File "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py", line 512, in run_setup
+DEBUG     super().run_setup(setup_script=setup_script)
+DEBUG   File "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py", line 317, in run_setup
+DEBUG     exec(code, locals())
+DEBUG   File "<string>", line 65, in <module>
+DEBUG RuntimeError: TensorRT currently only builds wheels for Linux and Windows
+DEBUG Released lock at `/Users/tal/.cache/uv/sdists-v9/index/465242f9c20e7003/tensorrt-cu12/10.11.0.33/.lock`
+  × Failed to build `tensorrt-cu12==10.11.0.33`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File
+      "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 301, in _get_build_requires
+          self.run_setup()
+        File
+      "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      "/Users/tal/.cache/uv/builds-v0/.tmpzOMPBX/lib/python3.11/site-packages/setuptools/build_meta.py",
+      line 317, in run_setup
+          exec(code, locals())
+        File "<string>", line 65, in <module>
+      RuntimeError: TensorRT currently only builds wheels for Linux and Windows
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12` (v10.11.0.33) was included because `minimal-example:gpu` (v0.1.0)
+        depends on `tensorrt` (v10.11.0.33) which depends on `tensorrt-cu12==10.11.0.33`
+
+```
+
+### Platform
+
+Darwin 24.5.0 arm64
+
+### Version
+
+uv 0.7.12 (Homebrew 2025-06-06)
+
+### Python version
+
+3.11 3.12 
+
+---
+
+_Label `bug` added by @labeleddata on 2025-06-10 02:03_
+
+---
+
+_Assigned to @Gankra by @konstin on 2025-06-10 09:23_
+
+---
+
+_Unassigned @Gankra by @konstin on 2025-06-10 09:31_
+
+---
+
+_Comment by @konstin on 2025-06-10 09:34_
+
+Does https://docs.astral.sh/uv/reference/troubleshooting/build-failures/ help for your case?
+
+---
+
+_Label `bug` removed by @konstin on 2025-06-10 09:34_
+
+---
+
+_Label `question` added by @konstin on 2025-06-10 09:34_
+
+---
+
+_Comment by @labeleddata on 2025-06-11 09:03_
+
+It seems like [dependency-metadata](https://docs.astral.sh/uv/reference/settings/#dependency-metadata) does the trick. 
+
+I will make sure all works and close the issue / update 
+
+---

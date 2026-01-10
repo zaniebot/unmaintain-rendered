@@ -1,0 +1,54 @@
+---
+number: 16244
+title: Upgrade the host machine for the release workflow
+type: issue
+state: open
+author: dhruvmanila
+labels:
+  - release
+  - upstream
+assignees: []
+created_at: 2025-02-19T04:07:37Z
+updated_at: 2025-02-19T05:35:16Z
+url: https://github.com/astral-sh/ruff/issues/16244
+synced_at: 2026-01-10T01:22:57Z
+---
+
+# Upgrade the host machine for the release workflow
+
+---
+
+_Issue opened by @dhruvmanila on 2025-02-19 04:07_
+
+### Description
+
+Currently we use `ubuntu-20.04`:
+
+https://github.com/astral-sh/ruff/blob/877c1066d3373f9089e71a15123b769d924ff2a6/.github/workflows/release.yml#L53
+
+But, it's deprecated and will be removed soon: https://github.com/actions/runner-images/issues/11101
+
+Note that the `release.yml` is auto-generated via `cargo-dist` (https://github.com/axodotdev/cargo-dist/issues/1760).
+
+This shouldn't block any releases in February but they could fail in March given the brownout periods:
+
+> The Ubuntu 20.04 runner image will be fully unsupported by April 1, 2025. To raise awareness of the upcoming removal, we will temporarily fail jobs using Ubuntu 20.04. Builds that are scheduled to run during the brownout periods will fail. The brownouts are scheduled for the following dates and times:
+>
+> March 4 14:00 UTC – 22:00 UTC
+> March 11 13:00 UTC – 21:00 UTC
+> March 18 13:00 UTC – 21:00 UTC
+> March 25 13:00 UTC – 21:00 UTC
+
+---
+
+_Label `release` added by @dhruvmanila on 2025-02-19 04:07_
+
+---
+
+_Label `upstream` added by @dhruvmanila on 2025-02-19 05:35_
+
+---
+
+_Referenced in [astral-sh/ruff#16245](../../astral-sh/ruff/pulls/16245.md) on 2025-02-19 06:40_
+
+---

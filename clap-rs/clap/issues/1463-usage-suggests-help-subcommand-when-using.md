@@ -1,0 +1,159 @@
+---
+number: 1463
+title: Usage suggests help subcommand when using DisableHelpSubcommand
+type: issue
+state: closed
+author: EliSnow
+labels:
+  - C-bug
+  - A-help
+  - E-easy
+assignees: []
+created_at: 2019-04-30T21:27:18Z
+updated_at: 2021-09-04T20:10:24Z
+url: https://github.com/clap-rs/clap/issues/1463
+synced_at: 2026-01-10T01:26:54Z
+---
+
+# Usage suggests help subcommand when using DisableHelpSubcommand
+
+---
+
+_Issue opened by @EliSnow on 2019-04-30 21:27_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+* rustc 1.36.0-nightly (3991285f5 2019-04-25)
+
+### Affected Version of clap
+
+* 2.33.0
+
+### Bug or Feature Request Summary
+When using the `AppSettings::DisableHelpSubcommand` and the `AppSettings::InferSubcommands` when an invalid subcommand is entered the usage suggests the (disabled) help subcommand.
+
+### Expected Behavior Summary
+Usage should not suggest the help subcommand.
+
+### Actual Behavior Summary
+See playground link below.
+
+```
+error: The subcommand 'help' wasn't recognized
+
+USAGE:
+	fake help <subcommands>...
+```
+
+### Steps to Reproduce the issue
+See the playground link below.
+
+### Sample Code or Link to Sample Code
+https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=7e194d417cd5086e439ba85cac5ab86b
+
+
+---
+
+_Comment by @crapStone on 2020-01-04 12:28_
+
+I have a similar Problem:
+when i use the `AppSettings::DisableHelpFlags` the error output shows this
+```
+error: Found argument '--help' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    application <SUBCOMMAND>
+
+For more information try --help
+```
+
+---
+
+_Label `not-sure` added by @CreepySkeleton on 2020-02-01 14:15_
+
+---
+
+_Label `cc: CreepySkeleton` removed by @CreepySkeleton on 2020-02-06 09:08_
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-02-06 09:08_
+
+---
+
+_Label `C: settings` added by @CreepySkeleton on 2020-02-06 09:08_
+
+---
+
+_Label `T: bug` added by @CreepySkeleton on 2020-02-06 09:08_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-06 09:08_
+
+---
+
+_Added to milestone `3.0` by @CreepySkeleton on 2020-02-06 09:08_
+
+---
+
+_Assigned to @pksunkara by @pksunkara on 2020-02-14 14:39_
+
+---
+
+_Unassigned @pksunkara by @pksunkara on 2020-02-14 14:40_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2020-02-14 14:40_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-02-14 14:40_
+
+---
+
+_Label `D: easy` added by @pksunkara on 2020-04-09 07:49_
+
+---
+
+_Label `Z: good first issue` added by @pksunkara on 2020-04-09 07:49_
+
+---
+
+_Comment by @Will-Low on 2020-05-13 21:57_
+
+I'll take a look at this
+
+---
+
+_Comment by @CastilloDel on 2020-10-19 19:54_
+
+I have been looking and I think the original problem presented by @EliSnow <del>can be solved by adding a disabled_help_subcmd: bool parameter to the unrecognized_subcommand function. If I don't find a problem I will make a pull request for this.</del>
+Update: After testing in my machine instead of the playground this seems already solved (?).
+
+On the other hand the problem described by @crapStone could also be solved with an extra parameter to the error functions(seems a little verbose but I can't see a better way). This would actually apply to all the error functions because all of them call try_help (which includes the "For more information try --help" message). The problem is that some of these error functions also get called in methods from ArgMatches which doesn't have access to the AppSettings and can't set the parameter accordingly. 
+
+---
+
+_Comment by @Rua on 2021-01-21 14:25_
+
+I just ran into the same problem as @crapStone . I disabled `--help`, but the error message still suggests to the user that they try it.
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Referenced in [clap-rs/clap#2749](../../clap-rs/clap/pulls/2749.md) on 2021-09-01 04:23_
+
+---
+
+_Closed by @pksunkara on 2021-09-04 20:10_
+
+---

@@ -1,0 +1,35 @@
+---
+number: 6177
+title: "docs(group): Cross-link ArgGroup to help heading"
+type: pull_request
+state: merged
+author: epage
+labels: []
+assignees: []
+merged: true
+base: master
+head: heading
+created_at: 2025-11-03T17:15:57Z
+updated_at: 2025-11-03T17:20:50Z
+url: https://github.com/clap-rs/clap/pull/6177
+synced_at: 2026-01-10T01:28:28Z
+---
+
+# docs(group): Cross-link ArgGroup to help heading
+
+---
+
+_Pull request opened by @epage on 2025-11-03 17:15_
+
+<!--
+Thanks for helping out!
+
+Please link the appropriate issue from your PR.
+
+If you don't have an issue, we'd recommend starting with one first so the PR can focus on the
+implementation (unless its an obvious bug or documentation fix that will have
+little conversation).
+-->
+
+
+---

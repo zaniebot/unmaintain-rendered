@@ -1,0 +1,85 @@
+---
+number: 16302
+title: "`uv add` causes re-syncing of default dependency groups"
+type: issue
+state: closed
+author: alechouse97
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-14T20:31:07Z
+updated_at: 2025-10-29T13:22:40Z
+url: https://github.com/astral-sh/uv/issues/16302
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# `uv add` causes re-syncing of default dependency groups
+
+---
+
+_Issue opened by @alechouse97 on 2025-10-14 20:31_
+
+### Summary
+
+I am running into some unexpected behavior when added new deps via `uv add`. I currently have two dependency groups in my pyproject.toml:
+
+```toml
+[dependency-groups]
+dev = ["mypy", "pytest", "pytest-cov", "ruff"]
+cpu = ["torch"]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", group = "cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+```
+
+To sync with this `cpu` group, I run `uv sync --group cpu`, and only CPU torch whls are installed, along with all other deps in `project.dependencies`.
+
+Now, say I wanted to add Pandas to my standard dependencies (not in any specific group), I would run `uv add pandas`. This adds `pandas>=x.y.z` to the `project.dependencies` section, but this command also causes the `cpu` group from above to be "de-synced" and the standard CUDA accelerated torch whls are downloaded and installed.
+
+To get around this I could run `uv add pandas --group cpu`, but now pandas is added to the `cpu` group.
+
+Is this behavior expected? Or am I just misunderstanding how the dependency groups should be used?
+
+**UPDATE - 10/16**
+
+I confirmed that this same behavior is present when using the approach in the [uv docs](https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies). After syncing with `uv sync --extra cpu`, and uv command that does _not_ have the `--extra cpu` will cause the CUDA accelerated torch whls to be downloaded.
+
+
+### Platform
+
+Linux 5.14.0-503.40.1.el9_5.x86_64 x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.2
+
+### Python version
+
+Python 3.13.7
+
+---
+
+_Label `bug` added by @alechouse97 on 2025-10-14 20:31_
+
+---
+
+_Comment by @charliermarsh on 2025-10-29 00:20_
+
+I think this is kind of "expected" and indicative of some awkwardness in the API (we use, e.g., `--group` both to determine where to add the package _and_ which dependencies to sync). The best you could do right now is use `--no-sync` when you `uv add` in these cases.
+
+---
+
+_Closed by @charliermarsh on 2025-10-29 00:27_
+
+---
+
+_Comment by @alechouse97 on 2025-10-29 13:22_
+
+Thanks for the follow-up, that's definitely an acceptable workaround for us. 
+
+---

@@ -1,0 +1,101 @@
+---
+number: 2770
+title: "`uv self update` fails to install new version"
+type: issue
+state: closed
+author: joellidin
+labels:
+  - bug
+assignees: []
+created_at: 2024-04-02T07:59:36Z
+updated_at: 2024-04-02T21:23:57Z
+url: https://github.com/astral-sh/uv/issues/2770
+synced_at: 2026-01-10T01:23:21Z
+---
+
+# `uv self update` fails to install new version
+
+---
+
+_Issue opened by @joellidin on 2024-04-02 07:59_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+Hello, I am trying to do `uv self update` but I get:
+
+```console
+info: Checking for updates...
+error: failed to installer (status: exit status: 1)
+```
+
+I am on Ubuntu 22.04 and my `uv --version` is 0.1.26. I don't know if it could be some proxies or something with my work computer or something? Anyhow, I could not find a solution so I thought I try and ask here.
+
+---
+
+_Comment by @woutervh on 2024-04-02 08:50_
+
+same for me  on Almalinux9
+
+---
+
+_Label `bug` added by @konstin on 2024-04-02 12:58_
+
+---
+
+_Comment by @konstin on 2024-04-02 12:59_
+
+I can reproduce this on ubuntu 23.10 and in `docker run --rm -it ubuntu` after installing curl:
+
+```
+$ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.26/uv-installer.sh | sh
+downloading uv 0.1.26 x86_64-unknown-linux-gnu
+installing to /home/konsti/.cargo/bin
+  uv
+everything's installed!
+$ uv self update
+info: Checking for updates...
+error: failed to installer (status: exit status: 1)
+```
+
+---
+
+_Comment by @zanieb on 2024-04-02 19:00_
+
+Looks to be working on macOS
+
+```
+❯ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.26/uv-installer.sh | sh
+❯ uv version
+uv 0.1.26 (7b685a815 2024-03-28)
+❯ uv self update
+info: Checking for updates...
+success: Upgraded `uv` to v0.1.27! https://github.com/astral-sh/uv/releases/tag/0.1.27
+```
+
+---
+
+_Comment by @charliermarsh on 2024-04-02 19:01_
+
+It's now fixed upstream. I'll update once a new release has been cut.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-02 19:01_
+
+---
+
+_Referenced in [astral-sh/uv#2783](../../astral-sh/uv/pulls/2783.md) on 2024-04-02 21:15_
+
+---
+
+_Closed by @zanieb on 2024-04-02 21:23_
+
+---

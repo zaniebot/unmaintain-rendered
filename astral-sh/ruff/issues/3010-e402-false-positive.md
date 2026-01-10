@@ -1,0 +1,101 @@
+---
+number: 3010
+title: E402 false positive
+type: issue
+state: closed
+author: JonathanPlasse
+labels:
+  - wontfix
+assignees: []
+created_at: 2023-02-18T14:55:31Z
+updated_at: 2023-02-20T18:00:41Z
+url: https://github.com/astral-sh/ruff/issues/3010
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# E402 false positive
+
+---
+
+_Issue opened by @JonathanPlasse on 2023-02-18 14:55_
+
+```python
+from __future__ import annotations
+
+""""""
+
+import sys as sys
+```
+
+Ruff detects an `E402` error but flake8 does not.
+
+[Link to playground](https://play.ruff.rs/#N4KABGBECGA2sHsDuBTAJgWgMYIHYDMBXAZ2gCNYVjIAuMAbQF0AacKMwgS1gBdPdqdJqwiQ0hALYSAnhgBu0AE6dylDIoDmAD1pQAegAoA+gGoAPsZP1oGAF4BBDAC0ADBgCcRxgCprdx64ejCYA-ACUYQAkkCJQKFo8KLiYnBq4CIoousJskPGJyRjEKJRYPNksufkoirhwFbGQqemZDbmw-CgYlLgaPAAWugAcQ43FpeVCbKIAojHTUABikGyVojxKGig88jXEnHi6kAAO0gDMAIwu86L4sNAA1ihDGNC46Rt8eIJgoBCiMlOGH4nB2mR4hFqunwcGKsVExEIx2OmWIxAw4iksk2PxhsDhC0giORqPR6VwXXBkNw-A00NhKHhUDgiCQRQ2ilemleuGk9PxjMJzQyXSI8FkhFwPGkx3Q-OKbAAvo07o9nhgyG80KDdH9-pB+ko0Dg0OgMDwJMcMZxMmUMnypv99QB6C3HG5OqDOhSKV2Wj1OyDO01yZ3EfoSFZOtb6rD9FBYB7mmVm+JYFDHL64eUoJUq+5PF4cDRkFBKXWE6qFThSQgbChdLAsn5MPO5VWFjVcXj8H560Qcbh8ATAtIijrESYMRht24F9U1RQSYh0uj9qASaBadnKXrdJJ9QZ0FyzqAd9UAR0ICESfaFuA6FIwV5vVCOaAQhAbAY3hB7j66F9b3fT9vyZMQECwSddw0Z9r2AugIK-SgfxgOQEE4TAqCbWVdB4RRCFzCBlXbecXnGfAK0DYVMgwOoJDfR1PUgIxNyeH9RCMaBiG1MoOKgIxMmOe5034lj8E4Eo0GoJlOIkqSjFNGE-x4agFhnYj8zVF4+DQWQa2ODJVKo-VNVwdQSmgPg5C6AyjJ+E4lCSYzwLMilMGgY5OF1RVT0gc8dJTbB40TWkTIRfDOD4ug8QJQN4hQS0dgkBBxEoFsFnWGUwvUvyAuBS0OiwUEd2wPAmyndcYHgZAMAkFTuE6PCCKIsASLnbSCsMxQdhwXAbKlA4BHC5kOm4xjfkyqBji1bijmONAxNOJRFGQeboCWxAeFgaQADp4hRKgHOOHRZKgYpyAybNEOIYazsgApiAyO41sQnhKPu3BJFOI5cHde7Nx4YSbw6MgjkKsTAeB7bODIXbTmh+beCWhB7kUY7YCWt4Snm7N7rgDYbSOAmxP6VGEDkSSkAc-o5Cjf5fM00jOtOW8dknaQULXQkJISSEuhmzIpXjYofnwwjwMF6AGMi2wunoqhk1wt6kRQyWlGl7ZlDl+Q4EI9FpWVqAJ3KdXFE12WugUWB9fUWrDayFXhKycDzc4UWLKvG0ukBuMMHwDJsimyAACFxpmLR00zIaxIjqOszEgA1PWUBmRRVsUMSAHkAGU04zsSAEks-zwP7pmfqbTwBipVLzP7qexNtn29PA-U13oHdxWq0wTIvdo33+n9wOhBjAElCTQXnJFibxda9qzzIjBJRIM1NkkZy72osdaJ9FReLozXcQZPz3aMkb-IydMMCQc2rTgFRRZzcCA8Ua-9l6NQAOfwkP40L-OgYDTDbfY3w2iBhwBIMggDuJdXsj-QMxBhIlTwOaN2j5YKQM3M1CWhIMimk5GQWQDscGCkDK-d+Rkb6gn6PwIoCYszHwFC-K+XQeAIHNAgd0o9wIPHSEgcyEl0Y7EFtKcB+o+HIHMgMG0mBREOmnLw-h5lEBNlgMPWABDxGiHyObdks1FCYFBubRQCiciBkyPcaytlLT2QwPgmoRwiA9RFjsdh2BECi1NoSPuXBMgpFsT1FsY8oBYHuGiCa5jYzfA2FKYJ4E96qEiSEyA6RuidHRKWV+jtFGEgAuiaA+BEicjskE3QGALjgXyRqbYqAkhKwmi4Fhb8zTFClokCofkJBYCbKWC+m5tyQOdloUECirh+VlMcF49Ewrc23i0eWR8g6enOtsAAqv9YOiQlAABEpFiWKDwDZABhcJMktllkUHsgRpzuLnJWUSdZxwACyqU-wuwubsqRry0ofIedxaQuAsA5yeWJAFQKAAqlzrl42DocjZULJw7Kshte6MJuD8zjhmBO91EC9GeUdaAWxIZbh2ZwfAlF26EjCXcmWZNMCmhwObdh6NlnMRpWiOlqV6YQBSZOKyUUuUMoTBkKyGQMoPP5XwLAQqeVgA0m1RopwTRUGlFzSa8yRT2JsooPFsENjECTFgzeOYJnSA-FBNVOTgALxOJzfglVCQslqpuDQUVdY2zYSmCVzFoJiSIcBKlgYBkanNkCkWugLgACZwIhqpLUH4AA2WNW4uQaB+AAVhTduKViUTV0AzSeJmohThIg0ObU0F8ngZnUJKPgDElazLALFeeIBFSRA7fgVaEgwBGCMEQCEmQ+1gFKTwMAbwPgCu+CAEAkA53zpnaOsAxBpDEHHWuldxAgA)
+
+Also, when I open the playground link for the first time the errors are not underlined only when I refresh the page does it display the error.
+I use Firefox.
+
+---
+
+_Referenced in [astral-sh/ruff#3018](../../astral-sh/ruff/pulls/3018.md) on 2023-02-18 18:11_
+
+---
+
+_Comment by @charliermarsh on 2023-02-19 13:44_
+
+Hmm yeah -- it looks like pycodestyle allows _one_ string expression, so this raises an error:
+
+```py
+from __future__ import annotations
+
+"""abc def"""
+"""abc def"""
+
+import sys as sys
+```
+
+But, I feel like what we have now is "more correct", since in the code above, `""""""` isn't actually treated as a docstring by Python. Like if you do this:
+
+```py
+from __future__ import annotations
+
+"""my docstring"""
+
+import sys as sys
+```
+
+Then `help(foo)` is empty, it doesn't pick up `my docstring`, unless I'm mistaken.
+
+Can you link to an example project that's doing this? I'm guessing it happens in typeshed maybe?
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-02-19 13:44_
+
+---
+
+_Comment by @JonathanPlasse on 2023-02-19 15:06_
+
+Here it is [python/typeshed/test_cases/stdlib/typing/check_all.py](https://github.com/python/typeshed/blob/4ca0c484251ea7c83f6e84d43d9006e4793c1062/test_cases/stdlib/typing/check_all.py).
+This seems to be a misplaced docstring.
+This indeed looks like a bug of `pycodestyle`, should this be reported upstream?
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-02-20 18:00_
+
+---
+
+_Label `wontfix` added by @charliermarsh on 2023-02-20 18:00_
+
+---
+
+_Comment by @charliermarsh on 2023-02-20 18:00_
+
+Yeah I think so.
+
+---
+
+_Closed by @charliermarsh on 2023-02-20 18:00_
+
+---

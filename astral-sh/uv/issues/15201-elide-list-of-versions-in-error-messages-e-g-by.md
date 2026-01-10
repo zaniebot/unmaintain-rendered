@@ -1,0 +1,129 @@
+---
+number: 15201
+title: Elide list of versions in error messages, e.g. by using exclusive ranges
+type: issue
+state: open
+author: konstin
+labels:
+  - error messages
+assignees: []
+created_at: 2025-08-10T11:51:18Z
+updated_at: 2025-08-10T11:51:18Z
+url: https://github.com/astral-sh/uv/issues/15201
+synced_at: 2026-01-10T01:25:53Z
+---
+
+# Elide list of versions in error messages, e.g. by using exclusive ranges
+
+---
+
+_Issue opened by @konstin on 2025-08-10 11:51_
+
+
+In resolution errors, we often show the full list of versions. We should elide wherever possible, as for real packages, these lists can become long and distract from the actual error. We usually show those lists because we otherwise have a hole in the trace where a version could be. We however know the lists of versions and know that no version can be in there, so we can just talk about ranges. One trick is to change inclusive ranges to exclusive ranges using the next package version as reference.
+
+Systematically shortening the errors helps especially if they fit on a single screen page instead of scrolling for pages. The examples below are taken from the test suite, where all examples are small, while real conflicts are often much longer error messages.
+
+`invalid_platform`:
+
+```
+× No solution found when resolving dependencies:
+╰─▶ Because only the following versions of open3d are available:
+      open3d==0.8.0.0
+      open3d==0.9.0.0
+      open3d==0.10.0.0
+      open3d==0.10.0.1
+      open3d==0.11.0
+      open3d==0.11.1
+      open3d==0.11.2
+      open3d==0.12.0
+      open3d==0.13.0
+      open3d==0.14.1
+      open3d==0.15.1
+      open3d==0.15.2
+      open3d==0.16.0
+      open3d==0.16.1
+      open3d==0.17.0
+      open3d==0.18.0
+  and open3d<=0.15.2 has no wheels with a matching Python ABI tag (e.g., `cp310`), we can conclude that open3d<=0.15.2 cannot be used.
+  And because open3d>=0.16.0 has no wheels with a matching platform tag (e.g., `manylinux_2_17_x86_64`) and you require open3d, we can conclude that your requirements are unsatisfiable.
+```
+
+Shortened:
+
+```
+× No solution found when resolving dependencies:
+╰─▶ Because open3d<0.16.0 has no wheels with a matching Python ABI tag (e.g., `cp310`), we can conclude that open3d<0.16.0 cannot be used.
+  And because open3d>=0.16.0 has no wheels with a matching platform tag (e.g., `manylinux_2_17_x86_64`) and you require open3d, we can conclude that your requirements are unsatisfiable.
+```
+
+`lock_requires_python`
+
+```
+× No solution found when resolving dependencies for split (markers: python_full_version >= '3.7' and python_full_version < '3.7.9'):
+╰─▶ Because the requested Python version (>=3.7) does not satisfy Python>=3.7.9 and pygls>=1.1.0,<=1.2.1 depends on Python>=3.7.9,<4, we can conclude that pygls>=1.1.0,<=1.2.1 cannot be used.
+  And because only the following versions of pygls are available:
+      pygls<=1.1.0
+      pygls==1.1.1
+      pygls==1.1.2
+      pygls==1.2.0
+      pygls==1.2.1
+      pygls==1.3.0
+  we can conclude that pygls>=1.1.0,<1.3.0 cannot be used. (1)
+
+  Because the requested Python version (>=3.7) does not satisfy Python>=3.8 and pygls==1.3.0 depends on Python>=3.8, we can conclude that pygls==1.3.0 cannot be used.
+  And because we know from (1) that pygls>=1.1.0,<1.3.0 cannot be used, we can conclude that pygls>=1.1.0 cannot be used.
+  And because your project depends on pygls>=1.1.0, we can conclude that your project's requirements are unsatisfiable.
+
+  hint: The `requires-python` value (>=3.7) includes Python versions that are not supported by your dependencies (e.g., pygls>=1.1.0,<=1.2.1 only supports >=3.7.9, <4). Consider using a more restrictive `requires-python` value (like >=3.7.9, <4).
+
+  hint: While the active Python version is 3.12, the resolution failed for other Python versions supported by your project. Consider limiting your project's supported Python versions using `requires-python`.
+```
+
+Shortened:
+
+```
+× No solution found when resolving dependencies for split (markers: python_full_version >= '3.7' and python_full_version < '3.7.9'):
+╰─▶ Because the requested Python version (>=3.7) does not satisfy Python>=3.7.9 and pygls>=1.1.0,<1.3.0 depends on Python>=3.7.9,<4, we can conclude that pygls>=1.1.0,<=1.3.0 cannot be used. (1)
+
+  Because the requested Python version (>=3.7) does not satisfy Python>=3.8 and pygls>=1.3.0 depends on Python>=3.8, we can conclude that pygls>=1.3.0 cannot be used.
+  And because we know from (1) that pygls>=1.1.0,<1.3.0 cannot be used, we can conclude that pygls>=1.1.0 cannot be used.
+  And because your project depends on pygls>=1.1.0, we can conclude that your project's requirements are unsatisfiable.
+
+  hint: The `requires-python` value (>=3.7) includes Python versions that are not supported by your dependencies (e.g., pygls>=1.1.0,<=1.2.1 only supports >=3.7.9, <4). Consider using a more restrictive `requires-python` value (like >=3.7.9, <4).
+
+  hint: While the active Python version is 3.12, the resolution failed for other Python versions supported by your project. Consider limiting your project's supported Python versions using `requires-python`.
+```
+
+`add_shadowed_name` (invalid cycle to the root project):
+
+```
+× No solution found when resolving dependencies:
+╰─▶ Because only the following versions of dagster-webserver are available:
+        dagster-webserver<=1.6.11
+        dagster-webserver==1.6.12
+        dagster-webserver==1.6.13
+    and dagster-webserver==1.6.11 depends on your project, we can conclude that dagster-webserver>=1.6.11,<1.6.12 depends on your project.
+    And because dagster-webserver==1.6.12 depends on your project, we can conclude that dagster-webserver>=1.6.11,<1.6.13 depends on your project.
+    And because dagster-webserver==1.6.13 depends on your project and your project depends on dagster-webserver>=1.6.11, we can conclude that your project's requirements are unsatisfiable.
+    
+    hint: The package `dagster-webserver` depends on the package `dagster` but the name is shadowed by your project. Consider changing the name of the project.
+```
+
+Shortened:
+
+```
+× No solution found when resolving dependencies:
+╰─▶ Because dagster-webserver>=1.6.11,<1.7.0 on your project and your project depends on dagster-webserver>=1.6.11, we can conclude that your project's requirements are unsatisfiable.
+
+    hint: The package `dagster-webserver` depends on the package `dagster` but the name is shadowed by your project. Consider changing the name of the project.
+```
+
+This is related to #15199.
+
+
+---
+
+_Label `error messages` added by @konstin on 2025-08-10 11:51_
+
+---

@@ -1,0 +1,51 @@
+---
+number: 17253
+title: "`UV_TOOL_PYTHON` for using `uv tool` with CWD-aware version managers"
+type: issue
+state: open
+author: jklaiho
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-12-29T15:54:57Z
+updated_at: 2025-12-29T16:04:01Z
+url: https://github.com/astral-sh/uv/issues/17253
+synced_at: 2026-01-10T01:26:15Z
+---
+
+# `UV_TOOL_PYTHON` for using `uv tool` with CWD-aware version managers
+
+---
+
+_Issue opened by @jklaiho on 2025-12-29 15:54_
+
+### Summary
+
+I use [mise](https://mise.jdx.dev) as a multi-language and multi-tool version manager for Python, NodeJS and more. I prefer this to having separate version managers for everything. This means I never use Python versions managed with uv either. I enforce this with `~/.config/uv/uv.toml`:
+
+```
+python-downloads = "never"
+python-preference = "only-system"
+```
+
+There's a bunch of Python CLI tools that I want to have globally installed, like Ansible, IPython, changelog-cli etc. I currently have a mise-installed Python 3.13.11 set as the global default Python (set in `~/.config/mise/config.toml`). I treat it as sort of an "LTS" Python, to which I'll link all my global CLI tools. I'll only replace it with a newer version as it nears EOL status, performing any necessary reinstalls of the tools to link them to the new Python version.
+
+Individual code projects will have local `mise.toml` files, specifying which other mise-installed version of Python gets automatically used when my CWD is underneath the project directory. This is extremely convenient and I rely upon it heavily as I maintain a lot of legacy projects at work, with many Python versions between 3.6 and 3.14 present.
+
+(In addition to mise, [asdf](https://asdf-vm.com) works the same way, just with `.tool-versions` files. I haven't researched other Python version managers to see if they have similar CWD automation, but it's conceivable.)
+
+Overall, `uv tool install` works great. However: the installed tool is linked to whatever the currently active Python is, so the Python version a tool gets ends up being dependent on my CWD — unless I manually remember to use `uv tool install --python <path>` or `UV_PYTHON=<path> uv tool install`, which I inevitably will not, plus it's pretty cumbersome. This is not desirable. I spend a lot of time underneath these project directories, and have seen tools inadvertently linked to a non-"LTS" Python a couple of times already.
+
+`UV_TOOL_PYTHON` would solve this in an elegant way. I'd set it to `~/.local/share/mise/installs/python/3.13.11/bin/python` and only update the variable when I eventually replace my "LTS" global Python 3.13.11 with a newer version.
+
+I don't want to use a single Python version for all uv operations, just the ones involving `uv tool`, so `UV_PYTHON` isn't suitable. If the user had also set `UV_PYTHON`, `UV_TOOL_PYTHON` would override it when running `uv tool`, being the more specific variable.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @jklaiho on 2025-12-29 15:54_
+
+---

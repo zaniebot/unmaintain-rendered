@@ -1,0 +1,40 @@
+---
+number: 2415
+title: Add armhf binary to release pipeline
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - releases
+assignees: []
+created_at: 2024-03-13T14:36:31Z
+updated_at: 2024-03-15T13:49:31Z
+url: https://github.com/astral-sh/uv/issues/2415
+synced_at: 2026-01-10T01:23:17Z
+---
+
+# Add armhf binary to release pipeline
+
+---
+
+_Issue opened by @charliermarsh on 2024-03-13 14:36_
+
+See: https://github.com/home-assistant/core/pull/112496#issuecomment-1988077257
+
+---
+
+_Referenced in [astral-sh/uv#2417](../../astral-sh/uv/pulls/2417.md) on 2024-03-13 14:49_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-13 14:50_
+
+---
+
+_Label `release` added by @charliermarsh on 2024-03-13 16:07_
+
+---
+
+_Closed by @charliermarsh on 2024-03-15 13:49_
+
+---

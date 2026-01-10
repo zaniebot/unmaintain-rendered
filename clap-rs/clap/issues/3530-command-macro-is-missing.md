@@ -1,0 +1,183 @@
+---
+number: 3530
+title: "command! macro is missing"
+type: issue
+state: closed
+author: IoT-master
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-03-03T18:20:48Z
+updated_at: 2022-03-03T19:03:19Z
+url: https://github.com/clap-rs/clap/issues/3530
+synced_at: 2026-01-10T01:27:42Z
+---
+
+# command! macro is missing
+
+---
+
+_Issue opened by @IoT-master on 2022-03-03 18:20_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustup 1.24.3 (ce5817a94 2021-05-31) info: This is the version for the rustup toolchain manager, not the rustc compiler. info: The currently active `rustc` version is `rustc 1.59.0 (9d1b2106e 2022-02-23)`
+
+### Clap Version
+
+clap = "3.1.5" or clap = { version = "3.1.5", features = ["derive"] } Neither has the command! macro
+
+### Minimal reproducible code
+
+use clap::{arg, command, Command};
+use std::path::Path;
+
+fn main() {
+    let matches = command!()
+        .arg(arg!([name] "Optional name to operate on"))
+        .arg(
+            arg!(
+                -c --config <FILE> "Sets a custom config file"
+            )
+            // We don't have syntax yet for optional options, so manually calling `required`
+            .required(false)
+            // Support non-UTF8 paths
+            .allow_invalid_utf8(true),
+        )
+        .arg(arg!(
+            -d --debug ... "Turn debugging information on"
+        ))
+        .subcommand(
+            Command::new("test")
+                .about("does testing things")
+                .arg(arg!(-l --list "lists test values")),
+        )
+        .get_matches();
+
+    // You can check the value provided by positional arguments, or option arguments
+    if let Some(name) = matches.value_of("name") {
+        println!("Value for name: {}", name);
+    }
+
+    if let Some(raw_config) = matches.value_of_os("config") {
+        let config_path = Path::new(raw_config);
+        println!("Value for config: {}", config_path.display());
+    }
+
+    // You can see how many times a particular flag or argument occurred
+    // Note, only flags can have multiple occurrences
+    match matches.occurrences_of("debug") {
+        0 => println!("Debug mode is off"),
+        1 => println!("Debug mode is kind of on"),
+        2 => println!("Debug mode is on"),
+        _ => println!("Don't be crazy"),
+    }
+
+    // You can check for the existence of subcommands, and if found use their
+    // matches just as you would the top level cmd
+    if let Some(matches) = matches.subcommand_matches("test") {
+        // "$ myapp test" was run
+        if matches.is_present("list") {
+            // "$ myapp test -l" was run
+            println!("Printing testing lists...");
+        } else {
+            println!("Not printing testing lists...");
+        }
+    }
+
+    // Continued program logic goes here...
+}
+
+
+### Steps to reproduce the bug with the above code
+
+cargo run
+
+### Actual Behaviour
+
+ --> src/main.rs:1:17
+  |
+1 | use clap::{arg, command, Command};
+  |                 ^^^^^^^
+  |                 |
+  |                 no `command` in the root
+  |                 help: a similar name exists in the module (notice the capitalization): `Command`
+
+error: cannot determine resolution for the macro `command`
+ --> src/main.rs:5:19
+  |
+5 |     let matches = command!()
+  |                   ^^^^^^^
+  |
+  = note: import resolution is stuck, try simplifying macro imports
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `quals` due to 2 previous errors
+
+### Expected Behaviour
+
+No errors
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+➜  quals git:(master) ✗ cargo build
+   Compiling gimli v0.26.1
+   Compiling adler v1.0.2
+   Compiling rustc-demangle v0.1.21
+   Compiling cfg-if v1.0.0
+   Compiling object v0.27.1
+   Compiling miniz_oxide v0.4.4
+   Compiling addr2line v0.17.0
+   Compiling backtrace v0.3.64
+   Compiling clap v3.1.5
+   Compiling quals v0.1.0 (/home/sechuang/CodingProjects/quals)
+error[E0432]: unresolved import `clap::command`
+ --> src/main.rs:1:17
+  |
+1 | use clap::{arg, command, Command};
+  |                 ^^^^^^^
+  |                 |
+  |                 no `command` in the root
+  |                 help: a similar name exists in the module (notice the capitalization): `Command`
+
+error: cannot determine resolution for the macro `command`
+ --> src/main.rs:5:19
+  |
+5 |     let matches = command!()
+  |                   ^^^^^^^
+  |
+  = note: import resolution is stuck, try simplifying macro imports
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `quals` due to 2 previous errors
+
+---
+
+_Label `C-bug` added by @IoT-master on 2022-03-03 18:20_
+
+---
+
+_Referenced in [clap-rs/clap#3531](../../clap-rs/clap/pulls/3531.md) on 2022-03-03 18:41_
+
+---
+
+_Comment by @epage on 2022-03-03 18:41_
+
+The `command!` macro requires the `cargo` feature flag.  Most examples and the tutorial call this it as well as [docs.rs](https://docs.rs/clap/latest/clap/macro.command.html)
+
+I am making some further tweaks in #3531 to make it easier to discover.
+
+---
+
+_Closed by @epage on 2022-03-03 19:03_
+
+---

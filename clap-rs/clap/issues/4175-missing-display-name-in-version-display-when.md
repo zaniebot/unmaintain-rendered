@@ -1,0 +1,392 @@
+---
+number: 4175
+title: "Missing `display_name` in version display when using `multicall`"
+type: issue
+state: closed
+author: trou
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-09-02T13:57:38Z
+updated_at: 2022-09-02T20:26:19Z
+url: https://github.com/clap-rs/clap/issues/4175
+synced_at: 2026-01-10T01:27:51Z
+---
+
+# Missing `display_name` in version display when using `multicall`
+
+---
+
+_Issue opened by @trou on 2022-09-02 13:57_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.63.0 (4b91a6ea7 2022-08-08)
+
+### Clap Version
+
+3.2.20
+
+### Minimal reproducible code
+
+```rust
+use clap::Command;
+fn main() {
+    let mut app = clap::App::new("rsbkb")
+        .multicall(true)
+        .version("1.0")
+        .author("Raphaël Rigo <devel@syscall.eu>")
+        .about("Rust BlackBag")
+        .subcommand(
+            Command::new("rsbkb")
+                .subcommands([Command::new("list").about("list applets")])
+        )
+        .subcommands([Command::new("list").about("list applets")]);
+    // Parse args
+    let _matches = app.get_matches_mut();
+    app.print_help().unwrap();
+}
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+`$ ./target/debug/rsbkb` 
+
+
+### Actual Behaviour
+
+```
+ 1.0
+Raphaël Rigo <devel@syscall.eu>
+Rust BlackBag
+
+USAGE:
+    <SUBCOMMAND>
+[...]
+```
+
+### Expected Behaviour
+
+```
+rsbkb 1.0
+Raphaël Rigo <devel@syscall.eu>
+Rust BlackBag
+
+USAGE:
+    <SUBCOMMAND>
+[...]
+```
+
+### Additional Context
+
+removing the `get_matches_mut` fixes the problem and gives the expected output.
+
+### Debug Output
+
+```
+[      clap::builder::command] 	Command::try_get_matches_from_mut: Parsed command rsbkb from argv
+[      clap::builder::command] 	Command::try_get_matches_from_mut: Reinserting command into arguments so subcommand parser matches it
+[      clap::builder::command] 	Command::try_get_matches_from_mut: Clearing name and bin_name so that displayed command name starts with applet name
+[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=""
+[      clap::builder::command] 	Command::_propagate:
+[      clap::builder::command] 	Command::_check_help_and_version: 
+[      clap::builder::command] 	Command::_check_help_and_version: Removing generated help
+[      clap::builder::command] 	Command::_check_help_and_version: Removing generated version
+[      clap::builder::command] 	Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command] 	Command::_propagate_global_args:
+[      clap::builder::command] 	Command::_derive_display_order:
+[      clap::builder::command] 	Command::_derive_display_order:rsbkb
+[      clap::builder::command] 	Command::_derive_display_order:list
+[      clap::builder::command] 	Command::_derive_display_order:list
+[      clap::builder::command] 	Command::_derive_display_order:help
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr("rsbkb")' ([114, 115, 98, 107, 98])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok("rsbkb")
+[        clap::parser::parser] 	Parser::get_matches_with: sc=Some("rsbkb")
+[        clap::parser::parser] 	Parser::parse_subcommand
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val={}
+[      clap::builder::command] 	Command::_build_subcommand Setting bin_name of rsbkb to "rsbkb"
+[      clap::builder::command] 	Command::_build_subcommand Setting display_name of rsbkb to "rsbkb"
+[      clap::builder::command] 	Command::_build: name="rsbkb"
+[      clap::builder::command] 	Command::_propagate:rsbkb
+[      clap::builder::command] 	Command::_check_help_and_version: rsbkb
+[      clap::builder::command] 	Command::_check_help_and_version: Removing generated version
+[      clap::builder::command] 	Command::_check_help_and_version: Building help subcommand
+[      clap::builder::command] 	Command::_propagate_global_args:rsbkb
+[      clap::builder::command] 	Command::_propagate removing list's help
+[      clap::builder::command] 	Command::_propagate pushing help to list
+[      clap::builder::command] 	Command::_propagate removing help's help
+[      clap::builder::command] 	Command::_propagate pushing help to help
+[      clap::builder::command] 	Command::_derive_display_order:rsbkb
+[      clap::builder::command] 	Command::_derive_display_order:list
+[      clap::builder::command] 	Command::_derive_display_order:help
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::parse_subcommand: About to parse sc=rsbkb
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default missing vals
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required_unless
+[     clap::parser::validator] 	Validator::validate_matched_args
+[        clap::parser::parser] 	Parser::add_defaults
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required_unless
+[     clap::parser::validator] 	Validator::validate_matched_args
+[   clap::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[help]
+[      clap::builder::command] 	Command::_build: name=""
+[      clap::builder::command] 	Command::_build: already built
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+[          clap::output::help] 	Help::new cmd=, use_long=false
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val={}
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=<SUBCOMMAND>
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	Help::write_subcommands
+[          clap::output::help] 	Help::write_subcommands longest = 5
+[          clap::output::help] 	Help::sc_spec_vals: a=rsbkb
+[          clap::output::help] 	Help::sc_spec_vals: a=list
+[          clap::output::help] 	Help::sc_spec_vals: a=help
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=help
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=list
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_subcommand
+[          clap::output::help] 	Help::sc_spec_vals: a=rsbkb
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_after_help
+```
+
+---
+
+_Label `C-bug` added by @trou on 2022-09-02 13:57_
+
+---
+
+_Comment by @epage on 2022-09-02 14:38_
+
+While there is a chance there is something we should and can fix, I'm a bit confused that the top-level command is being treated as if its usable, like printing help on it  but the top-level command is not accessible within multicall. 
+
+Could you provide more details on what you are trying to accomplish?
+
+---
+
+_Comment by @trou on 2022-09-02 17:17_
+
+The example is simplified, the original code is a busybox-style binary.  There may be something wrong with my code, the `rsbkb` binary can be used as busybox, either by calling the applet name or by having argv[0] as the applet name.
+I kind of blindly followed <https://docs.rs/clap/3.2.17/clap/builder/struct.App.html#method.multicall>
+Code [here](https://github.com/trou/rsbkb/blob/933566aaa9bd452287d4a596888db471ad641452/src/main.rs#L99), extract:
+
+```rust
+    let mut app = clap::App::new("rsbkb")
+        .multicall(true)
+        .version("1.0")
+        .author("Raphaël Rigo <devel@syscall.eu>")
+        .about("Rust BlackBag")
+        .subcommand(
+            Command::new("rsbkb")
+                .subcommands([Command::new("list").about("list applets")])
+                .subcommand_value_name("APPLET")
+                .subcommand_help_heading("APPLETS")
+                .subcommands(apps.iter().map(|app| app.clap_command())),
+        )
+        .subcommands(apps.iter().map(|app| app.clap_command()));
+
+    // Parse args
+    let matches = app.get_matches_mut();
+
+    /* Check if we're called as "rsbkb" */
+    let subc = matches.subcommand_name();
+    let real_matches = if subc == Some("rsbkb") {
+        // get applet
+        matches.subcommand().unwrap().1
+    } else {
+        &matches
+    };
+```
+
+---
+
+_Comment by @epage on 2022-09-02 17:32_
+
+You likely want to change
+```rust
+    let mut app = clap::App::new("rsbkb")
+        .multicall(true)
+        .version("1.0")
+        .author("Raphaël Rigo <devel@syscall.eu>")
+        .about("Rust BlackBag")
+        .subcommand(
+            Command::new("rsbkb")
+                .subcommands([Command::new("list").about("list applets")])
+                .subcommand_value_name("APPLET")
+                .subcommand_help_heading("APPLETS")
+                .subcommands(apps.iter().map(|app| app.clap_command())),
+        )
+        .subcommands(apps.iter().map(|app| app.clap_command()));
+```
+to
+```rust
+    let mut app = clap::App::new("rsbkb")
+        .multicall(true)
+        .version("1.0")
+        .author("Raphaël Rigo <devel@syscall.eu>")
+        .about("Rust BlackBag")
+        .subcommand(
+            Command::new("rsbkb")
+                .subcommand_required(true)
+                .args_required_else_help(true)
+                .subcommands([Command::new("list").about("list applets")])
+                .subcommand_value_name("APPLET")
+                .subcommand_help_heading("APPLETS")
+                .subcommands(apps.iter().map(|app| app.clap_command())),
+        )
+        .subcommands(apps.iter().map(|app| app.clap_command()));
+```
+that will make is to you can change
+```rust
+    let (subcommand, sub_matches) = match real_matches.subcommand() {
+        Some((s, sm)) => (s, sm),
+        _ => {
+            app.print_help().expect("Help failed ;)");
+            println!();
+            return Ok(());
+        }
+    };
+```
+to
+```rust
+    let (subcommand, sub_matches) = real_matches
+        .subcommand()
+        .expect("subcommand_required(true)");
+```
+
+---
+
+_Comment by @trou on 2022-09-02 19:13_
+
+Thanks for the quick reply.
+```diff
+diff --git a/src/main.rs b/src/main.rs
+index 8fa33cc..f3eda2e 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -96,13 +96,15 @@ fn main_with_errors() -> Result<()> {
+     // Define a busybox-like multicall binary
+     // Subcommands must be defined both as subcommands for "rsbkb" and
+     // as main subcommands
+-    let mut app = clap::App::new("rsbkb")
++    let mut app = clap::Command::new("rsbkb")
+         .multicall(true)
+         .version("1.0")
++        .propagate_version(true)
+         .author("Raphaël Rigo <devel@syscall.eu>")
+         .about("Rust BlackBag")
+         .subcommand(
+             Command::new("rsbkb")
++                .arg_required_else_help(true)
+                 .subcommands([Command::new("list").about("list applets")])
+                 .subcommand_value_name("APPLET")
+                 .subcommand_help_heading("APPLETS")
+@@ -123,14 +125,9 @@ fn main_with_errors() -> Result<()> {
+     };
+ 
+     // Get subcommand and args
+-    let (subcommand, sub_matches) = match real_matches.subcommand() {
+-        Some((s, sm)) => (s, sm),
+-        _ => {
+-            app.print_help().expect("Help failed ;)");
+-            println!();
+-            return Ok(());
+-        }
+-    };
++    let (subcommand, sub_matches) = real_matches
++        .subcommand()
++        .chain_err(|| "Subcommand required")?;
+ 
+     // list applets
+     if subcommand == "list" {
+```
+fixes the problem, but another one appears: the "author" and "about" properties are not displayed anymore:
+
+```
+$ rsbkb
+rsbkb 1.0
+
+USAGE:
+    rsbkb [APPLET]
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+APPLETS:
+[...]
+```
+
+
+---
+
+_Comment by @epage on 2022-09-02 19:24_
+
+The help being shown is for the `rskb` subcommand which needs to have author/about set on it
+
+---
+
+_Comment by @trou on 2022-09-02 20:26_
+
+Indeed, thank you very much for your quick and efficient help!
+As my problem is fixed, I'm closing the issue.
+
+---
+
+_Closed by @trou on 2022-09-02 20:26_
+
+---

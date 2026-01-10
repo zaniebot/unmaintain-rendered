@@ -1,0 +1,125 @@
+---
+number: 11605
+title: Mininum Python requirement from dependency greater than root project.
+type: issue
+state: closed
+author: jdumas
+labels:
+  - question
+assignees: []
+created_at: 2025-02-18T21:29:36Z
+updated_at: 2025-02-18T22:46:06Z
+url: https://github.com/astral-sh/uv/issues/11605
+synced_at: 2026-01-10T01:25:07Z
+---
+
+# Mininum Python requirement from dependency greater than root project.
+
+---
+
+_Issue opened by @jdumas on 2025-02-18 21:29_
+
+### Summary
+
+Hi.
+
+So trying to run `uv sync` on the following `pyproject.toml`:
+
+```
+[project]
+name = "uv-python"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "sphinx>=8.2.0"
+]
+```
+
+produces the following message:
+
+```
+  × No solution found when resolving dependencies for split (python_full_version >= '3.9' and python_full_version < '3.11'):
+  ╰─▶ Because the requested Python version (>=3.9) does not satisfy Python>=3.11 and sphinx==8.2.0 depends on Python>=3.11, we can conclude that sphinx==8.2.0 cannot be used.
+      And because only sphinx<=8.2.0 is available and your project depends on sphinx>=8.2.0, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: The `requires-python` value (>=3.9) includes Python versions that are not supported by your dependencies (e.g., sphinx==8.2.0 only supports >=3.11). Consider using a
+      more restrictive `requires-python` value (like >=3.11).
+```
+
+I'm not sure I fully agree with the message. If a dependency requires a more recent Python version (e.g. 3.11), then `uv` should implicitly bump the min Python version to 3.11, not complain that my `requires-python` is too low right?
+
+In this example this might seem trivial, but in practice I have `sphinx` as an optional `[dependency-groups]` which is used to build my website. My main package supports Python 3.9 and 3.10, and I only build the website using Python 3.11. I think that this type of scenario should be supported no?
+
+### Platform
+
+macOS (Darwin 23.5.0 arm64)
+
+### Version
+
+uv 0.6.1 (Homebrew 2025-02-17)
+
+### Python version
+
+N/A
+
+---
+
+_Label `bug` added by @jdumas on 2025-02-18 21:29_
+
+---
+
+_Comment by @vivodi on 2025-02-18 21:59_
+
+> If a dependency requires a more recent Python version (e.g. 3.11), then uv should implicitly bump the min Python version to 3.11, not complain that my requires-python is too low right?
+
+I think the current behavior is correct. `uv` should not implicitly do that as it's unsafe and inappropriate.
+
+---
+
+_Comment by @zanieb on 2025-02-18 22:34_
+
+@vivodi Please be respectful here, we want to foster a welcoming community here and that message is quite curt.
+
+> If a dependency requires a more recent Python version (e.g. 3.11), then uv should implicitly bump the min Python version to 3.11, not complain that my requires-python is too low right?
+
+The problem is that sphinx is not going to be installable on the full range of Python versions your project supports. We don't just lock for your current Python version, we lock for all relevant Python versions.
+
+If that's what you want, then you should declare
+
+```
+dependencies = [
+    "sphinx>=8.2.0; python_version >= '3.11'"
+]
+```
+
+---
+
+_Referenced in [astral-sh/uv#11606](../../astral-sh/uv/issues/11606.md) on 2025-02-18 22:40_
+
+---
+
+_Comment by @zanieb on 2025-02-18 22:40_
+
+The fix for your dependency-group case is to allow declaring a separate `requires-python` range https://github.com/astral-sh/uv/issues/11606
+
+---
+
+_Label `bug` removed by @zanieb on 2025-02-18 22:41_
+
+---
+
+_Label `question` added by @zanieb on 2025-02-18 22:41_
+
+---
+
+_Comment by @jdumas on 2025-02-18 22:45_
+
+@zanieb thanks! I believe I can use the `; python_version >= '3.11'` for now to get things going, but indeed ideally #11606 would be needed to avoid surprises when building documentation. I'll close this issue and follow #11606 instead.
+
+---
+
+_Closed by @jdumas on 2025-02-18 22:45_
+
+---

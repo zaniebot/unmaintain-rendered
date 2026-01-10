@@ -1,0 +1,104 @@
+---
+number: 8002
+title: "Provide `uv sync --all-dev` for workspace projects"
+type: issue
+state: closed
+author: tonnico
+labels:
+  - needs-decision
+assignees: []
+created_at: 2024-10-08T11:13:34Z
+updated_at: 2024-11-02T02:38:14Z
+url: https://github.com/astral-sh/uv/issues/8002
+synced_at: 2026-01-10T01:24:22Z
+---
+
+# Provide `uv sync --all-dev` for workspace projects
+
+---
+
+_Issue opened by @tonnico on 2024-10-08 11:13_
+
+I would like to install all dev dependencies in the workspaces.
+
+Maybe you have the following structure:
+
+```
+.
+├── pyproject.toml
+├── uv.lock
+├── cdk
+│  ├── pyproject.toml
+│  ├── src
+│  │  └── cdk
+│  │     └── __init__.py
+└── sources
+   ├── pyproject.toml
+   ├── README.md
+   └── src
+      ├── service_a
+      │  └── __init__.py
+      └── service_b
+         └── __init__.py
+```
+
+In each pyproject.toml are different `dev-dependencies`.
+
+Currently I can install only the `dev-dependencies` once each project. E.g.
+
+```
+uv sync  # installs dev from root only
+uv sync --project cdk  # installs dev from cdk only
+uv sync --project sources  # installs dev from sources only
+```
+
+I can work around this issue with
+```
+uv sync && uv sync --project cdk --inexact && uv sync --project sources --inexact
+```
+
+But a more handy version would be very nice. Something like
+```
+uv sync --all-dev
+```
+
+
+---
+
+_Referenced in [astral-sh/uv#8022](../../astral-sh/uv/issues/8022.md) on 2024-10-08 21:45_
+
+---
+
+_Comment by @charliermarsh on 2024-10-08 22:41_
+
+I think this may be best handled via an `--all-packages` flag to sync an entire workspace, as in: https://github.com/astral-sh/uv/issues/6935.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-10-08 22:41_
+
+---
+
+_Renamed from "Provide uv sync --all-dev for workspace projects" to "Provide `uv sync --all-dev` for workspace projects" by @charliermarsh on 2024-10-08 22:41_
+
+---
+
+_Referenced in [astral-sh/uv#7541](../../astral-sh/uv/issues/7541.md) on 2024-10-21 22:43_
+
+---
+
+_Comment by @zanieb on 2024-10-21 22:44_
+
+Let's track this in the linked issue.
+
+---
+
+_Closed by @zanieb on 2024-10-21 22:44_
+
+---
+
+_Comment by @charliermarsh on 2024-11-02 02:38_
+
+`uv sync --all-packages` exists in the next release.
+
+---

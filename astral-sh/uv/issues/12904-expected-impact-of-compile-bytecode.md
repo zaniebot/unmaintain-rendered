@@ -1,0 +1,102 @@
+---
+number: 12904
+title: Expected Impact of --compile-bytecode
+type: issue
+state: closed
+author: robertclaus
+labels:
+  - question
+assignees: []
+created_at: 2025-04-15T20:34:08Z
+updated_at: 2025-04-16T02:53:10Z
+url: https://github.com/astral-sh/uv/issues/12904
+synced_at: 2026-01-10T01:25:26Z
+---
+
+# Expected Impact of --compile-bytecode
+
+---
+
+_Issue opened by @robertclaus on 2025-04-15 20:34_
+
+### Question
+
+I've been trying to track down why the first `uv run my_script.py` is so slow compared to subsequent runs.
+
+I have a folder with a script `app.py`:
+```
+import numpy
+import dash
+import plotly
+import seaborn
+
+print("Done!")
+```
+
+And a simple `pyproject.toml`:
+```
+[project]
+name = "dash-app"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy",
+    "dash",
+    "plotly",
+    "seaborn"
+]
+```
+
+I've been testing using this bash script:
+```
+rm -r .venv
+rm uv.lock
+time uv sync --no-cache
+time uv run --no-sync app.py
+time uv run --no-sync app.py
+
+rm -r .venv
+rm uv.lock
+time uv sync --compile-bytecode --no-cache
+time uv run --no-sync app.py
+time uv run --no-sync app.py
+```
+
+The bytecode sync takes ~10 seconds longer than without compiling bytecode as expected. However, the first `uv run` takes ~16 seconds in both cases, and the second takes ~0.8 seconds in both cases.
+
+I expected the first run to be roughly 10 seconds faster since that is what --compile-bytecode in the sync took.
+
+Any thoughts on why this wouldn't be the case? Am I missing a flag in `uv run` that's causing it to recompile the bytecode?
+
+### Platform
+
+macOS Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.6.14 (a4cec56dc 2025-04-09)
+
+---
+
+_Label `question` added by @robertclaus on 2025-04-15 20:34_
+
+---
+
+_Comment by @robertclaus on 2025-04-16 02:53_
+
+I simplified the test case down to just `dash` as the only library and saw the results I was expecting. I suspect a few of the other libraries have more extensive setup steps that were masking the behavior.
+
+  | Install | First Run | Second Run
+-- | -- | -- | --
+pip (default) | 15.2 | 0.4 | 0.2
+uv (default) | 3.9 | 1 | 0.2
+pip (no precompile) | 6.4 | 1 | 0.2
+uv (precompile) | 7.1 | 0.4 | 0.2
+
+
+
+---
+
+_Closed by @robertclaus on 2025-04-16 02:53_
+
+---

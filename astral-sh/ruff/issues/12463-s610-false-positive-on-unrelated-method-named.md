@@ -1,0 +1,80 @@
+---
+number: 12463
+title: "S610: false positive on unrelated method named `extra`"
+type: issue
+state: open
+author: nelsyeung
+labels:
+  - type-inference
+assignees: []
+created_at: 2024-07-22T19:32:39Z
+updated_at: 2024-07-23T13:54:37Z
+url: https://github.com/astral-sh/ruff/issues/12463
+synced_at: 2026-01-10T01:22:52Z
+---
+
+# S610: false positive on unrelated method named `extra`
+
+---
+
+_Issue opened by @nelsyeung on 2024-07-22 19:32_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+`main.py`:
+```python
+class A:
+    def extra(self, foo): ...
+
+
+A().extra(1)
+```
+
+```sh
+> ruff --version
+ruff 0.5.4
+
+> ruff check main.py
+main.py:5:10: S610 Use of Django `extra` can lead to SQL injection vulnerabilities
+  |
+5 | A().extra(1)
+  |          ^^^ S610
+```
+
+See #1646 and #10316
+
+
+
+---
+
+_Renamed from "S610: false positive on method named `extra`" to "S610: false positive on unrelated method named `extra`" by @nelsyeung on 2024-07-22 19:34_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2024-07-23 07:11_
+
+---
+
+_Comment by @MichaReiser on 2024-07-23 07:11_
+
+Thanks for reporting. Unfortunately, this is hard for ruff to get right at the moment without having type inference. But we're working on it. 
+
+---
+
+_Comment by @AlexWaygood on 2024-07-23 13:54_
+
+I agree with @MichaReiser. I'd also note that erring on the side of false positives is probably the correct tradeoff when it comes to a security-related rule. I think you'd much rather have something be incorrectly flagged as a security issue than have some dangerous code accidentally slip through the net.
+
+If you don't use django at all in your project, and the rule is causing false positives for you, I'd consider just switching the rule off for now in your Ruff configuration file.
+
+---

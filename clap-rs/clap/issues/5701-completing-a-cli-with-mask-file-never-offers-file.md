@@ -1,0 +1,148 @@
+---
+number: 5701
+title: "Completing a CLI with `<mask>... <file>` never offers `<file>` completions with Rust native completions"
+type: issue
+state: open
+author: windsource
+labels:
+  - C-bug
+  - E-medium
+  - A-completion
+assignees: []
+created_at: 2024-08-26T11:18:34Z
+updated_at: 2024-08-27T13:36:11Z
+url: https://github.com/clap-rs/clap/issues/5701
+synced_at: 2026-01-10T01:28:15Z
+---
+
+# Completing a CLI with `<mask>... <file>` never offers `<file>` completions with Rust native completions
+
+---
+
+_Issue opened by @windsource on 2024-08-26 11:18_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.80.1 (3f5fd8dd4 2024-08-06)
+
+### Clap Version
+
+clap 4.5.16, clap_complete 4.5.23
+
+### Minimal reproducible code
+
+```rust
+use std::ffi::OsStr;
+
+use clap::{CommandFactory, Parser, ValueHint};
+use clap_complete::{ArgValueCompleter, CompleteEnv, CompletionCandidate};
+
+fn mask_completer(_: &OsStr) -> Vec<CompletionCandidate> {
+    vec![
+        CompletionCandidate::new("foo"),
+        CompletionCandidate::new("baz"),
+    ]
+}
+
+#[derive(Parser, Debug)]
+#[command(name = "cmdtest")]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(required = true, add = ArgValueCompleter::new(mask_completer))]
+    mask: Vec<String>,
+
+    #[arg(required = true, value_hint = ValueHint::FilePath)]
+    file: String,
+}
+
+fn main() {
+    CompleteEnv::with_factory(Args::command).complete();
+
+    let args = Args::parse();
+
+    for m in args.mask {
+        println!("Mask: {}", m);
+    }
+    println!("File: {}", args.file)
+}
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+cmdtest foo AND PRESSING TAB
+
+### Actual Behaviour
+
+As completion candidates I only get "foo" and "baz"
+
+### Expected Behaviour
+
+I was expecting to "foo", "baz" and the files in the current folder as completion candidates.
+
+### Additional Context
+
+After the first argument for `mask` is passed, the next argument could either be a `mask` or a `file` so I was expecting to get completions for both but I only get completions for `mask`.
+
+I am using zsh.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @windsource on 2024-08-26 11:18_
+
+---
+
+_Referenced in [eclipse-ankaios/ankaios#348](../../eclipse-ankaios/ankaios/pulls/348.md) on 2024-08-26 11:20_
+
+---
+
+_Label `E-medium` added by @epage on 2024-08-26 16:16_
+
+---
+
+_Label `A-completion` added by @epage on 2024-08-26 16:16_
+
+---
+
+_Comment by @epage on 2024-08-26 16:37_
+
+This is parsing two positionals in a row with the first positional's length being unbounded.  This is a very complicated case in the parser that we've not covered yet with the new completions.  Currently, our quality bar is "is it as good as the old completions".  If you happened to use the old completions before and can report back on its behavior in this scenario, that can help us prioritize this.
+
+See
+https://github.com/clap-rs/clap/blob/fe810907bdba9c81b980ed340addace44cefd8ff/clap_builder/src/parser/parser.rs#L288-L358
+
+What will be interesting about this case is that  `clap` definitively knows when `mask` is done and `file` starts because it can peek ahead on the command-line.  While the command-line is being written, we can't guarantee there will be anything to peek ahead to.  Effectively, we'll need to just assume that any positional after the minimum possible is either `mask` or `file` and complete it as such.
+
+To help in showing either completion, we should probably group completions by their argument by default (see #5651).
+
+---
+
+_Comment by @windsource on 2024-08-27 08:25_
+
+@epage not sure what you mean with "old completions"? Is there any older clap_complete release which I should try to see if the completions for my scenario work with?
+
+---
+
+_Comment by @epage on 2024-08-27 13:35_
+
+`CompleteEnv` is an in-work completion system that is unstable.  [`clap_complete::aot`](https://docs.rs/clap_complete/latest/clap_complete/aot/index.html) is what we have historically provided. 
+
+---
+
+_Renamed from "Missing some completions" to "Completing a CLI with `<mask>... <file>` never offers `<file>` completions with Rust native completions" by @epage on 2024-08-27 13:36_
+
+---
+
+_Referenced in [eclipse-ankaios/ankaios#237](../../eclipse-ankaios/ankaios/issues/237.md) on 2024-09-05 14:18_
+
+---

@@ -1,0 +1,77 @@
+---
+number: 18070
+title: "`TRY400` False Positive - Flags other logger calls after log.exception"
+type: issue
+state: open
+author: Skylion007
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-05-13T14:59:01Z
+updated_at: 2025-05-14T14:11:39Z
+url: https://github.com/astral-sh/ruff/issues/18070
+synced_at: 2026-01-10T01:22:59Z
+---
+
+# `TRY400` False Positive - Flags other logger calls after log.exception
+
+---
+
+_Issue opened by @Skylion007 on 2025-05-13 14:59_
+
+### Summary
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+try:
+    raise RuntimeError("Throwing a big bad exception")
+except:
+    logger.exception("Record exception stack")
+    logger.error("This error should never, ever happen, logging additional details...")
+```
+
+Expected behavior is that this fine.
+
+TRY400 flags every single logger call after the first logger.exception. Not every single logger call needs to record the exception information / stack information and shouldn't as this pollutes the log. As such, if at least one unconditional logger call logs the exception info, all logger.error calls after it shouldn't need to be logger.exception.
+
+The linter complains and you are left with some uncomfortable issues of fusing the logger calls (which might make it very difficult to parse for you and the machine if you are doing a lot of complex formatting). You also cannot seperate the calls with different levels of verbosity etc. Having to suppress all these additional call with NOQA TRY400 is rather annoying and undesirable. 
+
+---
+
+_Comment by @ntBre on 2025-05-13 21:50_
+
+I think it makes some sense to consider this a false positive. The upstream linter does flag this though, so we'll need to decide if we want to diverge from that.
+
+```shell
+$ uvx tryceratops example.py
+[TRY400] Use logging '.exception' instead of '.error' - example.py:8:4
+[TRY003] Avoid specifying long messages outside the exception class - example.py:5:4
+[TRY301] Abstract raise to an inner function - example.py:5:4
+```
+
+It could also be a bit tricky to track the control flow in an `except` branch to determine if we've seen an `exception` call.
+
+---
+
+_Label `rule` added by @ntBre on 2025-05-13 21:50_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-05-13 21:50_
+
+---
+
+_Comment by @Skylion007 on 2025-05-14 14:05_
+
+@ntBre Surprisingly, setting `exc_info=False` does not suppress it either, does it at least suppress it upstream for TRY400? Is there any better way to indicate intent other than a NOQA comment?
+
+---
+
+_Comment by @ntBre on 2025-05-14 14:11_
+
+No, it looks like neither we nor tryceratops inspect the arguments to check for `exc_info`. I think a noqa comment, or disabling the rule more generally, is the only workaround currently.
+
+---

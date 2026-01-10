@@ -1,0 +1,29 @@
+---
+number: 6000
+title: "zsh: fix passing arguments in dynamic completion"
+type: pull_request
+state: merged
+author: mernen
+labels: []
+assignees: []
+merged: true
+base: master
+head: fix-zsh-dynamic-completion
+created_at: 2025-05-11T22:14:24Z
+updated_at: 2025-05-31T15:43:14Z
+url: https://github.com/clap-rs/clap/pull/6000
+synced_at: 2026-01-10T01:28:26Z
+---
+
+# zsh: fix passing arguments in dynamic completion
+
+---
+
+_Pull request opened by @mernen on 2025-05-11 22:14_
+
+Fixes #5979 for good.
+
+I'm not familiar with zsh, and its completion engine is *completely* different from Bash's, but my experiments suggest it's really just a case of proper array expansion, which is more or less the same thing on both shells.
+
+
+---

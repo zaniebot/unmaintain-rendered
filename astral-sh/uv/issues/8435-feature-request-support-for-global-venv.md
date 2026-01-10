@@ -1,0 +1,158 @@
+---
+number: 8435
+title: "Feature Request: Support for global venv"
+type: issue
+state: open
+author: gaby
+labels:
+  - wish
+  - uv tool
+assignees: []
+created_at: 2024-10-22T03:55:53Z
+updated_at: 2025-08-19T12:38:55Z
+url: https://github.com/astral-sh/uv/issues/8435
+synced_at: 2026-01-10T01:24:28Z
+---
+
+# Feature Request: Support for global venv
+
+---
+
+_Issue opened by @gaby on 2024-10-22 03:55_
+
+The main purpose of this ticket is to request support for global venvs. Similar concept to what `pipx install --global` does. Where the package is installed in a `global` venv instead of a user one. This allows for systems that pre-install applications for multiple-users to be able to manage/isolate these easily.
+
+Current workaround is to use `uv pip install --system ruff`. But this doesn't isolate the dependencies the same way a venv does and it's very easy to run into dependency issues between installed packages. We have a tried using `pipx`, but the inject ecosystem and upgrading packages using a `spec` is inconsistent across the board. Currently `pipx` supports using `--global` for all their commands.
+
+Information about how the `--global` in `pipx` works is here: https://pipx.pypa.io/stable/installation/#-global-argument
+
+When using `--global` in `pipx`, the following happens:
+- man pages are installed here: `/usr/local/share/man`
+- binaries/entrypoints are installed here: `/usr/local/bin`
+- global envs are installed here: `/opt/pipx/venv`
+
+When injecting packages/dependencies into a package it does support passing `--global`, and these application binaries/man-pages also become global within that global venv.
+
+---
+
+_Comment by @zanieb on 2024-10-22 04:02_
+
+Similar to the request in https://github.com/astral-sh/uv/issues/8431
+
+You can use `UV_TOOL_BIN_DIR` and `UV_TOOL_DIR` for this right now. It seem sort of nice to have a flag for this, but I'm not sure if it's a high priority and generally these paths are different based on the distribution you're using so I'm hesitant to add defaults.
+
+---
+
+_Label `wish` added by @zanieb on 2024-10-22 04:02_
+
+---
+
+_Label `uv tool` added by @zanieb on 2024-10-22 04:02_
+
+---
+
+_Comment by @gaby on 2024-10-22 04:43_
+
+Oh I didn't know that was an option, That's neat trick although a bit verbose. The paths should be consistent between `linux` and `macos`. The feature is not supported for Windows (It's supported on Windows WSL through which uses sames paths as linux I believe.).
+
+At least `/usr/local/share/man` and `/usr/local/bin` are consistent across distributions. The one where the global env's go is basically `PIPX_HOME`.
+
+I was able to replicate using the instructions from #8431 
+
+```console
+root@pi:/home/pi # docker run -it --rm --entrypoint=/bin/bash python:3.10-slim
+root@68e761f4bba3:/# pip install uv
+Collecting uv
+  Downloading uv-0.4.25-py3-none-manylinux_2_28_aarch64.whl (12.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.7/12.7 MB 16.4 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.4.25
+root@68e761f4bba3:/# mkdir -p /opt/uv/venv
+root@68e761f4bba3:/# export UV_TOOL_BIN_DIR=/usr/local/bin
+root@68e761f4bba3:/# export UV_TOOL_DIR=/opt/uv/venv
+root@68e761f4bba3:/# uv tool install ruff
+Resolved 1 package in 401ms
+Prepared 1 package in 629ms
+Installed 1 package in 3ms
+ + ruff==0.7.0
+Installed 1 executable: ruff
+root@68e761f4bba3:/# pip list
+Package    Version
+---------- -------
+pip        23.0.1
+setuptools 65.5.1
+uv         0.4.25
+wheel      0.44.0
+
+root@68e761f4bba3:/# ruff version
+ruff 0.7.0
+```
+
+Having a native way of doing this without setting 2 ENV's would be ideal.
+
+---
+
+_Comment by @gaby on 2024-10-22 13:26_
+
+Looking at the docs, `uv` probably needs an ENV for setting the install location of man pages.
+
+---
+
+_Comment by @zanieb on 2024-10-22 13:34_
+
+We don't support man pages yet. #4731 
+
+---
+
+_Referenced in [astral-sh/uv#8431](../../astral-sh/uv/issues/8431.md) on 2024-10-23 12:08_
+
+---
+
+_Comment by @gaby on 2024-10-24 03:26_
+
+@zanieb Is it possible to set these two ENV variables via the new `/etc/uv/uv.toml` file?
+
+This way I could setup systems to use `uv`. Right now having to add `ENVs` everytime I call `uv` from ansible is not clean.
+
+---
+
+_Comment by @bennnnnnnn on 2025-03-13 10:20_
+
+There is still an issue for global installs if it is a managed python install. The python install will always happen under $HOME/.local/.local/share/uv/python/ (which will most likely be /root in this case), which then breaks the binaries in the bin dir because the user is not able to access anything under /root.
+It would be handy if we could choose the location where the python binaries are installed as well (similar to UV_TOOL_DIR).
+
+---
+
+_Comment by @DerPlayer2001 on 2025-05-28 07:02_
+
+> It would be handy if we could choose the location where the python binaries are installed as well (similar to UV_TOOL_DIR).
+
+This would be very handy, I ran into `Error loading shared library libpython3.13.so.1.0: No such file or directory` errors when deploying a docker k8s deployment were a nonroot user is desired. Took me a while to find this Issue. In addition to passing those 2 env variables to the tool install command i also had to `apk add python3` since i couldn't acess the uv python binaries.
+
+---
+
+_Comment by @zanieb on 2025-06-02 16:01_
+
+@DerPlayer2001 that exists, `UV_PYTHON_INSTALL_DIR`
+
+---
+
+_Comment by @DerPlayer2001 on 2025-06-03 06:30_
+
+> [@DerPlayer2001](https://github.com/DerPlayer2001) that exists, `UV_PYTHON_INSTALL_DIR`
+
+Sry i seem to have missed that. But i think it is still not ideal in my Example i install a uv tool in my dockerfile, but since i need it to be accessible by nonroot users i have to set `UV_PYTHON_INSTALL_DIR`, `UV_TOOL_BIN_DIR` and `UV_TOOL_DIR`. Even if that is the desired approach, some documentation describing this Problem and it's Solution would come a long way.
+
+---
+
+_Comment by @Bit0r on 2025-08-04 14:24_
+
+pipx has a `--global` option, but the `uv tool` currently doesn't have an equivalent alternative
+
+---
+
+_Comment by @AleksBelytskyi on 2025-08-19 12:38_
+
+An analogue to the pipx `--global` option would be useful. We also need it.
+
+---

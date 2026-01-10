@@ -1,0 +1,144 @@
+---
+number: 11472
+title: "Allow `.venv` selection for `uv run --script`"
+type: issue
+state: closed
+author: Quasar6X
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-13T09:37:21Z
+updated_at: 2025-02-14T06:51:41Z
+url: https://github.com/astral-sh/uv/issues/11472
+synced_at: 2026-01-10T01:25:06Z
+---
+
+# Allow `.venv` selection for `uv run --script`
+
+---
+
+_Issue opened by @Quasar6X on 2025-02-13 09:37_
+
+### Summary
+
+Currently when running scripts `uv` sets up an ephemeral environment with the requested dependencies. AFAIK this is means that `--script` implies `--isolated`. Unfortunatley `--active` doesn't use the activated environment in this case. This behaviour has two drawbacks.
+
+1. `uv` needs to set up a new venv and sync deps after every run
+2. IDE tools which depend on packages being on the `PYTHONPATH` cannot work inside a workspace with just scripts. This is also true for `uv tool run` if the tool uses `PYTHONPATH`.
+
+Example:
+
+```python
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#   "rich~=13.9.4",
+# ]
+#
+# [tool.mypy]
+# strict = true
+# ///
+
+from rich import print
+
+if __name__ == "__main__":
+    print("[italic red]Hello[/italic red] World!")
+```
+
+```console
+$ uv run test.py
+Installed 4 packages in 7ms
+Hello World!
+```
+
+```console
+$ uv tool run mypy test.py
+test.py:11: error: Cannot find implementation or library stub for module named "rich"  [import-not-found]
+test.py:11: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+Found 1 error in 1 file (checked 1 source file)
+```
+
+I propose two solutions:
+
+1. Make `uv` respect `--active` even when the `--script` option is specified.
+2. Add a new option like `--use-workspace-env` (I know I'm terrible at naming things) to force `uv` into using  the `.venv` in the workspace or create a new one if it doesn't exist yet.
+
+I think that the second solution is better, because the first one requires the user to effectively run `uv venv && source .venv/bin/activate` before running the script for the first time.
+
+I'm open to implementing any of the behaviors, if it is something that you see beneficial.
+
+### Example
+
+When running `test.py` possibly containing inline script metadata or using any of the `--with*` options, then running `uv run --use-workspace-env` the workspace `.venv` would be used or a new one would be created.
+
+```console
+$ eza -aT -L1
+.
+└── test.py
+
+$ uv run test.py
+Installed 4 packages in 7ms
+Hello World!
+
+$ eza -aT -L1
+.
+├── .venv
+└── test.py
+```
+
+---
+
+_Label `enhancement` added by @Quasar6X on 2025-02-13 09:37_
+
+---
+
+_Comment by @T-256 on 2025-02-13 10:10_
+
+Related to:
+- https://github.com/astral-sh/uv/issues/8064#issuecomment-2543820128
+- https://github.com/astral-sh/uv/issues/6542
+
+then, in this case, you could use something like:  `uvx --with-script test.py mypy test.py`.
+
+---
+
+_Comment by @T-256 on 2025-02-13 10:14_
+
+> * Make `uv` respect `--active` even when the `--script` option is specified.
+
+There is an open PR for that: https://github.com/astral-sh/uv/pull/11433
+
+---
+
+_Comment by @charliermarsh on 2025-02-13 14:46_
+
+> uv needs to set up a new venv and sync deps after every run
+> IDE tools which depend on packages being on the PYTHONPATH cannot work inside a workspace with just scripts. This is also true for uv tool run if the tool uses PYTHONPATH.
+
+We now support `uv sync --script` which uses a stable path within the cache -- you can configure your editor to point to that environment. It doesn't setup a new venv or sync deps after every run. (This also wasn't true before -- we resolved the dependencies then re-used a cached environment as long as the dependencies were unchanged -- but it's not super relevant.)
+
+---
+
+_Comment by @Quasar6X on 2025-02-13 15:04_
+
+@charliermarsh Thanks for the heads up. That's cool but I consider that more of a workaround rather than an actual solution, becuase setting some arcane cache directory in my editor config feels wrong to me.
+
+I think #11433 will solve my problems. AFAIU `uv sync --script` creates a stable path per script but my usecase involves a monorepo of PEP 723 scripts, so I need them to share a single environment. Of course I need to make sure their dependencies align but that's my concern.
+
+---
+
+_Comment by @charliermarsh on 2025-02-13 15:08_
+
+Candidly, using a shared virtual environment across your scripts is sort of in conflict with the inherent design and intent of scripts -- scripts are intended to be isolated, and syncing multiple scripts in sequence against a single environment could easily lead to an environment that doesn't work for _some_ of the scripts. It's great if `--active` works for you! But I doubt we'll build features around that intended workflow.
+
+---
+
+_Comment by @Quasar6X on 2025-02-14 06:51_
+
+Yeah, I completley understand your take, this is a very niche and error prone use case indeed. I'm closing this issue as completed.
+
+---
+
+_Closed by @Quasar6X on 2025-02-14 06:51_
+
+---

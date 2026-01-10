@@ -1,0 +1,110 @@
+---
+number: 16085
+title: Script to find binary of the real Python executable fails to run
+type: issue
+state: closed
+author: jdumas
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-01T14:43:17Z
+updated_at: 2025-10-01T16:35:38Z
+url: https://github.com/astral-sh/uv/issues/16085
+synced_at: 2026-01-10T01:26:03Z
+---
+
+# Script to find binary of the real Python executable fails to run
+
+---
+
+_Issue opened by @jdumas on 2025-10-01 14:43_
+
+### Summary
+
+Hi,
+
+I am trying to run the following script with uv (taken from [nanobind](https://github.com/wjakob/nanobind/blob/879bca4869664bdc1446ee7f160ffe3c7028cd7a/cmake/darwin-python-path.py#L10-L15)):
+```python
+import ctypes
+dyld = ctypes.cdll.LoadLibrary('/usr/lib/system/libdyld.dylib')
+namelen = ctypes.c_ulong(1024)
+name = ctypes.create_string_buffer(b'\000', namelen.value)
+dyld._NSGetExecutablePath(ctypes.byref(name), ctypes.byref(namelen))
+print(name.value.decode('utf8').strip())
+```
+
+However, when running this script through `uv run --no-project python <nanobind>/cmake/darwin-python-path.py`, the script doesn't execute (even doing a `print()` on the first line doesn't show anything).
+
+For context we're trying to find the real Python executable in order to inject [sanitizers](https://jonasdevlieghere.com/post/sanitizing-python-modules/) for debugging C++/Python bindings.
+
+Possibly related to #12151, although this issue is more specifically about being unable to run the script above.
+
+### Platform
+
+macOS 14.5
+
+### Version
+
+0.8.22
+
+### Python version
+
+Python 3.13.2
+
+---
+
+_Label `bug` added by @jdumas on 2025-10-01 14:43_
+
+---
+
+_Referenced in [wjakob/nanobind#1123](../../wjakob/nanobind/issues/1123.md) on 2025-10-01 14:44_
+
+---
+
+_Comment by @zanieb on 2025-10-01 14:48_
+
+I can't reproduce — this ran fine for me. Can you share logs with `-vv`?
+
+---
+
+_Comment by @jdumas on 2025-10-01 15:01_
+
+Sure, here is the log:
+
+```
+❯ uv run -vv --no-project python cmake/darwin-python-path.py
+DEBUG uv 0.8.22 (Homebrew 2025-09-23)
+TRACE Checking shared lock for `/Users/jedumas/Library/Caches/uv` at `/Users/jedumas/Library/Caches/uv/.lock`
+DEBUG Acquired shared lock for `/Users/jedumas/Library/Caches/uv`
+DEBUG Found project root: `/Users/jedumas/external/git/nanobind`
+DEBUG No workspace root found, using project root
+DEBUG Ignoring discovered project due to `--no-project`
+DEBUG No project found; searching for Python interpreter
+DEBUG No Python version file found in ancestors of working directory: /Users/jedumas/external/git/nanobind
+DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
+TRACE Found cached interpreter info for Python 3.13.2, skipping query of: .venv/bin/python3
+DEBUG Found `cpython-3.13.2-macos-aarch64-none` at `/Users/jedumas/external/git/nanobind/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.13.2 interpreter at: /Users/jedumas/external/git/nanobind/.venv/bin/python3
+DEBUG Running `python cmake/darwin-python-path.py`
+DEBUG Spawned child 51371 in process group 51370
+DEBUG Command exited with signal: Some(9)
+DEBUG Released lock at `/Users/jedumas/Library/Caches/uv/.lock`
+```
+
+---
+
+_Comment by @zanieb on 2025-10-01 15:14_
+
+Hm, the process is being killed? I would presume this is some security feature?
+
+---
+
+_Comment by @jdumas on 2025-10-01 16:35_
+
+Yikes, you're right. Ok closing this for now. I'll investigate internally if I can do anything about that.
+
+---
+
+_Closed by @jdumas on 2025-10-01 16:35_
+
+---

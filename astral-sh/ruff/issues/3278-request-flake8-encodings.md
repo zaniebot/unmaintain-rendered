@@ -1,0 +1,110 @@
+---
+number: 3278
+title: "Request: flake8-encodings"
+type: issue
+state: open
+author: henryiii
+labels:
+  - plugin
+  - needs-decision
+assignees: []
+created_at: 2023-02-28T17:42:59Z
+updated_at: 2025-11-07T00:23:57Z
+url: https://github.com/astral-sh/ruff/issues/3278
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# Request: flake8-encodings
+
+---
+
+_Issue opened by @henryiii on 2023-02-28 17:42_
+
+I noticed https://pypi.org/project/flake8-encodings/ was missing when porting a package over to Ruff. This checks for `encoding=` missing from open (and `configparser.ConfigParser` and `pathlib.Path`) calls.
+
+Here are the checks:
+
+```
+ENC001 = "ENC001 no encoding specified for 'open'."
+ENC002 = "ENC002 'encoding=None' used for 'open'."
+ENC003 = "ENC003 no encoding specified for 'open' with unknown mode."
+ENC004 = "ENC004 'encoding=None' used for 'open' with unknown mode."
+
+ENC011 = "ENC011 no encoding specified for 'configparser.ConfigParser.read'."
+ENC012 = "ENC012 'encoding=None' used for 'configparser.ConfigParser.read'."
+
+ENC021 = "ENC021 no encoding specified for 'pathlib.Path.open'."
+ENC022 = "ENC022 'encoding=None' used for 'pathlib.Path.open'."
+ENC023 = "ENC023 no encoding specified for 'pathlib.Path.read_text'."
+ENC024 = "ENC024 'encoding=None' used for 'pathlib.Path.read_text'."
+ENC025 = "ENC025 no encoding specified for 'pathlib.Path.write_text'."
+ENC026 = "ENC026 'encoding=None' used for 'pathlib.Path.write_text'."
+```
+
+This is an extremely common need (it's available at runtime with `PYTHONWARNDEFAULTENCODING` ([PEP 597](https://peps.python.org/pep-0597/)) and is needed for Python 3.15 compatibility [PEP 686](https://peps.python.org/pep-0686/)), so I'm surprised no existing checks seem to cover it; wouldn't be surprised if my searching skills were just not good enough.
+
+Edit: Ahh, this might be the not-yet-implemented `unspecified-encoding / W1514` from pylint.
+
+---
+
+_Comment by @charliermarsh on 2023-02-28 17:44_
+
+Python 3.15!
+
+---
+
+_Referenced in [scikit-hep/pyhf#2124](../../scikit-hep/pyhf/pulls/2124.md) on 2023-02-28 17:46_
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-02-28 17:53_
+
+---
+
+_Referenced in [astral-sh/ruff#3416](../../astral-sh/ruff/pulls/3416.md) on 2023-03-09 10:20_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:26_
+
+---
+
+_Comment by @pwuertz on 2024-01-31 14:47_
+
+Should this be detected when enabling `PLW1514` in current versions of ruff? The PR https://github.com/astral-sh/ruff/pull/3416 does seem to include some tests for issues with `Path`, but it didn't make it into ruff yet?
+
+---
+
+_Referenced in [twisted/towncrier#577](../../twisted/towncrier/pulls/577.md) on 2024-02-10 16:55_
+
+---
+
+_Comment by @RubenVanEldik on 2024-09-04 09:03_
+
+I would like to bump this request!
+
+Currently when you have some code such as:
+
+```py
+import pathlib
+
+with open(pathlib.Path("path/to/file.txt")) as f:
+    print(f)
+```
+
+Ruff will raise 2 issues:
+
+1. **PLW1514** `open` in text mode without explicit `encoding` argument
+2. **PTH123** `open()` should be replaced by `Path.open()`
+
+If you first solve the second issue, the first issue will be gone, which led me to believe that `Path.open()` doesn't require it, which is not the case!
+
+Would the Ruff team be open to include the flake8-encodings ruleset? And do you think this could be a good first issue? If so I would be willing to pick it up (it would mean it will take a while before this will be implemented though 🙃 ) 
+
+---
+
+_Comment by @mkj-perfusiontech on 2025-11-07 00:23_
+
+I second this, since I had the same confusion as RubenVanEldik.
+
+---

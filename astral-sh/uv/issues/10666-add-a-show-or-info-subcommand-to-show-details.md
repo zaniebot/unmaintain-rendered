@@ -1,0 +1,60 @@
+---
+number: 10666
+title: "(🎁) add a `show` or `info` subcommand to show details about a package, both locally and on pypi (including extras)"
+type: issue
+state: open
+author: KotlinIsland
+labels: []
+assignees: []
+created_at: 2025-01-16T03:50:35Z
+updated_at: 2025-08-04T23:53:58Z
+url: https://github.com/astral-sh/uv/issues/10666
+synced_at: 2026-01-10T01:24:56Z
+---
+
+# (🎁) add a `show` or `info` subcommand to show details about a package, both locally and on pypi (including extras)
+
+---
+
+_Issue opened by @KotlinIsland on 2025-01-16 03:50_
+
+`uv pip show` is buried within `uv pip`, and it doesn't show information for a package that isn't installed
+
+compare that to something like `npm show`, which will show you the details from the package registry:
+```console
+> npm show basedpyright
+
+basedpyright@1.24.0 | MIT | deps: none | versions: 961
+a pyright fork with various type checking improvements, improved vscode support and pylance features built into the language server
+https://github.com/detachhead/basedpyright#readme
+
+bin: pyright, basedpyright, pyright-langserver, basedpyright-langserver
+
+dist
+.tarball: https://registry.npmjs.org/basedpyright/-/basedpyright-1.24.0.tgz
+.shasum: d57ac027c80f3fa7986df595b8ffb75fa3d60f13
+.integrity: sha512-5mnMiZ2nN4vkP+gOOR3cLcfOY547lG6t3bGb7hR6LUFjbZzNvyDClTpcDJptmbP4Ehejpw5VY8VQH/8Lsnu3IQ==
+.unpackedSize: 24.2 MB
+
+maintainers:
+- detachhead <detachhead@gmail.com>
+
+dist-tags:
+latest: 1.24.0                                          canary: 1.24.0-688bc8d7a33624f323c8f567452f9aa8e5a5b847
+
+published 15 hours ago by detachhead <detachhead@gmail.com>
+```
+
+i wanted this because i needed to know what extras `beautifulsoup4` has, and needed to dig into their source code
+
+---
+
+_Comment by @nathanjmcdougall on 2025-01-31 14:34_
+
+I agree this would be very useful. It's also related to #5975 which aligns in the sense it is giving information about the (uv-managed) project itself (rather than one on the registry etc.), when calling `uv show` with no subcommands.
+
+---
+
+_Renamed from "(🎁) add a `show` or `info` subcommand to show details about a package, both locally and on pypi" to "(🎁) add a `show` or `info` subcommand to show details about a package, both locally and on pypi (including extras)" by @KotlinIsland on 2025-08-04 23:53_
+
+---

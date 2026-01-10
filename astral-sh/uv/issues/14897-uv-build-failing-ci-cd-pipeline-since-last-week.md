@@ -1,0 +1,127 @@
+---
+number: 14897
+title: uv build failing CI/CD pipeline since last week
+type: issue
+state: closed
+author: Anon-jCqx
+labels:
+  - question
+assignees: []
+created_at: 2025-07-25T15:38:57Z
+updated_at: 2025-07-28T17:37:14Z
+url: https://github.com/astral-sh/uv/issues/14897
+synced_at: 2026-01-10T01:25:50Z
+---
+
+# uv build failing CI/CD pipeline since last week
+
+---
+
+_Issue opened by @Anon-jCqx on 2025-07-25 15:38_
+
+### Question
+
+I have tried everything to  figure out the source distribution unpack error but nothing seems to work. 
+
+Tried `uv cache clean`  and still no luck.
+
+```
+  ╰─▶ symlink destination for /usr/local/bin/python3 is outside of the target
+      directory
+```
+
+
+### Platform
+
+_No response_
+
+### Version
+
+uv 0.8.3
+
+---
+
+_Label `question` added by @Anon-jCqx on 2025-07-25 15:38_
+
+---
+
+_Comment by @zanieb on 2025-07-25 15:42_
+
+Please share the full error message and command.
+
+See #9452
+
+---
+
+_Comment by @Mattia2700 on 2025-07-25 15:43_
+
+Yep, I confirm that too, just happened to me in GitLab CI.  I was just running `uv build`
+
+```
+Building source distribution...
+  × Failed to build `/builds/{path-to-gitlab-project}`
+  ├─▶ I/O operation failed during extraction
+  ├─▶ failed to unpack
+  │   `/builds/{path-to-gitlab-project}/.uv-cache/sdists-v9/.tmpOPvD91/{project-name}-1.3.1.post3+1e35324/.uv-cache/builds-v0/.tmprJoZh3/bin/python`
+  ╰─▶ symlink destination for
+      /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/bin/python3.12
+      is outside of the target directory
+```
+
+---
+
+_Comment by @Anon-jCqx on 2025-07-25 18:07_
+
+Building source distribution...
+  × Failed to build `/builds/{PROJECT_DIR}`
+  ├─▶ I/O operation failed during extraction
+  ├─▶ failed to unpack
+  │   `/builds/{PROJECT_DIR}/.cache/uv/sdists-v9/.tmpDVT1xg/{PROJECT_VERSION}/venv/bin/python`
+  ╰─▶ symlink destination for /usr/local/bin/python3 is outside of the target
+      directory
+
+---
+
+_Comment by @zanieb on 2025-07-25 18:13_
+
+This looks like a duplicate of https://github.com/astral-sh/uv/issues/14834
+
+---
+
+_Comment by @zanieb on 2025-07-25 18:13_
+
+See https://github.com/astral-sh/uv/issues/14834#issuecomment-3105157527 in particular
+
+---
+
+_Comment by @Anon-jCqx on 2025-07-25 18:33_
+
+This was working before . so I am bit surprised, it started failing all of a sudden. I am new to uv and that's proving an added disadvantage in trying to fix this..
+
+
+---
+
+_Comment by @zanieb on 2025-07-25 18:37_
+
+Sorry, but it was working before in a way that was in violation of the Python package specification. You definitely don't want your virtual environment to be included in your distributions.
+
+See also
+
+- https://github.com/astral-sh/uv/issues/12163
+- https://github.com/astral-sh/uv/pull/12259
+
+---
+
+_Comment by @Anon-jCqx on 2025-07-28 14:32_
+
+Thank you!!
+
+---
+
+_Closed by @zanieb on 2025-07-28 17:37_
+
+---
+
+_Referenced in [astral-sh/uv#15096](../../astral-sh/uv/issues/15096.md) on 2025-08-06 00:17_
+
+---

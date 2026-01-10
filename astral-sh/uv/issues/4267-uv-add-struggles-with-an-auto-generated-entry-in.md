@@ -1,0 +1,108 @@
+---
+number: 4267
+title: "`uv add` struggles with an auto-generated entry in `uv.lock`"
+type: issue
+state: closed
+author: hoechenberger
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-06-12T12:39:38Z
+updated_at: 2024-06-12T14:25:45Z
+url: https://github.com/astral-sh/uv/issues/4267
+synced_at: 2026-01-10T01:23:36Z
+---
+
+# `uv add` struggles with an auto-generated entry in `uv.lock`
+
+---
+
+_Issue opened by @hoechenberger on 2024-06-12 12:39_
+
+`uv add` creates a lockfile `uv.lock` it cannot parse again on re-run.
+
+### Steps to reproduce:
+- Check out [`mne-python`](https://github.com/mne-tools/mne-python.git)
+- run `uv add` to add an entry to `pyproject.toml`. This will also create a `uv.lock` lockfile:
+```shell
+$ uv toolchain install 3.12
+warning: `uv toolchain install` is experimental and may change without warning.
+Looking for Python 3.12
+Downloading cpython-3.12.3-linux-aarch64-gnu
+Installed Python 3.12.3 to /home/mne-user/.local/share/uv/toolchains/cpython-3.12.3-linux-aarch64-gnu
+$ uv venv -p /home/mne-user/.local/share/uv/toolchains/cpython-3.12.3-linux-aarch64-gnu/install/bin/python
+$ . .venv/bin/activate
+$ uv add ipython
+warning: `uv add` is experimental and may change without warning.
+Resolved 286 packages in 3.61s
+error: found distribution vtk==9.3.0 @ registry+https://pypi.org/simple with neither wheels nor source distribution
+```
+All good so far: `pyproject.toml` got updated. The error message about `vtk` is irritating because `vtk` is only an "extra" dependency, but this can be ignored for now.
+
+Ok, now let's try to `uv add` another package:
+
+```shell
+$ uv add cowsay 
+warning: `uv add` is experimental and may change without warning.
+Failed to parse lockfile; ignoring locked requirements: TOML parse error at line 492, column 10
+    |
+492 | marker = ""
+    |          ^^
+Expected marker value, found end of dependency specification
+
+^
+Resolved 287 packages in 1.18s
+error: found distribution vtk==9.3.0 @ registry+https://pypi.org/simple with neither wheels nor source distribution
+```
+
+Looking at `uv.lock`, it turns out the problematic `marker` entry is for the `numpy` dependency:
+```toml
+[[distribution.dependencies]]
+name = "numpy"
+version = "1.26.4"
+source = "registry+https://pypi.org/simple"
+marker = ""
+```
+
+### System info
+```shell
+$ uv --version 
+uv 0.2.11
+$ uname -a    
+Linux 1a34753d5e98 6.6.26-linuxkit #1 SMP Sat Apr 27 04:13:19 UTC 2024 aarch64 GNU/Linux
+```
+
+---
+
+_Comment by @charliermarsh on 2024-06-12 12:56_
+
+Thanks!
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-06-12 12:57_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-06-12 12:57_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-06-12 12:57_
+
+---
+
+_Comment by @charliermarsh on 2024-06-12 13:00_
+
+You can reproduce this with: `dependencies = ["cftime==1.6.4"]`.
+
+---
+
+_Referenced in [astral-sh/uv#4271](../../astral-sh/uv/pulls/4271.md) on 2024-06-12 14:08_
+
+---
+
+_Closed by @charliermarsh on 2024-06-12 14:25_
+
+---

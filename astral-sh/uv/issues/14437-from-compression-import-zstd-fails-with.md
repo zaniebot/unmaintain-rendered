@@ -1,0 +1,85 @@
+---
+number: 14437
+title: "`from compression import zstd` fails with `ModuleNotFoundError` in Python 3.14.0b2 on Linux"
+type: issue
+state: closed
+author: BioGeek
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-03T09:32:29Z
+updated_at: 2025-07-10T13:34:30Z
+url: https://github.com/astral-sh/uv/issues/14437
+synced_at: 2026-01-10T01:25:44Z
+---
+
+# `from compression import zstd` fails with `ModuleNotFoundError` in Python 3.14.0b2 on Linux
+
+---
+
+_Issue opened by @BioGeek on 2025-07-03 09:32_
+
+### Summary
+
+Python 3.14 [added Zstandard to the standard library](https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-pep784) (see [PEP 784](https://peps.python.org/pep-0784/) and https://github.com/python/cpython/issues/132983). 
+
+However, when using Python 3.14 with `uv`, I get a `ModuleNotFoundError`:
+
+```bash
+$ uvx python3.14
+Python 3.14.0b2 (main, Jun 12 2025, 12:41:01) [Clang 20.1.4 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from compression import zstd
+Traceback (most recent call last):
+  File "<python-input-0>", line 1, in <module>
+    from compression import zstd
+  File "/home/j-vangoey/.local/share/uv/python/cpython-3.14.0b2-linux-x86_64-gnu/lib/python3.14/compression/zstd/__init__.py", line 29, in <module>
+    import _zstd
+ModuleNotFoundError: No module named '_zstd'
+```
+
+### Platform
+
+Ubuntu 24.10
+
+### Version
+
+uv 0.7.19
+
+### Python version
+
+Python 3.14.0b2
+
+---
+
+_Label `bug` added by @BioGeek on 2025-07-03 09:32_
+
+---
+
+_Comment by @BioGeek on 2025-07-03 10:19_
+
+According to https://github.com/astral-sh/python-build-standalone/issues/646 the `zstd` C library is currently only being built on Windows, which explains why I'm getting this error on Linux.
+
+
+
+---
+
+_Comment by @zanieb on 2025-07-03 11:54_
+
+Yep! We haven't added it yet because we build dependencies from scratch and we didn't want it to block the alphas. It's on the roadmap to add still.
+
+---
+
+_Renamed from "`from compression import zstd` fails with `ModuleNotFoundError` in Python 3.14.0b2" to "`from compression import zstd` fails with `ModuleNotFoundError` in Python 3.14.0b2 on Linux" by @BioGeek on 2025-07-03 13:35_
+
+---
+
+_Comment by @zanieb on 2025-07-10 13:34_
+
+This is done now
+
+---
+
+_Closed by @zanieb on 2025-07-10 13:34_
+
+---

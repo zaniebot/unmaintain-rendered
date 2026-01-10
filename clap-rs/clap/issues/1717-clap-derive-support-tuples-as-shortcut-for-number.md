@@ -1,0 +1,201 @@
+---
+number: 1717
+title: "clap_derive: support tuples as shortcut for number_of_values = N, different validators"
+type: issue
+state: open
+author: CreepySkeleton
+labels:
+  - C-enhancement
+  - A-derive
+  - S-waiting-on-design
+assignees: []
+created_at: 2020-03-02T17:44:20Z
+updated_at: 2025-09-23T22:49:36Z
+url: https://github.com/clap-rs/clap/issues/1717
+synced_at: 2026-01-10T01:27:04Z
+---
+
+# clap_derive: support tuples as shortcut for number_of_values = N, different validators
+
+---
+
+_Issue opened by @CreepySkeleton on 2020-03-02 17:44_
+
+Transferred from: TeXitoi/structopt#349
+
+Sometimes we want to to take a fixed number of values that should always be passed together or not at all. For instance, let's take RGBA: four numbers, first three must be `0 <= N <= 255`, the last must be `0 <= N <= 1.0`. This can be naturally expressed via tuples:
+```rust
+fn validate_alpha(a: String) -> Result<f32, String> {
+    let a = a.parse()?;
+    if a > 1 {
+        Err(format!("alpha cannot be > 0.1"))
+    } else {
+        Ok(a)
+    }
+}
+
+#[derive(Clap)]
+struct Args {
+    #[clap(
+        long,
+        // `parse` can be extended to take multiple validators
+        // `_` means default `try_from_str = FromStr::from_str`
+        parse(_, _, _, try_from_str = validate_alpha)
+    )]
+    color: (u8, u8, u8, f32), // `number_of_values = 4`, different parsers 
+    
+    pair: Option<(String, Path)> // they can also be optional 
+}
+
+
+---
+
+_Label `T: new feature` added by @CreepySkeleton on 2020-03-02 17:44_
+
+---
+
+_Label `C: derive macros` added by @CreepySkeleton on 2020-03-02 17:44_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-03-02 18:01_
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-18 13:29_
+
+Moving it to `3.0` milestone since this would be a breaking change theoretically.
+
+---
+
+_Removed from milestone `3.1` by @CreepySkeleton on 2020-04-18 13:29_
+
+---
+
+_Added to milestone `3.0` by @CreepySkeleton on 2020-04-18 13:29_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2021-01-07 14:03_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2021-01-07 14:03_
+
+---
+
+_Referenced in [clap-rs/clap#1772](../../clap-rs/clap/issues/1772.md) on 2021-07-10 22:30_
+
+---
+
+_Referenced in [clap-rs/clap#2993](../../clap-rs/clap/pulls/2993.md) on 2021-11-05 14:24_
+
+---
+
+_Referenced in [epage/clapng#141](../../epage/clapng/issues/141.md) on 2021-12-06 19:13_
+
+---
+
+_Referenced in [epage/clapng#148](../../epage/clapng/issues/148.md) on 2021-12-06 19:16_
+
+---
+
+_Comment by @pksunkara on 2021-12-08 01:33_
+
+Some relevant code from a discussion about key value pairs in [here](https://github.com/clap-rs/clap/discussions/3057#discussioncomment-1748209):
+
+```rust
+    // number_of_values = 1 forces the user to repeat the -D option for each key-value pair:
+    // my_program -D a=1 -D b=2
+    // Without number_of_values = 1 you can do:
+    // my_program -D a=1 b=2
+    // but this makes adding an argument after the values impossible:
+    // my_program -D a=1 -D b=2 my_input_file
+    // becomes invalid.
+    #[clap(short = 'D', parse(try_from_str = parse_key_val), multiple_occurrences(true), number_of_values = 1)]
+    defines: Vec<(String, i32)>,
+```
+
+---
+
+_Label `A-derive` removed by @epage on 2021-12-08 21:15_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:15_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:15_
+
+---
+
+_Label `A-derive` added by @epage on 2021-12-08 21:15_
+
+---
+
+_Referenced in [clap-rs/clap#1682](../../clap-rs/clap/issues/1682.md) on 2021-12-09 20:40_
+
+---
+
+_Label `S-waiting-on-mentor` added by @epage on 2021-12-09 20:41_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-09 20:41_
+
+---
+
+_Comment by @linclelinkpart5 on 2022-08-19 18:15_
+
+Chiming in to say I'd love to have this feature. I'm in need of being able to support options of the form:
+`--source /path/to/dir 7 --source /other/path/to/dir 5`. Each of the `--source` options has a `(Path, u8)` pair of arguments.
+
+---
+
+_Label `S-waiting-on-mentor` removed by @epage on 2022-08-19 18:59_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2022-08-19 18:59_
+
+---
+
+_Comment by @epage on 2022-08-19 18:59_
+
+The main challenge we'll have with tuple support is the `value_parser` system assumes that every value is of the same type.  So we can easily get #1682 but tuple support is more challenging.
+
+We'll need someone to come up with a proposal for how the value parser system can have disparate types before we are able to get this to move forward.
+
+---
+
+_Referenced in [hatoo/oha#278](../../hatoo/oha/pulls/278.md) on 2023-08-05 07:22_
+
+---
+
+_Comment by @ghost on 2024-04-15 22:17_
+
+any news on this? its been 4 years
+
+---
+
+_Comment by @epage on 2024-04-16 00:22_
+
+If there isn't word on this issue, then no.  The last comment I gave has the main design challenge for this.  #1682 would be easier as it bypasses that design challenge but that there is also the issue with dealing with breaking changes.  #4626 is exploring that.
+
+---
+
+_Referenced in [mrozycki/rustmas#243](../../mrozycki/rustmas/pulls/243.md) on 2024-05-19 14:40_
+
+---
+
+_Comment by @RossComputerGuy on 2025-09-23 22:49_
+
+I found a very simple way is to just do something like this:
+```rs
+arg.iter().step_by(2).zip(arg.iter().skip(1).step_by(2))
+```
+
+It returns an iterator but for how I'm using it, it works exactly as intended. Hopefully this is useful for someone else.
+
+---

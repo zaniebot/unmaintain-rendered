@@ -1,0 +1,95 @@
+---
+number: 3454
+title: "Incorrect locking with uv `--python-platform x86_64-apple-darwin`"
+type: issue
+state: closed
+author: hauntsaninja
+labels:
+  - bug
+assignees: []
+created_at: 2024-05-08T09:25:19Z
+updated_at: 2024-11-20T14:54:14Z
+url: https://github.com/astral-sh/uv/issues/3454
+synced_at: 2026-01-10T01:23:28Z
+---
+
+# Incorrect locking with uv `--python-platform x86_64-apple-darwin`
+
+---
+
+_Issue opened by @hauntsaninja on 2024-05-08 09:25_
+
+```
+λ cat r.in
+ray==2.10
+λ uv pip compile r.in --python-platform x86_64-apple-darwin
+  × No solution found when resolving dependencies:
+  ╰─▶ Because ray==2.10.0 is unusable because no wheels are available with a matching Python ABI and you require ray==2.10, we can conclude that the requirements are
+      unsatisfiable.
+```
+
+I don't know why uv's complaining about this. There are valid wheels: https://pypi.org/project/ray/2.10.0/#files
+
+---
+
+_Comment by @konstin on 2024-05-08 09:37_
+
+The problem is that we set the macos version to 10.12:
+
+https://github.com/astral-sh/uv/blob/2ffb252498a9d452b3fe28e16abe2948cd21ec51/crates/uv-configuration/src/target_triple.rs#L79-L92
+
+Should we set a higher default here @charliermarsh?
+
+---
+
+_Comment by @hauntsaninja on 2024-05-08 09:50_
+
+10.15 is like five years old, so defaulting to that sounds good to me. For my use case, I'd be happy to set the right value explicitly too if there was a way to
+
+---
+
+_Label `bug` added by @zanieb on 2024-05-08 13:35_
+
+---
+
+_Comment by @charliermarsh on 2024-05-08 14:32_
+
+I believe I chose 10.12 for a reason. I need to look back...
+
+I experimented with adding a mechanism to specify exact versions. It added a lot of complexity and it wasn't clear how to display the candidate options on the CLI but I will revisit it. I was kind of waiting for someone to have a real need for it.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-05-08 14:32_
+
+---
+
+_Referenced in [astral-sh/uv#3469](../../astral-sh/uv/pulls/3469.md) on 2024-05-08 19:30_
+
+---
+
+_Comment by @charliermarsh on 2024-05-08 19:51_
+
+Bumping the default to 12.0 (last non-EOL version), and adding support for `MACOSX_DEPLOYMENT_TARGET` so that you can override it as needed.
+
+---
+
+_Closed by @charliermarsh on 2024-05-08 19:54_
+
+---
+
+_Comment by @uwu-420 on 2024-11-20 09:11_
+
+Is it a deliberate decision to keep `MACOSX_DEPLOYMENT_TARGET` as only a external environment variable or would it be okay to have this also configurable in `pyproject.toml`. I can only speak for myself, but I'd have a usecase for that. We have some projects that need to be deployed to very old macs and having that being configurable in `pyproject.toml` would make it very clear and easy to enforce for my team.
+
+---
+
+_Comment by @charliermarsh on 2024-11-20 14:54_
+
+Yeah, mostly because it's a standard environment variable read by other tools, so it's a little unusual for us to expose it as uv-specific configuration.
+
+---
+
+_Referenced in [astral-sh/uv#9837](../../astral-sh/uv/issues/9837.md) on 2024-12-12 12:47_
+
+---

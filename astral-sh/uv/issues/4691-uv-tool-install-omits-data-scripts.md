@@ -1,0 +1,55 @@
+---
+number: 4691
+title: "`uv tool install` omits `data` scripts"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-07-01T12:49:08Z
+updated_at: 2024-07-01T16:22:39Z
+url: https://github.com/astral-sh/uv/issues/4691
+synced_at: 2026-01-10T01:23:40Z
+---
+
+# `uv tool install` omits `data` scripts
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-01 12:49_
+
+See: https://github.com/astral-sh/uv/issues/4688#issuecomment-2200016362
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-07-01 12:49_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-07-01 12:49_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-01 12:49_
+
+---
+
+_Comment by @charliermarsh on 2024-07-01 13:19_
+
+I think we have to parse the `RECORD` file to do this reliably. The `.data` directory is deleted during wheel install (per the spec) so there's no other connectivity between the installed environment and the scripts.
+
+---
+
+_Referenced in [astral-sh/uv#4693](../../astral-sh/uv/pulls/4693.md) on 2024-07-01 13:40_
+
+---
+
+_Closed by @charliermarsh on 2024-07-01 16:22_
+
+---
+
+_Closed by @charliermarsh on 2024-07-01 16:22_
+
+---

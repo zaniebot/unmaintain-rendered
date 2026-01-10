@@ -1,0 +1,55 @@
+---
+number: 10772
+title: "Q000 can't be ignored"
+type: issue
+state: closed
+author: SimonDR-Boltzmann
+labels: []
+assignees: []
+created_at: 2024-04-04T08:02:29Z
+updated_at: 2024-04-04T08:06:31Z
+url: https://github.com/astral-sh/ruff/issues/10772
+synced_at: 2026-01-10T01:22:50Z
+---
+
+# Q000 can't be ignored
+
+---
+
+_Issue opened by @SimonDR-Boltzmann on 2024-04-04 08:02_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hi,
+
+With Ruff 0.3.5 (previous version tested was 0.3.0),
+it seems Q000 keeps popping up.
+
+- when only Q002 is selected (in pyproject.toml)
+- when Q is selected and Q000 is in "ignore" (in pyproject.toml)
+- when running `ruff check --ignore Q000`
+
+
+---
+
+_Comment by @AlexWaygood on 2024-04-04 08:06_
+
+Thanks for opening the issue! Luckily this has already been fixed on the `main` branch, so the fix will definitely be included in the next release :-)
+
+Closing as a duplicate of #10724
+
+---
+
+_Closed by @AlexWaygood on 2024-04-04 08:06_
+
+---

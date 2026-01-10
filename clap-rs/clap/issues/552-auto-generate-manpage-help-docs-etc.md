@@ -1,0 +1,1513 @@
+---
+number: 552
+title: Auto-generate manpage, help docs, etc.
+type: issue
+state: closed
+author: joshtriplett
+labels:
+  - C-enhancement
+  - A-help
+  - S-blocked
+assignees: []
+created_at: 2016-06-30T08:55:05Z
+updated_at: 2022-12-22T17:51:20Z
+url: https://github.com/clap-rs/clap/issues/552
+synced_at: 2026-01-10T01:26:31Z
+---
+
+# Auto-generate manpage, help docs, etc.
+
+---
+
+_Issue opened by @joshtriplett on 2016-06-30 08:55_
+
+Maintainer notes:
+- Blocked on https://github.com/clap-rs/clap/issues/2914 for decoupling help information gathering from formatting
+- help2man can be a source of inspiration for how to integrate this into a users process
+---
+
+I'd love to have support to generate a manpage.  This would use a mechanism and infrastructure similar to #376. Additional functions to override or augment portions of the generated manpage could come later, but I think with relatively few additions this could become an incredibly useful mechanism.
+- The manpage title should default to the `bin_name` value.
+- The section should default to `1`.
+- The `NAME` section should default to `bin_name \- about`, where `about` is the string set by `.about`.
+- The `SYNOPSIS` section should contain the usage strings for the command and every subcommand.
+- The `DESCRIPTION` section would need some new paragraph-style information provided (also usable as a more structured `.before_help`).
+- The "OPTIONS" section should document the flags and args for the top-level command.
+- If the command has subcommands, a "SUBCOMMANDS" section should document each subcommand in a sub-section.
+- The `AUTHORS` section should contain the author information, if provided.
+- The `SEE ALSO` section would need some new mechanism to populate it.
+
+I'd be happy to help with manpage markup, once I see the details of the mechanism used in #376.
+
+
+---
+
+_Comment by @kbknapp on 2016-06-30 13:29_
+
+I like this idea! I'll have a better idea about what all it would take once I finish #376 but I think it could be done. And if nothing else, it'll at least give a really good starting point that one could then tweak manually with little effort.
+
+
+---
+
+_Comment by @joshtriplett on 2016-06-30 14:53_
+
+Absolutely. I'm also hoping that, similar to `help2man` (which doesn't handle most of what clap can do), this could support providing arbitrary additional documentation to integrate into the generated manpage.  That would allow maintaining information in only one place (such as options and their documentation).
+
+
+---
+
+_Label `T: new feature` added by @kbknapp on 2016-06-30 17:37_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2016-06-30 17:37_
+
+---
+
+_Label `D: hard` added by @kbknapp on 2016-06-30 17:37_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2016-06-30 17:37_
+
+---
+
+_Label `C: man page gen` added by @kbknapp on 2016-06-30 17:39_
+
+---
+
+_Referenced in [clap-rs/clap#555](../../clap-rs/clap/issues/555.md) on 2016-07-01 13:26_
+
+---
+
+_Comment by @hgrecco on 2016-07-03 01:33_
+
+I was thinking about the same thing recently and I think we can reuse much of the infrastructure done for the templated help. But I would also like to propose a different way to generate the man page (and access the completion). I am opening another issue for this.
+
+
+---
+
+_Renamed from "Auto-generate manpage" to "Auto-generate manpage, help docs, etc." by @kbknapp on 2016-11-02 03:01_
+
+---
+
+_Comment by @kbknapp on 2016-11-02 03:05_
+
+Addressing this issue soon. I'd like to get the ability to generate man pages, help docs, etc. For the help docs, I'd especially like to be able to generate based off a template exactly like `App::template` works. Except recursively going through subcommands. The template would allow doing things like markdown, etc.
+
+Also, for help docs I'd like to choice to split the files or use a single document.
+
+
+---
+
+_Label `C: help pages gen` added by @kbknapp on 2016-11-02 03:10_
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2016-11-02 03:10_
+
+---
+
+_Label `D: hard` removed by @kbknapp on 2016-11-02 03:10_
+
+---
+
+_Label `W: 3.x blocker` added by @kbknapp on 2017-05-09 18:55_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2017-05-09 18:55_
+
+---
+
+_Comment by @matthiasbeyer on 2017-06-01 11:16_
+
+As far as I can see, this was moved to the `3.x` release for clap? Either way, I'd like to pronounce interest in this feature. Not only for [git-dit](https://github.com/neithernut/git-dit/) but also for [imag](https://github.com/matthiasbeyer/imag/).
+
+---
+
+_Referenced in [git-dit/git-dit#92](../../git-dit/git-dit/issues/92.md) on 2017-06-01 11:18_
+
+---
+
+_Comment by @kbknapp on 2017-06-16 20:39_
+
+@matthiasbeyer yes, this is a feature I want, but need to get 3.x out the door first because otherwise it'll just keep getting pushed off and pushed off.
+
+---
+
+_Referenced in [sharkdp/fd#77](../../sharkdp/fd/issues/77.md) on 2017-10-08 07:47_
+
+---
+
+_Referenced in [XAMPPRocky/tokei#184](../../XAMPPRocky/tokei/issues/184.md) on 2018-01-29 18:10_
+
+---
+
+_Label `W: 3.x blocker` removed by @kbknapp on 2018-02-05 15:28_
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2018-02-05 15:28_
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2018-02-15 14:38_
+
+---
+
+_Referenced in [rust-cli/team#1](../../rust-cli/team/issues/1.md) on 2018-02-20 18:21_
+
+---
+
+_Referenced in [rust-cli/team#8](../../rust-cli/team/issues/8.md) on 2018-02-20 19:10_
+
+---
+
+_Referenced in [rust-cli/team#14](../../rust-cli/team/issues/14.md) on 2018-03-01 16:10_
+
+---
+
+_Referenced in [rust-lang/cargo#5341](../../rust-lang/cargo/pulls/5341.md) on 2018-04-11 15:54_
+
+---
+
+_Referenced in [mesalock-linux/mesabox#1](../../mesalock-linux/mesabox/issues/1.md) on 2018-06-15 02:53_
+
+---
+
+_Comment by @valpackett on 2018-06-26 11:07_
+
+Since clap has plenty of information about the structure of commands and args and whatnot, it should be possible to build pages in the [mdoc](https://manpages.bsd.lv/mdoc.html) language, which is semantic (i.e. it has entities like "flags" and "commands" instead of just "bold text" etc.)
+
+---
+
+_Added to milestone `v3.0` by @kbknapp on 2018-07-22 00:50_
+
+---
+
+_Comment by @yoshuawuyts on 2018-07-22 22:59_
+
+Heya, on the CLI WG repo we've been working on this! It's a bit rough, but I reckon we might be able to create a compelling story!
+
+- https://github.com/killercup/roff-rs/ exists to generate `.troff` files. It's a bit versose, so we built 
+- https://github.com/rust-clique/man The goal is to have this generate (structured) man pages. We're mostly just waiting to merge https://github.com/rust-clique/man/pull/6 before it should be usable!
+- We also have [an initial implementation of clap v3 -> man page](https://github.com/rust-clique/man/blob/fc11e3765a3a94e4ba6e1943eb747fd704f69a61/src/lib.rs). Perhaps it would make sense to move it into a separate repo first, and if it works out alright we could eventually stabilize it and move it into Clap.
+
+## Screenshot
+### Structured man page, generated by the `man` crate
+![2018-07-19-141825_1920x1080](https://user-images.githubusercontent.com/2467194/43051062-75fadd76-8e13-11e8-8731-177d0c137caf.png)
+
+
+---
+
+Hope this is all useful. Excited to have man page support for Clap!
+
+
+---
+
+_Comment by @kbknapp on 2018-07-23 18:01_
+
+@yoshuawuyts this is awesome! My thoughts were to place the manpage generation into the [`clap_generate`](https://github.com/clap-rs/clap_generate) crate (I'm not opposed to a rename if there is something more fitting) along with the shell completion script generation since they're doing very similar things. 
+
+If you'd like I'd be more than willing to add people to the org and repo! So we can make it official.
+
+---
+
+_Comment by @yoshuawuyts on 2018-07-24 09:26_
+
+@kbknapp oh awesome, that def seems like the right way forward! Would be happy to join in!
+
+Also cc/ @spacekookie here (she wrote all the `clap v3 -> man` glue code). Perhaps you would be interested in joining?
+
+---
+
+_Referenced in [rust-cli/man#9](../../rust-cli/man/issues/9.md) on 2018-07-24 09:29_
+
+---
+
+_Comment by @killercup on 2018-07-24 10:09_
+
+@kbknapp not sure if you've seen it yet but I spend an hour yesterday to throw https://github.com/rust-clique/clap-md together -- its goal is to render Markdown documentation for clap applications. Feel free to move this to clap-generate, too! (I'd be sad to see that crate name go, though)
+
+---
+
+_Comment by @kbknapp on 2018-07-25 03:39_
+
+@killercup I love it! This is something I've been thinking about in the back of my mind that I'd love to put some time into! I've been passively looking at things like [flatdoc](http://ricostacruz.com/flatdoc/) and how other projects with large CLIs have provided docs (ones like Docker, etc.) to see if there is something we could use. But it's been on the back burner with this 3.x work :stuck_out_tongue_winking_eye: 
+
+I've sent out the invites to the clap-rs org to the three of you above, and yeah I'd love to move that to the org as well!
+
+---
+
+_Referenced in [rust-lang/cargo#5729](../../rust-lang/cargo/issues/5729.md) on 2018-08-07 12:25_
+
+---
+
+_Referenced in [rust-lang/cargo#6405](../../rust-lang/cargo/pulls/6405.md) on 2018-12-17 17:42_
+
+---
+
+_Comment by @vn971 on 2019-03-12 13:25_
+
+Folks, how can I generate man pages from clap now? Is it possible?
+
+---
+
+_Comment by @ssokolow on 2019-03-12 13:49_
+
+I actually just accomplished a non-pure-rust version of that last night in the rewrites I did for my [rust-cli-boilerplate](https://github.com/ssokolow/rust-cli-boilerplate).
+
+Basically, I tweaked the output from `StructOpt` to properly match Linux platform conventions (eg. setting `author=""` and starting `about` with a newline so the `<name> <version>` line doesn't get wrapped into the beginning of the description text) and then ran [`help2man -N`](https://www.gnu.org/software/help2man/) on it.
+
+If you want to poke at it, it's `just dist-supplemental` or the `just dist` and `just install` commands which depend on it. (They'll also build and, if requested, install completions for zsh, bash, and fish.)
+
+(My next goal will probably be to clear out that "build and publish a bundle of Clap validators for common cases" TODO at the bottom of the readme.)
+
+---
+
+_Comment by @ssokolow on 2019-03-12 14:15_
+
+Since I didn't think a boilerplate template necessitated screenshots in an already quite long README, here's what it looks like when I run `./apply.sh ../boilerplate; cd ../boilerplate; just install; man boilerplate`:
+![screenshot2](https://user-images.githubusercontent.com/46915/54206887-186a8b00-44d1-11e9-8b38-e0dfba5151f7.png)
+
+**EDIT:** And I just realized that I forgot to make `dist-supplemental` guarantee that the binary had already been built before calling help2man. Fixed.
+
+---
+
+_Comment by @pickfire on 2019-03-13 15:37_
+
+@ssokolow I think those generated man pages are using too much spaces, can you please try it with 80 columns for your terminal? It may look ugly on some terminal with lesser width though.
+
+---
+
+_Comment by @vn971 on 2019-03-13 15:42_
+
+@ssokolow will it work correctly with subcommands? The way `--help` works on clap now, it will just list the subcommands, but it will not show subcommand-specific keys and arguments. This will lead to incomplete man if piped to an external process directly.
+Are the subcommands currently addressed in your project?
+
+---
+
+_Comment by @ssokolow on 2019-03-13 17:48_
+
+@pickfire Here's a screenshot at 80 columns (as lazily determined by running `print 'x'*80` in a Python REPL and then resizing the window to just fit it without wrapping)
+
+![screenshot2](https://user-images.githubusercontent.com/46915/54300285-715f1f80-45b4-11e9-9701-f4d19fd042ad.png)
+
+@vn971 I hadn't gotten around to trying to accomodate subcommands yet because I'm using my own needs to set the priority of various features and I don't use subcommands often.
+
+For example:
+* At the moment, I'm about to rewrite `apply.sh` in Python, add a config file, and have the default config file run `xdg-terminal`, `xdg-open src/main.rs`, and `git gui` after creating the new project since *that*'s the current number-one thing I could do to reduce my urge to turn to Python rather than Rust for quick little throwaway scripts which will turn out to be anything but. (I'll bundle copies of the XDG utilities as fallbacks that don't get copied into new projects.)
+
+  (I'm used to running `gvim script_name.py` in my Quake-style terminal followed by `boiler\c`, then bringing git into the mix when I realize it's not going to be a throwaway. This would solve that while making it even more convenient.)
+* I'm planning to experiment with a quick custom derive that allows me to hang StructOpt and something like config-rs off the same struct, then call `serde_output.merge(structopt_output)` as an "I'm tired of waiting for a proper solution and I think ripgrep's solution is ugly" way to get config files without duplicating the schema.
+* Both as a convenient reference for myself and as part of my commitment to good documentation, I'm planning to rename the validators after their intended uses (ie. `output_file_path` rather than `path_valid_portable`) and include a block like this at the top of each validator's rustdoc page:
+
+  > **Conventions:**:
+  > * Use `-o` to specify the output path [[1]](http://www.catb.org/esr/writings/taoup/html/ch10s05.html)
+  > * Interpret a value of `-` to mean "Write output to stdout" [[2]](http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html)
+  > * Because `-o` does not inherently indicate whether it expects a file or a directory, consider also providing a GNU-style long version with a name like `--outfile` to allow scripts which depend on your tool to be more self-documenting.
+
+---
+
+_Comment by @pickfire on 2019-03-15 06:18_
+
+@ssokolow Nice. Maybe you can just use `env MANWIDTH=80 man boilerplate`. 
+
+---
+
+_Comment by @ssokolow on 2019-03-15 06:55_
+
+That said, I just noticed that, when I call help2man *now*, I'm getting a doubled body on the manpage, so I'll have to `git bisect` to find the cause tomorrow.
+
+I'll also add a test for that odd behaviour to my test suite for the build automation.
+
+---
+
+_Comment by @ssokolow on 2019-03-15 16:02_
+
+Found the problem. I had a "Durr" moment when writing the justfile.
+
+Originally, I'd accidentally written `cargo run -- help`, which worked because `help2man` adds `--help` and `--version`, which causes the `help` to have no effect.
+
+Later, I "fixed" it to `cargo run -- --help`, so help2man was running `boilerplate --help --help` and `boilerplate --help --version` to extract the info.
+
+I've pushed a fix and added a regression test to the `test_justfile.py` I use to make sure I don't screw up my justfile while refactoring.
+
+(On a related note, I spent yesterday's coding time putting together a `gen_justfile_reference.py` script which is now responsible for generating and injecting the reference tables in the `README.md` by parsing `justfile`. I'll probably rewrite these helpers in Rust once I've moved the project template into a subfolder.)
+
+---
+
+_Comment by @pickfire on 2019-03-16 13:42_
+
+@ssokolow Just wondering, how does `boilerplate` generate the `ENVIRONMENT` section in man page?
+
+---
+
+_Comment by @ssokolow on 2019-03-16 13:51_
+
+At present, `rust-cli-boilerplate` simply doesn't (generate an `ENVIRONMENT` section) and I don't see how it *could* automatically extract that information, given how the it doesn't currently **do** anything with the environment.
+
+(ie. In its current stage of development, loading configuration beyond command-line arguments is up to you, so documenting them is also.)
+
+However, it's trivial to add an `--include` or `--opt-include` call to the `help2man` line in the `justfile` to append a chunk of raw *roff text for an `ENVIRONMENT` section and I'll consider adding an `--opt-include` (include if exists) by default to broaden the scope of people who can use the `justfile` without modification.
+
+In the longer term, once I've got unified configuration of some sort, I'll look into doing something similar to `--dump-completions`  to allow the program to report the environment variables it obeys so I can have a build script generate said *roff text.
+
+---
+
+_Comment by @pickfire on 2019-03-16 15:05_
+
+> However, it's trivial to add an --include or --opt-include call to the help2man line in the justfile to append a chunk of raw *roff text for an ENVIRONMENT section and I'll consider adding an --opt-include (include if exists) by default to broaden the scope of people who can use the justfile without modification.
+
+Would not that be limited to just *roff? How about mandoc and friends?
+
+---
+
+_Comment by @ssokolow on 2019-03-16 15:42_
+
+The `man` command is a *roff renderer. `--include` and `--opt-include` literally just copy the contents of the files you specify into the final output.
+
+mandoc and friends, by definition, must output *roff markup for `man` to understand it, so you can use `--include` or `--opt-include` with their output.
+
+(It's like something which generates HTML docs providing an option to copy blocks of raw HTML into the final output.)
+
+---
+
+_Comment by @dashohoxha on 2019-03-28 10:21_
+
+I am not sure whether this is useful, but in the past I have used http://rtomayko.github.io/ronn/ for writing man pages. They look like this: 
+- https://gitlab.com/EasyGnuPG/egpg/blob/gnupg-2.2/man/egpg.1.ronn
+- https://gitlab.com/EasyGnuPG/egpg/tree/gnupg-2.2/man
+
+---
+
+_Comment by @ssokolow on 2019-03-28 10:38_
+
+I'm not really a huge fan of adding more Ruby dependencies. I'd probably do something with [rust-cli/man](https://github.com/rust-cli/man) instead.
+
+(But thanks for the effort nonetheless.)
+
+---
+
+_Referenced in [greshake/i3status-rust#391](../../greshake/i3status-rust/pulls/391.md) on 2019-07-08 16:06_
+
+---
+
+_Comment by @pickfire on 2019-09-23 12:24_
+
+Would it be good to generate the commands output to rustdoc as well? The CLI docs can be viewed in rust offline docs as well.
+
+It could take advantage of the existing comments (which rustdoc already does) in addition to the extra commands, seems useful in context like https://github.com/mozilla/neqo/blob/6c012fb3416586b7c9604348b128e4cffc250338/neqo-server/src/main.rs#L26-L28
+
+---
+
+_Comment by @ssokolow on 2019-09-23 12:38_
+
+I'd need to see a mockup of the kind of thing you'd expect to generate, but my instinct is "Yes, it would be good".
+
+---
+
+_Comment by @Dylan-DPC-zz on 2019-09-23 15:36_
+
+Have you looked at https://github.com/rust-cli/man?
+
+---
+
+_Comment by @ssokolow on 2019-09-23 15:49_
+
+@Dylan-DPC 
+
+Already been mentioned.
+
+>  **ssokolow commented on Mar 28**
+> I'm not really a huge fan of adding more Ruby dependencies. I'd probably do something with [rust-cli/man](https://github.com/rust-cli/man) instead.
+>
+> (But thanks for the effort nonetheless.)
+
+---
+
+_Comment by @pickfire on 2019-09-24 01:36_
+
+@Dylan-DPC I did saw that but if I am correct you are replying to https://github.com/clap-rs/clap/issues/552#issuecomment-534080103, the context was generating help similar to man pages but to rustdoc instead since rustdoc is not fully utilized for binary packages as of now. Maybe I should go ask in #rustdoc.
+
+---
+
+_Comment by @msarfati on 2020-01-10 03:26_
+
+After working a bit on this problem on my own, I wonder if the best solution for man-page autogen is to support the ability to convert a `clap::App` to YAML, after it's been built using its builder pattern, and then just parse the YAML into man / *roff with rust-man. This feature can also help users migrate from the builder pattern to YAML.
+
+I would be very interested in working on this and maintain it part of Clap (and not my own unicorn fork of Clap), but I'm not really sure how the Clap team feels about introducing a feature like this, or how to go about pitching this. Also would like to know if anyone else is working manpage autogen?
+
+---
+
+_Comment by @ssokolow on 2020-01-10 03:56_
+
+Waitaminute. 
+
+When did YAML come into the picture? I'm very much against using YAML in new code for a variety of reasons that boil down to how the spec's [hugely overcomplicated](https://www.arp242.net/yaml-config.html) from trying to be too many things for too many different people (longer than the XML spec and [doesn't even achieve all those goals](https://metacpan.org/pod/JSON::XS#JSON-and-YAML)), it's got various [lurking footguns](https://noyaml.com/) such as confusing an unquoted string literal for Norway's country code (`no`) with an alternative "do what I mean" representation of boolean false, and different YAML implementations seem [unable to agree](https://github.com/cblp/yaml-sucks) on how to implement it.
+
+This has [caused real-world problems](https://ciaranm.wordpress.com/2009/03/01/yaml-sucks-gems-sucks-syck-sucks/) in the past. (Not even counting the various problems caused by libraries implementing [insecure by default](http://tenderlovemaking.com/2013/02/06/yaml-f7u12.html) decoding APIs.)
+
+It's also at odds with the Rust philosophy when it comes to footgun-encouraging design, reminding me more of CoffeeScript's use of whitespace and PHP's weak typing.
+
+Any chance you could bypass the serialization/deserialization step entirely or at least use JSON or TOML instead?
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-10 06:38_
+
+> ability to convert a clap::App to YAML, after it's been built using its builder pattern, and then just parse the YAML into man / *roff with rust-man.
+
+If  you mean https://github.com/rust-cli/man by `rust-man` here than I think the most sensible approach here is to convert `clap::App` into [`man::Manual`](https://docs.rs/man/0.3.0/man/struct.Manual.html) directly, without any intermediate formats, YAML or not YAML.
+
+Serializing `App` to / deserializing `Manual` from some config file can be implemented separately.
+ 
+The only thing is that https://github.com/rust-cli/man is kind of dead as I see it (a year of no updates). cc @rust-cli 
+
+> Any chance you could bypass the serialization/deserialization step entirely or at least use JSON or TOML instead?
+
+I'm seconding @ssokolow here, YAML is not a good choice for config files.
+
+---
+
+_Comment by @msarfati on 2020-01-10 13:12_
+
+Those are fair criticisms of my YAML idea @ssokolow and @CreepySkeleton -- I only proposed YAML because it was something already supported by clap (albeit in a different use-case), but that approach indeed has its issues.
+
+I suppose I could bypass serialization/deserialization entirely and just use a `clap::App` to construct a `man::Manual` in `rust-cli/man`. It seems like this approach might involve exposing some of `clap::App`'s attributes as public, or writing new getter functions/macros for accessing some of `clap::App`'s attributes not currently exposed. I'll get to work on a prototype and get a better sense of what's required.
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-10 13:57_
+
+> . It seems like this approach might involve exposing some of clap::App's attributes as public, or writing new getter functions/macros for accessing some of clap::App's attributes not currently exposed.
+
+Those fields are `pub` but `#[doc(hidden)]` in both `App` and `Arg`. While I don't think that relying on such fields is fine for a *release* of minimal viable product, I think that this is acceptable for a *prototype*. So go ahead and "draw a sketch"!
+
+---
+
+_Referenced in [clap-rs/clap#1630](../../clap-rs/clap/issues/1630.md) on 2020-01-10 15:02_
+
+---
+
+_Comment by @spacekookie on 2020-01-10 17:32_
+
+>The only thing is that https://github.com/rust-cli/man is kind of dead
+>as I see it (a year of no updates). @rust-cli cc
+
+Hey!
+
+Indeed we haven't been working on this stuff actively in the last year, but we're getting the CLI WG started again. There's regular meetings (every first Monday of the month), and notes on the meetings here: https://hackmd.io/NKG9jUiFThGqgAqhsIniyg
+
+Truth be told, we've been thinking about how to generate documentation in general, and have been looking at yamr and toml as formats. Toml is "simple" in the sense that it quite awful to write and structure. We wanted to put some tech demos together and announce them soon.
+
+I encourage you to join the next meeting if you have feelings about this. We also have a ML now that you can add yourselves to via the rust/teams repo. 
+
+
+---
+
+_Comment by @pksunkara on 2020-01-16 21:52_
+
+I agree with @CreepySkeleton here that we can easily create a `to_man` fn in `clap::App` that converts it into `man::Manual`. Clap already takes in config file, we don't need to create one more.
+
+@spacekookie Thanks for the info on the meetings. Looking forward to join the next one.
+
+We recently got a stream created in Zulip chat too [#wg-cli](https://rust-lang.zulipchat.com/#narrow/stream/220302-wg-cli)
+
+---
+
+_Comment by @spacekookie on 2020-01-22 17:00_
+
+
+> I agree with @CreepySkeleton here that we can easily create a `to_man`
+> fn in `clap::App` that converts it into `man::Manual`. Clap already
+> takes in config file, we don't need to create one more.
+
+I have to strongly disagree here.
+
+There's a few problems with just having the documentation in code.  For
+one it's impossible to translate, which is a huge problem at the moment,
+on the other hand a man page can't just be generated from a clap::App
+definition.  A manual page is more than just listing the options from
+`--help` in a slightly different format.  In fact, those pages exist
+sometimes, and they're usually useless.  Instead, a manual page needs to
+go into a lot more detail about the semantics of a tool.  This is
+something that requires free form text and is best done in external
+files.
+
+The exact format of these files, I'm not sure about.  We could even have
+a folder with documentation, which is only supplimented with a config to
+put it all together, but it can't just be derived from the clap::App
+definition.
+
+> We recently got a stream created in Zulip chat
+> too. https://rust-lang.zulipchat.com/#narrow/stream/220302-wg-cli
+
+We decided on chat being on matrix in a past meeting
+(matrix.org:#rust-cli).  I'm not sure there's enough volume to fill two
+chat channels, but in any case, do be aware that there's also
+discussions going on in the matrix channel.
+
+
+---
+
+_Comment by @vn971 on 2020-01-22 17:24_
+
+To correct a bit, the room id is `#rust-cli:matrix.org`.
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-22 18:26_
+
+@spacekookie  Totally agree on the "translations" thing, I didn't think about it, oops.
+
+(I must confess that I'm no expert in  man pages and if you think something of the following is wrong - tell me and the apologizing cat will apologize).
+
+> A manual page is more than just listing the options from `--help` in a slightly different format
+
+The funny thing is that the man pages are *exactly* "the options from `--help` in a slightly different format" with some sort of header and a footer. 
+
+Let's look at the [`gcc` man page](https://linux.die.net/man/1/gcc) - header + options + footer.
+[`git` man page](http://man7.org/linux/man-pages/man1/git.1.html) - header + options + footer. (This case is pretty interesting since they use two `subcommand` sections instead of just one, but still.)
+[`curl` man page](https://curl.haxx.se/docs/manpage.html) - header + options + footer.
+...
+
+I have yet to see a man page **for a binary** that stands out too drastically.
+
+My core point here is that at least the "option" part can very well be generated from --help.
+
+> a folder with documentation, which is only supplimented with a config to put it all together, 
+
+For project-level man pages that cover multiple binaries - maybe. For a single binary? Not sure, but leaning to "one config file".
+
+---
+
+_Comment by @spacekookie on 2020-01-22 19:33_
+
+
+> @spacekookie Totally agree on the "translations" thing, I didn't think
+> about it, oops.
+
+I think this is quite an important point that a lot of people forget
+about, which is a problem.  And whatever tooling we have needs to
+address this.
+
+>> A manual page is more than just listing the options from `--help` in
+>> a slightly different format
+>
+> The funny thing is that the man pages are *exactly* "the options from
+> `--help` in a slightly different format" with some sort of header and
+> a footer.
+
+To rephrase my initial point: content can't just be derived from the
+clap definitions, structures possibly could but I don't really see the
+point.  Yes, man pages are usually "just" the set of options, but with
+significantly more explanation and cross-references to other man pages
+(see the git manuals for referenc).
+
+I think it's important to keep the actual text outside of the Rust code
+for a few reasons.  One is that we want to encourage people to write
+longer sections to explain their program, and doing so in a format that
+is optimised to convey emphasis, such as markdown, restructured text,
+etc is much better that having to write it in multiline strings in Rust
+files.  Two is that we want these files to be translatable.
+
+So considering that these files will need to follow some kind of
+structure anyway, to not create a huge mess between different language
+versions of the same texts, I don't really see the need to generate
+anything from clap.  Rather, we would associate a documentation key with
+the option names or help text in clap.  The idea is that this tool could
+be used in far more applications than just clap CLIs, and also allow
+other argument parsers to implement the same trait to benifit from
+translations, man page support, etc.
+
+I think this is a far more elegant solution to this problem than having
+to couple it to one particular argument parser library.
+
+---
+
+Are you subscribed to the mailing list yet?  I recommend you do that
+(over at the teams repo) and also check out the meeting notes we took in
+the last 2 meetings: https://hackmd.io/NKG9jUiFThGqgAqhsIniyg
+
+
+---
+
+_Comment by @pksunkara on 2020-01-22 19:53_
+
+I think you misunderstood my intention. You are right that we don't want to couple the man pages generator to clap. What I meant is we can use doc comments in the CLI built using `clap_derive` to generate default man pages which the author can override later if he wants.
+
+> I think it's important to keep the actual text outside of the Rust code
+for a few reasons.  One is that we want to encourage people to write
+longer sections to explain their program, and doing so in a format that
+is optimised to convey emphasis, such as markdown, restructured text,
+etc is much better that having to write it in multiline strings in Rust
+files.
+
+Well, [doc comments](https://doc.rust-lang.org/rust-by-example/meta/doc.html#doc-comments) is already a standard here.
+
+---
+
+_Comment by @spacekookie on 2020-01-22 20:36_
+
+
+> Well, [doc
+> comments](https://doc.rust-lang.org/rust-by-example/meta/doc.html#doc-comments)
+> is already a standard here.
+
+I really don't think this is a good way to go about this.  Doc comments
+are convenient for documenting actualy functions, but now writing a
+book, for example.
+
+Anyway, the clap_derive can do whatever, really.  The idea is to have a
+"Doc" Trait, that allows tools to hook into sources and sinks, which
+means that you can have your doc comments if you want them, and then
+swap out the comments later for actual docs.
+
+I personally don't think this is a good way about writing an
+application, because it depends on editors having good support for
+editing doc comments (not all of them do), and makes translating
+impossible, but obviously that's just my feelings about how software
+should be written ;)
+
+
+---
+
+_Comment by @ssokolow on 2020-01-22 23:18_
+
+Bear in mind that, on the Python side, I'm just finishing up a migration to Sphinx and the number-one factor that came into play on multiple occasions is internal consistency.
+
+1. What is the number-one thing I hate about Sphinx's API documentation support? That the best I can do for ensuring nothing gets missed in refactoring is to babysit one `foo.rst` file per source file containing an `.. automodule:: foo` directive.
+
+   Doing so constrains my ability to document things compared to using more fine-grained `autowhatever` directives, but my number-one concern is minimizing the ability for things to drift out of sync because, in practice, I've run into too many Python libraries where I had to read the source because the Sphinx docs were incomplete somehow. 
+
+   (I'm upgrading from an unmaintained Python 2.x documentation tool that behaves more like rustdoc.)
+
+2. How did I handle the command's manpage? I chose a third-party `.. autoprogram` directive because, as constraining as it is to just use a stupid "Generate it from the `argparse.ArgumentParser` instance", I value guaranteed consistency between my parser and my manpage far more highly than being able to put in more details. (Note that `argparse.ArgumentParser` doesn't expect any kind of rich markup as input.)
+
+If you force me to do too much babysitting of my documentation to, I'll just stick to my current solution of tweaking the `clap` template to bring it into compliance with GNU conventions and then running `help2man` after compilation.
+
+(At *minimum*, have some kind of lint which complains if the data from clap appears to not line up with the externally provided data.)
+
+Also, note that, while it requires raw \*roff input, `help2man` provides a potential avenue for allowing external content to integrate with generated content.
+
+```
+INCLUDE FILES
+       Additional material may be included in the generated output with the --include and --opt-include options.  The format is simple:
+
+           [section]
+           text
+
+           /pattern/
+           text
+
+       Blocks of verbatim *roff text are inserted into the output either at the start of the given [section] (case insensitive), or after a paragraph matching /pattern/.
+
+       Patterns use the Perl regular expression syntax and may be followed by the i, s or m modifiers (see perlre(1)).
+
+       Lines before the first section or pattern which begin with `-' are processed as options.  Anything else is silently ignored and may be used for comments, RCS keywords and the like.
+
+       The section output order (for those included) is:
+
+           NAME
+           SYNOPSIS
+           DESCRIPTION
+           OPTIONS
+           ENVIRONMENT
+           FILES
+           EXAMPLES
+           other
+           AUTHOR
+           REPORTING BUGS
+           COPYRIGHT
+           SEE ALSO
+
+       Any [NAME] or [SYNOPSIS] sections appearing in the include file will replace what would have automatically been produced (although you can still override the former with --name if required).
+
+       Other sections are prepended to the automatically produced output for the standard sections given above, or included at other (above) in the order they were encountered in the include file.
+
+       Placement  of  the  text within the section may be explicitly requested by using the syntax [<section], [=section] or [>section] to place the additional text before, in place of, or after the default
+       output respectively.
+```
+
+If I had a solution which auto-generated from Clap but also looked for `.md` override files with those `[<section]`, `[=section]`, `[>section]` or `/pattern/` references, and it complained if they didn't match or matched more than once without some kind of "This one is expected to match `regex repetition specifier` times", I'd be happy.
+
+---
+
+_Comment by @codesections on 2020-01-23 17:38_
+
+@ssokolow I have a genuine question that I hope doesn't come off as snarky—I really am curious.  You wrote:
+
+> If you force me to do too much babysitting of my documentation to, I'll just stick to my current solution of tweaking the clap template to bring it into compliance with GNU conventions and then running help2man after compilation.
+
+Why do you want to have a man page at all, if you'd be happy with it duplicating the `--help` output?  As an end user, I nearly always consult `--help` *first* and then, if my question wasn't answered, check the man page.  Given that, I'd strongly prefer *no* man page to a man page that duplicates the `--help` output.  In either case, my question isn't getting answered, but at least `No manual entry for <COMMAND>` doesn't cause me to waste time figuring out that the man page has no new info.
+
+Do you have a use case for man pages where a man page that copies `--help` output is useful rather than annoying? 
+
+@CreepySkeleton wrote:
+> The funny thing is that the man pages are exactly "the options from --help in a slightly different format" with some sort of header and a footer.  Let's look at the gcc man page - header + options + footer.
+
+That isn't how I'd describe the `gcc` man page at all.  (At least on my system.  The man page I have is very similar to the [online one](https://linux.die.net/man/1/gcc).  Is that what you were talking about?)
+
+I'd describe the `gcc` man page as a 15,746-line document that extensively documents the `gcc` command.  This includes several sections before documenting options, and an `OPTIONS` section divided into several subsections, and then several sections after `OPTIONS`.  Within its `OPTIONS` section (which contains multiple subsections not documented via `--help`), it documents many options that are **not** documented in the (61-line) `--help` output.  Even when options are documented in both the man page and the `--help` output, their description in the manual is *much* more detailed than their description in the `--help` output. 
+
+> My core point here is that at least the "option" part can very well be generated from --help.
+
+Do you mean that the `OPTION` section of the `gcc` man page could be generated from the `--help` output?  If so, I disagree – the `OPTION` section is far, far longer than the `--help` output and includes options not documented in via `--help`.
+
+Or do you mean that a **list** of options could be generated from `--help`, and that list could form a framework for an expanded `OPTIONS` section in the man page?  If so, I agree.  The man page will eventually be much longer than the `--help` output, but starting with a list of all options/flags documented in with `--help` seems like a helpful starting point/way to avoid inadvertently omitting some options.  On the other hand, I don't think that starting with the `--help` *descriptions* for options is all that useful – in my view, the man page descriptions should be significantly more detailed.   
+
+---
+
+_Comment by @CreepySkeleton on 2020-01-23 17:55_
+
+Fair enough, I think I was wrong. I would still like to see the relationship between options is documented in some standardized way(conflicts, one option implying another...), along with default values, possible values and so on. I agree that the detailed description should not be the same as in --help but I'm very convinced that the stuff above must be derived from the actual implementation to ensure they never get out of sync. 
+
+---
+
+_Comment by @ssokolow on 2020-01-23 18:12_
+
+@codesections 
+
+There are several important details:
+
+1. There's a surprising amount of inconsistency about how programs implement built-in help. I've actually got a Zsh script, the whole purpose of which is to veto GNU's decision that `-h` should not be an alias for `--help`. Heck, I can't remember which, but I think I even ran into some programs where they didn't implement `-h` or `--help` (They might have been using `-?` or X11-style `-help`) and did something unwanted and annoying to clean up after if you tried to ask for help that way.
+
+2. As primitive as \*roff markup rendered in `man` is, `--help` output from pretty much anything other than a program specifically configured to use clap's coloured output option is worse. (Plus, there's a nifty hack which overrides the terminal escapes used in `man` to get colourization reminiscent of what clap's colourization does.)
+
+3. `man command` is more concise and easier to remember than `command --help | less`, especially if I then decide that, oops, I need less so I can use `/` searching.
+
+4. While I'm not using it yet (partly because I hate \*roff markup), help2man allows you to add blocks of information above, below, or within your autogenerated stuff.
+
+My mention of rustdoc vs. Sphinx was carefully chosen. I want a solution where omitting an entry can only be done intentionally and it's impossible for the auto-generated parts to fall out of sync with reality unless you are specifically overriding them with manual bits rather than just augmenting them.
+
+---
+
+_Comment by @codesections on 2020-01-23 18:34_
+
+@CreepySkeleton 
+>  I would still like to see the relationship between options is documented in some standardized way(conflicts, one option implying another...), along with default values, possible values and so on. I agree that the detailed description should not be the same as in --help but I'm very convinced that the stuff above must be derived from the actual implementation to ensure they never get out of sync. 
+
+Agreed 100%
+
+@ssokolow, thanks for the detailed reply.  As mentioned upthread, the CLI working group is working on a solution for this space, and hearing about your use-case is helpful.  Our goal is to support man output (and other documentation) in a way that is both synchronized to the actual application and that allows easy customization without hand-writing *roff.
+
+> As primitive as *roff markup rendered in man is, --help output from pretty much anything other than a program specifically configured to use clap's coloured output option is worse.
+
+I *believe* this should be fixed in the current master version of Clap, since Clap will now output non-colored text when ANSII escape codes aren't supported.  #963 
+
+---
+
+_Comment by @ssokolow on 2020-01-23 19:00_
+
+> I believe this should be fixed in the current master version of Clap, since Clap will now output non-colored text when ANSII escape codes aren't supported. #963
+
+You misunderstand. I'm saying that clap is pretty much the only thing that matches `man` for making good use of slightly rich markup to make the text more scannable and only if it's a program that opts into using coloured output.
+
+Here's one of my own programs using Python's `argparse` for `--help` generation (I'm in the middle of modernizing it. A few days ago, it was using `optparse`):
+
+![Screenshot_20200123_135126](https://user-images.githubusercontent.com/46915/73014280-c93ff700-3e11-11ea-8ad8-7225a6319b5d.png)
+
+...and here's the result of using Sphinx's third-party `.. autoprogram::` directive, then outputting the resulting page via Sphinx's manpage renderer without having added any supplementary sections below it yet:
+
+![Screenshot_20200123_135542](https://user-images.githubusercontent.com/46915/73014392-f8eeff00-3e11-11ea-956e-f264b4cda27a.png)
+
+(It'll take some reworking to get Sphinx generating both a manpage and an HTML manual without either having to write and maintain two slightly different versions of the same content or having at least one of them looking terrible.)
+
+In case you're wondering, the colourization is accomplished by this shell function:
+
+```sh
+# Launch man with modified `less` termcap in subshell to colourize it
+man() { (
+    export LESS_TERMCAP_mb=$(tput bold; tput setaf 2)
+    export LESS_TERMCAP_md=$(tput setaf 6)
+    export LESS_TERMCAP_me=$(tput sgr0)
+    export LESS_TERMCAP_so=$(tput setaf 7; tput setab 4)
+    export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
+    export LESS_TERMCAP_us=$(tput smul; tput setaf 7)
+    export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
+    export LESS_TERMCAP_mr=$(tput rev)
+    export LESS_TERMCAP_mh=$(tput dim)
+    export LESS_TERMCAP_ZN=$(tput ssubm)
+    export LESS_TERMCAP_ZV=$(tput rsubm)
+    export LESS_TERMCAP_ZO=$(tput ssupm)
+    export LESS_TERMCAP_ZW=$(tput rsupm)
+    export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
+    command man "$@"
+) }
+```
+
+---
+
+_Comment by @codesections on 2020-01-23 20:22_
+
+I did misunderstand.  Thanks for the clarification :+1: 
+
+---
+
+_Comment by @pickfire on 2020-01-25 02:33_
+
+> The funny thing is that the man pages are exactly "the options from --help in a slightly different format" with some sort of header and a footer.
+
+Most man pages are more elaborated as compared to `--help` page. Most of the time I try `man` page first because it is easier, just pressing alt-h when I typed the command.
+
+---
+
+_Referenced in [casey/intermodal#24](../../casey/intermodal/issues/24.md) on 2020-01-31 13:55_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2020-02-05 08:36_
+
+---
+
+_Added to milestone `3.1` by @pksunkara on 2020-02-05 08:36_
+
+---
+
+_Referenced in [http-rs/tide#101](../../http-rs/tide/issues/101.md) on 2020-03-01 11:37_
+
+---
+
+_Removed from milestone `3.1` by @pksunkara on 2020-03-03 12:42_
+
+---
+
+_Comment by @casey on 2020-04-09 23:06_
+
+I just wanted to jump in and +1 the idea of producing output in an intermediate format, which can then be fed in to various back ends.
+
+Since this output will be produced and consumed by code, JSON seems like a good choice, since it's simple and universally supported. TOML is also simple, but deep nesting in TOML gets weird.
+
+This would also make the initial implementation very simple, just output some JSON describing the CLI, and then backends could come later. Additionally, it would allow backends to be fully decoupled from clap.
+
+My own use case is that I'd like to generate both roff, to display with `man`, but also generate markdown, for inclusion in an mdbook book. Both formats aren't so complicated, so I wouldn't mind writing my own JSON to roff and JSON to markdown backends.
+
+---
+
+_Label `C: generator` added by @pksunkara on 2020-04-12 10:08_
+
+---
+
+_Label `C: help pages gen` removed by @pksunkara on 2020-04-12 10:08_
+
+---
+
+_Label `C: man page gen` removed by @pksunkara on 2020-04-12 10:08_
+
+---
+
+_Comment by @pickfire on 2020-05-24 09:01_
+
+@pksunkara I would like to help out with man page generation, maybe I will try generating `mdoc` format first then `troff` since I like that format.
+
+---
+
+_Comment by @pksunkara on 2020-05-24 09:08_
+
+IIRC @codesections is working on it.
+
+---
+
+_Comment by @pickfire on 2020-05-24 10:11_
+
+@pksunkara I believe I am working on a different man page format here which most likely @codesections is not using which is `mdoc`.
+
+---
+
+_Comment by @spacekookie on 2020-05-24 11:58_
+
+> @pickfire wrote:
+>
+> pksunkara I would like to help out with man page generation, maybe I
+> will try generating `mandoc` format first then `troff` since I like
+> that format.
+
+I think what is important to consider is that man page generation only
+partially has to be integrated with clap.  A man page isn't just a set
+of options with the same help text as --help (well, some of them are and
+they're utterly useless!)
+
+Instead, a man page need to be more long-form text that is merged with
+the structure of the clap arguments, with some sections just being
+free-form explanation of the rationale of the tool.
+
+@codesections was working on that a few months ago, I don't know if he's
+made any progress on it though.  I've since written a crate to introduce
+a (work in progress) on-disk format/ structure to handle text assets in
+Rust crates.  I did this also with the goal of making all strings easily
+translatable (something I'd love to integrate with clap!)
+
+Maybe you wanna have a look to see how you can make `mandoc` (or
+`troff`), my crate (`traduki`[1]) and clap work well together.  I'd also
+be happy to help out with this.  There's so many many ways to be lazy
+about this and get it wrong, I very much want to help get it right!
+
+
+~k
+
+
+[1]: https://git.open-communication.net/spacekookie/traduki
+
+
+---
+
+_Comment by @pickfire on 2020-05-24 15:13_
+
+@spacekookie I understand since man pages will usually have more items not even in help. Thanks for sharing traduki. But from my personal point of view, I prefer writing man pages either mdoc or troff by hand at the expense of duplicated help. Also, I don't quite like using yaml and I also think building all the man pages is better than building just one.
+
+Still, one could use the man page generated as the base and modify it later.
+
+---
+
+_Comment by @Dylan-DPC-zz on 2020-05-24 15:57_
+
+I think for something that is a bit of complex, It's better that it is done separately as a separate crate so that we can iterate and find the better solution. I remember as Katherina said, that codesections is working on something so I'd wait on that to decide where this goes after that. 
+
+---
+
+_Comment by @spacekookie on 2020-05-26 09:55_
+
+> Also, I don't quite like using yaml and I also think building all the man pages is better than building just one.
+
+@pickfire sorry, I'm not sure I understand what you mean by "building all the man pages" here. Could you clarify that a bit maybe?
+
+Also regarding traduki: I picked yaml as a format because it's flexible enough to do all the things without much syntactic overhead. I'm not opposed to add more format support, if there's something you're more comfortable with.
+
+
+---
+
+_Comment by @ssokolow on 2020-05-26 10:00_
+
+@spacekookie I reiterate my earlier opposition to YAML that got [buried in the fold](https://github.com/clap-rs/clap/issues/552#issuecomment-572862739).
+
+(I wish GitHub had a way to turn that off.)
+
+---
+
+_Comment by @pickfire on 2020-05-26 10:11_
+
+@joshtriplett While trying out some tests cases in mdoc, I believe we should have multple manpages instead of sticking everything into one man pages. I think it would be better to split each subcommands into their own manpages instead since subcommands usually have their own flags, options and description.
+
+The naming of other files could be `myapp-subcommand` and we could have a `SEE ALSO` section at the bottom to link them. But still, we could keep the subcommand and their options at the main `SYNOPSIS`, in each subcommand man pages, they could have their own `SYNOPSIS`.
+
+While trying out, I figured out that `mdoc` have no good default support for GNU-style `--long` help. I also figured out it would be interesting if we can find `env!()`, `option_env!()` or related calls and document them under `ENVIRONENT` section. It would also be nice to show some examples in the `EXAMPLES` section. We could also add the version at operating system part, bottom left.
+
+This requires changes in `clap_generate` since currently the generator only expects a single file change. With this, `fn generate(app: &App, buf: &mut dyn Write) {` is not possible since it may write to multiple files.
+
+I am still thinking of how to put long commands into `SYNOPSIS` section, or try to use short flag instead of long flag by default. An implementation note, I am substituting `myapp` (application name) in the description to get highlighting. So far, what I get:
+
+<details><summary>Rust code</summary>
+
+```rust
+    App::new(s)
+        .author("John Doe <john@example.org>:Jane Doe <jane@example.org>:anonymous")
+        .about("Tests completions")
+        .long_about(&format!("The quick brown fox jumps over the lazy dog.
+{} is an application with super cow powers.", s))
+        .before_help("Send help!")
+        .arg(Arg::new("file").about("Some input file"))
+        .subcommand(
+            App::new("test").about("tests things").arg(
+                Arg::new("case")
+                    .long("case")
+                    .takes_value(true)
+                    .about("the case to test"),
+            ),
+        )
+```
+</details>
+
+![2020-05-26-175048_564x340_scrot](https://user-images.githubusercontent.com/4687791/82886826-a8331280-9f79-11ea-9f37-5fbdcfb884bb.png)
+![2020-05-26-175102_564x340_scrot](https://user-images.githubusercontent.com/4687791/82886822-a79a7c00-9f79-11ea-8433-203733f81cad.png)
+
+<details><summary><code>mdoc.1</code></summary>
+
+```mdoc
+.\" Generated by clap
+.Dd $Mdocdate$
+.Dt MYAPP 1
+.Sh NAME
+.Nm myapp
+.Nd Tests completions
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Op Fl V
+.Op Ar file
+.Sh DESCRIPTION
+Send help!
+
+The quick brown fox jumps over the lazy dog.
+.Nm
+is an application with super cow powers.
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl h , Fl -help
+Prints help information
+.It Fl V , Fl -version
+Prints version information
+.It Ar file
+Some input file
+.El
+.Sh AUTHORS
+.An John Doe Aq Mt john@example.org
+.An Jane Doe Aq Mt jane@example.org
+.An anonymous
+.Sh SEE ALSO
+.Xr myapp-help 1 ,
+.Xr myapp-test 1
+```
+</details>
+
+![2020-05-26-175114_564x340_scrot](https://user-images.githubusercontent.com/4687791/82886820-a701e580-9f79-11ea-8957-34391ed58305.png)
+
+<details><summary><code>mdoc-help.1</code></summary>
+
+```mdoc
+.\" Generated by clap
+.Dd $Mdocdate$
+.Dt MYAPP-HELP 1
+.Sh NAME
+.Nm myapp-help
+.Nd Prints this message or the help of the given subcommand(s)
+.Sh SYNOPSIS
+.Nm myapp help
+.Ar subcommands ...
+.Sh AUTHORS
+.An John Doe Aq Mt john@example.org
+.An Jane Doe Aq Mt jane@example.org
+.An anonymous
+.Sh SEE ALSO
+.Xr myapp 1 ,
+.Xr myapp-test 1
+```
+</details>
+
+![2020-05-26-175125_564x340_scrot](https://user-images.githubusercontent.com/4687791/82886818-a5d0b880-9f79-11ea-96f4-41273d8bfc74.png)
+
+<details><summary><code>mdoc-test.1</code></summary>
+
+```mdoc
+.\" Generated by clap
+.Dd $Mdocdate$
+.Dt MYAPP-TEST 1
+.Sh NAME
+.Nm myapp-test
+.Nd tests things
+.Sh SYNOPSIS
+.Nm myapp test
+.Op Fl h
+.Op Fl V
+.Op Fl -case Ar case
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl h , Fl -help
+Prints help information
+.It Fl V , Fl -version
+Prints version information
+.It Fl -case Ar case
+the case to test
+.Sh AUTHORS
+.An John Doe Aq Mt john@example.org
+.An Jane Doe Aq Mt jane@example.org
+.An anonymous
+.Sh SEE ALSO
+.Xr myapp 1 ,
+.Xr myapp-help 1
+```
+</details>
+
+Side note, I just realized `mdoc` have `BSD General Commands Manual` at the top. `fish-manpage-completions` also does not support generating completions for `mdoc` format yet. So `groff` will still be recommended. But I like `mdoc` since it have more advanced and specific macros. `mdoc` and `groff` would crash since the filename is the same but BSD might be better off generating the `mdoc` version.
+
+@spacekookie Regarding traduki, I prefer not to write additional docs but embed it into clap options itself, I personally think yaml would be the last choice of additional docs that I can think of. I think internationalization should be tackled in another issue and at the same time, I believe we should use something mature to do internationalization such as gettext or project fluent.
+
+@ssokolow While reading your old screenshots, I noticed that the sections and stuff are not well indented, I could help out with those markup and stuff if you want. I could also help out with the `groff` if you want me to, but still I would like to try out `mdoc` first. Maybe we can share test code.
+
+What do you all think of separating it into multiple files?
+
+---
+
+_Comment by @spacekookie on 2020-05-27 15:10_
+
+@ssokolow :
+> (I wish GitHub had a way to turn that off.)
+
+Yea  me too.
+
+& @pickfire: regarding yaml, it was the first format I picked because _I_ personally find it easy to work with. But I know that many people have different preferences and that's totally fine. I am in no way opposed to writing other parser backends. `json`, `toml`, `MO`, some web tool, whatever...
+
+Regarding the structure of additional documentation: the problem is that tools that don't use external asset tools are usually not translated, or if they are only to a few select languages that become a big maintenance burden. Furthermore, `man` pages or `GNU info` mages require more data than clap. The title description for a command might be the same, but do you really want to embed long-form text into your Rust code, that you might as well want to share in different places?
+
+As to yaml, I really don't understand why you're getting hung up on it. I think I've been nothing but clear on the fact that the current `yaml` backend is a proof of concept and that more formats should be added.
+
+As for translations, I feel strongly that the solution we integrate with remains as slim as possible. There are a lot of people who only want a simple approach to deal with assets and that don't want to learn how to setup and use something like `fluent`.
+
+
+When it comes to the issue of separating pages, I think it's the right choice to do this. This is a standard across many tools, and results in shorter and more manageable pages for users. (also `man tool-sub-command` is much easier than `man tool`, then having to search around for `sub-command`.
+
+---
+
+_Comment by @pickfire on 2020-05-27 16:10_
+
+@spacekookie I believe using `yaml` is not slim and may introduce a lot of old missing translation. If they would not want `fluent`, they could always fallback to gettext which is widely used from what I see.
+
+Yes, when separating man pages into `tool-subcommand`, fish is able to detect the man page when the user press `a-h` to display the correct man page.
+
+---
+
+_Comment by @alerque on 2020-05-27 18:24_
+
+YAML is not a terrible option for describing a bunch of meta data. I'm aware of its shortcomings, but it is also flexible and powerful and pretty easy to use (if you're not the programmer working on the edge cases). On the other hand it's a terrible way to represent translation data.
+
+If the main use of YAML was to describe the interface I'd be all for it, but if the main use case is providing alternate localization of the same interface it should be scrapped on favor of just using one of the other app declaration methods (I like the #derive macros, but this should go for the other methods too) and adding hooks into Fluent to load the user facing strings.
+
+---
+
+_Comment by @spacekookie on 2020-05-28 12:11_
+
+@pickfire can you please stop trying to derail the conversation with talk about yaml? I get it. We all get it. It's secondary to the actual point and at this point honestly off-topic.
+
+The point of having a central translations crate was exactly not to pick favourites. You have your opinions on how to handle assets, others have theirs. I think it's not out of scope for a language ecosystem to have a system for handling translation assets, that isn't reliant on another system, with the option of hooking into other libraries.
+
+I'd point you to the mail archive where we had a pretty long conversation about this but r0tty's mail archive seems to be offline right now.
+
+I don't really feel like talking about this for ever and ever. I'm gonna start working on a proof of concept integration into `clap` next week and any changes people want to make to `traduki` will probably be merged. Add all the backends and formats. But I think it's a sensible approach to have _one_ crate you need to patch to implement additional backends for (or switch backends without breaking your project).
+
+---
+
+_Comment by @pksunkara on 2020-05-28 12:13_
+
+The consensus in clap was that we export the doc strings you give us into whatever format the generator needs.
+
+---
+
+_Comment by @ssokolow on 2020-05-28 12:18_
+
+@spacekookie Normally, I would, but I just realized that I don't remember an explicit mention of the intersection of these three facts:
+
+1. We're talking about translations.
+2. One of YAML's known flaws is that its "do what I mean" approach to strings and quoting makes it very easy for someone to intend Norway's ISO 3166 code (`no`) or Norwegian's ISO 639-1 code (also `no`) but get a boolean false.
+3. Rust encourages an ecosystem where footguns should be minimized.
+
+Now that it's on the record, I can stop talking about YAML.
+
+---
+
+_Comment by @pickfire on 2020-05-28 15:04_
+
+@spacekookie I am not trying to derail the conversation talking about YAML (in fact this came secondary to me). Of course we can switch to any other format but I would say using any serialization format would probably be bad against battle tested translations such as gettext and fluent. I also did mentioned the other facts like internationalization should be something out of scope for this discussion, using `traduki` would leave fluent and gettext out of the table, that is one main point.
+
+But yes, if we have a way to hook traduki in using the existing docstrings method without having the users doing much work such as maintaining multiple saparate like what traduki is now I think that would be helpful. Of course it may be useful to maintain some separate document which is useful for translations but I believe that should be another issue.
+
+I think this issue should target english only man pages as the default as of now (i18n can be done later) to maintain focus, mainly by using docstrings and not having to do additional steps to auto-generate man pages. I believe the best would be that the maintainer can add just one line of code in build.rs to generate the man pages without any additional efforts, that would be the best.
+
+The reason why I think it would be best for internationalization to be done later is because the rust team planned to integrate it, I don't recall how. Maybe @Manishearth would know more about that, hopefully he can give some insights on how that will relate to this project.
+
+@ssokolow By the way, are you still working on this?
+
+---
+
+_Comment by @spacekookie on 2020-05-28 15:55_
+
+@pickfire 
+> I believe the best would be that the maintainer can add just one line of code in build.rs to generate the man pages without any additional efforts, that would be the best.
+
+But that's not how man pages work!  Have you ever looked at a man page? What, do you want to embed pages and pages of documentation into your Rust code? Because Rust is so famous for being amazing to write multi-line strings in. Give me a break.
+
+If we go down the route of "just add this one line" Rust applications are going to have man pages that are utterly and completely useless. And I just think we shouldn't aim so low and do better. The design of the tools people use encourage and discourage behaviour. If we go down this route, if we settle for ease of use to the developer in favour of usefulness for the user, we might as well just not bother at all.
+
+---
+
+_Comment by @ssokolow on 2020-05-28 16:05_
+
+Not necessarily.
+
+If we were to follow the approach of [GNU help2man](https://www.gnu.org/software/help2man/), then the "this one line" would take an optional `include` argument that would be appended below the auto-generated stuff as part of the manpage build process... and that *does* feel very structopt-ish.
+
+help2man enforces a standard ordering for the conventional manpage sections, but you can specify content for each one, as well as create your own.
+
+> **Including Additional Text in the Output**
+> 
+> Additional static text may be included in the generated manual page by using the ‘`--include`’ and ‘`--opt-include`’ options (see [Invoking help2man](https://www.gnu.org/software/help2man/#Invoking-help2man)). While these files can be named anything, for consistency we suggest to use the extension `.h2m` for help2man include files.
+> 
+> The format for files included with these option is simple:
+> 
+>      [section]
+>      text
+>      
+>      /pattern/
+>      text
+> 
+> Blocks of verbatim *roff text are inserted into the output either at the start of the given ‘`[section]`’ (case insensitive), or after a paragraph matching ‘`/pattern/`’.
+> 
+> Patterns use the Perl regular expression syntax and may be followed by the ‘`i`’, ‘`s`’ or ‘`m`’ modifiers (see [perlre(1)](http://perldoc.perl.org/perlre.html#perlre))
+> 
+> Lines before the first section or pattern which begin with ‘`-`’ are processed as options. Anything else is silently ignored and may be used for comments, RCS keywords and the like.
+> 
+> The section output order (for those included) is:
+> 
+>      NAME
+>      SYNOPSIS
+>      DESCRIPTION
+>      OPTIONS
+>      ENVIRONMENT
+>      FILES
+>      EXAMPLES
+>      other
+>      AUTHOR
+>      REPORTING BUGS
+>      COPYRIGHT
+>      SEE ALSO
+> 
+> Any ‘`[name]`’ or ‘`[synopsis]`’ sections appearing in the include file will replace what would have automatically been produced (although you can still override the former with ‘`--name`’ if required).
+> 
+> Other sections are prepended to the automatically produced output for the standard sections given above, or included at other (above) in the order they were encountered in the include file.
+
+I could see such a thing also allowing for easy generation of either a single manpage or one for each subcommand. One top-level "make a manpage" attribute/call? Generate one manpage. Hang one off a subcommand's definition, that subcommand gets broken out of the main manpage into its own manpage.
+
+---
+
+_Comment by @CreepySkeleton on 2020-05-28 16:54_
+
+***Moderator note:*** *Please keep in mind that this discussion is about __manpages generation__ in clap, not file formats. I'm answering certain yaml criticism below because it's quite objective but misleading, but please, try to stay on topic. . Please also keep in mind that [traduki has it's own bug tracker](https://git.open-communication.net/spacekookie/traduki/-/issues). If you think there's something to do with traduki, like supporting multiple formats, move your discussion there. This issue is unnavigatable already.*
+
+<details>
+  <summary>Click to expand</summary>
+
+> **Important:** YAML spec didn't drop on us from on high, it was being developed iteratively, hence [multiple versions](https://yaml.org/spec/) exist. For the purposes of this discussion, we are only interested in `1.1` and `1.2`. It is important to keep in mind that the `yaml-rust` crate supports only `1.2` to the best of my knowledge. 
+
+User @ssokolow points out that YAML has a number of pretty serious flaws that considerably affect user experience and may inflict harm in certain circumstances, but it turns out that the flaws are either being `eval`-class bugs in certain libraries and have nothing to do with YAML itself, or exist solely in yaml `1.1`, and thus `yaml-rust` is unaffected.
+
+The said flaws:
+
+1. *YAML treats all of `y`, `n`, `true`, `false`, `yes`, `no`, `off`, `on` (along with their capitalized and uppercase forms) as boolean values rather that strings. This is very confusing and clashes with `no` being also the country code for Norway.*
+
+   [That is true](https://yaml.org/type/bool.html). For YAML 1.1. YAML 1.2 [restricts](https://yaml.org/spec/1.2/spec.html#tag/repository/bool) boolean to either `true` or `false`. `yaml-rust` is unaffected by this.
+
+2. *Many YAML implementation has been known for being vulnerable to [code injection](https://en.wikipedia.org/wiki/Code_injection) attacks*.
+
+   Yes, this is true, and [sometimes it led to awful consequences](http://tenderlovemaking.com/2013/02/06/yaml-f7u12.html). But then again, this happened because certain libs in many interpreted languages used `eval` as a shortcut for building runtime objects, and that allowed malicious user to execute arbitrary code at runtime. `yaml-rust` does no such thing because Rust, being compiled language, doesn't have `eval("Rust_code")` function. `yaml-rust` is unaffected by this (unless you explicitly write code doing that).
+
+3. *YAML spec is very very huge and implementations seem to unable to implement it properly. Meh, they seem to unable to agree even [among themselves](https://github.com/cblp/yaml-sucks)!*
+
+   Yes, and that is very true. It looks like there's only one YAML parser for Rust, [`yaml-rust`](https://github.com/chyh1990/yaml-rust), and it's not fully spec-compatible.
+
+I'm not touching such things as "42 is a number and not string by default" and "some specific implementation had a bug that didn't parse negative numbers properly" here because I'm really not sure whether it's trolling or something else.
+
+</details>
+
+If you need to discuss it further, create a separate issue.
+
+---
+
+_Comment by @CreepySkeleton on 2020-05-28 17:02_
+
+It looks like we're throwing out the same arguments again and again. For the sake on moving _somewhere_, let's try to come to some sort of consensus on the following topics:
+
+* Should/can man pages be the same as `--help` or they should be more descriptive? 
+* Should manpage generator use the same input as `--help` messages generator?
+* Should the data be compiled into the executable or be a separate asset?
+
+---
+
+_Closed by @Dylan-DPC-zz on 2020-05-28 17:10_
+
+---
+
+_Locked by @clap-rs on 2020-05-28 17:11_
+
+---
+
+_Reopened by @pksunkara on 2020-05-28 17:12_
+
+---
+
+_Closed by @Dylan-DPC-zz on 2020-05-28 17:43_
+
+---
+
+_Reopened by @kbknapp on 2020-05-28 21:21_
+
+---
+
+_Comment by @kbknapp on 2020-05-28 21:27_
+
+## Admin Note
+
+The discussion here got a little heated and derailed, which is totally possible and common with online discussions. 
+
+Just a reminder for everyone to remain civil, even when differences of opinion exist. We can, and *I expect* us to debate technical issues, but those debates must remain calm and professional.
+
+This issue will remain **locked** for the next 48 hours to allow everyone involved a chance to take a break and perhaps consider other angles. Personally, I think this is a great time to attempt to see something from another's point of view.
+
+One final note, as we're discussing technical details this thread is already very long so lets do our best to keep the discussion related to this issue, and within the realm of what is actionable by clap code. If there are other debates to be had, lets move them to chat, GH discussions, or dedicated issues here/issue trackers on other projects.
+
+I appreciate the passion everyone is displaying for this feature, I want it to land and I want a design that pushes this library forward. I think we all want that :smile: 
+
+---
+
+_Referenced in [coreos/coreos-installer#323](../../coreos/coreos-installer/pulls/323.md) on 2020-07-28 14:21_
+
+---
+
+_Unlocked by @clap-rs on 2020-08-13 01:36_
+
+---
+
+_Comment by @dkg on 2020-12-18 16:13_
+
+@CreepySkeleton  wrote:
+>     * Should/can man pages be the same as `--help` or they should be more descriptive?
+
+I think that `--help` should typically produce a brief reference, and man pages should provide a superset of that information.  they can be more descriptive, and include more details/nuance/gotchas/etc that would be inappropriate to view in the console running `--help`.  But the point here is *superset*.  If something shows up in `--help` it definitely should be visible (and easy to find) in the manpage.  And of course it should be in sync.
+ 
+
+>     * Should manpage generator use the same input as `--help` messages generator?
+
+Yes, i think it should (because we want them to stay in sync).  Whatever is generating these things should be pulling from the same place if possible.
+
+>     * Should the data be compiled into the executable or be a separate asset?
+
+I think that the details/nuance/etc for the manpage doesn't need to be compiled into the executable, but if it happens by accident (or because it's more convenient for the text to be stored/manipulated/translated that way) then it's not much of a problem (space is the only concern i see here, and rust binaries are large enough anyway that i can't imagine a few paragraphs of text being significant).
+
+Thanks for thinking about this and working on it!  I'd really like to see convenient autogeneration of manpages for clap binaries (e.g. in [sequoia](https://gitlab.com/sequoia-pgp/sequoia/-/issues/299))
+
+---
+
+_Comment by @alerque on 2020-12-18 18:43_
+
+Pretty much everything that @dkg said, except that man page content should be generated and stored in a separate resource file. Many distros require that this be packaged and the build and package routines  to extract it by running the binary to reconstruct the source would be more complicated than need be, packing a man source file is much easier and a very standard operation.
+
+---
+
+_Comment by @anthraxx on 2021-01-28 20:36_
+
+> Pretty much everything that @dkg said, except that man page content should be generated and stored in a separate resource file. Many distros require that this be packaged and the build and package routines to extract it by running the binary to reconstruct the source would be more complicated than need be, packing a man source file is much easier and a very standard operation.
+
+As being a distro packager myself i strongly disagree. All that matters as a distro packager is that it's reasonably easy to invoke the transformation chain. All that matters as a developer is that it's reasonably easy to read/write and convenient to keep it in sync with the rest of the definitions -- the CLI `--help` declaration. All that matters as a user is that you can easily obtain manpages and completions no matter if you pulled a software out of a distro repository or via `cargo install`.
+
+Clip already does exactly that for completions and frankly it is no disadvantage for packagers to generate them out of a binary before putting them somewhere else. This could even be made easier by downstream projects by providing an appropriate Makefile whose interaction with won't be any different from what an average packagers already uses elsewhere.
+
+---
+
+_Referenced in [ducaale/xh#63](../../ducaale/xh/issues/63.md) on 2021-02-15 22:07_
+
+---
+
+_Referenced in [ostreedev/ostree#2296](../../ostreedev/ostree/pulls/2296.md) on 2021-03-12 19:03_
+
+---
+
+_Referenced in [rust-cli/man#10](../../rust-cli/man/pulls/10.md) on 2021-03-22 20:34_
+
+---
+
+_Referenced in [quickwit-oss/quickwit#256](../../quickwit-oss/quickwit/issues/256.md) on 2021-07-09 11:44_
+
+---
+
+_Referenced in [peap/git-global#5](../../peap/git-global/issues/5.md) on 2021-07-19 07:13_
+
+---
+
+_Referenced in [BLAKE3-team/BLAKE3#190](../../BLAKE3-team/BLAKE3/issues/190.md) on 2021-08-11 16:23_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Referenced in [NNPDF/pineappl#89](../../NNPDF/pineappl/issues/89.md) on 2021-11-17 15:33_
+
+---
+
+_Referenced in [epage/clapng#64](../../epage/clapng/issues/64.md) on 2021-12-06 16:27_
+
+---
+
+_Referenced in [epage/clapng#131](../../epage/clapng/issues/131.md) on 2021-12-06 18:38_
+
+---
+
+_Label `T: new feature` removed by @epage on 2021-12-08 21:18_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-08 21:18_
+
+---
+
+_Label `P4: nice to have` removed by @epage on 2021-12-09 16:49_
+
+---
+
+_Label `D: medium` removed by @epage on 2021-12-09 16:49_
+
+---
+
+_Label `S-blocked` added by @epage on 2021-12-09 16:49_
+
+---
+
+_Referenced in [clap-rs/clap#2914](../../clap-rs/clap/issues/2914.md) on 2021-12-09 16:51_
+
+---
+
+_Label `A-completion` removed by @epage on 2021-12-13 17:53_
+
+---
+
+_Label `A-help` added by @epage on 2021-12-13 17:53_
+
+---
+
+_Referenced in [clap-rs/clap#3174](../../clap-rs/clap/pulls/3174.md) on 2021-12-14 16:32_
+
+---
+
+_Referenced in [orhun/git-cliff#35](../../orhun/git-cliff/issues/35.md) on 2021-12-16 09:38_
+
+---
+
+_Referenced in [pkgcraft/pkgcraft#73](../../pkgcraft/pkgcraft/issues/73.md) on 2021-12-24 14:42_
+
+---
+
+_Closed by @epage on 2022-01-28 20:55_
+
+---
+
+_Referenced in [clap-rs/clap#3354](../../clap-rs/clap/issues/3354.md) on 2022-01-28 21:00_
+
+---
+
+_Referenced in [louib/fpcli#1](../../louib/fpcli/issues/1.md) on 2022-01-28 21:01_
+
+---
+
+_Referenced in [louib/fpm#3](../../louib/fpm/issues/3.md) on 2022-01-28 21:02_
+
+---
+
+_Comment by @Dzordzu on 2022-04-12 12:31_
+
+Is there any way to generate json schema from the command?
+
+---
+
+_Comment by @epage on 2022-04-12 13:49_
+
+At this time, we do not.  The issue for that is https://github.com/clap-rs/clap/issues/918.
+
+The `clap-serde` project could be a good place for this.  See https://github.com/aobatact/clap-serde/issues/11.
+
+---
+
+_Comment by @tgross35 on 2022-12-22 17:51_
+
+For anyone like me who stumbles across this long issue but can't find the correct answer: the official crate is `clap_mangen` (it's not mentioned anywhere on this thread)
+
+---

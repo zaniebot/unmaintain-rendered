@@ -1,0 +1,61 @@
+---
+number: 942
+title: Consider supporting clicolors_control
+type: issue
+state: closed
+author: mitsuhiko
+labels: []
+assignees: []
+created_at: 2017-04-25T23:05:12Z
+updated_at: 2018-08-02T03:30:06Z
+url: https://github.com/clap-rs/clap/issues/942
+synced_at: 2026-01-10T01:26:39Z
+---
+
+# Consider supporting clicolors_control
+
+---
+
+_Issue opened by @mitsuhiko on 2017-04-25 23:05_
+
+I pushed up this crate because I'm a bit tired of having to configure many different things for CLI color support. What do you think of having something like this?
+
+https://docs.rs/clicolors-control/0.1.0/clicolors_control/
+
+The idea is that there is a standardized crate that figures out if ANSI colors are support to be used. Now that Windows 10 has ANSI color support (which that crate turns on) it seems like that might be a sensible path forward.
+
+---
+
+_Comment by @kbknapp on 2017-05-06 17:59_
+
+Awesome, I like it! Yeah, I *really* want to rework the color control (see #836). I've looked briefly at `termcolor` but I haven't had much time this year due to my paid job. Since I haven't yet put a ton of research into either yet, do you happen to know how this compares to termcolor? Or are they doing completely different things?
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2017-05-06 18:00_
+
+---
+
+_Comment by @BurntSushi on 2017-05-08 22:00_
+
+@kbknapp It seems like `clicolors_control` is something `termcolor` might want to use. For example, [`termcolor`'s interface lets you specify a preference](https://docs.rs/termcolor/0.3.2/termcolor/enum.ColorChoice.html) for colors, and then it will take over from there. It could use `clicolors_control` to make its choice smarter. In particular, it looks like the key thing it could benefit from is *automatic* ANSI color support in Windows 10.
+
+---
+
+_Referenced in [clap-rs/clap#1037](../../clap-rs/clap/issues/1037.md) on 2018-02-15 14:51_
+
+---
+
+_Label `T: RFC / question` removed by @kbknapp on 2018-07-22 01:37_
+
+---
+
+_Comment by @kbknapp on 2018-07-22 01:37_
+
+I'm closing this as part of #836 
+
+---
+
+_Closed by @kbknapp on 2018-07-22 01:37_
+
+---

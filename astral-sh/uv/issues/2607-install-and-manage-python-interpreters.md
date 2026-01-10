@@ -1,0 +1,296 @@
+---
+number: 2607
+title: Install and manage Python interpreters
+type: issue
+state: closed
+author: axiomofjoy
+labels:
+  - enhancement
+  - projects
+assignees: []
+created_at: 2024-03-22T04:31:29Z
+updated_at: 2024-09-11T10:24:41Z
+url: https://github.com/astral-sh/uv/issues/2607
+synced_at: 2026-01-10T01:23:19Z
+---
+
+# Install and manage Python interpreters
+
+---
+
+_Issue opened by @axiomofjoy on 2024-03-22 04:31_
+
+`uv venv` accepts  a `--python` flag that allows the user to specify a path to a particular Python interpreter or version if it is already installed on the machine. I would like for `uv` to install and manage Python for me, similar to `conda create --name env-name python=3.9`.
+
+I am really enjoying using `uv` so far. Keep up the good work!
+
+---
+
+_Comment by @zanieb on 2024-03-22 14:12_
+
+This is on our roadmap :)
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-03-22 14:13_
+
+---
+
+_Label `project-management` added by @zanieb on 2024-03-22 14:13_
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-03-22 14:13_
+
+---
+
+_Comment by @dillfrescott on 2024-03-25 05:15_
+
+Also looking forward to this!
+
+---
+
+_Referenced in [astral-sh/uv#3139](../../astral-sh/uv/issues/3139.md) on 2024-04-19 14:11_
+
+---
+
+_Renamed from "install and manage python interpreter" to "Install and manage Python interpreters" by @zanieb on 2024-04-19 14:11_
+
+---
+
+_Referenced in [astral-sh/uv#1850](../../astral-sh/uv/issues/1850.md) on 2024-04-20 07:52_
+
+---
+
+_Comment by @Spenhouet on 2024-04-20 07:54_
+
+Consider the possibility to specify the required python version via a `.python-version` file within the project root dir, as suggested here: https://github.com/astral-sh/uv/issues/1850
+
+---
+
+_Comment by @mlissner on 2024-04-23 04:34_
+
+I just want to chime in to say that I'm evaluating `uv` right now and my big question was whether and how it would handle installing Python itself. This is embarrassing, but I've been a Python developer for over a decade. I've used pip, virtualenvwrapper, Python 2 and 3, poetry, and more. 
+
+Whenever somebody tells me I have to use a specific version of Python, it sucks the life right out of me. I know there are tools for this. I know I use pip or poetry. I know I'm going to lose an hour figuring it all out, just like last time....
+
+So, from my perspective, as a long-time Python dev, but an occasional installer of Python, I'd love to see this! 
+
+Thank you for the great tool. Impressive stuff.
+
+---
+
+_Referenced in [astral-sh/uv#3241](../../astral-sh/uv/issues/3241.md) on 2024-04-24 14:54_
+
+---
+
+_Comment by @zanieb on 2024-04-24 14:55_
+
+We agree it's awfully painful to install and manage multiple Python versions across platforms. We'll be tackling this problem soon.
+
+---
+
+_Comment by @Oppen on 2024-05-21 21:09_
+
+In terms of roadmap, is there any particular release that should have it or is it still the indeterminate future? I'd love to get rid of pyenv and need to set appropriate expectations 👀 
+
+---
+
+_Comment by @zanieb on 2024-05-21 21:47_
+
+It's next on my list of projects, following tool management (#3560) and rewriting interpreter discovery (#3266)
+
+---
+
+_Comment by @gotounix on 2024-06-05 11:44_
+
+@zanieb It's been another half month, how's the progress going, is there a preview version?
+
+---
+
+_Referenced in [astral-sh/uv#4120](../../astral-sh/uv/pulls/4120.md) on 2024-06-07 00:09_
+
+---
+
+_Referenced in [astral-sh/uv#4121](../../astral-sh/uv/pulls/4121.md) on 2024-06-07 00:10_
+
+---
+
+_Referenced in [astral-sh/uv#4138](../../astral-sh/uv/pulls/4138.md) on 2024-06-07 17:57_
+
+---
+
+_Comment by @zanieb on 2024-06-10 18:05_
+
+Hi! There's now "preview" support for fetching and managing Python toolchains for you. I'll be working on documentation for the feature this week and there's quite a bit of work to be done before it's production-ready, but `uv venv --preview --python <version>` can now download missing versions for you.
+
+---
+
+_Comment by @axiomofjoy on 2024-06-10 18:34_
+
+Awesome @zanieb, excited to try it out!
+
+---
+
+_Comment by @Oppen on 2024-06-10 18:56_
+
+You say "preview", I read "already in prod 😎". Jk, but I'm gonna use it on my personal box and see how it goes ❤️
+
+---
+
+_Comment by @gotounix on 2024-06-11 12:09_
+
+@zanieb It's awesome, I tried it out, and everything works fine.
+But I found it required `py` launch while using `py --list-paths` to find Python installations.
+
+```
+$ cargo run -q -- venv --python 3.10.11 --preview -v
+warning: `C:\Users\Test\.cargo\config` is deprecated in favor of `config.toml`
+note: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+DEBUG Searching for Python 3.10.11 in search path, `py` launcher output, or managed toolchains
+DEBUG Searching for managed toolchains at `C:\Users\Test\AppData\Roaming\uv\data\toolchains`
+  x The `py` launcher could not be found.
+```
+
+Is it possible to use a `--standalone` parameter to manage standalone Python downloads. And while using `--standalone` it won't using `py --list-paths` to find Python installtions. In this way, `uv` will create venv by using standalone Python without `py` launch.
+
+---
+
+_Comment by @zanieb on 2024-06-11 13:12_
+
+@gotounix there's a `UV_FORCE_MANAGED_PYTHON` environment variable that, if set, ignores other interpreters but it's not tested and we'll be removing that in favor of whatever design we settle on in #4198 .
+
+---
+
+_Comment by @gotounix on 2024-06-19 03:01_
+
+> @gotounix there's a `UV_FORCE_MANAGED_PYTHON` environment variable that, if set, ignores other interpreters but it's not tested and we'll be removing that in favor of whatever design we settle on in #4198 .
+
+Is there a way to put the `UV_FORCE_MANAGED_PYTHON` environment variable in a configuration file so that it doesn't have to be entered every time?
+
+---
+
+_Comment by @zanieb on 2024-06-19 03:55_
+
+@gotounix that'll be included in #4198
+
+---
+
+_Referenced in [astral-sh/uv#2917](../../astral-sh/uv/issues/2917.md) on 2024-07-02 01:41_
+
+---
+
+_Comment by @gotounix on 2024-07-08 07:05_
+
+`0.2.22` version can use this command to create venv:
+
+```
+uv venv --python 3.10.11 --python-preference only-managed
+```
+
+---
+
+_Comment by @zanieb on 2024-07-08 13:41_
+
+We basically do this now, so I'm going to close this issue. We plan to add `python` shim support in the future.
+
+---
+
+_Closed by @zanieb on 2024-07-08 13:41_
+
+---
+
+_Comment by @hyperknot on 2024-09-10 13:57_
+
+This is super nice! One small point, the help is missing / incomplete for the venv part. I had to read here and try my best guess that I can actually do this line:
+
+```
+uv venv --python 3.12
+```
+
+I think this line is the best thing which has happened to the Python ecosystem in the last 10 years, please advertise it and put it in huge texts, it's amazing! 
+
+---
+
+_Comment by @zanieb on 2024-09-10 14:00_
+
+Thanks! There's https://docs.astral.sh/uv/guides/install-python/#viewing-python-installations maybe we could include it there. Ideally you just use `uv run` and don't even need to make a virtual environment yourself!
+
+
+
+---
+
+_Comment by @hyperknot on 2024-09-10 17:12_
+
+I'm always setting up a venv for every single one of my projects, and I think it's a best practice among Python devs. It's great to hear that I can get rid of pyenv + .python-version files with the new uv versions.
+
+---
+
+_Comment by @gusutabopb on 2024-09-11 01:13_
+
+@hyperknot uv creates venvs automatically. I don't think any of the higher-level commands (the stuff released in 0.3.0, i.e. everything except `uv pip` and `uv venv`) work without one. 
+
+You **can** make a venv manually before running `uv add`, `uv run`, etc, but you don't **need to** - it gets created automatically.
+
+Example:
+
+```bash
+> uv init
+Initialized project `uv-test`
+> uv add cowsay
+Using Python 3.12.4
+Creating virtualenv at: .venv
+Resolved 2 packages in 213ms
+Prepared 1 package in 25ms
+Installed 1 package in 5ms
+ + cowsay==6.1
+> uv run python -m cowsay -t hello
+  _____
+| hello |
+  =====
+     \
+      \
+        ^__^
+        (oo)\_______
+        (__)\       )\/\
+            ||----w |
+            ||     ||
+```
+
+---
+
+_Comment by @hyperknot on 2024-09-11 10:23_
+
+But I'm not getting something. I don't want to init and add, that's the easy part. I want a reproducible dev environment, which cleans up and sets everything up for me. 
+
+Here is the file I'm using in all my projects, I call this file with `source` or `.`. Every time I modify the dependencies, I just run it, it runs super fast, thanks to uv.
+
+```
+#!/usr/bin/env bash
+
+find . -name "*.egg-info" -exec rm -rf {} +
+find . -name __pycache__ -exec rm -rf {} +
+find . -name .ipynb_checkpoints -exec rm -rf {} +
+find . -name .pytest_cache -exec rm -rf {} +
+find . -name .ruff_cache -exec rm -rf {} +
+find . -name .DS_Store -exec rm -rf {} +
+
+
+rm -rf .venv
+
+uv venv
+source .venv/bin/activate
+
+uv pip -V
+uv pip install -e .
+
+cd js_tools
+pnpm i
+cd ..
+```
+
+\+ I pair it with direnv so that it auto-activates when I'm inside the directory. 
+
+How would alternative `uv` commands help me in this?
+
+---

@@ -1,0 +1,124 @@
+---
+number: 3284
+title: "UP006: Incorrect autofix when shadowing builtin"
+type: issue
+state: closed
+author: jdahlin
+labels:
+  - bug
+assignees: []
+created_at: 2023-02-28T23:13:11Z
+updated_at: 2023-03-02T21:05:36Z
+url: https://github.com/astral-sh/ruff/issues/3284
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# UP006: Incorrect autofix when shadowing builtin
+
+---
+
+_Issue opened by @jdahlin on 2023-02-28 23:13_
+
+The autofix for UP006 is not working correctly when shadowing a builtin such as `type`. 
+
+Test case
+
+```python
+from typing import Type
+
+class F:
+    type = "abc"
+    def foo(self) -> Type[list]:
+        return list
+```
+
+Expected code after autofix:
+
+```python
+import builtins
+
+
+class F:
+    type = "abc"
+    def foo() -> builtins.type[list]:
+        return list
+```
+
+Actual code after autofix:
+
+```python
+class F:
+    type = "abc"
+    def foo() -> type[list]:
+        return list
+```
+
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-02-28 23:13_
+
+---
+
+_Comment by @charliermarsh on 2023-02-28 23:14_
+
+Thanks, you're right! These should check for redefined builtins.
+
+---
+
+_Referenced in [astral-sh/ruff#3286](../../astral-sh/ruff/pulls/3286.md) on 2023-02-28 23:22_
+
+---
+
+_Closed by @charliermarsh on 2023-02-28 23:25_
+
+---
+
+_Comment by @jdahlin on 2023-03-01 08:25_
+
+Wow, thanks for the quick fix! Should I open up a new issue to handle the case when the builtins are overriden/shadowed?
+
+---
+
+_Comment by @charliermarsh on 2023-03-01 16:02_
+
+What do you think the ideal behavior would be in that case?
+
+---
+
+_Comment by @jdahlin on 2023-03-01 23:12_
+
+> What do you think the ideal behavior would be in that case?
+
+To fetch the original object via the builtin module, e.g:
+
+```python
+import builtins
+
+
+class F:
+    type = "abc"
+    def foo() -> builtins.type[list]:
+        return list
+```
+
+---
+
+_Comment by @charliermarsh on 2023-03-01 23:28_
+
+Yeah we can open an issue for that. It will be tricky to do right now because fixes can't introduce _new_ imports. So for now, we could support this in the event that a module _already_ imports `builtins`, but we couldn't "import `builtins` and change the reference". (Part of #835.)
+
+---
+
+_Comment by @jdahlin on 2023-03-02 11:31_
+
+@charliermarsh original builtins can also be found in `__builtins__` which is always present in the current globals.
+
+---
+
+_Comment by @charliermarsh on 2023-03-02 21:05_
+
+@jdahlin - True! Although that can _also_ be overridden :joy: Feel free to open an issue for it :)
+
+---

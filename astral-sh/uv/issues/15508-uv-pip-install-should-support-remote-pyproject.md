@@ -1,0 +1,122 @@
+---
+number: 15508
+title: "`uv pip install` should support remote `pyproject.toml` files"
+type: issue
+state: open
+author: gboeing
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-08-25T04:02:27Z
+updated_at: 2025-08-27T21:29:47Z
+url: https://github.com/astral-sh/uv/issues/15508
+synced_at: 2026-01-10T01:25:56Z
+---
+
+# `uv pip install` should support remote `pyproject.toml` files
+
+---
+
+_Issue opened by @gboeing on 2025-08-25 04:02_
+
+### Summary
+
+uv pip installing a remote pyproject.toml file via URL is broken, even though installing it locally works fine, as does installing a requirements.txt file either locally or via equivalent remote URL. For example:
+
+If I uv pip install a URL of a remote requirements.txt file it works fine:
+```
+!uv pip install -r https://raw.githubusercontent.com/gboeing/osmnx/refs/tags/v1.4.0/requirements.txt
+```
+As does uv pip installing that same file locally:
+```
+!uv pip install -r requirements.txt
+```
+And I can uv pip install a pyproject.toml file locally:
+```
+!uv pip install -r pyproject.toml
+```
+*But installing that same file via a remote URL is broken:*
+```
+!uv pip install -r https://raw.githubusercontent.com/gboeing/osmnx/refs/tags/v2.0.6/pyproject.toml
+```
+> error: File not found: `https://raw.githubusercontent.com/gboeing/osmnx/refs/tags/v2.0.6/pyproject.toml`
+
+I've tested this with multiple URLs on Mac and Ubuntu with uv 0.8.13 and Python 3.13, with the same result.
+
+### Platform
+
+Mac, Ubuntu, and Colab
+
+### Version
+
+0.8.13
+
+### Python version
+
+3.13
+
+---
+
+_Label `bug` added by @gboeing on 2025-08-25 04:02_
+
+---
+
+_Comment by @konstin on 2025-08-25 08:49_
+
+I can confirm that we've only implemented the (recursive) remote fetching for `requirements.txt`, and it's missing for all other dependency types.
+
+---
+
+_Comment by @charliermarsh on 2025-08-25 13:30_
+
+Doesn't this sometimes require running code in the target project, e.g. if the project has dynamic metadata (or am I misremembering)?
+
+---
+
+_Comment by @konstin on 2025-08-25 14:30_
+
+Would this be different from a requirements.txt file with a `.` or `-e .` in it? Intuitively, I see roughly the same feature set for both. I think it's find to reject dynamic metadata for `pyproject.toml`s from a URL and ask the user to use a git dependency instead. 
+
+---
+
+_Comment by @gboeing on 2025-08-25 15:13_
+
+@konstin I agree. As a user, if this works:
+```
+curl -o pyproject.toml https://example.com/pyproject.toml && uv pip install -r pyproject.toml
+```
+then I would expect this to work too:
+```
+uv pip install -r https://example.com/pyproject.toml
+```
+
+---
+
+_Renamed from "uv pip install via URL is broken" to "`uv pip install` should support remote `pyproject.toml` files" by @charliermarsh on 2025-08-26 11:47_
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-08-26 11:47_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2025-08-26 11:47_
+
+---
+
+_Comment by @gboeing on 2025-08-27 21:29_
+
+A use case for this, which several of my colleagues and I have run into: for a university course we teach, we might have a Github repo with lots of Jupyter notebooks + a pyproject.toml to define course-wide dependencies. Currently, to run one of these notebooks on Colab, we need a cell at the top like:
+```
+curl -o pyproject.toml https://github.com/user/repo/pyproject.toml && uv pip install -r pyproject.toml
+```
+Kinda janky. It seems much more elegant to be able to use `uv` directly like:
+```
+uv pip install -r https://github.com/user/repo/pyproject.toml
+```
+
+---
+
+_Referenced in [astral-sh/uv#15615](../../astral-sh/uv/pulls/15615.md) on 2025-09-01 04:07_
+
+---

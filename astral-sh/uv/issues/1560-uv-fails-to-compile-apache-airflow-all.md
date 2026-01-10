@@ -1,0 +1,588 @@
+---
+number: 1560
+title: "uv fails to compile `apache-airflow[all]`  (performance resolution issue)"
+type: issue
+state: closed
+author: notatallshaw
+labels:
+  - resolver
+assignees: []
+created_at: 2024-02-17T01:54:22Z
+updated_at: 2025-04-08T09:58:40Z
+url: https://github.com/astral-sh/uv/issues/1560
+synced_at: 2026-01-10T01:23:07Z
+---
+
+# uv fails to compile `apache-airflow[all]`  (performance resolution issue)
+
+---
+
+_Issue opened by @notatallshaw on 2024-02-17 01:54_
+
+This is for Linux Python 3.11.6 with uv 0.1.3:
+
+```
+$ echo "apache-airflow[all]" | uv pip compile -
+....
+Collecting apache-beam==2.2.0
+  Downloading apache-beam-2.2.0.zip (945 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 945.2/945.2 kB 3.7 MB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [35 lines of output]
+     {LONG EXPECTED ERROR HERE I AM CUTTING OUT}
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─> See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+```
+
+The exception from building apache-beam==2.2.0 is fine, the issue is that uv is backtracking all the way to apache-beam 2.2.0, which is too old to compile in my Python 3.11 environment
+
+Pip does not suffer this issue and would install apache-beam-2.54.0:
+
+```
+$ pip install --dry-run apache-airflow[all]
+...
+Would install Authlib-1.3.0 Babel-2.14.0 ConfigUpdater-3.2 Deprecated-1.2.14 Flask-2.2.5 Flask-AppBuilder-4.3.10 Flask-Babel-2.0.0 Flask-Bcrypt-1.0.1 Flask-Caching-2.1.0 Flask-JWT-Extended-4.6.0 Flask-Limiter-3.5.1 Flask-Login-0.6.3 Flask-SQLAlchemy-2.5.1 Flask-Session-0.6.0 Flask-WTF-1.2.1 JPype1-1.5.0 JayDeBeApi-1.2.3 Jinja2-3.1.3 Js2Py-0.74 Mako-1.3.2 Markdown-3.5.2 MarkupSafe-2.1.5 PyAthena-3.3.0 PyGithub-2.2.0 PyHive-0.7.0 PyJWT-2.8.0 PyNaCl-1.5.0 PyYAML-6.0.1 Pygments-2.17.2 SQLAlchemy-1.4.51 SQLAlchemy-JSONField-1.0.2 SQLAlchemy-Utils-0.41.1 WTForms-3.1.2 Werkzeug-2.2.3 adal-1.2.7 adlfs-2024.2.0 aiobotocore-2.11.2 aiofiles-23.2.1 aiohttp-3.9.3 aioitertools-0.11.0 aiosignal-1.3.1 alembic-1.13.1 alibabacloud-adb20211201-1.2.8 alibabacloud-tea-0.3.5 alibabacloud_credentials-0.3.2 alibabacloud_endpoint_util-0.0.3 alibabacloud_gateway_spi-0.0.1 alibabacloud_openapi_util-0.2.2 alibabacloud_tea_openapi-0.3.8 alibabacloud_tea_util-0.3.11 alibabacloud_tea_xml-0.0.2 aliyun-python-sdk-core-2.14.0 aliyun-python-sdk-kms-2.16.2 amqp-5.2.0 analytics-python-1.2.9 annotated-types-0.6.0 anyio-4.2.0 apache-airflow-2.8.1 apache-airflow-providers-airbyte-3.6.0 apache-airflow-providers-alibaba-2.7.2 apache-airflow-providers-amazon-8.17.0 apache-airflow-providers-apache-beam-5.6.1 apache-airflow-providers-apache-cassandra-3.4.1 apache-airflow-providers-apache-drill-2.6.1 apache-airflow-providers-apache-druid-3.8.1 apache-airflow-providers-apache-flink-1.3.0 apache-airflow-providers-apache-hdfs-4.3.2 apache-airflow-providers-apache-hive-7.0.0 apache-airflow-providers-apache-impala-1.3.0 apache-airflow-providers-apache-kafka-1.3.1 apache-airflow-providers-apache-kylin-3.5.0 apache-airflow-providers-apache-livy-3.7.2 apache-airflow-providers-apache-pig-4.3.0 apache-airflow-providers-apache-pinot-4.3.0 apache-airflow-providers-apache-spark-4.7.1 apache-airflow-providers-apprise-1.2.2 apache-airflow-providers-arangodb-2.4.1 apache-airflow-providers-asana-2.4.1 apache-airflow-providers-atlassian-jira-2.5.1 apache-airflow-providers-celery-3.6.0 apache-airflow-providers-cloudant-3.4.1 apache-airflow-providers-cncf-kubernetes-7.14.0 apache-airflow-providers-cohere-1.1.2 apache-airflow-providers-common-io-1.3.0 apache-airflow-providers-common-sql-1.10.1 apache-airflow-providers-databricks-6.2.0 apache-airflow-providers-datadog-3.5.1 apache-airflow-providers-dbt-cloud-3.6.1 apache-airflow-providers-dingding-3.4.0 apache-airflow-providers-discord-3.6.0 apache-airflow-providers-docker-3.9.1 apache-airflow-providers-elasticsearch-5.3.3 apache-airflow-providers-exasol-4.4.2 apache-airflow-providers-facebook-3.4.0 apache-airflow-providers-ftp-3.7.0 apache-airflow-providers-github-2.5.1 apache-airflow-providers-google-10.15.0 apache-airflow-providers-grpc-3.4.1 apache-airflow-providers-hashicorp-3.6.3 apache-airflow-providers-http-4.9.1 apache-airflow-providers-imap-3.5.0 apache-airflow-providers-influxdb-2.4.1 apache-airflow-providers-jdbc-4.2.2 apache-airflow-providers-jenkins-3.5.1 apache-airflow-providers-microsoft-azure-9.0.0 apache-airflow-providers-microsoft-mssql-3.6.1 apache-airflow-providers-microsoft-psrp-2.5.0 apache-airflow-providers-microsoft-winrm-3.4.0 apache-airflow-providers-mongo-4.0.0 apache-airflow-providers-mysql-5.5.3 apache-airflow-providers-neo4j-3.5.0 apache-airflow-providers-odbc-4.4.1 apache-airflow-providers-openai-1.1.0 apache-airflow-providers-openfaas-3.4.0 apache-airflow-providers-openlineage-1.5.0 apache-airflow-providers-opensearch-1.1.1 apache-airflow-providers-opsgenie-5.5.0 apache-airflow-providers-oracle-3.9.2 apache-airflow-providers-pagerduty-3.6.2 apache-airflow-providers-papermill-3.6.1 apache-airflow-providers-pgvector-1.1.0 apache-airflow-providers-pinecone-1.1.2 apache-airflow-providers-postgres-5.10.1 apache-airflow-providers-presto-5.4.1 apache-airflow-providers-redis-3.6.0 apache-airflow-providers-salesforce-5.6.2 apache-airflow-providers-samba-4.5.0 apache-airflow-providers-segment-3.4.0 apache-airflow-providers-sendgrid-3.4.0 apache-airflow-providers-sftp-4.9.0 apache-airflow-providers-singularity-3.4.0 apache-airflow-providers-slack-8.6.1 apache-airflow-providers-smtp-1.6.0 apache-airflow-providers-snowflake-5.3.1 apache-airflow-providers-sqlite-3.7.1 apache-airflow-providers-ssh-3.10.1 apache-airflow-providers-tableau-4.4.2 apache-airflow-providers-tabular-1.4.1 apache-airflow-providers-telegram-4.3.1 apache-airflow-providers-trino-5.6.2 apache-airflow-providers-vertica-3.7.1 apache-airflow-providers-weaviate-1.3.2 apache-airflow-providers-yandex-3.9.0 apache-airflow-providers-zendesk-4.6.0 apache-beam-2.54.0 apispec-6.4.0 apprise-1.7.2 argcomplete-3.2.2 asana-3.2.2 asgiref-3.7.2 asn1crypto-1.5.1 asttokens-2.4.1 asyncssh-2.14.2 atlasclient-1.0.0 atlassian-python-api-3.41.10 attrs-23.2.0 azure-batch-14.1.0 azure-common-1.1.28 azure-core-1.30.0 azure-cosmos-4.5.1 azure-datalake-store-0.0.53 azure-identity-1.15.0 azure-keyvault-secrets-4.7.0 azure-kusto-data-4.3.1 azure-mgmt-containerinstance-10.1.0 azure-mgmt-containerregistry-10.3.0 azure-mgmt-core-1.4.0 azure-mgmt-cosmosdb-9.4.0 azure-mgmt-datafactory-5.0.0 azure-mgmt-datalake-nspkg-3.0.1 azure-mgmt-datalake-store-0.5.0 azure-mgmt-nspkg-3.0.2 azure-mgmt-resource-23.0.1 azure-mgmt-storage-21.1.0 azure-nspkg-3.0.2 azure-servicebus-7.11.4 azure-storage-blob-12.19.0 azure-storage-file-datalake-12.14.0 azure-storage-file-share-12.15.0 azure-synapse-artifacts-0.18.0 azure-synapse-spark-0.7.0 backoff-2.2.1 bcrypt-4.1.2 beautifulsoup4-4.12.3 billiard-4.2.0 bitarray-2.9.2 black-24.2.0 blinker-1.7.0 boto3-1.34.34 botocore-1.34.34 cachelib-0.9.0 cachetools-5.3.2 cassandra-driver-3.29.0 cattrs-23.2.3 celery-5.3.6 certifi-2024.2.2 cffi-1.16.0 cgroupspy-0.2.2 chardet-5.2.0 charset-normalizer-3.3.2 ciso8601-2.3.1 click-8.1.7 click-didyoumean-0.3.0 click-plugins-1.1.1 click-repl-0.3.0 clickclick-20.10.2 cloudant-2.15.0 cloudpickle-2.2.1 cohere-4.47 colorama-0.4.6 colorlog-4.8.0 comm-0.2.1 confluent-kafka-2.3.0 connexion-2.14.2 crcmod-1.7 cron-descriptor-1.4.3 croniter-2.0.1 cryptography-41.0.7 curlify-2.2.1 databricks-sql-connector-2.9.3 datadog-0.48.0 db-dtypes-1.2.0 debugpy-1.8.1 decorator-5.1.1 defusedxml-0.7.1 dill-0.3.1.1 distlib-0.3.8 distro-1.9.0 dnspython-2.6.0 docker-7.0.0 docopt-0.6.2 docutils-0.20.1 elastic-transport-8.12.0 elasticsearch-8.12.0 email-validator-1.3.1 entrypoints-0.4 enum34-1.1.10 et-xmlfile-1.1.0 eventlet-0.35.1 executing-2.0.1 facebook_business-19.0.0 fastavro-1.9.4 fasteners-0.19 fastjsonschema-2.19.1 filelock-3.13.1 flower-2.0.1 frozenlist-1.4.1 fsspec-2024.2.0 future-0.18.3 gcloud-aio-auth-4.2.3 gcloud-aio-bigquery-7.1.0 gcloud-aio-storage-9.2.0 gcsfs-2024.2.0 geomet-0.2.1.post1 gevent-24.2.1 google-ads-23.0.0 google-analytics-admin-0.22.5 google-api-core-2.17.1 google-api-python-client-2.118.0 google-auth-2.28.0 google-auth-httplib2-0.2.0 google-auth-oauthlib-1.2.0 google-cloud-aiplatform-1.42.1 google-cloud-appengine-logging-1.4.1 google-cloud-audit-log-0.2.5 google-cloud-automl-2.13.1 google-cloud-batch-0.17.11 google-cloud-bigquery-3.17.2 google-cloud-bigquery-datatransfer-3.14.1 google-cloud-bigquery-storage-2.24.0 google-cloud-bigtable-2.23.0 google-cloud-build-3.23.1 google-cloud-compute-1.16.1 google-cloud-container-2.40.0 google-cloud-core-2.4.1 google-cloud-datacatalog-3.18.1 google-cloud-dataflow-client-0.8.8 google-cloud-dataform-0.5.7 google-cloud-dataplex-1.12.1 google-cloud-dataproc-5.9.1 google-cloud-dataproc-metastore-1.15.1 google-cloud-dlp-3.15.1 google-cloud-kms-2.21.1 google-cloud-language-2.13.1 google-cloud-logging-3.9.0 google-cloud-memcache-1.9.1 google-cloud-monitoring-2.19.1 google-cloud-orchestration-airflow-1.11.1 google-cloud-os-login-2.14.1 google-cloud-pubsub-2.19.4 google-cloud-redis-2.15.1 google-cloud-resource-manager-1.12.1 google-cloud-run-0.10.3 google-cloud-secret-manager-2.18.1 google-cloud-spanner-3.42.0 google-cloud-speech-2.24.1 google-cloud-storage-2.14.0 google-cloud-storage-transfer-1.11.1 google-cloud-tasks-2.16.1 google-cloud-texttospeech-2.16.1 google-cloud-translate-3.15.1 google-cloud-videointelligence-2.13.1 google-cloud-vision-3.7.0 google-cloud-workflows-1.14.1 google-crc32c-1.5.0 google-re2-1.1 google-resumable-media-2.7.0 googleapis-common-protos-1.62.0 graphviz-0.20.1 greenlet-3.0.3 grpc-google-iam-v1-0.13.0 grpc-interceptor-0.15.4 grpcio-1.60.1 grpcio-gcp-0.2.2 grpcio-status-1.60.1 gssapi-1.8.3 gunicorn-21.2.0 h11-0.14.0 hdfs-2.7.3 hmsclient-0.1.1 httpcore-0.16.3 httplib2-0.22.0 httpx-0.23.3 humanize-4.9.0 hvac-2.1.0 idna-3.6 ijson-3.2.3 importlib-metadata-6.11.0 importlib-resources-6.1.1 impyla-0.19.0 inflection-0.5.1 influxdb-client-1.40.0 ipykernel-6.29.2 ipython-8.21.0 isodate-0.6.1 itsdangerous-2.1.2 jedi-0.19.1 jmespath-0.10.0 json-merge-patch-0.2 jsonpath-ng-1.6.1 jsonpickle-3.0.2 jsonschema-4.21.1 jsonschema-specifications-2023.12.1 jupyter_client-8.6.0 jupyter_core-5.7.1 kombu-5.3.5 krb5-0.5.1 kubernetes-23.6.0 kubernetes-asyncio-24.2.3 kylinpy-2.8.4 lazy-object-proxy-1.10.0 ldap3-2.9.1 limits-3.8.0 linkify-it-py-2.0.3 lockfile-0.12.2 loguru-0.7.2 looker-sdk-24.0.0 lxml-5.1.0 lz4-4.3.3 markdown-it-py-3.0.0 marshmallow-3.20.2 marshmallow-oneofschema-3.1.1 marshmallow-sqlalchemy-0.26.1 matplotlib-inline-0.1.6 mdit-py-plugins-0.4.0 mdurl-0.1.2 more-itertools-10.2.0 msal-1.26.0 msal-extensions-1.1.0 msrest-0.7.1 msrestazure-0.6.4 multi_key_dict-2.0.3 multidict-6.0.5 mypy-extensions-1.0.0 mysql-connector-python-8.3.0 mysqlclient-2.2.4 nbclient-0.9.0 nbformat-5.9.2 neo4j-5.17.0 nest-asyncio-1.6.0 numpy-1.24.4 oauthlib-3.2.2 objsize-0.7.0 openai-1.12.0 openlineage-integration-common-1.8.0 openlineage-python-1.8.0 openlineage_sql-1.8.0 openpyxl-3.1.2 opensearch-py-2.4.2 opentelemetry-api-1.22.0 opentelemetry-exporter-otlp-1.22.0 opentelemetry-exporter-otlp-proto-common-1.22.0 opentelemetry-exporter-otlp-proto-grpc-1.22.0 opentelemetry-exporter-otlp-proto-http-1.22.0 opentelemetry-exporter-prometheus-0.43b0 opentelemetry-proto-1.22.0 opentelemetry-sdk-1.22.0 opentelemetry-semantic-conventions-0.43b0 opsgenie-sdk-2.1.5 oracledb-2.0.1 ordered-set-4.1.0 orjson-3.9.14 oss2-2.18.4 packaging-23.2 pandas-2.2.0 pandas-gbq-0.21.0 pandas-stubs-2.0.2.230605 papermill-2.5.0 paramiko-3.4.0 parso-0.8.3 pathspec-0.12.1 pbr-6.0.0 pdpyras-5.2.0 pendulum-3.0.0 pexpect-4.9.0 pgvector-0.2.5 pinecone-client-2.2.4 pinotdb-5.1.2 platformdirs-3.11.0 pluggy-1.4.0 ply-3.11 plyvel-1.5.1 portalocker-2.8.2 presto-python-client-0.8.4 prison-0.2.1 prometheus_client-0.20.0 prompt-toolkit-3.0.43 proto-plus-1.23.0 protobuf-4.25.3 psutil-5.9.8 psycopg2-binary-2.9.9 ptyprocess-0.7.0 pure-eval-0.2.2 pure-sasl-0.6.2 py4j-0.10.9.7 pyOpenSSL-23.3.0 pyarrow-14.0.2 pyarrow-hotfix-0.6 pyasn1-0.5.1 pyasn1-modules-0.3.0 pycountry-23.12.11 pycparser-2.21 pycryptodome-3.20.0 pydantic-2.6.1 pydantic_core-2.16.2 pydata-google-auth-1.8.2 pydot-1.4.2 pydruid-0.6.6 pyexasol-0.25.2 pyjsparser-2.7.1 pykerberos-1.2.4 pymongo-4.6.1 pymssql-2.2.11 pyodbc-5.1.0 pyparsing-3.1.1 pypsrp-0.8.1 pyspark-3.5.0 pyspnego-0.10.2 python-arango-7.9.1 python-daemon-3.0.1 python-dateutil-2.8.2 python-dotenv-1.0.1 python-http-client-3.3.7 python-jenkins-1.8.2 python-ldap-3.4.4 python-nvd3-0.15.0 python-slugify-8.0.4 python-telegram-bot-20.2 python3-saml-1.16.0 pytz-2024.1 pywinrm-0.4.3 pyzmq-25.1.2 reactivex-4.0.4 redis-4.6.0 redshift-connector-2.0.918 referencing-0.33.0 regex-2023.12.25 requests-2.31.0 requests-file-2.0.0 requests-kerberos-0.14.0 requests-ntlm-1.2.0 requests-oauthlib-1.3.1 requests-toolbelt-1.0.0 rfc3339-validator-0.1.4 rfc3986-1.5.0 rich-13.7.0 rich-argparse-1.4.0 rpds-py-0.18.0 rsa-4.9 s3fs-2024.2.0 s3transfer-0.10.0 scramp-1.4.4 scrapbook-0.5.0 sendgrid-6.11.0 sentry-sdk-1.40.4 setproctitle-1.3.3 setuptools-66.1.1 shapely-2.0.3 simple-salesforce-1.12.5 six-1.16.0 slack_sdk-3.27.0 smbprotocol-1.12.0 sniffio-1.3.0 snowflake-connector-python-3.7.0 snowflake-sqlalchemy-1.5.1 sortedcontainers-2.4.0 soupsieve-2.5 spython-0.3.13 sqlalchemy-bigquery-1.9.0 sqlalchemy-redshift-0.8.14 sqlalchemy-spanner-1.6.2 sqlalchemy_drill-1.1.4 sqlparse-0.4.4 sshtunnel-0.4.0 stack-data-0.6.3 starkbank-ecdsa-2.2.0 statsd-4.0.1 tableauserverclient-0.30 tabulate-0.9.0 tenacity-8.2.3 termcolor-2.4.0 text-unidecode-1.3 thrift-0.16.0 thrift-sasl-0.4.3 time-machine-2.13.0 tomlkit-0.12.3 tornado-6.4 tqdm-4.66.2 traitlets-5.14.1 trino-0.328.0 types-pytz-2024.1.0.20240203 typing_extensions-4.9.0 tzdata-2024.1 tzlocal-5.2 uc-micro-py-1.0.3 unicodecsv-0.14.1 universal_pathlib-0.2.0 uritemplate-4.1.1 urllib3-2.0.7 validators-0.22.0 vertica-python-1.3.8 vine-5.1.0 virtualenv-20.25.0 watchtower-3.0.1 wcwidth-0.2.13 weaviate-client-3.26.2 websocket-client-1.7.0 wrapt-1.16.0 xmlsec-1.3.13 xmltodict-0.13.0 yandexcloud-0.259.0 yarl-1.9.4 zeep-4.2.1 zenpy-2.0.46 zipp-3.17.0 zope.event-5.0 zope.interface-6.2 zstandard-0.22.0
+
+```
+
+Interestingly `rip` has a very similiar issue: https://github.com/prefix-dev/rip/issues/174.
+
+I have speculated there that a good heuristic when resolving is to first resolve requirements that have wheels over sdists, or at least when a requirement has newer package versions with wheels and older package versions with sdists to prefer other requirements once the all wheels (metadata) have been collected by the resolution process and  further collection (of metadata) requires building sdists.
+
+I have suggested the same thing for Pip (and recently developed a loose idea of how to actually implement it), but I haven't tried doing it yet: https://github.com/pypa/pip/issues/12035 (it's at the bottom of my list of things to try and improve about performance resolution in Pip).
+
+You of course may have very different ideas on how to solve this issue! I would be interested to follow any improvements you make here.
+
+---
+
+_Label `resolver` added by @zanieb on 2024-02-17 03:24_
+
+---
+
+_Comment by @zanieb on 2024-02-17 03:26_
+
+Interesting, thanks for the details.
+
+`echo "apache-airflow[all]" | uv pip compile - --only-binary apache-beam` resolves
+
+---
+
+_Comment by @zanieb on 2024-02-17 03:27_
+
+Related discussion of resolver heuristics in https://github.com/astral-sh/uv/issues/1398
+
+---
+
+_Comment by @astrojuanlu on 2024-02-17 09:03_
+
+When uv can resolve `apache-airflow[all]` you can declare 1.0 already 😄 
+
+---
+
+_Comment by @notatallshaw on 2024-02-17 16:24_
+
+> Related discussion of resolver heuristics in #1398
+
+I was distinguishing the two based on that was just "slow" where as this ends in a failure.
+
+Although in both cases the high level issue is uv backtracks too far on a transitive dependency, the symptom, and possibly solution, are different. 
+
+Any guidance on how to file resolution issues in the future that would best fit the uv teams workflow would be appreciated. I still have a lot more scenarios to try out from real world issues reported to Pip to see if uv can handle them.
+
+---
+
+_Comment by @zanieb on 2024-02-17 16:28_
+
+Feel free to open a new issue for each case. I'm cross-linking them for my own sake, but we also have a label.
+
+The absolute best thing one can do is write [scenarios](https://github.com/zanieb/packse/blob/main/scenarios/example.json) reproducing the problem so we can a clear statement of the problem and test coverage for the solution.
+
+
+---
+
+_Comment by @notatallshaw on 2024-02-17 16:49_
+
+> The absolute best thing one can do is write [scenarios](https://github.com/zanieb/packse/blob/main/scenarios/example.json) reproducing the problem so we can a clear statement of the problem and test coverage for the solution.
+
+Yeah, I am starting to take a look at packse as I would like to add it to the Pip test suite (https://github.com/pypa/pip/issues/12526).
+
+However it seems like one has to manually build scenarios? Compared to say [pip-resolver-benchmarks](https://github.com/pradyunsg/pip-resolver-benchmarks) which can build a scenario automatically (though the JSONs are huge). But I'll take that up on the packse repo.
+
+---
+
+_Comment by @notatallshaw on 2024-02-23 01:15_
+
+> `echo "apache-airflow[all]" | uv pip compile - --only-binary apache-beam` resolves
+
+I just assumed this was true, but I tried it right now and it didn't resolve for me:
+
+```
+$ echo "apache-airflow[all]" | uv pip compile - --only-binary apache-beam
+error: Failed to download and build: apache-beam==2.2.0
+  Caused by: Building source distributions is disabled
+```
+
+Is this a seperate issue? This resolves fine:
+
+```
+$ echo -e "apache-airflow[all]\napache-beam>=2.47" | uv pip compile -
+
+
+
+---
+
+_Comment by @potiuk on 2024-02-26 19:23_
+
+Hey - Airlfow maintainer here and the "The CI/dev tool Airflow guy",
+
+Apache Beam is notroriusly complex to get right. This is by far biggest problem contibutor to airflow (including the fact that it's the only provider we have to disable for upcoming Python 3.12 support. 
+
+The problem you likely have there is - I guess - that the old version of apache-beam has not enough metadata and you want to install it to get the metadata and this really really old version which does not have a binary wheel at all https://pypi.org/project/apache-beam/2.2.0/#files and fails the compilation - both cases should likely simply lead to skipping that version entirely in your resolution process.
+
+BTW. It's a little tangential @zanieb and other maintainers, But speaking of `airflow` - you might not be aware - but I **just** merged https://github.com/apache/airflow/pull/37692 where we use `uv` to cut down the time for our CI image building and updating by 50% - 60% thanks to the speed of `uv`. Thanks for such a great tool (we adopted uv for that even faster than ruff, and looking so much forward to using more of the features there (resolution --lowest is particularly interesting as we almost completed our own poor version of it and found out that `uv` can do it for us).
+
+We are not yet switching for production - kind of usage to uv, not recommend it to our users (yet) - but I am quite impressed so far with the speed improvements especially and definitely will keep an aye and adopt (and maybe even some day contribute) to packaging tooling out there - finally it seems that the packaging tooling is getting close to provide a lot of the things we've been doing in custom ways in Airflow (because of our size and setup and complexity we had to do a lot on our own) - and we can slowly replace and improve pieces of our CI / development tooling with more standard solution (I love when I can do it with confidence). 
+
+You can see mailing discushttps://lists.apache.org/thread/8gyzqc1d1lxs5z7g9h2lh2lcoksy2xf9
+
+BTW. I will be at Pycon US in Pittsbuirgh and how to meet a lot of the packaging team and astral team there! Signed up to packaging summit and hope to see you and talk to you there.
+
+---
+
+_Comment by @charliermarsh on 2024-02-26 19:29_
+
+@potiuk - Thanks so much for chiming in and for the kind words -- that PR is so so cool! I'll be at PyCon US too and also signed up for the packaging summit.
+
+---
+
+_Comment by @notatallshaw on 2024-02-27 05:10_
+
+> I just assumed this was true, but I tried it right now and it didn't resolve for me:
+> 
+> ```
+> $ echo "apache-airflow[all]" | uv pip compile - --only-binary apache-beam
+> error: Failed to download and build: apache-beam==2.2.0
+>   Caused by: Building source distributions is disabled
+> ```
+
+FYI I created a seperate issue for this: https://github.com/astral-sh/uv/issues/2003
+
+---
+
+_Referenced in [astral-sh/uv#2003](../../astral-sh/uv/issues/2003.md) on 2024-02-27 05:19_
+
+---
+
+_Comment by @potiuk on 2024-02-27 10:53_
+
+FYI. My non-scientific comparision (after > 24 hrs switching to uv) is that Airflow's workflow is getting a HUGE boost.
+
+We use our CI image also to make sure our `breeze` development environment for reproducing CI tests and running them locally. And we get a 70% boost for a complete rebuild from the scratch with `uv` - at least on multi-core machines with fast network. 
+
+In my case I got the worst case full rebuilt, with upgrade to latest dependencies and disabling docker cache altogether  down from 12 minutes with `pip` to 4 minutes with `uv`. It's literally a game-changer for our developmetnt environment. Maybe even (if I get some more datapoints) I might be able to make things simpler and remove some of the optimizations I've implemented to specifically target the slow resolution and installation from `pip`.
+
+https://lists.apache.org/thread/sq70ch6lllryv4cr5q0xjt6b9z5n0vd8
+
+Thanks again for this one. I **hope** my "First time contributor's workshop" for Pycon will get accepted in the `hatchery` and this will make lives of those "first-time contributors to be" hell a lot easier.
+
+---
+
+_Comment by @notatallshaw on 2024-02-27 13:29_
+
+> I've implemented to specifically target the slow resolution and installation from `pip`.
+
+Btw, do you know if any of those optimizations are still required for pip? Or if you've had any specific resolution issues in last ~6 months?
+
+I know uv is a lot faster, but I only have a handful of examples where it resolves "better" (i.e. visits less packages to resolve), and I have a PR on pip side which fixes all of those. So any more examples would appreciated .
+
+And of course this issue is an example with pip chooses a better resolution path than uv.
+
+---
+
+_Comment by @potiuk on 2024-02-27 13:38_
+
+> Btw, do you know if any of those optimizations are still required for pip? Or if you've had any specific resolution issues in last ~6 months?
+
+It's mostly for the design of caching by Docker layers  and addressing several cases - when users in CI upgrade only dependencies, or when they upgrade to conflicitng dependencie - not the resolution itself. 
+
+What is left from the "resolution helper" is the list of dependencies i add to address the `--eager upgrade` https://github.com/apache/airflow/blob/main/Dockerfile.ci#L1289 - currently
+
+```
+# Those are additional constraints that are needed for some extras but we do not want to
+# force them on the main Airflow package. Currently we need no extra limits as PIP 23.1+ has much better
+# dependency resolution and we do not need to limit the versions of the dependencies
+#
+# boto3 is limited to <1.34 because of aiobotocore that only works with 1.33 and we want to help
+# `pip` to limit the versions it checks and limit backtracking, by explicitly specifying these limits
+# when performing eager upgrade of dependencies - this way it won't even consider 1.34 versions of boto
+# We should update it every time a new version of aiobotocore is released supporting 1.34
+#
+ARG EAGER_UPGRADE_ADDITIONAL_REQUIREMENTS="boto3>=1.33,<1.34"
+```
+
+That one however was based on pure guesses - whenever `pip` went into a long backtracking I tried to guess (by looking into what has been released since last successful resolution) and figured a way to add extra expectations to `--eager-upgrade` to limit a bit space of solutions to help with the imperfect backtacking algorithm. This list here changed over time and it's largely based on guesses and bi-secting rather than some science. I am going to remove it now and see where it will get us.
+
+
+---
+
+_Comment by @potiuk on 2024-02-27 13:41_
+
+PR running here to remove it https://github.com/apache/airflow/pull/37745
+
+---
+
+_Comment by @notatallshaw on 2024-02-27 14:41_
+
+> What is left from the "resolution helper" is the list of dependencies i add to address the `--eager upgrade` https://github.com/apache/airflow/blob/main/Dockerfile.ci#L1289 - currently
+
+Well uv can certainly suffer from the same issues: https://github.com/astral-sh/uv/issues/1398
+
+It will be interesting to see if uv is performant enough for you when it also goes backtracking in the wild.
+
+
+---
+
+_Comment by @potiuk on 2024-02-27 14:51_
+
+> It will be interesting to see if uv is performant enough for you when it also goes backtracking in the wild.
+
+Hard to say - those extra requirements tend to solve itself over time. - I periodically removed them and added new ones when we got into bactracking issue, also what (obviously) helps is regular bumping of lower limits in some dependencies.
+
+This change is fine (I had to handle edge case where extra requirements are empty)  - the changes generated by removal of those extra requirements works fine:
+
+```
+< boto3==1.33.13
+< botocore==1.33.13
+---
+> boto3==1.34.34
+> botocore==1.34.34
+498c498
+< s3transfer==0.8.2
+---
+> s3transfer==0.10.0
+505c505
+< sentry-sdk==1.40.5
+---
+> sentry-sdk==1.40.6
+```
+
+No excessive backtracking  (the images were built in 3 minutes).
+
+---
+
+_Comment by @konstin on 2024-02-27 14:55_
+
+For context, boto3/botocore are notoriously hard due to their large number of releases, where we have to backtrack through every single one: https://pypi.org/project/boto3/#history, https://pypi.org/project/botocore/#history. We're planning on improving the situation around boto specifically.
+
+---
+
+_Comment by @potiuk on 2024-02-27 14:57_
+
+> For context, boto3/botocore are notoriously hard due to their large number of releases, where we have to backtrack through every single one: https://pypi.org/project/boto3/#history, https://pypi.org/project/botocore/#history. We're planning on improving the situation around boto specifically.
+
+Oh absolutely - approach of boto3/botocore is particularly difficult for package managers and resolution. When backtracking happens the first thing I do is trying botocore/boto limitation.
+
+---
+
+_Referenced in [astral-sh/uv#1398](../../astral-sh/uv/issues/1398.md) on 2024-03-22 20:08_
+
+---
+
+_Referenced in [pypa/pip#12035](../../pypa/pip/issues/12035.md) on 2024-03-28 14:03_
+
+---
+
+_Comment by @notatallshaw on 2024-04-04 14:27_
+
+FYI, the error output is different now, but the issue of uv backtracking too far back on apache-beam for Python 3.11 with latest version of airflow still exists as of today:
+
+```
+$ uv pip install --dry-run "apache-airflow[all]"
+error: Failed to download and build: apache-beam==2.2.0
+  Caused by: Failed to build: apache-beam==2.2.0
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+<string>:24: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 325, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=['wheel'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 295, in _get_build_requires
+    self.run_setup()
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 487, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/setuptools/build_meta.py", line 311, in run_setup
+    exec(code, locals())
+  File "<string>", line 61, in <module>
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/pkg_resources/__init__.py", line 497, in get_distribution
+    dist = get_provider(dist)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/pkg_resources/__init__.py", line 384, in get_provider
+    return working_set.find(moduleOrReq) or require(str(moduleOrReq))[0]
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/pkg_resources/__init__.py", line 937, in require
+    needed = self.resolve(parse_requirements(requirements))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/pkg_resources/__init__.py", line 798, in resolve
+    dist = self._resolve_dist(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/dshaw/.cache/uv/.tmpvHTOBL/.venv/lib/python3.11/site-packages/pkg_resources/__init__.py", line 839, in _resolve_dist
+    raise DistributionNotFound(req, requirers)
+pkg_resources.DistributionNotFound: The 'pip' distribution was not found and is required by the application
+---
+```
+
+I don't know if pubgrub-rs is felxible enough, but I still strongly suggest that when backtracking and choosing between two packages, try as much as possible to avoid choosing one that involves having to compile sdists. I recently further discussed (https://github.com/pypa/pip/issues/12035) this idea on the pip side and plan to eventually create a PR for pip.
+
+---
+
+_Comment by @potiuk on 2024-04-04 19:40_
+
+This is somewhat related to what I reported today in https://github.com/astral-sh/uv/issues/2821 - similarly like in the other issue - backtracking is not only considering some really old versions of dependencies (apache-beam 2.2.0 has been released in 2017 (!) but also installation fails in case those considered candidates have some serious issues with metadata.
+
+I think while the "failing on non-installable candidate" has an easy solution, indeed some extra heuristics for candidate selection should speed the resolution even further. Hard to say what heuristics though.
+
+I also think there is something wrong with the current candidate selection.  Currently (and likely for quite some time) - we limit apache-beam in `apache-airflow-provider-apche-beam` (this is the packge that brings in `apache-beam` as dependency)  to  `apache-beam>=2.53.0` -  and the "no-limit" beam comes likely from some older versions of the provider ( I just checked that originally `apache-airflow-providers-apache-beam==1.0.0` had no lower binding.
+
+We could potentially - of course - in the future versions of airflow to say for example `apache-airflow-providers-apache-beam>3.0.0` - we could come up with some policies of adding lower-bounds for providers (we do not do it for now), however naturally - I think cutting of some "older" versions of dependencies when newer versions exists could be a way to go for such heuristics. 
+
+Of course I know it's an NP-complete problem and choosing some heuristics will cause problems for some other cases - and I do not know the details of how `uv` resolution is done, so maybe I am stating the obvious, but possibly a good solution could be to figure out a few such "likely" heuristics that will limit big part of the tree resolution and gradually remove such "stronger" heuristics when resolution could not be found with them - with the speed of UV resolution, even if you try several times, with weaker and weaker heuristics it could be fast enough (and might help in 9X% of cases that will work super-fast and reliable with the stronger heuristics.
+
+Just a "lame" proposal - without knowing the internals - it might be - again - stating the obvious thing that already happens (or maybe I am missing somethign that I am not aware of), so apologies if that's the case :)
+
+---
+
+_Referenced in [apache/airflow#38753](../../apache/airflow/pulls/38753.md) on 2024-04-05 08:24_
+
+---
+
+_Comment by @konstin on 2024-04-08 10:02_
+
+Our pacakage selection heuristic is currently just going through packages in order we first see them in the requirements of another package - There's definitely room for improvement.
+
+> We could potentially - of course - in the future versions of airflow to say for example apache-airflow-providers-apache-beam>3.0.0 - we could come up with some policies of adding lower-bounds for providers (we do not do it for now), however naturally - I think cutting of some "older" versions of dependencies when newer versions exists could be a way to go for such heuristics.
+
+Lower bounds would be very helpful! My heuristic is that the lower bound should be the lowest version that still works (passes tests with `--resolution lowest` or `--resolution lowest-direct`) or that you would still support with airflow. Otherwise there's always the risk that we start backtracking for the wrong package and end up with an ancient version that's technically "compatible" because it doesn't use any deps that conflict with what is used now or that we run into crashing builds as we do now; there's no good way to guarantee we don't end up in the bad path otherwise. It also helps resolver performance because we cut a large part of the search space.
+
+The conflicts we encounter are often of a specific shape: Say we have two dependencies a and b. We see that for the latest versions, a==5 and b==5, a==5 wants c==2 and d==3 while b==5 wants c==3 and d==2. We can start iterating either over a's or over b's past releases. With a lower bound on a, say a>=4, we try few versions until we determine that no version of a works and we have to reject b==5 instead.
+
+I've confirmed that we resolve `apache-airflow` to 2.9.0 (ubuntu, python 3.11) with:
+
+```
+apache-airflow[all]
+apache-airflow-providers-apache-beam>3.0.0
+```
+
+
+---
+
+_Comment by @notatallshaw on 2024-04-12 23:09_
+
+> Our pacakage selection heuristic is currently just going through packages in order we first see them in the requirements of another package - There's definitely room for improvement.
+
+Is there a reason you haven't taken [pip's approach](https://github.com/pypa/pip/blob/24.0/src/pip/_internal/resolution/resolvelib/provider.py#L187) and [prioritize](https://pip.pypa.io/en/stable/topics/more-dependency-resolution/#the-resolver-algorithm) certain heuristics?
+
+It's probably why pip can resolve this requirement and uv can not, the relevant heauristics here would be direct, pinned, and inferred depth.
+
+> My heuristic is that the lower bound should be the lowest version that still works
+
+The problem is that a library must support multiple versions of Python, let's say the lower bound for dependency `foo` is `10` because the library supports Python 3.8 to 3.12, but `foo` has C extensions and version `10` was releases when `3.10` and higher didn't exist, `foo` agressively drops old versions of Python and version `11` dropped Python 3.8 support. My library can now only put a lower bound on `foo` of `10` because I do support Python 3.8, even though Pythons 3.10 to 3.12 are not compatible with this old version of `foo`.
+
+Your heuristic is fine, but for library authors supporting wide ranges of Python it doesn't actually help that much.
+
+> I've confirmed that we resolve apache-airflow to 2.9.0 (ubuntu, python 3.11) with:
+
+Yes, or you can do this https://github.com/astral-sh/uv/issues/1560#issuecomment-1949626187. That's why I titled this a performance issue, not a bug with uv, uv does not do as good of a job limiting the number of candidates it is checking against compared to pip.
+
+---
+
+_Comment by @konstin on 2024-04-15 09:24_
+
+I think the problem and it's solution are sufficiently understood to close this issue
+
+@potiuk You're enforcing a lower version bound on apache-airflow-providers-apache-beam in https://github.com/apache/airflow/blob/5fa80b6aea60f93cdada66f160e2b54f723865ca/airflow/providers/apache/beam/__init__.py#L37-L42, if you move that to the package metadata you should be able to drop the check there. I unfortunately do understand enough of your build system to change that.
+
+@notatallshaw Closing in favor of #1398.
+
+Please feel free to open a new issue issue if other performance (or any other kind of ) problems with apache airflow should arise.
+
+---
+
+_Closed by @konstin on 2024-04-15 09:24_
+
+---
+
+_Comment by @notatallshaw on 2024-04-15 14:22_
+
+@konstin sorry I don't understand why you've closed this issue:
+
+1. As far as I can tell the root cause has not been determined, I don't agree it was the same as #1398 
+2. My proposed solution to fix this issue is not the same as #1398
+3. This is actually still a real problem where as #1398 is both fixed and the discussion has veered off into a question how how to consider bounds, which I don't even believe is needed here for uv to perform better, here uv just appears to need better priorities when selecting packages to backtrack 
+
+Unless I'm missing something, such as some root cause analysis, can  you please reopen this ticket.
+
+---
+
+_Comment by @charliermarsh on 2024-04-15 14:42_
+
+> I don't know if pubgrub-rs is felxible enough, but I still strongly suggest that when backtracking and choosing between two packages, try as much as possible to avoid choosing one that involves having to compile sdists.
+
+Haven't been paying close attention to this issue but this heuristic has some downsides. For one, the output resolution for a given set of inputs could change despite no changes in the available versions on PyPI, just by way of wheels being uploaded for existing versions.
+
+
+---
+
+_Comment by @notatallshaw on 2024-04-15 15:14_
+
+> Haven't been paying close attention to this issue but this heuristic has some downsides. For one, the output resolution for a given set of inputs could change despite no changes in the available versions on PyPI, just by way of wheels being uploaded for existing versions.
+
+I don't think so, except in the case where it is a transitive dependency that is optional, in the sense a solution can be found without it. In which case, how significantly negative is this?
+
+But I think uv should first try pip's priorities (https://github.com/astral-sh/uv/issues/1560#issuecomment-2052673990), or similar, they seem to be strong enough here to find a solution while avoiding old versions of apache-beam, at least for pip which can install this requirement without issue.
+
+---
+
+_Comment by @charliermarsh on 2024-04-15 15:55_
+
+I mean, it's definitely true that changing the order in which you visit packages will change the output resolution in some cases. So whenever you change the prioritization, you will change the output resolution in some cases. And my point here is that you're now changing the resolution based on subtle properties that don't map to how users think about their requirements.
+
+Regardless, we should try out some of pip's priorities, would be happy to see a separate issue for that.
+
+
+---
+
+_Comment by @notatallshaw on 2024-04-15 16:15_
+
+> I mean, it's definitely true that changing the order in which you visit packages will change the output resolution in some cases.
+
+That's true, but I think the word "some" is doing a lot of heavy lifting. I think you would be hard pressed to find a real world example (though I'm sure one could easily artificially construct an example) where it would impact resolution solution (beyond allowing it to actually find a solution in cases like this). But I understand if you consider the chance of this weird behavior appearing in unusual edge cases to be an extremely negative property of a resolution algorithm.
+
+> Regardless, we should try out some of pip's priorities, would be happy to see a separate issue for that.
+
+I am a long way off sufficient Rust knowledge to contribute to these projects, probably for a year or two, otherwise I would have been happy to make a PR to try this out.
+
+Regardless though of the solution, it remains my original issue as posted is still somewhere that uv fails to resolve and pip does not. #1398 was a wall clock performance issue, that didn't cause any failures, and that was solved. This issue is a performance of uv's resolution in the sense it visits too old packages (for some sense of old that means won't compile) which causes real world failures, and is not solved.
+
+---
+
+_Comment by @notatallshaw on 2024-04-16 23:51_
+
+There seems to be some communication issue here:
+
+* @konstin closed the issue with a comment that doesn't align with any of the posts made in this thead
+* @charliermarsh agree's with the approach I suggested but this issue is still closed
+* This is still a real open issue where uv is failing to resolve requirements
+
+As such I've opened this as a new issue that is much more focused on the problem: https://github.com/astral-sh/uv/issues/3078
+
+---
+
+_Comment by @charliermarsh on 2024-04-17 00:08_
+
+I don't know why @konstin closed the issue. I'll just re-open until we can resolve this case. My prior comment was only meant to signal that I thought the idea of using different rules for prioritization was sensible.
+
+---
+
+_Reopened by @charliermarsh on 2024-04-17 00:08_
+
+---
+
+_Comment by @charliermarsh on 2024-04-17 00:17_
+
+Sorry, now I feel like I'm doing the wrong thing by re-opening given the new issue, so I'll re-close and we'll continue from #3078.
+
+---
+
+_Closed by @charliermarsh on 2024-04-17 00:17_
+
+---
+
+_Comment by @notatallshaw on 2024-04-17 00:27_
+
+I don't mind which issue is kept open, I just don't want this to drop off as a known issue. This issue was the original but the other is way more focused and so doesn't have the baggage of this thread ¯\\_(ツ)_/¯.
+
+---
+
+_Comment by @konstin on 2024-04-17 08:34_
+
+Thanks, #3078 is much more actionable
+
+---
+
+_Comment by @brunolnetto on 2025-04-08 01:39_
+
+Hey, I stumbled on this issue when combining `airflow` and `uv` on search query. I would like to improve my docker pipeline with uv. Could you help me somehow?
+
+Dockerfile
+
+```
+FROM apache/airflow:2.7.2-python3.10
+
+USER root
+WORKDIR /opt/airflow
+
+# Install gettext (used by envsubst)
+RUN apt-get update && apt-get install -y --no-install-recommends gettext && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create DBT profile directory and fix permissions
+RUN mkdir -p /opt/airflow/dbt_profiles && \
+    chown -R airflow: /opt/airflow
+
+# Copy only the requirements first to leverage Docker cache
+COPY requirements.txt .
+
+USER airflow
+
+# Upgrade pip and install Python dependencies
+RUN pip install --upgrade pip && \
+    pip install --user -r requirements.txt
+
+# Copy the rest of the code after installing dependencies
+COPY --chown=airflow:airflow . .
+```
+
+requirements.txt
+
+```
+apache-airflow==2.10.5
+apache-airflow-providers-openlineage==2.1.1
+dbt-core==1.9.4
+dbt-postgres==1.9.0
+pandas==2.2.3
+protobuf==5.29.4
+proto-plus
+pyarrow[pandas]==10.0.1
+requests==2.32.3
+```
+
+---
+
+_Comment by @zanieb on 2025-04-08 01:42_
+
+@brunolnetto please open a new issue or ask on Discord (where some Airflow maintainers are present)
+
+---
+
+_Comment by @brunolnetto on 2025-04-08 09:58_
+
+Sure. [Here](https://github.com/astral-sh/uv/issues/12712) it is. Thanks, @zanieb. 
+
+---

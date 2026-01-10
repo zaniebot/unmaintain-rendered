@@ -1,0 +1,109 @@
+---
+number: 16491
+title: "collections-named-tuple (PYI024): Potential for an unsafe autofix using `Any`"
+type: issue
+state: closed
+author: Avasam
+labels:
+  - fixes
+assignees: []
+created_at: 2025-03-04T08:53:40Z
+updated_at: 2025-03-04T10:01:35Z
+url: https://github.com/astral-sh/ruff/issues/16491
+synced_at: 2026-01-10T01:22:57Z
+---
+
+# collections-named-tuple (PYI024): Potential for an unsafe autofix using `Any`
+
+---
+
+_Issue opened by @Avasam on 2025-03-04 08:53_
+
+### Summary
+
+Reviving #8820 in light of https://github.com/jaraco/skeleton/issues/165
+
+The original issue didn't mention that an autofix (or editor suggestion) would be possible by typing the attributes as `Any`. I would of course consider this unsafe as
+1. It doesn't solve the core issue of being untyped
+2. There are rules preventing explicit `Any` that this would conflict with
+3. Pyright looses on type safety since the type will no longer be `Unknown`
+
+But, at least as an editor suggestion, it can help mechanically transform the code and get it most of the way there.
+
+```py
+from collections import namedtuple
+
+person = namedtuple("Person", ["name", "age"])
+```
+
+```py
+from typing import Any, NamedTuple
+
+class person(NamedTuple):
+    __name__ = "Person"
+    name: Any  # TODO: Type me !
+    age: Any  # TODO: Type me !
+```
+
+---
+
+_Comment by @MichaReiser on 2025-03-04 09:29_
+
+I don't know how an editor-only fix would help with the linked issue. It seems that they want an automated fix that they can apply to the entire code base.
+
+Automatically typing everything as `Any` also defeats the purpose of the rule: It doesn't increase type safety, but it makes the code more verbose. 
+
+That's why I'm still leaning towards not offering a fix until we have type inference and can *guess* the correct types (and e.g. not offer a fix if any or all fields infer as `Any`)
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-04 09:29_
+
+---
+
+_Label `rule` removed by @MichaReiser on 2025-03-04 09:29_
+
+---
+
+_Label `fixes` added by @MichaReiser on 2025-03-04 09:29_
+
+---
+
+_Comment by @Avasam on 2025-03-04 09:50_
+
+Might be out of scope, but a language server could have a contextual option to refactor from `collections.namedtuple` to `typing.NamedTuple`. Maybe I should ask over at https://github.com/microsoft/pylance-release
+
+> Automatically typing everything as `Any` also defeats the purpose of the rule: It doesn't increase type safety, but it makes the code more verbose.
+
+Correct. I'd also have my reservations.
+As I just realized, maybe I'm just not approaching my request correctly. I think what I actually want is this:
+
+![Image](https://github.com/user-attachments/assets/ed530eea-c87a-4b78-94eb-f7bcd7d6452a)
+
+ESlint has a concept of "editor only fixes" (aka suggestions), that can never be triggered through cli. It also allows them to display multiple possible fixes for the same issue. But I don't think Ruff does (does it?)
+
+---
+
+_Comment by @MichaReiser on 2025-03-04 09:55_
+
+Refactors is something I want but, but unfortunately, it is probably quiet far in the future :( I did a quick search and couldn't find an issue for refactor support. I'd prefer to close this issue in favor of an explicit ask for refactors (which PYI024 could make use of once implemented) 
+
+---
+
+_Comment by @Avasam on 2025-03-04 10:00_
+
+Makes sense to me. This can be used as an example of a useful refactor without providing a full autofix.
+
+---
+
+_Closed by @Avasam on 2025-03-04 10:00_
+
+---
+
+_Closed by @Avasam on 2025-03-04 10:01_
+
+---
+
+_Referenced in [microsoft/pylance-release#7009](../../microsoft/pylance-release/issues/7009.md) on 2025-03-04 10:06_
+
+---

@@ -1,0 +1,90 @@
+---
+number: 6688
+title: Enable setting extra-index-url on uv add --script
+type: issue
+state: closed
+author: Mateuscvieira
+labels:
+  - error messages
+  - cli
+assignees: []
+created_at: 2024-08-27T14:03:22Z
+updated_at: 2025-02-12T13:49:07Z
+url: https://github.com/astral-sh/uv/issues/6688
+synced_at: 2026-01-10T01:24:04Z
+---
+
+# Enable setting extra-index-url on uv add --script
+
+---
+
+_Issue opened by @Mateuscvieira on 2024-08-27 14:03_
+
+In the current version of uv, the only way I could manage to add an extra index URL to a script was manually adding a [tools.uv] field to the file header.
+The error message  on `uv add ` implies it's possible to combine --extra-index-url and --script, with the message:
+
+```
+error: the following required arguments were not provided:
+  <PACKAGES|--requirements <REQUIREMENTS>>
+
+Usage: uv add --script <SCRIPT> --extra-index-url <EXTRA_INDEX_URL> <PACKAGES|--requirements <REQUIREMENTS>>
+```
+But when running something like `uv add --script test.py --extra-index-url "https://google.com" "hello"` it only adds the following header:
+```
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "hello",
+# ]
+# ///
+```
+
+Which evidently does not contain the new index URL.
+
+This functionality would greatly facilitate script-centric workflows on environments constrained by disk space, such as a local Airflow worker orchestrating multiple scripts on the same machine. Having the flexibility to add any requirements to any script with minimal disk load is a great thing about uv run --script
+
+I'm running on Windows 10 and uv 0.3.4
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-08-27 14:05_
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-08-27 14:05_
+
+---
+
+_Comment by @charliermarsh on 2024-08-27 14:05_
+
+(At minimum we should probably warn there.)
+
+---
+
+_Comment by @Mateuscvieira on 2024-08-27 14:11_
+
+Maybe this should have been two issues, one reporting the problem with the error message and another asking for the new feature...
+
+---
+
+_Comment by @lewis-wf on 2025-02-12 12:13_
+
+I _think_ this issue is now resolved, because running:
+```bash
+uv add --index "https://fakepackagerepo.com" --script example.py
+```
+Writes the following to the script and packages in the private index are now resolved correctly:
+```python
+# [[tool.uv.index]]
+# url = "https://fakepackagerepo.com"
+```
+
+---
+
+_Referenced in [astral-sh/uv#11443](../../astral-sh/uv/pulls/11443.md) on 2025-02-12 12:27_
+
+---
+
+_Closed by @charliermarsh on 2025-02-12 13:07_
+
+---

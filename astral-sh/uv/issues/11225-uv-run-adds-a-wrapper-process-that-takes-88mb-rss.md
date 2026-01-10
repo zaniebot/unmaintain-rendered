@@ -1,0 +1,98 @@
+---
+number: 11225
+title: "`uv run` adds a wrapper process that takes ~88mb RSS"
+type: issue
+state: open
+author: beaugunderson
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-02-04T19:33:53Z
+updated_at: 2025-02-04T21:08:00Z
+url: https://github.com/astral-sh/uv/issues/11225
+synced_at: 2026-01-10T01:25:02Z
+---
+
+# `uv run` adds a wrapper process that takes ~88mb RSS
+
+---
+
+_Issue opened by @beaugunderson on 2025-02-04 19:33_
+
+### Summary
+
+We run multiple processes in Docker and have just migrated from `poetry` to `uv`. We are very sensitive to memory usage since we want to run a given number of workers within a set amount of memory. Previously we used `poetry run`, which does not create a wrapper process and has no additional memory usage. `uv` keeps `uv run` resident and forks a subprocess, so we incur ~88mb RSS by using `uv run` in comparison to `poetry run`.
+
+Example of what it looks like in `ps`:
+
+![Image](https://github.com/user-attachments/assets/ef4a6c2b-e7d3-4c9f-95a4-5154e4adab2e)
+
+(88mb figure comes from production procstat monitoring, this screenshot was from local development and shows a different RSS figure)
+
+### Platform
+
+docker: python:3.11-slim-bullseye
+
+### Version
+
+uv 0.5.25 (Homebrew 2025-01-28)
+
+### Python version
+
+Python 3.11.11
+
+---
+
+_Label `bug` added by @beaugunderson on 2025-02-04 19:33_
+
+---
+
+_Comment by @charliermarsh on 2025-02-04 20:08_
+
+If you want to work around this for now, you can just run `uv sync` then activate the virtual environment or run the binary directly. It's equivalent.
+
+---
+
+_Comment by @charliermarsh on 2025-02-04 20:09_
+
+E.g.: `uv sync && .venv/bin/python -m plugin runner.plugin runner`
+
+---
+
+_Comment by @charliermarsh on 2025-02-04 20:11_
+
+It seems that Poetry also runs the command as a subprocess and keeps the current process around, by the way. Where are you seeing that it doesn't do so?
+
+Edit: Maybe I'm misreading the Poetry code? I don't see Poetry in `ps` but the code suggests it's using a subprocess.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-02-04 20:15_
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2025-02-04 20:15_
+
+---
+
+_Comment by @charliermarsh on 2025-02-04 20:30_
+
+Ohh sorry I misread. Poetry only keeps it around on Windows -- on other platforms, they use `execvpe`.
+
+---
+
+_Comment by @beaugunderson on 2025-02-04 20:44_
+
+> If you want to work around this for now, you can just run `uv sync` then activate the virtual environment or run the binary directly. It's equivalent.
+
+awesome, this is the workaround we're using 🙏 
+
+appreciate the quick response!
+
+---
+
+_Comment by @charliermarsh on 2025-02-04 21:07_
+
+No problem! I'm gonna see if we can reduce the memory overhead here a bit (though in a highly memory-conscious setting, it probably makes sense to continue using that "direct execution" strategy). We'll also consider delegating entirely to the child process, though we lose a few things in the process (e.g., we can't show great error messages or hints).
+
+---

@@ -1,0 +1,55 @@
+---
+number: 6532
+title: "Remove `--preview` from test fixtures"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - help wanted
+  - internal
+assignees: []
+created_at: 2024-08-23T16:43:16Z
+updated_at: 2024-08-23T22:12:08Z
+url: https://github.com/astral-sh/uv/issues/6532
+synced_at: 2026-01-10T01:24:02Z
+---
+
+# Remove `--preview` from test fixtures
+
+---
+
+_Issue opened by @charliermarsh on 2024-08-23 16:43_
+
+_No description provided._
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-08-23 16:43_
+
+---
+
+_Label `help wanted` added by @zanieb on 2024-08-23 17:20_
+
+---
+
+_Comment by @zanieb on 2024-08-23 17:20_
+
+Whoops, missed this in #6166 
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-23 18:23_
+
+---
+
+_Referenced in [astral-sh/uv#6536](../../astral-sh/uv/pulls/6536.md) on 2024-08-23 18:23_
+
+---
+
+_Closed by @charliermarsh on 2024-08-23 22:12_
+
+---
+
+_Closed by @charliermarsh on 2024-08-23 22:12_
+
+---

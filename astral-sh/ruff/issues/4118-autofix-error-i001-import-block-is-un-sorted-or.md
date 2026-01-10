@@ -1,0 +1,114 @@
+---
+number: 4118
+title: "[Autofix error] I001 Import block is un-sorted or un-formatted"
+type: issue
+state: closed
+author: DouglasBlackwood
+labels:
+  - bug
+assignees: []
+created_at: 2023-04-26T16:00:44Z
+updated_at: 2023-04-27T12:51:08Z
+url: https://github.com/astral-sh/ruff/issues/4118
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# [Autofix error] I001 Import block is un-sorted or un-formatted
+
+---
+
+_Issue opened by @DouglasBlackwood on 2023-04-26 16:00_
+
+The error: `error: Autofix introduced a syntax error. Reverting all changes.`
+
+The code snippet:
+
+```python
+import yaml
+
+# convenient aliases
+from yaml import *  # noqa
+
+...
+```
+
+The command invoked: `poetry run ruff check --fix yaml.py`
+
+The pyproject.toml:
+
+```toml
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = [
+ "E", "W", "F", "I", "A", "B", "Q",
+ "C4", "T10", "ISC", "ICN", "BLE",
+ "G", "RSE", "TID", "TRY", "PLE", "UP",
+ "RUF", "RET",
+]
+
+ignore = [
+    "E501",
+    "G201", "TRY200", "TRY400",
+    "RSE102",
+    "TRY003", "TRY301",
+    "A003",
+    "B904",
+    "TRY004",
+    "BLE001",
+    "RET508"
+]
+
+[tool.ruff.isort]
+force-single-line = true
+force-sort-within-sections = true
+lines-after-imports = 2
+known-first-party = ["mergify_engine"]
+known-third-party = ["datadog"]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+```
+
+The Ruff version:
+
+```
+$ ruff --version
+ruff 0.0.263
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-04-26 16:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-04-26 16:31_
+
+---
+
+_Comment by @charliermarsh on 2023-04-26 16:33_
+
+I think this is a regression in 0.0.263 -- fixing now.
+
+---
+
+_Comment by @charliermarsh on 2023-04-26 17:18_
+
+Actually on plane and need a proper monitor to work on this so I'll fix later but it'll be included in the next release :)
+
+---
+
+_Referenced in [astral-sh/ruff#4129](../../astral-sh/ruff/pulls/4129.md) on 2023-04-27 03:56_
+
+---
+
+_Closed by @charliermarsh on 2023-04-27 04:02_
+
+---
+
+_Comment by @DouglasBlackwood on 2023-04-27 12:51_
+
+That was a fast reply! Thanks @charliermarsh 
+
+---

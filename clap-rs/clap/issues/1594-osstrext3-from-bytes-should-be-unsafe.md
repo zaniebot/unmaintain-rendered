@@ -1,0 +1,188 @@
+---
+number: 1594
+title: "`OsStrExt3::from_bytes` should be unsafe"
+type: issue
+state: closed
+author: KillTheMule
+labels: []
+assignees: []
+created_at: 2019-11-03T15:25:51Z
+updated_at: 2020-04-23T14:54:30Z
+url: https://github.com/clap-rs/clap/issues/1594
+synced_at: 2026-01-10T01:26:58Z
+---
+
+# `OsStrExt3::from_bytes` should be unsafe
+
+---
+
+_Issue opened by @KillTheMule on 2019-11-03 15:25_
+
+I'm opening this as a result from https://github.com/rust-secure-code/safety-dance/issues/49. The mentioned  method uses `unsafe`, but is not marked `unsafe` itself. I think that is not right, and while I've found no safety violations here, there's the possibility of a future bug in safe code if the necessary properties aren't upheld. @Shnatsel remarked
+
+>  I think this might cause some actual memory unsafety down the line, potentially turning into a privilege escalation vulnerability.
+
+and while I don't understand the details of this claim, it's probably worth looking at.
+
+There's some prior art at https://github.com/clap-rs/clap/issues/1054 and https://github.com/clap-rs/clap/pull/1058, but the issue of `from_bytes` was left without action. @H2CO3 said
+
+> However, the implementation using mem::transmute() is identical to that of the stdlib, so this shouldn't be too bad, after all.
+
+I'm uncertain about this, as far as I can see, this implementation is only valid on systems where `OsStr` is an arbitrary byte sequence, e.g. linux, but not on Windows, where `OsStr` is backed by   a struct called `Wtf8`, where the corresponding method is [marked unsafe](https://github.com/rust-lang/rust/blob/master/src/libstd/sys_common/wtf8.rs#L492) indeed.
+
+My takeaway is that this seems like an error we should fix. There are quite some usages which are basically trivial to fix by introducing a `from_str` method on `OsStr`, like [here](https://github.com/clap-rs/clap/blob/master/src/build/arg/mod.rs#L2268). There are other usages though which seem [harder to fix](https://github.com/clap-rs/clap/blob/master/src/util/osstringext.rs#L44) since slicing an `OsStr` at arbitray indices doe not work on windows. As far as I can see those usages are bugs and will turn into problems when called  with the "right" arguments. They are all in `osstringext.rs`, so maybe they can be fixed without any change outside that file.
+
+I'm open to sending a PR, but I'd need some guidance on what seems acceptable to you. Also, I'm on linux, so I probably can't run proper benchmarks to see if the changes have a bad effect (note: That's just for `osstringext.rs`, a potential `from_str` method should be doable without any performance loss).
+
+---
+
+_Comment by @kbknapp on 2019-11-03 19:37_
+
+Thank you for the detailed report! 
+
+Without having looking into each use, I think this stems from workarounds that no longer need to exist. I.e. much of what clap needs is just sequences of bytes and not UTF-8 encoded strings. Originally this meant shoehorning `OsStr` into places (which ultimately led to the issues you've pointed out). However, I think switching to use something like `bstr` would potentially alleviate some of these issues.
+
+I'll start looking deeper and see if I can come up with a list, including the locations you mentioned, that we should look into fix/replacing.
+
+As far as Windows is concerned, I think this will require some sort of `cfg`-able abstraction layer over the underlying `bstr` or whatever we end up using. Some of the coming internal changes I plan on landing over the coming months may make this much easier. Although not really related to this issue, I'd like to break out the common structs clap uses into components that handle their own logic, which will allow us to push much of the related code into smaller components instead of using god-objects. Since this is just internal representation, it shouldn't affect the public API at all.
+
+---
+
+_Label `D: intermediate` added by @kbknapp on 2019-11-03 19:37_
+
+---
+
+_Label `P2: need to have` added by @kbknapp on 2019-11-03 19:37_
+
+---
+
+_Label `T: refactor` added by @kbknapp on 2019-11-03 19:37_
+
+---
+
+_Label `S: unsafe` added by @kbknapp on 2019-11-03 19:39_
+
+---
+
+_Comment by @KillTheMule on 2019-11-04 07:56_
+
+I'll happily provide you a list later on. Would you still be interested in a PR that cleans that up a bit short-term?
+
+Theres one thing I want to point out which I don't fully understand, maybe you can shed some light (and maybe it's a point of note anyways): How is [this](https://github.com/clap-rs/clap/blob/2a50c2ef808792c79f650d6aded59ad8e279b196/src/parse/parser.rs#L1116) safe? You are making `arg` out of `args_os` by lossy conversion, then you find a certain char to split it at, and then you use the byte index of that char to finally split `arg`. Is there some property of the conversion that makes this work? If `arg` is wt8, but not utf8 at the start, this all seems to go haywire.
+
+That said, because of [this](https://github.com/clap-rs/clap/blob/master/src/util/osstringext.rs#L29) everything will panic in the non-utf8 case on windows anyways, so maybe we should embrace this for now?
+
+---
+
+_Comment by @Shnatsel on 2019-11-06 15:20_
+
+We have quite a few levels of abstraction here, so I'll try to go through each one and explain why I think this issue might be a problem in practice.
+
+1. https://github.com/clap-rs/clap/blob/2a50c2ef808792c79f650d6aded59ad8e279b196/src/util/osstringext.rs#L24-L28 allows creating an `OsStr` from an arbitrary byte sequence.
+2. On Windows `OsStr` is actually backed by a [WTF-8](https://simonsapin.github.io/wtf-8/) string. Multiple places in WTF-8 implementation assume that WTF-8 is well-formed UTF-8 except for possibility of encountering surrogates, and call `str::from_utf8_unchecked()` on the byte slices between the surrogates ([example](https://github.com/rust-lang/rust/blob/61a551b4939ec1d5596e585351038b8fbd0124ba/src/libstd/sys_common/wtf8.rs#L351 ))
+3. Many functions implemented on `&str` rely on `&str` only ever containing valid UTF-8, but we have just constructed an `&str` via `str::from_utf8_unchecked()` without validating that they actually *are* valid UTF-8 (other than removing unpaired surrogates). From here on in it should be possible to trigger more or less arbitrary memory out-of-bounds access through invoking internally unsafe functions relying on `&str` validity invariant being upheld.
+
+The above holds if truly arbitrary byte sequences are allowed to enter `OsStrExt3::from_bytes`. Windows might or might not restrict the incoming byte sequences sufficiently to mitigate this. Even if it's not exploitable now, it is a very fragile primitive and needs to be fixed.
+
+---
+
+_Comment by @Shnatsel on 2019-11-06 22:42_
+
+Upon further discussion, since this applies to `&str` and not `String`, the worst we can see from this is information disclosure, not arbitrary code execution, so this is nowhere near as critical as I initially thought.
+
+---
+
+_Added to milestone `3.0` by @CreepySkeleton on 2020-02-01 11:21_
+
+---
+
+_Referenced in [clap-rs/clap#1524](../../clap-rs/clap/issues/1524.md) on 2020-02-01 13:04_
+
+---
+
+_Comment by @dylni on 2020-04-18 23:50_
+
+Hi! I created [OsStr Bytes] a while ago, but today I [removed all unsafe code](https://www.reddit.com/r/rust/comments/g3v5jc/osstr_bytes_is_now_completely_safe/). This issue [came up](https://www.reddit.com/r/rust/comments/g3v5jc/osstr_bytes_is_now_completely_safe/fntsbh4/) on that thread, so I was wondering if you would be open to a PR that uses this crate to perform the conversions.
+
+If so, there are some design questions I have about the implementation:
+- Conversions can no longer be zero-cost, so [`OsStrExt2`] methods would be more expensive. I'm thinking of solving this by creating struct similar to [`OsStr`]/[`OsString`] inside clap that would only need to perform the conversion once. Does this seem reasonable, or do you prefer another way to approach this?
+- If I understand [this line](https://github.com/clap-rs/clap/blob/4c3a7f7998d2761e7869c22df96383654206c89d/src/parse/parser.rs#L1217) correctly, I think the `+ 1` should be `+ c.len_utf8()`. The `split_at` call later uses this index, so I want to be sure my belief is correct that it's always valid to split there.
+- From what I've seen, I believe all methods of [`OsStrExt2`] are being used correctly to work with any UTF-8-compatible encoding. However, there are no assertions on these methods to ensure that remains true. If I added these for the new struct, should they be [`assert!`] or [`debug_assert!`]? I would prefer the former, but I'm not sure how concerned you are about the performance of these methods. Of course, I would use [`debug_assert!`] for anything too expensive.
+
+Would this be something you'd want to see added?
+
+[`assert!`]: https://doc.rust-lang.org/std/macro.assert.html
+[`debug_assert!`]: https://doc.rust-lang.org/std/macro.debug_assert.html
+[`OsStr`]: https://doc.rust-lang.org/std/ffi/struct.OsStr.html
+[OsStr Bytes]: https://crates.io/crates/os_str_bytes
+[`OsString`]: https://doc.rust-lang.org/std/ffi/struct.OsString.html
+[`OsStrExt2`]: https://github.com/clap-rs/clap/blob/132cc5f39652e0b59ca7a3f20f8250ed5d18cb87/src/util/osstringext.rs#L13-L20
+
+---
+
+_Comment by @Dylan-DPC-zz on 2020-04-18 23:54_
+
+@dylni ya sure, you can go ahead and make a PR  :) Safety comes first
+
+---
+
+_Comment by @dylni on 2020-04-19 00:02_
+
+Great :) I'm a bit busy recently, but I'll send a PR when I can find some time. Plus, that will give this time to gather opinions on implementation.
+
+---
+
+_Comment by @Dylan-DPC-zz on 2020-04-19 00:04_
+
+That works for us :) Thanks
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-19 04:09_
+
+@dylni We are totally open to ~~push~~ entrust this job to someone else! 😃 You and your PR are very welcome here!
+
+1. That would be a bit sad, but I'm seconding Dylan here: correctness is more important than performance, especially in a command line parsing library. Send your PR and, as long as the regression is even a bit reasonable (i.e it's not something crazy as + 10 seconds), we will accept it .
+2. Congratulations! You've found a bug, but this bug needs the stars to be aligned in a very specific  way, so virtually nobody triggers it in practice. Must be fixed anyway, of course.
+   
+   Conditions:
+   * The app has a short option with a non-ASCII name (it's byte length must be > 1). This is why nobody noticed it so far: those names are always ASCII. 
+   * There must be no space between the option and the value `-фBOOM`
+
+   Reproducer: ([Playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=66c4889284ea8048a53f9e5f9bb3e48f))
+   ```rust
+   use clap::{App, Arg};
+   
+   fn main() {
+       let opts = App::new("app")
+           // 'ф' is a cyrillic character, its byte lenght is 2 in utf-8 
+           // a Chinese hieroglyph would more fancy, but I don't have hieroglyphs
+           // on my keyboard :)
+           .arg(Arg::with_name("opt").short("ф").takes_value(true))
+           // no space between the option and the value so the split will trigger
+           .get_matches_from(&["test", "-фNOOOOOO"]);
+       println!("{:?}", opts.value_of("opt").unwrap());
+   }
+   ```
+
+   Clap 2.x righteously panics, master prints gibberish.  
+
+   Changing this line to `let i = p[0].as_bytes().len() + c.len_utf8();` will fix it.
+
+3. Let's just go with `assert!`. I believe CPU's branch predictor will discard those branches as trivially non-taken ones.
+
+---
+
+_Comment by @dylni on 2020-04-19 16:04_
+
+@CreepySkeleton Thanks for the responses and interest! I don't expect the performance hit to be large, but I am interested to see how measurable it is. Some basic testing has shown the methods to be as fast as the standard library's implementation.
+
+---
+
+_Referenced in [clap-rs/clap#1852](../../clap-rs/clap/pulls/1852.md) on 2020-04-22 16:22_
+
+---
+
+_Closed by @bors[bot] on 2020-04-23 14:54_
+
+---

@@ -1,0 +1,144 @@
+---
+number: 13319
+title: uv run, add, remove removes installed non-default groups when there are conflicts
+type: issue
+state: closed
+author: lendle
+labels:
+  - bug
+assignees: []
+created_at: 2025-05-06T19:13:41Z
+updated_at: 2025-05-20T16:30:02Z
+url: https://github.com/astral-sh/uv/issues/13319
+synced_at: 2026-01-10T01:25:31Z
+---
+
+# uv run, add, remove removes installed non-default groups when there are conflicts
+
+---
+
+_Issue opened by @lendle on 2025-05-06 19:13_
+
+### Summary
+
+Example:
+```pyproject.toml
+[project]
+name = "example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+]
+
+[dependency-groups]
+torch1 = ["torch<2"]
+torch2 = ["torch>=2"]
+
+[tool.uv]
+
+conflicts = [[{ "group" = "torch1" }, { "group" = "torch2" }]]
+
+```
+
+Then:
+```{bash}
+❯ uv sync --python 3.10 --group torch1
+Resolved 32 packages in 6ms
+Audited 2 packages in 0.04ms
+❯ uv add rich
+Resolved 36 packages in 117ms
+Uninstalled 1 package in 535ms
+Installed 12 packages in 383ms
+ + filelock==3.18.0
+ + fsspec==2025.3.2
+ + jinja2==3.1.6
+ + markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + mdurl==0.1.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + pygments==2.19.1
+ + rich==14.0.0
+ + sympy==1.14.0
+ - torch==1.13.1
+ + torch==2.7.0
+```
+
+The `torch1` group is removed from the environment, and I have to re-sync with `--group torch1` to repair the environment.
+
+I thought it may have to do with torch1 not supporting python >3.10, but the same happens if the groups are torch 2.2 vs torch 2.3
+
+### Platform
+
+Debian 11, Darwin 24.4.0 arm64
+
+### Version
+
+uv 0.7.2
+
+### Python version
+
+Python 3.10, 3.11, ...
+
+---
+
+_Label `bug` added by @lendle on 2025-05-06 19:13_
+
+---
+
+_Comment by @lendle on 2025-05-06 19:20_
+
+For posterity, as a workaround I've been adding `torch1` to the default-groups config. Which works fine when I want torch1, but when working with torch 2, `uv sync --no-group torch1 --group torch2` fails. `uv-sync --no-default-groups --group dev --group torch2` works.
+
+Running `uv run` with `--no-sync` also works, but using `--no-sync` with `add` or `remove` doesn't help since the env needs to be synced anyway with appropriate groups.
+
+---
+
+_Comment by @konstin on 2025-05-06 22:38_
+
+CC @BurntSushi for conflict and @Gankra for dependency group selection
+
+---
+
+_Comment by @lendle on 2025-05-15 22:45_
+
+The same issue happens with extras
+
+```
+[project]
+name = "example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "rich>=14.0.0",
+    "torch",
+]
+
+[project.optional-dependencies]
+torch1 = ["torch<2"]
+torch2 = ["torch>=2"]
+
+[tool.uv]
+
+conflicts = [[{ "extra" = "torch1" }, { "extra" = "torch2" }]]
+
+```
+
+---
+
+_Comment by @charliermarsh on 2025-05-20 13:14_
+
+This can be merged into #9012. The behavior around extras and groups with `uv remove` is confusing.
+
+---
+
+_Closed by @charliermarsh on 2025-05-20 13:14_
+
+---
+
+_Comment by @lendle on 2025-05-20 16:30_
+
+@charliermarsh it looks like #9012 is specifically about `remove`? This issue also affects `add`, so I'm not sure it's a dupe
+
+---

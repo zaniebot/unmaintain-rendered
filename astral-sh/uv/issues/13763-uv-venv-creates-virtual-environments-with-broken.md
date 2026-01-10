@@ -1,0 +1,108 @@
+---
+number: 13763
+title: uv venv creates virtual environments with broken/misconfigured pip
+type: issue
+state: closed
+author: JZhou3083
+labels:
+  - question
+assignees: []
+created_at: 2025-06-01T23:22:13Z
+updated_at: 2025-06-02T09:04:55Z
+url: https://github.com/astral-sh/uv/issues/13763
+synced_at: 2026-01-10T01:25:38Z
+---
+
+# uv venv creates virtual environments with broken/misconfigured pip
+
+---
+
+_Issue opened by @JZhou3083 on 2025-06-01 23:22_
+
+### Summary
+
+### Description
+
+When creating a virtual environment with uv venv, the pip installation is either:
+
+Missing entirely, or
+
+Symlinked incorrectly (pointing to a global pip instead of the isolated venv pip).
+
+This does not happen with python -m venv, which correctly configures pip inside the virtual environment.
+
+### Steps to Reproduce
+
+
+1. Create a virtual environment with uv:
+
+```bash
+uv venv .venv
+source .venv/bin/activate
+```
+
+2. Check pip location: 
+
+```bash
+which pip
+```
+Observed behaviour: 
+Points to a global path (e.g., ~/.local/bin/pip) 
+
+3. Compare with python -m venv:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+which pip  # Correctly points to .venv/bin/pip
+```
+
+### Platform
+
+Ubutu 22.04 subsystem on WSL2, Windows 11, 
+
+### Version
+
+uv 0.7.5
+
+### Python version
+
+Python 3.12.10
+
+---
+
+_Label `bug` added by @JZhou3083 on 2025-06-01 23:22_
+
+---
+
+_Comment by @charliermarsh on 2025-06-02 00:09_
+
+This is correct behavior! We don't include pip in the environment by default. You can run `uv venv --seed` to include pip.
+
+---
+
+_Comment by @charliermarsh on 2025-06-02 00:10_
+
+See: https://docs.astral.sh/uv/reference/cli/#uv-venv
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-06-02 00:10_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-06-02 00:10_
+
+---
+
+_Closed by @charliermarsh on 2025-06-02 00:10_
+
+---
+
+_Comment by @JZhou3083 on 2025-06-02 09:04_
+
+> See: https://docs.astral.sh/uv/reference/cli/#uv-venv
+
+Thanks for the clarification. I missed that in the documentation — my apologies for the oversight.
+
+---

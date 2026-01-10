@@ -1,0 +1,44 @@
+---
+number: 6504
+title: Centralized location for virtual environments
+type: issue
+state: closed
+author: callegar
+labels:
+  - duplicate
+assignees: []
+created_at: 2024-08-23T09:46:20Z
+updated_at: 2024-08-23T15:18:08Z
+url: https://github.com/astral-sh/uv/issues/6504
+synced_at: 2026-01-10T01:24:02Z
+---
+
+# Centralized location for virtual environments
+
+---
+
+_Issue opened by @callegar on 2024-08-23 09:46_
+
+Apparently, uv wants the virtual environment for a project to reside inside a `.venv` directory in the project itself. Other tools (e.g., poetry,  pdm) let one use a single location for all the virtual environments corresponding to many projects (e.g. `~/.local/share/pdm/venvs`). While there are certainly situations where having everything related to a project self contained in there, in other cases a central location for virtual envs may have advantages (e.g. ease deduplication).
+
+I wonder if this is supported or planned.
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-23 14:43_
+
+Dupe of #1495 and #5229
+
+---
+
+_Referenced in [astral-sh/uv#6511](../../astral-sh/uv/issues/6511.md) on 2024-08-23 14:58_
+
+---
+
+_Closed by @zanieb on 2024-08-23 15:18_
+
+---
+
+_Label `duplicate` added by @zanieb on 2024-08-23 15:18_
+
+---

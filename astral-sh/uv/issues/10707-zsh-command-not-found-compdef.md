@@ -1,0 +1,83 @@
+---
+number: 10707
+title: "zsh: command not found: compdef"
+type: issue
+state: closed
+author: lukejanicke
+labels:
+  - documentation
+assignees: []
+created_at: 2025-01-17T10:46:09Z
+updated_at: 2025-09-19T14:35:45Z
+url: https://github.com/astral-sh/uv/issues/10707
+synced_at: 2026-01-10T01:24:56Z
+---
+
+# zsh: command not found: compdef
+
+---
+
+_Issue opened by @lukejanicke on 2025-01-17 10:46_
+
+Fresh install of `uv` on macOS 15.2.
+
+Added `eval "$(uv generate-shell-completion zsh)"` to `~/.zshrc` per [documentation](https://docs.astral.sh/uv/getting-started/installation/#shell-autocompletion).
+
+On starting Terminal, I see `(eval):4351: command not found: compdef`.
+
+Running the `eval` command directly in Terminal outputs `zsh: command not found: compdef`.
+
+Running `autoload -Uz compinit && compinit` first solves that (found via Stack Overflow and ChatGPT).
+
+Should the documentation have a note about this?
+
+My `~/.zshrc` now includes:
+
+```shell
+# uv autocompletion
+autoload -Uz compinit && compinit
+eval "$(uv generate-shell-completion zsh)"
+```
+
+---
+
+_Comment by @zanieb on 2025-01-17 15:21_
+
+Hm interesting. I'm not opposed to having it in the documentation — I guess we assume people already are using completions in their shell?
+
+---
+
+_Label `documentation` added by @zanieb on 2025-01-17 15:21_
+
+---
+
+_Comment by @lukejanicke on 2025-01-17 15:49_
+
+I hadn’t noticed it not working in Zsh previously because it just works out of the box with Fish, which I mainly use. I’m not an advanced user and I had to learn this today.
+
+---
+
+_Comment by @samudranb on 2025-01-17 23:38_
+
+Had the same issue:
+
+`(eval):4351: command not found: compdef
+(eval):131: command not found: compdef`
+
+Adding the following solved it for me as well. Thank you @lukejanicke !
+`autoload -Uz compinit && compinit`
+
+---
+
+_Closed by @lukejanicke on 2025-01-18 15:22_
+
+---
+
+_Comment by @leohxj on 2025-09-19 14:35_
+
+after upgrade MacOs 26, got the same issue:
+```
+(eval):4373: command not found: compdef
+```
+
+---

@@ -1,0 +1,75 @@
+---
+number: 2428
+title: manual uninstallation instructions for uv
+type: issue
+state: closed
+author: axiomofjoy
+labels:
+  - question
+assignees: []
+created_at: 2024-03-13T20:55:17Z
+updated_at: 2024-03-13T21:18:12Z
+url: https://github.com/astral-sh/uv/issues/2428
+synced_at: 2026-01-10T01:23:17Z
+---
+
+# manual uninstallation instructions for uv
+
+---
+
+_Issue opened by @axiomofjoy on 2024-03-13 20:55_
+
+I installed and uninstalled `uv` via `brew` on my Mac. I am now seeing a Rust-related error message when running a project via a separate toolchain (`conda` with `hatch`). I am not sure if `uv` is the cause of the issue, but I'd like to ensure I successfully uninstalled `uv` from my system for the sake of debugging. Are there any locations I should check to ensure the uninstallation was successful?
+
+```python
+hatch run tests
+  error: subprocess-exited-with-error
+
+  × Preparing metadata (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [6 lines of output]
+
+      Cargo, the Rust package manager, is not installed or is not on PATH.
+      This package requires Rust and Cargo to compile extensions. Install it through
+      the system's package manager or via https://rustup.rs/
+
+      Checking for Rust toolchain....
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> See above for output.
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+```
+
+---
+
+_Renamed from "uninstallation of uv via brew leaves remnants" to "manual uninstallation instructions for uv" by @axiomofjoy on 2024-03-13 21:01_
+
+---
+
+_Comment by @zanieb on 2024-03-13 21:10_
+
+I think `hatch` uses Rust these days so I would look there.
+
+I'm not sure what steps `brew` takes to install `uv` — we generally just download a single binary into `~/.cargo/uv` and nothing else.
+
+---
+
+_Label `question` added by @zanieb on 2024-03-13 21:10_
+
+---
+
+_Comment by @axiomofjoy on 2024-03-13 21:18_
+
+@zanieb Thanks for the quick reply! Will do.
+
+---
+
+_Closed by @axiomofjoy on 2024-03-13 21:18_
+
+---

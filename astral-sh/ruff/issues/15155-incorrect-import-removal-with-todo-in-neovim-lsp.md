@@ -1,0 +1,275 @@
+---
+number: 15155
+title: "Incorrect import removal with \"todo:\" in Neovim/LSP"
+type: issue
+state: closed
+author: pykeras
+labels:
+  - question
+  - server
+assignees: []
+created_at: 2024-12-26T23:27:39Z
+updated_at: 2024-12-29T18:08:56Z
+url: https://github.com/astral-sh/ruff/issues/15155
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Incorrect import removal with "todo:" in Neovim/LSP
+
+---
+
+_Issue opened by @pykeras on 2024-12-26 23:27_
+
+When using Ruff as a formatter within Neovim with Mason and nvim-lspconfig, Ruff aggressively removes imports, even if they are used later in the file, if the file starts with a comment containing "todo:".
+
+**To Reproduce**
+
+1. Set up Neovim with Mason, nvim-lspconfig, and Ruff as the Python LSP and formatter. (mine provided in the context)
+2. Create a Python file (e.g., `test.py`) with the following content:
+```python
+# todo:
+
+import json
+from collections import defaultdict
+import time
+from datetime import datetime, timedelta
+
+def addtime(minutes: int) -> datetime:
+    return datetime.now() + timedelta(minutes=minutes)
+
+print(addtime(1564))
+print('fax this shoot')
+
+mdic = defaultdict()
+
+print(f"json is {json.__name__}")
+```
+
+3. Open the file in Neovim.
+4. Save the file. Ruff will remove the from datetime import datetime and will keep the time module import. Also, the line `print('fax this shoot')` will get a duplicate, and you will get 2 lines with the same content, but the second one uses `"` instead of `'`.
+5. Moving to another place solves the issue.
+
+Environment
+
+OS: Linux
+Ruff version: 0.8.4
+Neovim version: 0.10.2
+
+
+__Contenxt:__
+```lua
+-- lsp-config.lua (relevant parts)
+vim.api.nvim_create_autocmd("BufWritePre", {
+                pattern = "*.py",
+                callback = function()
+                    local clients = vim.lsp.get_active_clients({ bufnr = vim.api.nvim_get_current_buf() })
+                    local ruff_client = nil
+                    for _, client in pairs(clients) do
+                        if client.name == "ruff" then
+                            ruff_client = client
+                            break
+                        end
+                    end
+
+                    if ruff_client then
+                        vim.lsp.buf.code_action({
+                            context = { only = { "source.organizeImports" } },
+                            apply = true,
+                        })
+                        vim.lsp.buf.code_action({
+                            context = { only = { "source.fixAll" } },
+                            apply = true,
+                            callback = function()
+                                local has_formatter = false
+                                for _, client in pairs(clients) do
+                                    if client.supports_method("textDocument/formatting") and client.name ~= "ruff" then
+                                        has_formatter = true
+                                        client.action.command.argument = { "--extend-select", "I" }
+                                        break
+                                    end
+                                end
+                                if has_formatter then
+                                    vim.lsp.buf.format({
+                                        async = false,
+                                        filter = function(client)
+                                            return client.supports_method("textDocument/formatting") and
+                                                client.name ~= "ruff"
+                                        end,
+                                    })
+                                end
+                            end,
+                        })
+                    else
+                        local has_formatter = false
+                        for _, client in pairs(clients) do
+                            if client.supports_method("textDocument/formatting") then
+                                has_formatter = true
+                                break
+                            end
+                        end
+                        if has_formatter then
+                            vim.lsp.buf.format({
+                                async = false,
+                                filter = function(client)
+                                    return client.supports_method("textDocument/formatting")
+                                end,
+                            })
+                        end
+                    end
+                end,
+                desc = "Run Ruff autofix and format on save for Python files",
+            })
+
+```
+
+---
+
+_Comment by @MichaReiser on 2024-12-27 16:57_
+
+I quickly tried to reproduce this in our playground, and I was not able to reproduce the issue. That's why I suspect this is something specific to your neovim configuration. I'm not very familiar with neovim, but I noticed that you use both `organiseImports` and `-extend-select=I`. The organizeImports action in the LSP defaults to `I`. That's why I suspect that you run into some sort of race where both `organizeImports` and `fixAll` apply fixes but without seeing each other changes. 
+
+Can you try to disable `organizeImports` or the `--extend-select` customization for now to see if the error persists?
+
+---
+
+_Label `question` added by @MichaReiser on 2024-12-27 16:57_
+
+---
+
+_Label `server` added by @MichaReiser on 2024-12-27 16:57_
+
+---
+
+_Comment by @pykeras on 2024-12-27 20:37_
+
+> I quickly tried to reproduce this in our playground, and I was not able to reproduce the issue. That's why I suspect this is something specific to your neovim configuration. I'm not very familiar with neovim, but I noticed that you use both `organiseImports` and `-extend-select=I`. The organizeImports action in the LSP defaults to `I`. That's why I suspect that you run into some sort of race where both `organizeImports` and `fixAll` apply fixes but without seeing each other changes.
+> 
+> Can you try to disable `organizeImports` or the `--extend-select` customization for now to see if the error persists?
+
+Thanks for the advice! 
+Removing `--extend-select I` didn’t work, but based on your description, I removed `organizeImports`, and that solved that issue.
+
+
+But now there is another issue. This might be a conflict between Pyright (which I need for type checking) and Ruff.
+here is the result:
+
+```python
+import json
+from collections import defaultdict
+from datetime import datetime, timedelta
+
+def addtime(minutes: int) -> datetime:
+
+def addtime(minutes: int) -> datetime:
+    return datetime.now() + timedelta(minutes=minutes)
+
+
+print(addtime(1564))
+print("fax this shoot")
+
+mdic = defaultdict()
+
+print(f"json is {json.__name__}")
+```
+
+---
+
+_Closed by @pykeras on 2024-12-27 20:37_
+
+---
+
+_Reopened by @pykeras on 2024-12-27 20:38_
+
+---
+
+_Comment by @pykeras on 2024-12-27 21:13_
+
+
+This might be the solution for anyone who may need it.
+
+I've updated my Pyright settings section to:
+```lua
+.....
+settings = {
+    pyright = {
+        disableOrganizeImports = true,
+    },
+    python = {
+        analysis = {
+            typeCheckingMode = "strict",
+            diagnosticMode = "workspace",
+            typeCheckingBehavior = "strict",
+            reportMissingType = true,
+            reportUnusedImport = false,
+            reportUnusedVariable = false,
+        },
+    },
+},
+....
+```
+
+and also updated `BufWritePre` to:
+
+```lua
+....
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.py",
+    callback = function()
+        local clients = vim.lsp.get_active_clients({ bufnr = vim.api.nvim_get_current_buf() })
+        local ruff_client = nil
+        for _, client in pairs(clients) do
+            if client.name == "ruff" then
+                ruff_client = client
+                break
+            end
+        end
+
+        if ruff_client then
+            vim.lsp.buf.code_action({
+                context = { only = { "source.fixAll" } },
+                apply = true,
+                action_handler = function(action)
+                    if action.command then
+                        action.command.arguments = { "--extend-select", "I" }
+                    end
+                    vim.lsp.buf.execute_command(action.command)
+                end,
+            })
+        else
+            vim.notify("Ruff LSP not available...", vim.log.levels.WARN)
+        end
+    end,
+    desc = "Run Ruff autofix and format on save for Python files",
+})
+....
+```
+This time it seems to work. I will share my Neovim final setup on my profile for anyone who may need it (as a reference on how to configure ruff for Python)
+__Please keep in mind I'm not a Lua developer, so the code may not be the best, but it does what I need.__
+
+
+---
+
+_Comment by @MichaReiser on 2024-12-28 09:07_
+
+> But now there is another issue. This might be a conflict between Pyright (which I need for type checking) and Ruff.
+here is the result:
+
+Can you tell us more about the issue? It's unclear to me from just looking at your code example. Or is everything solved and we can close the issue?
+
+---
+
+_Comment by @pykeras on 2024-12-29 18:08_
+
+
+> Can you tell us more about the issue? It's unclear to me from just looking at your code example. Or is everything solved and we can close the issue?
+
+The above solutions seem to work. The combination of Pyright and Ruff was the key. I will close this issue, as it has been working like a charm over the past few days.
+
+Thank you for your help!
+
+
+---
+
+_Closed by @pykeras on 2024-12-29 18:08_
+
+---

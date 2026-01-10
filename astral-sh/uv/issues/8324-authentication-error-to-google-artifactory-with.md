@@ -1,0 +1,156 @@
+---
+number: 8324
+title: Authentication error to Google Artifactory with custom index and env variables
+type: issue
+state: closed
+author: harteros
+labels:
+  - bug
+assignees: []
+created_at: 2024-10-18T11:39:59Z
+updated_at: 2024-10-21T09:26:20Z
+url: https://github.com/astral-sh/uv/issues/8324
+synced_at: 2026-01-10T01:24:27Z
+---
+
+# Authentication error to Google Artifactory with custom index and env variables
+
+---
+
+_Issue opened by @harteros on 2024-10-18 11:39_
+
+Hi team, thanks for all your hard work, uv is amazing!
+
+We are currently trying to migrate to uv from poetry. We awaited the update to uv version 0.4.24 for the environmental variables and custom indexes but we have issues with the authentication to our private Google Artifactory.
+
+The problem is as follows:
+
+We have setup uv with keyring for Google Artifactory as follows:
+
+```shell
+uv tool install keyring --with keyrings.google-artifactregistry-auth
+```
+
+We have our custom index defined as follows in our `pyproject.toml`
+
+```toml
+[tool.uv]
+keyring-provider = "subprocess"
+
+[[tool.uv.index]]
+name = "internal"
+url = "https://<internal url>/<internal artifacts>/pypi-virtual/simple"
+explicit = true
+
+[tool.uv.sources]
+internal-utils = { index = "internal" }
+```
+
+We have also set our env variable ([discussed here for Google Artifactory auth](https://github.com/astral-sh/uv/blob/05ed4bc11d31c8ef19971812d5554d9158f8823d/CHANGELOG.md#0133))
+
+```shell
+UV_INDEX_INTERNAL_USERNAME=oauth2accesstoken
+```
+Running `uv sync --verbose` in this way returns 
+
+```shell
+DEBUG Skipping keyring lookup for https:///<internal url>/<internal artifacts>/pypi-virtual/simple/internal-utils/ with no username
+...
+DEBUG No compatible version found for: custom-project
+  × No solution found when resolving dependencies:
+╰─▶ Because only the following versions of ... are available:
+       ...
+      and your project depends on ... we can conclude that your project's requirements are unsatisfiable.
+```
+
+On the other hard when we change our `pyproject.toml` to include the username in the url uv successfully pulls the credentials from the artifactory and installs the dependencies
+
+```toml
+[tool.uv]
+keyring-provider = "subprocess"
+
+[[tool.uv.index]]
+name = "internal"
+url = "https://oauth2accesstoken@<internal url>/<internal artifacts>/pypi-virtual/simple"
+explicit = true
+
+[tool.uv.sources]
+internal-utils = { index = "internal" }
+```
+
+From my tests it seems that the env variable is either not read or appended to the URL causing the artifactory to not work.
+Could you please take a look at it, as it seems to me as a possible bug.
+
+Thanks a lot!
+
+uv version: `uv 0.4.24 (b9cd54913 2024-10-17)`
+system platform `Apple Silicon macOS`
+
+
+---
+
+_Comment by @charliermarsh on 2024-10-18 12:31_
+
+Can you try providing both the username and password via the env vars, rather than one in the URL and one in the env var?
+
+---
+
+_Comment by @harteros on 2024-10-18 12:36_
+
+Yeah i have tried that, but it does not work. I get the error with skipping the keyring
+
+---
+
+_Comment by @charliermarsh on 2024-10-18 12:57_
+
+Oh sorry, I misread the issue. This may be a bug -- we'll take a look.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-10-18 12:57_
+
+---
+
+_Comment by @ticosax on 2024-10-18 14:10_
+
+I'm observing the same behavior with `AWS CodeArtifact`.
+the workaround to specify the username in the url allows the keyring backend to go through, and successfully install the package.
+
+---
+
+_Comment by @zanieb on 2024-10-18 14:31_
+
+Sounds like we're missing something in the credential attachment here. Thanks!
+
+---
+
+_Comment by @Aditya-PS-05 on 2024-10-18 14:52_
+
+Working on it and It's strange but I guess `from_env` from credentials to set the credentials is not used. 
+
+---
+
+_Referenced in [astral-sh/uv#8335](../../astral-sh/uv/pulls/8335.md) on 2024-10-18 15:20_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-10-18 17:32_
+
+---
+
+_Comment by @charliermarsh on 2024-10-20 16:14_
+
+I believe this is closed by https://github.com/astral-sh/uv/pull/8345.
+
+---
+
+_Comment by @harteros on 2024-10-20 19:46_
+
+Thanks a lot for the quick response and fix!
+I would like to test it out when you release the next version of uv including the fix and close the issue then if thats ok with you too.
+
+---
+
+_Closed by @harteros on 2024-10-21 09:26_
+
+---

@@ -1,0 +1,73 @@
+---
+number: 3520
+title: Add to Derive Reference an example of what a derive exapnds to
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - A-docs
+  - E-easy
+assignees: []
+created_at: 2022-02-28T13:29:39Z
+updated_at: 2022-02-28T13:29:39Z
+url: https://github.com/clap-rs/clap/issues/3520
+synced_at: 2026-01-10T01:27:42Z
+---
+
+# Add to Derive Reference an example of what a derive exapnds to
+
+---
+
+_Issue opened by @epage on 2022-02-28 13:29_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.1.0
+
+### Describe your use case
+
+In the derive reference, we try to explain the principles for how the derive works so people can use any part of the builder documentation as part of the derive but we still frequently get questions on how to use a feature.
+
+### Describe the solution you'd like
+
+A more concrete example of the principles will hopefully help.
+
+We shouldn't just run `cargo expand` but show it as idiomatic.
+
+We should include
+- Command methods
+- Arg methods
+- Subcommands
+- PossibleValue methods
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @epage on 2022-02-28 13:29_
+
+---
+
+_Label `A-docs` added by @epage on 2022-02-28 13:29_
+
+---
+
+_Label `E-easy` added by @epage on 2022-02-28 13:29_
+
+---
+
+_Referenced in [clap-rs/clap#3529](../../clap-rs/clap/pulls/3529.md) on 2022-03-02 22:17_
+
+---

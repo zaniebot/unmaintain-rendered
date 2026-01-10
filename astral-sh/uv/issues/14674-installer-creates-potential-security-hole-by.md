@@ -1,0 +1,115 @@
+---
+number: 14674
+title: "Installer creates potential security hole by prepending `$PATH`"
+type: issue
+state: closed
+author: PaulVe2024
+labels:
+  - bug
+assignees: []
+created_at: 2025-07-16T22:40:35Z
+updated_at: 2025-11-14T18:32:45Z
+url: https://github.com/astral-sh/uv/issues/14674
+synced_at: 2026-01-10T01:25:47Z
+---
+
+# Installer creates potential security hole by prepending `$PATH`
+
+---
+
+_Issue opened by @PaulVe2024 on 2025-07-16 22:40_
+
+### Summary
+
+By default install adds `uv` and `uvx` binaries into created `$HOME/.local/bin` folder,
+and prepends the folder to `$PATH`
+
+That means that binary put there will replace any system or user executables. 
+
+Search for related articles for "vulnerability by possibility of replacing system binaries within $PATH"
+like Cybersecurity lessons: A PATH vulnerability in Windows
+ https://www.expressvpn.com/blog/cybersecurity-lessons-a-path-vulnerability-in-windows/ 
+
+Unless stated reason are  given in documentation and installer log,
+the installation folder MUST be appended to the `$PATH`, i.e. added to the paths list as the last.
+
+
+### Platform
+
+any
+
+### Version
+
+0.7.21
+
+### Python version
+
+not related
+
+---
+
+_Label `bug` added by @PaulVe2024 on 2025-07-16 22:40_
+
+---
+
+_Comment by @zanieb on 2025-07-16 22:47_
+
+cc @Gankra 
+
+---
+
+_Comment by @geofft on 2025-07-19 18:10_
+
+If I understand correctly, the ExpressVPN blog post you linked is about the risk of changing the _system-wide_ PATH environment variable, which introduces a risk that actions from one user can impact another user. It _also_ requires the directory that is added to have overly loose permissions (i.e., not just writable by administrator/trusted accounts). Quoting from the blog post (emphasis added):
+
+> Suppose an administrator regularly uses a custom program (clean.bat) to do administrative operations. He adds the directory it resides in, C:tools, to the _system PATH_ variable....
+
+> Users rarely change the _system PATH environment variable_, and it is even rarer for them to specify a world-writable directory there, though that is definitely possible. It is more likely that an installation process introduces a vulnerability.
+
+> To that end, we have created a simple PowerShell script which you can use to audit your system.... You can run the script as a low privilege user to see if any of the directories _in the system PATH_ are writable....
+
+> You can secure yourself by removing such directories from your _system PATH_....
+
+The uv installer only modifies the _user-specific_ PATH. The uv installer cannot modify the system PATH, because the uv installer does not require administrative rights to run.
+
+The Windows installer modifies `HKEY_CURRENT_USER`, not `HKEY_LOCAL_MACHINE`:
+
+```powershell
+function Add-Path($LiteralPath) {
+  Write-Verbose "Adding $LiteralPath to your user-level PATH"
+
+  $RegistryPath = 'registry::HKEY_CURRENT_USER\Environment'
+```
+
+The UNIX installer modifies files in the current home directory, not global files like /etc/profile or /etc/environment:
+
+```sh
+add_install_dir_to_path() {
+    # Edit rcfiles ($HOME/.profile) to add install_dir to $PATH
+[...]
+        # Find the first file in the array that exists and choose
+        # that as our target to write to
+        for _rcfile_relative in $_rcfiles; do
+            _home="$(print_home_for_script "$_rcfile_relative")"
+            local _rcfile="$_home/$_rcfile_relative"
+```
+
+In addition, the blog post you linked does not distinguish prepending or appending to PATH. The "phantom DLL hijacking" attack scenario, for instance, relies on the DLL not existing at all in the system except in the malicious PATH directory (because PATH is searched _after_ the standard system location for DLLs), and the diagnostic tool they provide does not report differently based on whether a directory is at the beginning or end of PATH.
+
+Nonetheless, the reason for prepending to the PATH is given in the comments in the installer: `# Prepending path in case a system-installed binary needs to be overridden`
+
+The installer intentionally shadows any `uv`, `uvx`, and `uvx` binaries installed by the system so that the updated versions get used. Furthermore, as documented, `uv python install`, `uv python install --preview`, and `uv tool install` can install other commands requested by the user, which is an explicit request from the user to use these versions in preference to any version available on the system.
+
+Because this is a directory in a single user's home directory and under their own control (not world-writable), and because the PATH entry pointing to this directory is only added for that same user's account, I believe this is not a security vulnerability. No access is given which the user did not already have.
+
+In order to be able to add malicious things to the directory that the installer adds to PATH, you have to _already_  have access to the user's account. See also the excellent post from Microsoft's Raymond Chen called ["It rather involved being on the other side of this airtight hatchway"](https://devblogs.microsoft.com/oldnewthing/20060508-22/?p=31283):
+
+> It’s like saying that somebody’s home windows are insecure because a burglar could get into the house by merely unlocking and opening the windows from the inside. (But if the burglar has to get inside in order to unlock the windows…)
+
+Please let me know if you think my analysis is incorrect.
+
+---
+
+_Closed by @zanieb on 2025-11-14 18:32_
+
+---

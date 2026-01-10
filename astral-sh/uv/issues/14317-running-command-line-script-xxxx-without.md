@@ -1,0 +1,90 @@
+---
+number: 14317
+title: "Running command line script xxxx without prefixing with `uv run xxx`"
+type: issue
+state: closed
+author: fritz-trawa
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-06-27T14:20:16Z
+updated_at: 2025-06-27T14:43:16Z
+url: https://github.com/astral-sh/uv/issues/14317
+synced_at: 2026-01-10T01:25:43Z
+---
+
+# Running command line script xxxx without prefixing with `uv run xxx`
+
+---
+
+_Issue opened by @fritz-trawa on 2025-06-27 14:20_
+
+### Summary
+
+If I have the following in my pyproject.toml
+
+```
+[project.scripts]
+bark = doc.bark.__main__:cli
+```
+
+with poetry I can run
+
+```
+❯ poetry install
+... install stuff ...
+❯ bark
+woof!
+```
+
+with uv it seems I can only do
+```
+❯ uv sync
+... install stuff ...
+❯ uv run bark
+woof!
+```
+
+How can I remove the need for prefixing each command with `uv run`?
+
+Thanks
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @fritz-trawa on 2025-06-27 14:20_
+
+---
+
+_Comment by @fritz-trawa on 2025-06-27 14:43_
+
+Oh silly me, I hadn't activated the venv
+
+In case someone stumbles over this
+
+```
+❯ uv venv
+...
+❯ source .venv/bin/activate
+❯ uv sync
+...
+❯ bark
+woof!
+```
+
+works provided you have the following in your pyproject.toml
+
+```
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+---
+
+_Closed by @fritz-trawa on 2025-06-27 14:43_
+
+---

@@ -1,0 +1,139 @@
+---
+number: 6535
+title: "Support `uv tool install package@version` to match `uvx`"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - enhancement
+  - good first issue
+  - cli
+  - uv tool
+assignees: []
+created_at: 2024-08-23T18:09:44Z
+updated_at: 2024-08-28T16:40:50Z
+url: https://github.com/astral-sh/uv/issues/6535
+synced_at: 2026-01-10T01:24:02Z
+---
+
+# Support `uv tool install package@version` to match `uvx`
+
+---
+
+_Issue opened by @zanieb on 2024-08-23 18:09_
+
+Otherwise, going from `uvx` to `uv tool install` can be surprising. 
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-08-23 18:10_
+
+---
+
+_Label `cli` added by @zanieb on 2024-08-23 18:10_
+
+---
+
+_Label `uv tool` added by @zanieb on 2024-08-23 18:10_
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2024-08-23 18:13_
+
+---
+
+_Comment by @baggiponte on 2024-08-23 18:18_
+
+I wonder whether using `@` is appropriate over `package==version`. The `@` is documented for example [here](https://docs.astral.sh/uv/pip/packages/#installing-a-package) for `uv pip install "ruff @ ./projects/ruff"`.
+
+---
+
+_Comment by @charliermarsh on 2024-08-23 18:20_
+
+`package==version` does work here already. But `uvx` uses `package@version` because it does _not_ accept an arbitrary version specifier, just a single version, and we want to disambiguate.
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-23 19:52_
+
+`@` is very commonly used for specifying locations/paths, for example `person@company.com` or `package@path/to/pkg/src`.
+
+Maybe this could cause some confusion/surprises.
+
+---
+
+_Comment by @zanieb on 2024-08-23 20:03_
+
+It might not be worth it, but... I'm not sure if it's that common? We had a lot of complaints about requiring `package @ path` and I'm not sure how `person@company` applies? Regardless, we can easily:
+
+1) Tell if it's a path and/or
+2) Treat it as we would now if it's not a valid PEP 440 version — that's what we do in `uvx tool@version`
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-23 21:59_
+
+Ah sorry, I should have clarified that `person@company.com` is an email address 😆
+
+I’m not sure what PEPs might govern tokens used in the context of package paths/versions but [RFC 3986](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) could be a good standard to reference that covers allowed uses of `@` in URIs if there isn’t anything more relevant.
+
+---
+
+_Comment by @zanieb on 2024-08-23 22:08_
+
+To be clear — we already support `uvx ruff@0.6.1` and `uvx ruff@latest` so we already have clear semantics around this. This issue is about extending those semantics to `uv tool install` to avoid confusion.
+
+---
+
+_Comment by @chrisrodrigue on 2024-08-23 23:20_
+
+That makes sense 😁
+
+(By the way, it looks like [PEP 440 covers `@` for direct references with explicit URLs](https://peps.python.org/pep-0440/#direct-references).)
+
+
+---
+
+_Referenced in [astral-sh/uv#6759](../../astral-sh/uv/issues/6759.md) on 2024-08-28 15:30_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-28 15:32_
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 15:32_
+
+Gonna do this now.
+
+---
+
+_Comment by @damienrj on 2024-08-28 15:35_
+
+This would also make sense given the [docs](https://docs.astral.sh/uv/reference/cli/#uv-tool-run) indicate that the `@` is the method for doing the install.
+
+> The name of the command can include an exact version in the format <package>@<version>, e.g., uv run ruff@0.3.0. If more complex version specification is desired or if the command is provided by a different package, use --from.
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 15:36_
+
+(Separately, there's a typo there, it should be `uv tool run ruff@0.3.0`.)
+
+---
+
+_Referenced in [astral-sh/uv#6762](../../astral-sh/uv/pulls/6762.md) on 2024-08-28 15:52_
+
+---
+
+_Closed by @charliermarsh on 2024-08-28 16:40_
+
+---
+
+_Closed by @charliermarsh on 2024-08-28 16:40_
+
+---
+
+_Referenced in [astral-sh/uv#12472](../../astral-sh/uv/issues/12472.md) on 2025-03-25 22:10_
+
+---

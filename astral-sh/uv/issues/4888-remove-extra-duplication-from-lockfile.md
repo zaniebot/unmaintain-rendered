@@ -1,0 +1,112 @@
+---
+number: 4888
+title: Remove extra duplication from lockfile
+type: issue
+state: closed
+author: konstin
+labels:
+  - preview
+assignees: []
+created_at: 2024-07-08T12:10:12Z
+updated_at: 2024-07-18T18:07:50Z
+url: https://github.com/astral-sh/uv/issues/4888
+synced_at: 2026-01-10T01:23:42Z
+---
+
+# Remove extra duplication from lockfile
+
+---
+
+_Issue opened by @konstin on 2024-07-08 12:10_
+
+When declaring a dependency `pandas[excel,html,plot]`, the lockfile shows:
+
+```toml
+dependencies = [
+    { name = "pandas" },
+    { name = "pandas", extra = "excel" },
+    { name = "pandas", extra = "html" },
+    { name = "pandas", extra = "plot" },
+]
+```
+
+We should collapse those entries:
+
+```toml
+dependencies = [
+    { name = "pandas", extra = ["excel", "html", "plot"] },
+]
+```
+
+This makes more sense to the user (we don't install pandas four times, we install it once and then those extra packages, that's our internal abstraction into virtual packages leaking) and makes the lockfile more concise.
+
+---
+
+_Label `preview` added by @konstin on 2024-07-08 12:10_
+
+---
+
+_Comment by @BurntSushi on 2024-07-08 12:25_
+
+Is this limited to the specific example shown here, or in general? In general, each of those dependency entries can have other fields on them that are different. For example, markers. In theory, I think, other fields could be different too, such as version and source. Or at least, that's what our data model supports. But I think the markers really could be different?
+
+---
+
+_Comment by @konstin on 2024-07-08 12:29_
+
+This should only collapse entries with the same markers. Say we have
+```toml
+dependencies = [
+    "pandas[excel,html]; python_version == '3.13'",
+    "pandas[excel,plot]",
+]
+```
+we currently get
+```toml
+dependencies = [
+    { name = "pandas" },
+    { name = "pandas", extra = "excel" },
+    { name = "pandas", extra = "html", marker = "python_version == '3.13'" },
+    { name = "pandas", extra = "plot" },
+]
+```
+which we could collapse to
+
+```toml
+dependencies = [
+    { name = "pandas", extras = ["excel", "plot"] },
+    { name = "pandas", extras = ["html"], marker = "python_version == '3.13'" },
+]
+```
+
+---
+
+_Comment by @BurntSushi on 2024-07-08 13:36_
+
+Right, okay. I think this LGTM. Although I don't totally mind our existing format, I am very sympathetic to the fact that it leaks our "virtual package" abstraction. So I think I would on balance favor your suggestion here to the status quo.
+
+---
+
+_Referenced in [astral-sh/uv#4893](../../astral-sh/uv/issues/4893.md) on 2024-07-08 13:47_
+
+---
+
+_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-07-09 11:29_
+
+---
+
+_Assigned to @konstin by @konstin on 2024-07-18 09:19_
+
+---
+
+_Referenced in [astral-sh/uv#5181](../../astral-sh/uv/pulls/5181.md) on 2024-07-18 10:48_
+
+---
+
+_Closed by @charliermarsh on 2024-07-18 18:07_
+
+---
+
+_Closed by @charliermarsh on 2024-07-18 18:07_
+
+---

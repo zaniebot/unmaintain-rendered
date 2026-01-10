@@ -1,0 +1,80 @@
+---
+number: 4210
+title: "Expose `#[derive(Args)]` as an `ArgGroup`"
+type: issue
+state: closed
+author: epage
+labels:
+  - C-enhancement
+  - E-medium
+  - A-derive
+  - ":money_with_wings: $20"
+assignees: []
+created_at: 2022-09-13T14:38:39Z
+updated_at: 2022-09-13T14:39:09Z
+url: https://github.com/clap-rs/clap/issues/4210
+synced_at: 2026-01-10T01:27:51Z
+---
+
+# Expose `#[derive(Args)]` as an `ArgGroup`
+
+---
+
+_Issue opened by @epage on 2022-09-13 14:38_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.0.0
+
+### Describe your use case
+
+When I flatten an struct, I'd like to be able to refer to all members of that struct for relations between arguments
+
+### Describe the solution you'd like
+
+Implicitly create an `ArgGroup` with the type's name that contains all of the struct members, including the group from a flattened field
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+This lays the ground work for #2621
+
+---
+
+_Label `C-enhancement` added by @epage on 2022-09-13 14:38_
+
+---
+
+_Label `E-medium` added by @epage on 2022-09-13 14:38_
+
+---
+
+_Label `A-derive` added by @epage on 2022-09-13 14:38_
+
+---
+
+_Label `:money_with_wings: $20` added by @epage on 2022-09-13 14:38_
+
+---
+
+_Comment by @epage on 2022-09-13 14:39_
+
+Looks like I already did this: #3165
+
+---
+
+_Closed by @epage on 2022-09-13 14:39_
+
+---
+
+_Referenced in [clap-rs/clap#3165](../../clap-rs/clap/issues/3165.md) on 2022-09-13 14:46_
+
+---

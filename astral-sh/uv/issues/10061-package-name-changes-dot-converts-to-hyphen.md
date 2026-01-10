@@ -1,0 +1,58 @@
+---
+number: 10061
+title: "Package name changes: dot converts to hyphen"
+type: issue
+state: closed
+author: MrNaif2018
+labels:
+  - question
+assignees: []
+created_at: 2024-12-20T16:53:54Z
+updated_at: 2024-12-20T20:48:59Z
+url: https://github.com/astral-sh/uv/issues/10061
+synced_at: 2026-01-10T01:24:49Z
+---
+
+# Package name changes: dot converts to hyphen
+
+---
+
+_Issue opened by @MrNaif2018 on 2024-12-20 16:53_
+
+Hi! I know it might be due to package normalization rules, because I know for example underscores should be converted to hyphens
+But this case is a bit new, so I wanted to ask:
+```
+$ uv add karrio.canadapost
+Resolved 88 packages in 281ms
+Installed 1 package in 2ms
+ + karrio-canadapost==2023.9.2
+```
+Is it normal that it replaces dot with hyphen, and what if someone uploads a package with such name to pypi?
+They define this package with a dot indeed, not sure how standard it is: https://github.com/karrioapi/karrio/blob/00aef3669dcbbe35ce18d199b247f9515956ecd7/modules/connectors/canadapost/setup.py#L7
+Checking on pypi there is indeed no name with slash present, only with dot
+But if I e.g. open https://pypi.org/project/email_validator/ it redirects to https://pypi.org/project/email-validator/
+
+---
+
+_Comment by @zanieb on 2024-12-20 17:05_
+
+Yes, this is the standard way to canonicalize package names per the specification.
+
+---
+
+_Label `question` added by @zanieb on 2024-12-20 17:05_
+
+---
+
+_Comment by @zanieb on 2024-12-20 17:06_
+
+Related
+
+- https://github.com/astral-sh/uv/issues/8902
+- https://github.com/astral-sh/uv/issues/2006
+
+---
+
+_Closed by @zanieb on 2024-12-20 20:48_
+
+---

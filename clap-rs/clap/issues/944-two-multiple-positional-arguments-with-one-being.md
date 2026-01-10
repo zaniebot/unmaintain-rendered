@@ -1,0 +1,234 @@
+---
+number: 944
+title: "Two multiple positional arguments with one being \"last\" are displayed in usage incorrectly if the \"last\" one is required"
+type: issue
+state: closed
+author: netvl
+labels:
+  - C-bug
+assignees: []
+created_at: 2017-05-03T20:20:42Z
+updated_at: 2018-08-02T03:30:06Z
+url: https://github.com/clap-rs/clap/issues/944
+synced_at: 2026-01-10T01:26:39Z
+---
+
+# Two multiple positional arguments with one being "last" are displayed in usage incorrectly if the "last" one is required
+
+---
+
+_Issue opened by @netvl on 2017-05-03 20:20_
+
+### Rust Version
+
+rustc 1.19.0-nightly (afa1240e5 2017-04-29)
+
+### Affected Version of clap
+
+2.23.3
+
+### Expected Behavior Summary
+
+Expected this usage text:
+
+```
+USAGE:
+    example <FIRST>... -- <SECOND>...
+```
+
+
+### Actual Behavior Summary
+
+Got this usage text:
+
+```
+USAGE:
+    example <FIRST>...
+```
+
+### Steps to Reproduce the issue
+
+Configure two positional required multiple-type arguments, with the second one being the "last". See the code below.
+
+Also, adding an explicit `AppSettings::DontCollapseArgsInUsage` flag does not help.
+
+### Sample Code or Link to Sample Code
+
+```rust
+#[macro_use(clap_app)] extern crate clap;
+
+fn main() {
+    clap_app!(example =>
+        (@arg FIRST: ... * "First")
+        (@arg SECOND: ... * +last "Second")
+    ).get_matches();
+}
+```
+
+Curiously, if you make the second arg not required:
+```
+(@arg SECOND: ... +last "Second")
+```
+
+the output is correct:
+
+```
+USAGE:
+    pwatch <FIRST>... [-- <SECOND>...]
+```
+
+### Debug output
+
+```
+DEBUG:clap:Parser::propogate_settings: self=example, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"--help"' ([45, 45, 104, 101, 108, 112])
+DEBUG:clap:Parser::is_new_arg: arg="--help", Needs Val of=None
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg="--help"
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Found valid flag '--help'
+DEBUG:clap:Parser::check_for_help_and_version_str;
+DEBUG:clap:Parser::check_for_help_and_version_str: Checking if --help is help or version...Help
+DEBUG:clap:Parser::_help: use_long=true
+DEBUG:clap:Parser::use_long_help: ret=false
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Help::new;
+DEBUG:clap:Help::write_help;
+DEBUG:clap:Help::write_default_help;
+DEBUG:clap:Help::write_bin_name;
+DEBUG:clap:Help::wrap_help: longest_w=7, avail_chars=190
+DEBUG:clap:Help::wrap_help: Enough space to wrap...Yes
+DEBUG:clap:Help::wrap_help:iter: idx=0, g=e
+DEBUG:clap:Help::wrap_help:iter: idx=1, g=x
+DEBUG:clap:Help::wrap_help:iter: idx=2, g=a
+DEBUG:clap:Help::wrap_help:iter: idx=3, g=m
+DEBUG:clap:Help::wrap_help:iter: idx=4, g=p
+DEBUG:clap:Help::wrap_help:iter: idx=5, g=l
+DEBUG:clap:Help::wrap_help:iter: idx=6, g=e
+DEBUG:clap:Help::write_version;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=["FIRST", "SECOND"], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=["FIRST", "SECOND"]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=pwatch <FIRST>...
+DEBUG:clap:Help::write_all_args;
+DEBUG:clap:Help::write_args;
+DEBUG:clap:Help::write_args: Current Longest...2
+DEBUG:clap:Help::write_args: New Longest...6
+DEBUG:clap:Help::write_args: Current Longest...6
+DEBUG:clap:Help::write_args: New Longest...9
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--help
+DEBUG:clap:Help::spec_vals: a=--help
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...23 > (190 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=7
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=--version
+DEBUG:clap:Help::spec_vals: a=--version
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...26 > (190 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_args_unsorted;
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=<FIRST>...
+DEBUG:clap:Help::spec_vals: a=<FIRST>...
+DEBUG:clap:Help::val: Has switch...No, and not next_line
+DEBUG:clap:write_spaces!: num=5
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Help::long;
+DEBUG:clap:Help::val: arg=<SECOND>...
+DEBUG:clap:Help::spec_vals: a=<SECOND>...
+DEBUG:clap:Help::val: Has switch...No, and not next_line
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+```
+
+---
+
+_Comment by @kbknapp on 2017-05-05 01:03_
+
+Interesting, thanks for taking the time to file this! 
+
+---
+
+_Label `C: usage strings` added by @kbknapp on 2017-05-05 01:03_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-05-05 01:03_
+
+---
+
+_Label `P3: want to have` added by @kbknapp on 2017-05-05 01:03_
+
+---
+
+_Label `T: bug` added by @kbknapp on 2017-05-05 01:03_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-05-05 01:03_
+
+---
+
+_Added to milestone `2.24.1` by @kbknapp on 2017-05-06 18:13_
+
+---
+
+_Closed by @kbknapp on 2017-05-07 14:46_
+
+---
+
+_Comment by @kbknapp on 2017-05-07 14:48_
+
+2.24.1 is on crates.io
+
+---

@@ -1,0 +1,56 @@
+---
+number: 1654
+title: "support 'uv --completions' to generate a completions file for bash/zsh/fish/powershell"
+type: issue
+state: closed
+author: woutervh
+labels:
+  - enhancement
+  - help wanted
+assignees: []
+created_at: 2024-02-18T15:43:46Z
+updated_at: 2024-02-19T03:43:19Z
+url: https://github.com/astral-sh/uv/issues/1654
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# support 'uv --completions' to generate a completions file for bash/zsh/fish/powershell
+
+---
+
+_Issue opened by @woutervh on 2024-02-18 15:43_
+
+Currently uv version0.1.4 does not support tab-completions out of the box:
+
+```
+uv <TAB>   # does nothing
+````
+
+It would be nice to generate a shell-specific completions-file:
+```
+uv --completions  bash | zsh | fish | pwsh
+````
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-18 17:18_
+
+---
+
+_Label `help wanted` added by @zanieb on 2024-02-18 17:18_
+
+---
+
+_Comment by @zanieb on 2024-02-18 17:18_
+
+Thanks this seems reasonable to add. We'd probably want to mirror whatever we do in Ruff.
+
+---
+
+_Referenced in [astral-sh/uv#1675](../../astral-sh/uv/pulls/1675.md) on 2024-02-19 01:31_
+
+---
+
+_Closed by @zanieb on 2024-02-19 03:43_
+
+---

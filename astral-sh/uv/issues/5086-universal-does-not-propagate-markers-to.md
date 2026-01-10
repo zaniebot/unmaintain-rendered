@@ -1,0 +1,151 @@
+---
+number: 5086
+title: "`--universal` does not propagate markers to transitive dependencies"
+type: issue
+state: closed
+author: ibraheemdev
+labels:
+  - bug
+  - lock
+assignees: []
+created_at: 2024-07-16T01:23:48Z
+updated_at: 2024-07-26T14:28:21Z
+url: https://github.com/astral-sh/uv/issues/5086
+synced_at: 2026-01-10T01:23:45Z
+---
+
+# `--universal` does not propagate markers to transitive dependencies
+
+---
+
+_Issue opened by @ibraheemdev on 2024-07-16 01:23_
+
+For example, the following `requirements.in`:
+```
+--find-links https://download.pytorch.org/whl/torch_stable.html
+
+torch==2.0.0 ; platform_machine == 'x86_64'
+torch==2.2.0 ; platform_machine != 'x86_64'
+torchvision
+```
+Produces:
+```
+certifi==2024.7.4
+    # via requests
+charset-normalizer==3.3.2
+    # via requests
+filelock==3.15.4
+    # via torch
+fsspec==2024.6.1
+    # via torch
+idna==3.7
+    # via requests
+jinja2==3.1.4
+    # via torch
+markupsafe==2.1.5
+    # via jinja2
+mpmath==1.3.0
+    # via sympy
+networkx==3.2.1
+    # via torch
+numpy==1.26.3
+    # via torchvision
+pillow==10.4.0
+    # via torchvision
+requests==2.32.3
+    # via torchvision
+sympy==1.13.0
+    # via torch
+torch==2.0.0
+    # via
+    #   -r requirements.in
+    #   torchvision
+torch==2.2.0
+    # via
+    #   -r requirements.in
+    #   torchvision
+torchvision==0.15.1+rocm5.4.2
+    # via -r requirements.in
+torchvision==0.17.0+rocm5.7
+    # via -r requirements.in
+typing-extensions==4.12.2
+    # via torch
+urllib3==2.2.2
+    # via requests
+```
+
+Notably, none of the `torch` or `torchvision` pins have markers. I believe this happens because `torchvision` unconditionally depends on `torch` so the resolver forgets about the root markers.
+
+---
+
+_Label `bug` added by @ibraheemdev on 2024-07-16 01:24_
+
+---
+
+_Label `lock` added by @ibraheemdev on 2024-07-16 01:24_
+
+---
+
+_Comment by @charliermarsh on 2024-07-16 01:28_
+
+How does the lockfile look?
+
+---
+
+_Comment by @charliermarsh on 2024-07-16 01:29_
+
+Hopefully it's correct, and this is just a bug in the `--universal` marker propagation piece.
+
+---
+
+_Comment by @ibraheemdev on 2024-07-16 02:07_
+
+`uv lock` adds the markers to `torch`, but not `torchvision`:
+```
+dependencies = [
+    { name = "torch", version = "2.0.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64'" },
+    { name = "torch", version = "2.2.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine != 'x86_64'" },
+    { name = "torchvision", version = "0.15.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "torchvision", version = "0.17.0", source = { registry = "https://pypi.org/simple" } },
+]
+```
+
+I don't think we have a mechanism to transfer the markers to `torchvision`, that seems quite tricky.
+
+---
+
+_Comment by @konstin on 2024-07-16 10:44_
+
+We know which markers each version has by the `ForkState` it comes from, but it seems here we're somehow losing those markers in `into_resolution`.
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2024-07-16 11:43_
+
+---
+
+_Comment by @BurntSushi on 2024-07-16 11:43_
+
+I can look at this.
+
+---
+
+_Referenced in [astral-sh/uv#5109](../../astral-sh/uv/pulls/5109.md) on 2024-07-16 14:43_
+
+---
+
+_Referenced in [astral-sh/uv#5104](../../astral-sh/uv/pulls/5104.md) on 2024-07-16 16:21_
+
+---
+
+_Renamed from "`--universal` does not propogate markers to transitive dependencies" to "`--universal` does not propagate markers to transitive dependencies" by @charliermarsh on 2024-07-17 01:20_
+
+---
+
+_Referenced in [astral-sh/uv#5163](../../astral-sh/uv/pulls/5163.md) on 2024-07-25 14:13_
+
+---
+
+_Closed by @BurntSushi on 2024-07-26 14:28_
+
+---

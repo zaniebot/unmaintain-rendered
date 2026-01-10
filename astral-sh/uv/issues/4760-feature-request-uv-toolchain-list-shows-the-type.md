@@ -1,0 +1,48 @@
+---
+number: 4760
+title: "[feature request] uv toolchain list shows the \"type\" of toolchain"
+type: issue
+state: open
+author: baggiponte
+labels:
+  - cli
+assignees: []
+created_at: 2024-07-03T07:24:28Z
+updated_at: 2024-07-03T13:09:20Z
+url: https://github.com/astral-sh/uv/issues/4760
+synced_at: 2026-01-10T01:23:41Z
+---
+
+# [feature request] uv toolchain list shows the "type" of toolchain
+
+---
+
+_Issue opened by @baggiponte on 2024-07-03 07:24_
+
+When I run `uv toolchain list` I get this output:
+
+```
+cpython-3.12.4-macos-aarch64-none       /opt/homebrew/opt/python@3.12/bin/python3.12
+cpython-3.12.3-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.12.3-macos-aarch64-none/install/bin/python3
+cpython-3.11.9-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.11.9-macos-aarch64-none/install/bin/python3
+cpython-3.10.14-macos-aarch64-none      /Users/luca/Library/Application Support/uv/toolchains/cpython-3.10.14-macos-aarch64-none/install/bin/python3
+cpython-3.9.19-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.9.19-macos-aarch64-none/install/bin/python3
+cpython-3.9.6-macos-aarch64-none        /Library/Developer/CommandLineTools/usr/bin/python3
+cpython-3.8.19-macos-aarch64-none       /Users/luca/Library/Application Support/uv/toolchains/cpython-3.8.19-macos-aarch64-none/install/bin/python3
+```
+
+Maybe it would be nice to differentiate them by colour/add another colour to denote whether a toolchain is system/uv or something else. Might have a usecase for piping shell commands and other stuff.
+
+---
+
+_Comment by @zanieb on 2024-07-03 13:09_
+
+If it's going to be processed downstream I think a JSON output format makes more sense than complicating the output. I'm pretty hesitant to add more columns to the table. I'd be curious to see an approach with colors.
+
+As a note, you can also filter by the path starting with `uv toolchain dir` or get a subset of the toolchains with the `--toolchain-preference` option, e.g., `uv toolchain list --toolchain-preference only-managed --only-installed`
+
+---
+
+_Label `cli` added by @zanieb on 2024-07-03 13:09_
+
+---

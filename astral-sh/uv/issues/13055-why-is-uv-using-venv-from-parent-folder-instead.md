@@ -1,0 +1,1487 @@
+---
+number: 13055
+title: why is uv using .venv from parent folder instead of current folder?
+type: issue
+state: closed
+author: donghao1393
+labels:
+  - question
+assignees: []
+created_at: 2025-04-22T15:36:11Z
+updated_at: 2025-04-25T01:42:40Z
+url: https://github.com/astral-sh/uv/issues/13055
+synced_at: 2026-01-10T01:25:28Z
+---
+
+# why is uv using .venv from parent folder instead of current folder?
+
+---
+
+_Issue opened by @donghao1393 on 2025-04-22 15:36_
+
+### Question
+
+In [the offcial documentation](https://docs.astral.sh/uv/pip/environments/#discovery-of-python-environments) it says,
+> When running a command that mutates an environment such as uv pip sync or uv pip install, uv will search for a virtual environment in the following order:
+> 
+> - An activated virtual environment based on the VIRTUAL_ENV environment variable.
+> - An activated Conda environment based on the CONDA_PREFIX environment variable.
+> - A virtual environment at .venv in the current directory, or in the nearest parent directory.
+> If no virtual environment is found, uv will prompt the user to create one in the current directory via uv venv.
+
+But in my terminal,
+```
+fish-assistant/plugins/token_count on  main [?] via 🐍 v3.9.6
+󰄛 ❯ which uv
+/opt/homebrew/bin/uv
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [?] via 🐍 v3.9.6
+󰄛 ❯ lsd -lA .venv/
+.rw-r--r-- dong.hao staff 6.0 KB Tue Apr 22 19:13:55 2025  .DS_Store
+.rw-r--r-- dong.hao staff   1 B  Tue Apr 22 19:13:44 2025  .gitignore
+.rwxrwxrwx dong.hao staff   0 B  Tue Apr 22 19:13:44 2025  .lock
+drwxr-xr-x dong.hao staff 640 B  Tue Apr 22 19:13:44 2025  bin
+.rw-r--r-- dong.hao staff  43 B  Tue Apr 22 19:13:44 2025  CACHEDIR.TAG
+drwxr-xr-x dong.hao staff 128 B  Tue Apr 22 19:13:50 2025  lib
+.rw-r--r-- dong.hao staff 201 B  Tue Apr 22 19:13:44 2025  pyvenv.cfg
+
+fish-assistant/plugins/token_count on  main [?] via 🐍 v3.9.6
+󰄛 ❯ uv pip list
+Package            Version
+------------------ ---------
+certifi            2025.1.31
+cffi               1.17.1
+chardet            5.2.0
+charset-normalizer 3.4.1
+cryptography       44.0.2
+idna               3.10
+pdfminer-six       20250327
+pdfplumber         0.11.6
+pillow             11.2.1
+pycparser          2.22
+pypdfium2          4.30.1
+python-magic       0.4.27
+regex              2024.11.6
+requests           2.32.3
+tiktoken           0.9.0
+urllib3            2.4.0
+
+fish-assistant/plugins/token_count on  main [?] via 🐍 v3.9.6
+󰄛 ❯ uv run python
+Python 3.13.2 (main, Mar 17 2025, 21:26:38) [Clang 20.1.0 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import magic
+Traceback (most recent call last):
+  File "<python-input-0>", line 1, in <module>
+    import magic
+ModuleNotFoundError: No module named 'magic'
+>>>
+
+fish-assistant/plugins/token_count on  main [?] via 🐍 v3.9.6 took 4s
+󰄛 ❯ uv run python -c "import site; print(site.getsitepackages())"
+['/Users/dong.hao/studio/scripts/fish-assistant/.venv/lib/python3.13/site-packages']
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [?] via 🐍 v3.9.6
+󰄛 ❯ gu 2
+/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count
+/Users/dong.hao/studio/scripts/fish-assistant/plugins
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant on  main [?] is 📦 v0.1.0 via 🐍 v3.9.6
+󰄛 ❯ uv pip list
+Package        Version Editable project location
+-------------- ------- ---------------------------------------------
+cfgv           3.4.0
+distlib        0.3.9
+filelock       3.18.0
+fish-assistant 0.1.0   /Users/dong.hao/studio/scripts/fish-assistant
+identify       2.6.9
+nodeenv        1.9.1
+platformdirs   4.3.7
+pre-commit     4.2.0
+pyyaml         6.0.2
+virtualenv     20.30.0
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant on  main [?] is 📦 v0.1.0 via 🐍 v3.9.6
+󰄛 ❯
+```
+
+So it seems like uv running in the folder of `plugin/token_count` is actually using the `.venv` from 2-level parent folder, i.e. parent of `plugin`, right?
+
+### Platform
+
+macos 15 arm64
+
+### Version
+
+uv 0.6.14 (Homebrew 2025-04-09)
+
+---
+
+_Label `question` added by @donghao1393 on 2025-04-22 15:36_
+
+---
+
+_Comment by @donghao1393 on 2025-04-22 16:09_
+
+Why is it not using the environment under current folder?
+
+```
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.9.6
+󰄛 ❯ uv python uninstall cpython-3.10.16-macos-aarch64-none
+Searching for Python versions matching: cpython-3.10.16-macos-aarch64-none
+Uninstalled Python 3.10.16 in 82ms
+ - cpython-3.10.16-macos-aarch64-none
+
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.9.6
+󰄛 ❯ uv run python -c "import site; print(site.getsitepackages())"
+['/Users/dong.hao/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/lib/python3.10/site-packages']
+
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.9.6
+󰄛 ❯ uv run python
+Python 3.10.16 (main, Mar 17 2025, 21:30:07) [Clang 20.1.0 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> ^D
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.9.6 took 2s
+󰄛 ❯ which python
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.9.6
+󰄛 ❯ source .venv/bin/activate.fish
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.12.10 (token_count)
+󰄛 ❯ which python
+/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/.venv/bin/python
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.12.10 (token_count)
+󰄛 ❯ python
+Python 3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> ^D
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [✘?] via 🐍 v3.12.10 (token_count)
+󰄛 ❯ python token_counter.py README.md
+{"type": "text/plain", "encoding": "utf-8", "chars": 2727, "words": 266, "tokens": 990, "size": 3615}
+```
+
+---
+
+_Comment by @donghao1393 on 2025-04-22 16:57_
+
+I have found that the version issue above is because of the file `.python-version` under `~`, which was made by `pyenv` and affect all my sub-directories under home.
+
+But even I removed all the `.python-version` files, there is still issue on it.
+
+`uv` would find the `.venv` under the current folder usually except `pyproject.toml` existing in any of the parent folder, even it's blank.
+
+So I have tested,
+
+```
+fish-assistant on  main [!?] is 📦 v0.1.0 via 🐍 v3.9.6
+󰄛 ❯ mv pyproject.toml pyproject.toml.bak
+(now uv in sub-folders working)
+
+fish-assistant on  main [✘!?] via 🐍 v3.9.6
+󰄛 ❯ touch pyproject.toml
+(now uv in sub-folders not working)
+
+fish-assistant on  main [!?] via 🐍 v3.9.6
+󰄛 ❯ rm pyproject.toml
+(now uv in sub-folders working)
+
+fish-assistant on  main [✘!?] via 🐍 v3.9.6
+󰄛 ❯ mv pyproject.toml.bak pyproject.toml
+(now uv in sub-folders not working)
+```
+
+Is it a bug or design? If it is a design, how is this design used for?
+
+---
+
+_Comment by @konstin on 2025-04-22 16:59_
+
+I can look in detail later, but running uv with `-v` should give you more information about interpreter and venv selection.
+
+---
+
+_Comment by @donghao1393 on 2025-04-22 17:06_
+
+@konstin Thanks for your hint!
+
+```
+fish-assistant on  main [?⇡] is 📦 v0.1.0 via 🐍 v3.9.6
+󰄛 ❯ mv pyproject.toml pyproject.toml.bak
+
+fish-assistant on  main [✘?⇡] via 🐍 v3.9.6
+󰄛 ❯ z -
+
+fish-assistant/plugins/token_count on  main [✘?⇡] via 🐍 v3.9.6
+󰄛 ❯ uv -v pip list
+DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG Searching for default Python interpreter in virtual environments or search path
+DEBUG Found `cpython-3.12.10-macos-aarch64-none` at `/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.10 environment at: .venv
+Package            Version
+------------------ ---------
+certifi            2025.1.31
+cffi               1.17.1
+chardet            5.2.0
+charset-normalizer 3.4.1
+cryptography       44.0.2
+idna               3.10
+pdfminer-six       20250327
+pdfplumber         0.11.6
+pillow             11.2.1
+pycparser          2.22
+pypdfium2          4.30.1
+python-magic       0.4.27
+regex              2024.11.6
+requests           2.32.3
+tiktoken           0.9.0
+urllib3            2.4.0
+
+fish-assistant/plugins/token_count on  main [✘?⇡] via 🐍 v3.9.6
+󰄛 ❯ uv -v run token_counter.py README.md
+DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.12.10-macos-aarch64-none` at `/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.10 interpreter at: /Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/.venv/bin/python3
+DEBUG Running `python token_counter.py README.md`
+DEBUG Spawned child 61817 in process group 61816
+{"type": "text/plain", "encoding": "utf-8", "chars": 2727, "words": 266, "tokens": 990, "size": 3615}
+DEBUG Command exited with code: 0
+
+fish-assistant/plugins/token_count on  main [✘?⇡] via 🐍 v3.9.6
+󰄛 ❯ z -
+
+fish-assistant on  main [✘?⇡] via 🐍 v3.9.6
+󰄛 ❯ mv pyproject.toml.bak pyproject.toml
+
+fish-assistant on  main [?⇡] is 📦 v0.1.0 via 🐍 v3.9.6
+󰄛 ❯ z -
+
+fish-assistant/plugins/token_count on  main [?⇡] via 🐍 v3.9.6
+󰄛 ❯ uv -v pip list
+DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG Searching for default Python interpreter in virtual environments or search path
+DEBUG Found `cpython-3.12.10-macos-aarch64-none` at `/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.10 environment at: .venv
+Package            Version
+------------------ ---------
+certifi            2025.1.31
+cffi               1.17.1
+chardet            5.2.0
+charset-normalizer 3.4.1
+cryptography       44.0.2
+idna               3.10
+pdfminer-six       20250327
+pdfplumber         0.11.6
+pillow             11.2.1
+pycparser          2.22
+pypdfium2          4.30.1
+python-magic       0.4.27
+regex              2024.11.6
+requests           2.32.3
+tiktoken           0.9.0
+urllib3            2.4.0
+
+fish-assistant/plugins/token_count on  main [?⇡] via 🐍 v3.9.6
+󰄛 ❯ uv -v run token_counter.py README.md
+DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG Found project root: `/Users/dong.hao/studio/scripts/fish-assistant`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `fish-assistant` at: /Users/dong.hao/studio/scripts/fish-assistant
+DEBUG Acquired lock for `/Users/dong.hao/studio/scripts/fish-assistant`
+DEBUG Using Python request `>=3.8` from `requires-python` metadata
+DEBUG Checking for Python environment at `/Users/dong.hao/studio/scripts/fish-assistant/.venv`
+DEBUG The virtual environment's Python version satisfies `>=3.8`
+DEBUG Released lock at `/var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/uv-3616343235d930cc.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 15 packages in 0.61ms
+DEBUG Using request timeout of 30s
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1745341514, tv_nsec: 176438592 })), None, None, {}, {"src": None}
+DEBUG Requirement installed, but not fresh: fish-assistant==0.1.0 (from file:///Users/dong.hao/studio/scripts/fish-assistant)
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1745341514, tv_nsec: 176438592 })), None, None, {}, {"src": None}
+DEBUG Identified uncached distribution: fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+DEBUG Requirement already installed: pre-commit==4.2.0
+DEBUG Requirement already installed: cfgv==3.4.0
+DEBUG Requirement already installed: identify==2.6.9
+DEBUG Requirement already installed: nodeenv==1.9.1
+DEBUG Requirement already installed: pyyaml==6.0.2
+DEBUG Requirement already installed: virtualenv==20.30.0
+DEBUG Requirement already installed: distlib==0.3.9
+DEBUG Requirement already installed: filelock==3.18.0
+DEBUG Requirement already installed: platformdirs==4.3.7
+DEBUG Acquired lock for `/Users/dong.hao/.cache/uv/sdists-v9/editable/8449cac6dab9c2ad`
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1745341514, tv_nsec: 176438592 })), None, None, {}, {"src": None}
+DEBUG Cached revision does not match expected cache info for: fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+   Building fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+DEBUG Building: fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+DEBUG No workspace root found, using project root
+DEBUG Assessing Python executable as base candidate: /Users/dong.hao/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/bin/python3.12
+DEBUG Using base executable for virtual environment: /Users/dong.hao/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/bin/python3.12
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.10
+DEBUG Solving with target Python version: >=3.12.10
+DEBUG Adding direct dependency: setuptools>=42
+DEBUG Found stale response for: https://pypi.org/simple/setuptools/
+DEBUG Sending revalidation request for: https://pypi.org/simple/setuptools/
+DEBUG Found not-modified response for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (>=42)
+DEBUG Selecting: setuptools==79.0.0 [compatible] (setuptools-79.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/ea/d53f2f8897c46a36df085964d07761ea4c2d1f2cf92019693b6742b7aabb/setuptools-79.0.0-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG marker environment resolution took 0.061s
+DEBUG Installing in setuptools==79.0.0 in /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a
+DEBUG Registry requirement already cached: setuptools==79.0.0
+DEBUG Installing build requirement: setuptools==79.0.0
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `setuptools.build_meta.get_requires_for_build_editable()`
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+DEBUG
+DEBUG         By 2026-Feb-18, you need to update your project and remove deprecated calls
+DEBUG         or your builds will no longer be supported.
+DEBUG
+DEBUG         See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   corresp(dist, value, root_dir)
+DEBUG running egg_info
+DEBUG writing fish_assistant.egg-info/PKG-INFO
+DEBUG writing dependency_links to fish_assistant.egg-info/dependency_links.txt
+DEBUG writing requirements to fish_assistant.egg-info/requires.txt
+DEBUG writing top-level names to fish_assistant.egg-info/top_level.txt
+DEBUG reading manifest file 'fish_assistant.egg-info/SOURCES.txt'
+DEBUG adding license file 'LICENSE'
+DEBUG writing manifest file 'fish_assistant.egg-info/SOURCES.txt'
+DEBUG No workspace root found, using project root
+DEBUG Calling `setuptools.build_meta.build_editable("/Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N", {}, None)`
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+DEBUG
+DEBUG         By 2026-Feb-18, you need to update your project and remove deprecated calls
+DEBUG         or your builds will no longer be supported.
+DEBUG
+DEBUG         See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   corresp(dist, value, root_dir)
+DEBUG running editable_wheel
+DEBUG creating /Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info
+DEBUG writing /Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/PKG-INFO
+DEBUG writing dependency_links to /Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/dependency_links.txt
+DEBUG writing requirements to /Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/requires.txt
+DEBUG writing top-level names to /Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/top_level.txt
+DEBUG writing manifest file '/Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/SOURCES.txt'
+DEBUG adding license file 'LICENSE'
+DEBUG writing manifest file '/Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant.egg-info/SOURCES.txt'
+DEBUG creating '/Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant-0.1.0.dist-info'
+DEBUG creating /Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant-0.1.0.dist-info/WHEEL
+DEBUG running build_py
+DEBUG running egg_info
+DEBUG creating /var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info
+DEBUG writing /var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/PKG-INFO
+DEBUG writing dependency_links to /var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/dependency_links.txt
+DEBUG writing requirements to /var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/requires.txt
+DEBUG writing top-level names to /var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/top_level.txt
+DEBUG writing manifest file '/var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/SOURCES.txt'
+DEBUG adding license file 'LICENSE'
+DEBUG writing manifest file '/var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmp6ttiag_c.build-temp/fish_assistant.egg-info/SOURCES.txt'
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.brow.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.brow.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.brow.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.brow.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.brow.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.brow' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.brow' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.brow' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.brow' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.brow' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.brow.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.brow.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.brow.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.brow.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.brow.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.codepack.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.codepack.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.codepack.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.codepack.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.codepack.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.dfm.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.dfm.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.dfm.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.dfm.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.dfm.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.dfm.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.dfm.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.dfm.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.dfm.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.dfm.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.fa.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.fa.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.fa.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.fa.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.fa.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.fa.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.fa.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.fa.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.fa.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.fa.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.flux.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.flux.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.flux.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.flux.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.flux.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.flux.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.flux.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.flux.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.flux.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.flux.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.fzl.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.fzl.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.fzl.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.fzl.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.fzl.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.fzl.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.fzl.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.fzl.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.fzl.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.fzl.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.gits.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.gits.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.gits.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.gits.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.gits.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.nvm.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.nvm.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.nvm.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.nvm.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.nvm.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.nvm' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.nvm' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.nvm' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.nvm' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.nvm' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.nvm.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.nvm.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.nvm.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.nvm.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.nvm.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.pdf_decrypt.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.pdf_decrypt.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.pdf_decrypt.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.pdf_decrypt.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.pdf_decrypt.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.pdf_decrypt.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.pdf_decrypt.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.pdf_decrypt.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.pdf_decrypt.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.pdf_decrypt.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.tmuxf.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.tmuxf.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.tmuxf.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.tmuxf.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.tmuxf.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.tmuxf.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.tmuxf.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.tmuxf.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.tmuxf.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.tmuxf.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.token_count.completions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.token_count.completions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.token_count.completions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.token_count.completions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.token_count.completions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.token_count.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.token_count.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.token_count.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.token_count.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.token_count.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/build_py.py:212: _Warning: Package 'plugins.whisper.functions' is absent from the `packages` configuration.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         ############################
+DEBUG         # Package would be ignored #
+DEBUG         ############################
+DEBUG         Python recognizes 'plugins.whisper.functions' as an importable package[^1],
+DEBUG         but it is absent from setuptools' `packages` configuration.
+DEBUG
+DEBUG         This leads to an ambiguous overall configuration. If you want to distribute this
+DEBUG         package, please make sure that 'plugins.whisper.functions' is explicitly added
+DEBUG         to the `packages` configuration field.
+DEBUG
+DEBUG         Alternatively, you can also rely on setuptools' discovery methods
+DEBUG         (for example by using `find_namespace_packages(...)`/`find_namespace:`
+DEBUG         instead of `find_packages(...)`/`find:`).
+DEBUG
+DEBUG         You can read more about "package discovery" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+DEBUG
+DEBUG         If you don't want 'plugins.whisper.functions' to be distributed and are
+DEBUG         already explicitly excluding 'plugins.whisper.functions' via
+DEBUG         `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+DEBUG         you can try to use `exclude_package_data`, or `include-package-data=False` in
+DEBUG         combination with a more fine grained `package-data` configuration.
+DEBUG
+DEBUG         You can read more about "package data files" on setuptools documentation page:
+DEBUG
+DEBUG         - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+DEBUG
+DEBUG
+DEBUG         [^1]: For Python, any directory (with suitable naming) can be imported,
+DEBUG               even if it does not contain any `.py` files.
+DEBUG               On the other hand, currently there is no concept of package data
+DEBUG               directory, all directories are treated like packages.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   check.warn(importable)
+DEBUG Editable install will be performed using a meta path finder.
+DEBUG
+DEBUG Options like `package-data`, `include/exclude-package-data` or
+DEBUG `packages.find.exclude/include` may have no effect.
+DEBUG
+DEBUG adding '__editable___fish_assistant_0_1_0_finder.py'
+DEBUG adding '__editable__.fish_assistant-0.1.0.pth'
+DEBUG creating '/Users/dong.hao/.cache/uv/builds-v0/.tmpoOnE4N/.tmp-hznhc1mv/fish_assistant-0.1.0-0.editable-py3-none-any.whl' and adding '/var/folders/q3/jjp0tck524xf0vccncpwrczc0000gn/T/tmpos2hkv7zfish_assistant-0.1.0-0.editable-py3-none-any.whl' to it
+DEBUG adding 'fish_assistant-0.1.0.dist-info/licenses/LICENSE'
+DEBUG adding 'fish_assistant-0.1.0.dist-info/METADATA'
+DEBUG adding 'fish_assistant-0.1.0.dist-info/WHEEL'
+DEBUG adding 'fish_assistant-0.1.0.dist-info/top_level.txt'
+DEBUG adding 'fish_assistant-0.1.0.dist-info/RECORD'
+DEBUG /Users/dong.hao/.cache/uv/builds-v0/.tmpXylU0a/lib/python3.12/site-packages/setuptools/command/editable_wheel.py:342: InformationOnly: Editable installation.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         Please be careful with folders in your working directory with the same
+DEBUG         name as your package as they may take precedence during imports.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   with strategy, WheelFile(wheel_path, "w") as wheel_obj:
+DEBUG Finished building: fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+      Built fish-assistant @ file:///Users/dong.hao/studio/scripts/fish-assistant
+DEBUG Released lock at `/Users/dong.hao/.cache/uv/sdists-v9/editable/8449cac6dab9c2ad/.lock`
+Prepared 1 package in 417ms
+DEBUG Uninstalled fish-assistant (11 files, 2 directories)
+Uninstalled 1 package in 0.70ms
+Installed 1 package in 1ms
+ ~ fish-assistant==0.1.0 (from file:///Users/dong.hao/studio/scripts/fish-assistant)
+DEBUG Using Python 3.12.10 interpreter at: /Users/dong.hao/studio/scripts/fish-assistant/.venv/bin/python3
+DEBUG Running `python token_counter.py README.md`
+DEBUG Spawned child 62271 in process group 62259
+Traceback (most recent call last):
+  File "/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/token_counter.py", line 3, in <module>
+    import magic
+ModuleNotFoundError: No module named 'magic'
+DEBUG Command exited with code: 1
+fish-assistant/plugins/token_count on  main [?⇡] via 🐍 v3.9.6
+󰄛 ❯ gu 2
+/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count
+/Users/dong.hao/studio/scripts/fish-assistant/plugins
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant on  main [?⇡] is 📦 v0.1.0 via 🐍 v3.9.6
+󰄛 ❯ mv pyproject.toml pyproject.toml.bak
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant on  main [✘?⇡] via 🐍 v3.9.6
+󰄛 ❯ touch pyproject.toml
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant on  main [!?⇡] via 🐍 v3.9.6
+󰄛 ❯ z -
+                                                                                                                                                                                                                                                                                                                             
+fish-assistant/plugins/token_count on  main [!?⇡] via 🐍 v3.9.6
+󰄛 ❯ uv -v run token_counter.py README.md
+DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG Found project root: `/Users/dong.hao/studio/scripts/fish-assistant`
+error: No `project` table found in: `/Users/dong.hao/studio/scripts/fish-assistant/pyproject.toml`
+
+fish-assistant/plugins/token_count on  main [!?⇡] via 🐍 v3.9.6
+󰄛 ❯ uv -v pip list
+DEBUG uv 0.6.14 (Homebrew 2025-04-09)
+DEBUG Searching for default Python interpreter in virtual environments or search path
+DEBUG Found `cpython-3.12.10-macos-aarch64-none` at `/Users/dong.hao/studio/scripts/fish-assistant/plugins/token_count/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.10 environment at: .venv
+Package            Version
+------------------ ---------
+certifi            2025.1.31
+cffi               1.17.1
+chardet            5.2.0
+charset-normalizer 3.4.1
+cryptography       44.0.2
+idna               3.10
+pdfminer-six       20250327
+pdfplumber         0.11.6
+pillow             11.2.1
+pycparser          2.22
+pypdfium2          4.30.1
+python-magic       0.4.27
+regex              2024.11.6
+requests           2.32.3
+tiktoken           0.9.0
+urllib3            2.4.0
+
+fish-assistant/plugins/token_count on  main [?⇡] via 🐍 v3.9.6
+󰄛 ❯
+```
+
+---
+
+_Label `question` removed by @konstin on 2025-04-24 08:08_
+
+---
+
+_Label `documentation` added by @konstin on 2025-04-24 08:08_
+
+---
+
+_Comment by @konstin on 2025-04-24 08:11_
+
+What are the contents of the `pyproject.toml` files? Unlike `uv pip`, `uv run` uses the closest `pyproject.toml` with a `[project]` table as project root (or the workspace root, if a workspace root exists), and then creates a `uv.lock` and `.venv` next to it, so the venv is always in the project root, even if you are in a subdirectory. 
+
+---
+
+_Comment by @donghao1393 on 2025-04-24 09:49_
+
+https://github.com/donghao1393/fish-assistant/blob/main/pyproject.toml
+It is not a python project at all. I used it for enabling pre-commit only. Only the plugin in sub-directory is using one python script.
+
+---
+
+_Comment by @konstin on 2025-04-24 10:45_
+
+I see, in this case it is the difference between `uv pip` and `uv run`: `uv run` always searches for a project table.
+
+---
+
+_Comment by @donghao1393 on 2025-04-24 11:41_
+
+Can you please provide supoort to this senrio? For example, uv run --non-project ..., to ignore the parent project and adapt .venv in current folder?
+
+---
+
+_Comment by @konstin on 2025-04-24 12:42_
+
+If you want to use a specific environment, I recommend activating the venv and using `python`, or by calling `.venv/bin/python ...`. `uv run` is intended for using it with the project environment.
+
+---
+
+_Label `documentation` removed by @konstin on 2025-04-24 15:57_
+
+---
+
+_Label `question` added by @konstin on 2025-04-24 15:57_
+
+---
+
+_Closed by @donghao1393 on 2025-04-25 01:42_
+
+---

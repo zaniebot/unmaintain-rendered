@@ -1,0 +1,50 @@
+---
+number: 16405
+title: "Set console title when using `uv run`"
+type: issue
+state: open
+author: moi90
+labels:
+  - wish
+assignees: []
+created_at: 2025-10-22T07:18:26Z
+updated_at: 2025-10-23T19:57:44Z
+url: https://github.com/astral-sh/uv/issues/16405
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# Set console title when using `uv run`
+
+---
+
+_Issue opened by @moi90 on 2025-10-22 07:18_
+
+### Summary
+
+I think it would be helpful if `uv run` would set the console title to the binary/script that is executed. When using `uv run` inside `tmux`, all the panels are just called "uv", which is not really helpful.
+
+### Example
+
+Executing `uv run script.py` would automatically change the console title to `script.py`.
+
+---
+
+_Label `enhancement` added by @moi90 on 2025-10-22 07:18_
+
+---
+
+_Label `enhancement` removed by @konstin on 2025-10-22 08:14_
+
+---
+
+_Label `wish` added by @konstin on 2025-10-22 08:14_
+
+---
+
+_Comment by @woodruffw on 2025-10-23 19:57_
+
+Noting: the escape sequence for setting a console/terminal/tab title isn't super well standardized, so this might not be easy to do in a broadly compatible fashion.
+
+(Some terminals, like Ghostty, also restrict in-band title manipulation, since it's been a source of [exploits](https://dgl.cx/2024/12/ghostty-terminal-title)).
+
+---

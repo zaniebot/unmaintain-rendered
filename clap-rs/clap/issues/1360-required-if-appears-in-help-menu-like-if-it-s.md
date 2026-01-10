@@ -1,0 +1,159 @@
+---
+number: 1360
+title: "required_if() appears in help menu like if it's always required "
+type: issue
+state: closed
+author: ghost
+labels:
+  - C-bug
+  - A-help
+  - S-waiting-on-mentor
+assignees: []
+created_at: 2018-10-12T21:28:49Z
+updated_at: 2022-09-07T17:56:53Z
+url: https://github.com/clap-rs/clap/issues/1360
+synced_at: 2026-01-10T01:26:50Z
+---
+
+# required_if() appears in help menu like if it's always required 
+
+---
+
+_Issue opened by @ghost on 2018-10-12 21:28_
+
+### Rust Version
+rustc 1.29.2 (17a9dc751 2018-10-05)
+
+### Affected Version of clap
+clap = "2.32.0"
+
+### Bug or Feature Request Summary
+<del>Be able to have multiple arguments for one index and only one is expected to be used and one of them can take a value.
+Is this already possible or could this be added?
+<del>
+It would then look like this in the help menu:
+App [ARG] ...
+<del>
+ARG:
+--foo1
+--foo2=VALUE
+
+EDIT: Im now using required_if() as a solution but in the help menu it looks like that the argument is always required. must be caused by the fact that I need to make the conditional argument required as otherwise Im getting an error that its not required. Is there any way to insert a indexed argument as conditional argument?
+
+---
+
+_Renamed from "multiple args for a single index with different properties" to "Suggestion: multiple args for a single index with different properties" by @ghost on 2018-10-12 21:29_
+
+---
+
+_Renamed from "Suggestion: multiple args for a single index with different properties" to "Suggestion: required_if() appears in help menu like if it's always required " by @ghost on 2018-10-16 17:56_
+
+---
+
+_Renamed from "Suggestion: required_if() appears in help menu like if it's always required " to "required_if() appears in help menu like if it's always required " by @ghost on 2018-10-16 17:56_
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 15:56_
+
+Sorry, I didn't get anything from your explanation. Feel free to reopen it, ,but please explain clearly what the issue is.
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-01 15:56_
+
+---
+
+_Label `T: RFC / question` added by @pksunkara on 2020-02-01 18:56_
+
+---
+
+_Label `W: not clear` added by @pksunkara on 2020-02-01 18:58_
+
+---
+
+_Comment by @pksunkara on 2020-02-01 18:59_
+
+I think he means using `required_if` is not giving out useful info during `--help`.
+
+---
+
+_Reopened by @CreepySkeleton on 2020-02-02 03:09_
+
+---
+
+_Label `W: not clear` removed by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Label `C: help message` added by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Label `D: intermediate` added by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Label `T: enhancement` added by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Added to milestone `3.1` by @CreepySkeleton on 2020-02-02 03:10_
+
+---
+
+_Label `T: RFC / question` removed by @pksunkara on 2020-04-01 18:18_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Referenced in [epage/clapng#105](../../epage/clapng/issues/105.md) on 2021-12-06 17:37_
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-09 19:08_
+
+---
+
+_Label `C-enhancement` removed by @epage on 2021-12-09 19:08_
+
+---
+
+_Label `D: medium` removed by @epage on 2021-12-09 19:08_
+
+---
+
+_Label `C-bug` added by @epage on 2021-12-09 19:08_
+
+---
+
+_Label `S-waiting-on-mentor` added by @epage on 2021-12-09 19:08_
+
+---
+
+_Label `E-help-wanted` removed by @epage on 2021-12-09 19:08_
+
+---
+
+_Comment by @epage on 2022-09-07 17:56_
+
+> EDIT: Im now using required_if() as a solution but in the help menu it looks like that the argument is always required.
+
+As this was opened against clap 2 and I can't reproduce it with clap 4, I'm going to go ahead and close it.  If someone does reproduce this, please be sure to include the code to reproduce the issue and the actual output along with the expected output.
+
+---
+
+_Closed by @epage on 2022-09-07 17:56_
+
+---

@@ -1,0 +1,62 @@
+---
+number: 19845
+title: SIM905 fix doesn’t treat U+001C..U+001F as white space
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-10T15:13:46Z
+updated_at: 2025-08-14T15:34:37Z
+url: https://github.com/astral-sh/ruff/issues/19845
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# SIM905 fix doesn’t treat U+001C..U+001F as white space
+
+---
+
+_Issue opened by @dscorbett on 2025-08-10 15:13_
+
+### Summary
+
+`str.split` and `str.rsplit` categorize the four characters U+001C..U+001F as white space but [`split-static-string` (SIM905)](https://docs.astral.sh/ruff/rules/split-static-string/) doesn’t. SIM905 is implemented using the Rust methods [`str::split_whitespace`](https://doc.rust-lang.org/std/primitive.str.html#method.split_whitespace), [`str::trim_start`](https://doc.rust-lang.org/std/primitive.str.html#method.trim_start), and [`str::trim_end`](https://doc.rust-lang.org/std/primitive.str.html#method.trim_end), which define white space as Unicode [`[:White_Space:]`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B:White_Space:%5D), but Python [defines](https://github.com/python/cpython/blob/v3.14.0rc1/Objects/unicodetype_db.h#L6676) white space as [`[[:bc=B:][:bc=S:][:bc=WS:][:Zs:]]`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%5B%3Abc%3DB%3A%5D%5B%3Abc%3DS%3A%5D%5B%3Abc%3DWS%3A%5D%5B%3AZs%3A%5D%5D). This discrepancy can make the fix change a program’s behavior. [Example](https://play.ruff.rs/5d360449-e9e3-4a01-85d9-67c507e2cced):
+```console
+$ cat >sim905.py <<'# EOF'
+print("S\x1cP\x1dL\x1eI\x1fT".split())
+print("\x1c\x1d\x1e\x1f>".split(maxsplit=0))
+print("<\x1c\x1d\x1e\x1f".rsplit(maxsplit=0))
+# EOF
+
+$ python sim905.py
+['S', 'P', 'L', 'I', 'T']
+['>']
+['<']
+
+$ ruff --isolated check sim905.py --select SIM905 --fix
+Found 3 errors (3 fixed, 0 remaining).
+
+$ python sim905.py
+['S\x1cP\x1dL\x1eI\x1fT']
+['\x1c\x1d\x1e\x1f>']
+['<\x1c\x1d\x1e\x1f']
+```
+
+### Version
+
+ruff 0.12.8 (f51a228f0 2025-08-07)
+
+---
+
+_Referenced in [astral-sh/ruff#19849](../../astral-sh/ruff/pulls/19849.md) on 2025-08-10 21:05_
+
+---
+
+_Closed by @dylwil3 on 2025-08-11 03:43_
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-14 15:34_
+
+---

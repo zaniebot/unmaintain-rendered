@@ -1,0 +1,90 @@
+---
+number: 5682
+title: "Improve documentation for clap::Args::augment_args and clap::Args::augment_args_for_update"
+type: issue
+state: open
+author: nwalfield
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-08-16T16:43:09Z
+updated_at: 2024-08-16T19:12:09Z
+url: https://github.com/clap-rs/clap/issues/5682
+synced_at: 2026-01-10T01:28:15Z
+---
+
+# Improve documentation for clap::Args::augment_args and clap::Args::augment_args_for_update
+
+---
+
+_Issue opened by @nwalfield on 2024-08-16 16:43_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.75.0 (82e1608df 2023-12-21)
+
+### Clap Version
+
+4.4.18
+
+### Minimal reproducible code
+
+Read the documentation for [`clap::Args`](https://docs.rs/clap/4.5.16/clap/trait.Args.html):
+
+> `fn` [`augment_args`](https://docs.rs/clap/4.5.16/clap/trait.Args.html#tymethod.augment_args)(cmd: [Command](https://docs.rs/clap/4.5.16/clap/struct.Command.html)) -> [Command](https://docs.rs/clap/4.5.16/clap/struct.Command.html)`
+>
+> Append to [Command](https://docs.rs/clap/4.5.16/clap/struct.Command.html) so it can instantiate Self.
+>
+> See also [CommandFactory](https://docs.rs/clap/4.5.16/clap/trait.CommandFactory.html).
+[source](https://docs.rs/clap_builder/4.5.15/x86_64-unknown-linux-gnu/src/clap_builder/derive.rs.html#228)
+>
+> `fn` [`augment_args_for_update`](https://docs.rs/clap/4.5.16/clap/trait.Args.html#tymethod.augment_args_for_update)(cmd: [Command](https://docs.rs/clap/4.5.16/clap/struct.Command.html)) -> [Command](https://docs.rs/clap/4.5.16/clap/struct.Command.html)`
+>
+> Append to [Command](https://docs.rs/clap/4.5.16/clap/struct.Command.html) so it can update self.
+> 
+> This is used to implement #[command(flatten)]
+> 
+> See also [CommandFactory](https://docs.rs/clap/4.5.16/clap/trait.CommandFactory.html).
+
+The documentation does not describe how to implement [`Args::augment_args`](https://docs.rs/clap/4.5.16/clap/trait.Args.html#tymethod.augment_args) or [`Args::augment_args_for_update`](https://docs.rs/clap/4.5.16/clap/trait.Args.html#tymethod.augment_args_for_update), and it only hints at the difference between them.  The documentation links to [`CommandFactory`](https://docs.rs/clap/4.5.16/clap/trait.CommandFactory.html), but that doesn't really help either.  The [`flatten_hand_args.rs` example](https://github.com/clap-rs/clap/blob/704d0e7/examples/derive_ref/flatten_hand_args.rs) provides a basic idea, but I still have to guess at the semantics.  Further, the example's implementation of `augment_args` and `augment_args_for_update` are identical, which is baffling.  I tried reading the source code, but still couldn't figure out the difference between the two.
+
+### Steps to reproduce the bug with the above code
+
+Read the above documentation.
+
+### Actual Behaviour
+
+The current documentation is missing details.  The example is good, but incomplete.
+
+### Expected Behaviour
+
+The documentation should describe the semantics of the two methods.  It should also make clearer what the difference between the two is (what does *so it can instantiate Self* vs *so it can update Self* mean).
+
+### Additional Context
+
+This seemed like the most appropriate template for this documentation issue.  I apologize if I should have chosen a different template.
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @nwalfield on 2024-08-16 16:43_
+
+---
+
+_Comment by @epage on 2024-08-16 19:12_
+
+5488bcfa, df165a2d, a3a47640 tweaked the wording.
+
+Whether the `update` calls need any different logic is dependent on the situation.  The main situation I can remember when polishing it up for release was that there are no required arguments.
+
+Overall, `update` adds a lot of complexity for a very small number of users that I am tempted to just remove it (#4974).
+
+---

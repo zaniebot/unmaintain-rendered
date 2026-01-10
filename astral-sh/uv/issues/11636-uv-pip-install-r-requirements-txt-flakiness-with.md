@@ -1,0 +1,224 @@
+---
+number: 11636
+title: "`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages"
+type: issue
+state: open
+author: chrisrodrigue
+labels:
+  - needs-mre
+  - network
+assignees: []
+created_at: 2025-02-19T20:01:16Z
+updated_at: 2025-09-11T23:01:42Z
+url: https://github.com/astral-sh/uv/issues/11636
+synced_at: 2026-01-10T01:25:08Z
+---
+
+# `uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages
+
+---
+
+_Issue opened by @chrisrodrigue on 2025-02-19 20:01_
+
+### Summary
+
+This [requirements.txt](https://github.com/user-attachments/files/18874573/requirements.txt) lists all packages in the [WinPython](https://github.com/winpython/winpython) distribution, which is an open source alternative to Anaconda for the Windows platform.
+
+There was some flakiness when I attempted to install these packages into a venv ([pyvenv.cfg](https://github.com/user-attachments/files/18874860/pyvenv.txt)) using the `uv pip install -r requirements.txt` command. 
+
+I am reporting the errors that I saw here if they would be helpful to make `uv pip install` more robust. If the errors can't be duplicated and/or fixed then feel free to close this issue!
+
+### 1st attempt
+```
+(WinPython) C:\Users\Chris\OneDrive\Downloads\Winpython64-3.13.2.0slimb3\WPy64-31320b3>uv pip install -r requirements.txt
+  × No solution found when resolving dependencies:
+  ╰─▶ Because datashader==0.16.3 has an invalid package format and you require datashader==0.16.3, we can conclude
+      that your requirements are unsatisfiable.
+
+      hint: The structure of `datashader` (v0.16.3) was invalid:
+        Failed to read from zip file
+```
+
+### 2nd attempt
+```
+(WinPython) C:\Users\Chris\OneDrive\Downloads\Winpython64-3.13.2.0slimb3\WPy64-31320b3>uv pip install -r requirements.txt
+  × No solution found when resolving dependencies:
+  ╰─▶ Because llvmlite==0.44.0 has an invalid package format and you require llvmlite==0.44.0, we can conclude that
+      your requirements are unsatisfiable.
+
+      hint: The structure of `llvmlite` (v0.44.0) was invalid:
+        Failed to read from zip file
+```
+
+### 3rd attempt
+
+Retrying the command a third time seemed to work and installed all 495 packages from `requirements.txt` into the venv.
+
+### Additional observations
+
+The latest version of `pip` was also installed into the venv (for a total of 496 packages), even though pip was **not** listed in `requirements.txt` or present inside the venv as a seed package. Is this behavior correct?
+
+### Possibly related issues
+
+- https://github.com/astral-sh/uv/issues/6281
+- https://github.com/astral-sh/uv/issues/8157
+- https://github.com/astral-sh/uv/issues/9413
+- https://github.com/astral-sh/uv/issues/9898
+
+### Platform
+
+Windows 11 x86_64
+
+### Version
+
+uv 0.6.1
+
+### Python version
+
+Python 3.13.2
+
+---
+
+_Label `bug` added by @chrisrodrigue on 2025-02-19 20:01_
+
+---
+
+_Renamed from "`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite`" to "`uv pip install -r requirements.txt` flakiness with `datashader` and `llvmlite` packages" by @chrisrodrigue on 2025-02-19 20:03_
+
+---
+
+_Comment by @konstin on 2025-02-20 09:13_
+
+Are you using PyPI or an alternative index?
+
+---
+
+_Comment by @chrisrodrigue on 2025-02-20 10:59_
+
+> Are you using PyPI or an alternative index?
+
+Nexus PyPI proxy.
+
+Want me to try clearing the cache and re-running with `-v` or `-vv` to see if I can get some more helpful data?
+
+---
+
+_Comment by @konstin on 2025-02-20 11:31_
+
+This error looks like a problem where we are not applying our retry strategy to the async zip reader.
+
+---
+
+_Label `network` added by @konstin on 2025-02-20 11:32_
+
+---
+
+_Comment by @grafke on 2025-03-31 15:38_
+
+I'm having the same issue on a private Nexus Pypi index. `uv -v pip install --config-file=my_uv.toml -r my_requirements.txt` is randomly failing but works on retry (sometimes, again random, it takes a few retries). 
+
+---
+
+_Referenced in [astral-sh/uv#13737](../../astral-sh/uv/issues/13737.md) on 2025-05-30 18:35_
+
+---
+
+_Comment by @matt-dies-tenet3 on 2025-07-23 16:16_
+
+While using a Nexus PyPI proxy as the default index, we've had multiple occurrences of this issue (7 known + verified occurrences in the last 5 days) as well.
+
+Possibly unrelated, but we've had similar issues with broken pipes that are also typically fixed by retries:
+
+```
+error: Failed to fetch: `https://<internal_index>/simple/botocore/`                      
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: stream closed because of a broken pipe    
+```
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-07-31 00:40_
+
+---
+
+_Referenced in [astral-sh/uv#15056](../../astral-sh/uv/issues/15056.md) on 2025-08-04 12:54_
+
+---
+
+_Comment by @konstin on 2025-08-19 13:54_
+
+@matt-dies-tenet3 Can you share verbose logs, or a redacted excerpt of the verbose logs, from a failing run? In verbose mode, uv should show more information about if it did retry or why it didn't.
+
+---
+
+_Comment by @matthewkdies on 2025-08-20 16:25_
+
+> Can you share verbose logs, or a redacted excerpt of the verbose logs, from a failing run?
+
+Unfortunately, I cannot. We never ended up using the verbose flag to check out the logs as we instead implemented a temporary workaround.
+
+Fortunately, we were able to resolve the issue by tweaking some networking settings around the internally hosted Nexus Repository Manager. We were previously using Virtual Servers, but switched to Virtual IPs and traditional port forwards. Since switching, we've not had any of the above-mentioned issues.
+
+---
+
+_Comment by @mamoru0916 on 2025-08-20 17:53_
+
+We are seeing similar issue in our pipeline as well. Package failing with this error seems to be random.
+UV Version=0.8.8
+
+
+```
+WARN mysql-connector-python==9.0.0 has an invalid package format: Failed to read from zip file
+   × No solution found when resolving dependencies:
+   ╰─▶ Because matplotlib==3.9.2 has an invalid package format and
+       common==0.0.0 depends on matplotlib==3.9.2, we can conclude that
+       common==0.0.0 cannot be used.
+       And because only common==0.0.0 is available and you require
+       canary-common, we can conclude that your requirements are unsatisfiable.
+ 
+       hint: The structure of `matplotlib` (v3.9.2) was invalid:
+         Failed to read from zip file
+```
+
+---
+
+_Label `needs-mre` added by @konstin on 2025-08-21 08:09_
+
+---
+
+_Comment by @mamoru0916 on 2025-08-21 20:10_
+
+In our case, we haven't found anything to workaround this yet. What else information I can provide? The error message I posted earlier is from a verbose if I'm not mistaken.
+
+---
+
+_Comment by @konstin on 2025-08-22 08:09_
+
+Running uv with `-v` or `-vv` should show logs about the network requests and errors. Having those logs (as [gist](https://gist.github.com/)) or information if any specific warning or error are shown for the failing runs help with debugging this problem.
+
+---
+
+_Comment by @mamoru0916 on 2025-08-27 20:30_
+
+Here is the full log.
+
+[build.log](https://github.com/user-attachments/files/22013464/build.log)
+
+---
+
+_Referenced in [astral-sh/uv#15626](../../astral-sh/uv/pulls/15626.md) on 2025-09-02 11:47_
+
+---
+
+_Comment by @konstin on 2025-09-02 11:51_
+
+It's not clear to me yet what the underlying network error is (so we can catch and retry it), we're trying to improve the error message in #15626.
+
+---
+
+_Comment by @mamoru0916 on 2025-09-11 23:01_
+
+We found the problem was caused by multiple internal Nexus mirrors contains different URLs for the same packages. uv.lock has the URL and once the package installer is trying to download and install package from a different URL the installation causes failure.
+
+---

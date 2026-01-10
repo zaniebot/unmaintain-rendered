@@ -1,0 +1,57 @@
+---
+number: 9750
+title: Rule for assert statements that are always true
+type: issue
+state: open
+author: valentincalomme
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-02-01T09:52:48Z
+updated_at: 2024-02-02T09:09:27Z
+url: https://github.com/astral-sh/ruff/issues/9750
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# Rule for assert statements that are always true
+
+---
+
+_Issue opened by @valentincalomme on 2024-02-01 09:52_
+
+I have been searching the documentation, but I cannot seem to find a rule that checks for "tautologies" in assert statements. I recently had a case in my codebase where I had an assert statement in the form of:
+
+```py
+assert my_dict["key"] == my_dict["key"]
+```
+
+Whereas I wanted to have
+
+```py
+assert my_dict["key"] == expected_dict["key"]
+```
+
+A rule that would check for statements that are always true would be helpful, at the least for cases where we have an equality check of an item with itself.
+
+Does such a rule exist? Should it be added? 
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-02-01 10:52_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2024-02-01 10:52_
+
+---
+
+_Comment by @akx on 2024-02-02 09:09_
+
+Sibling rules:
+
+* [assert-tuple](https://docs.astral.sh/ruff/rules/assert-tuple/)
+* [pytest-assert-always-false](https://docs.astral.sh/ruff/rules/pytest-assert-always-false/) 
+* [assert-on-string-literal](https://docs.astral.sh/ruff/rules/assert-on-string-literal/)
+
+---

@@ -1,0 +1,43 @@
+---
+number: 6000
+title: Project manager frontend
+type: issue
+state: closed
+author: orion160
+labels:
+  - question
+assignees: []
+created_at: 2024-08-11T02:42:24Z
+updated_at: 2024-08-11T16:26:05Z
+url: https://github.com/astral-sh/uv/issues/6000
+synced_at: 2026-01-10T01:23:55Z
+---
+
+# Project manager frontend
+
+---
+
+_Issue opened by @orion160 on 2024-08-11 02:42_
+
+I see that uv is incorporating functionality to interact with the new pyproject.toml project layout #5903.
+
+Having that, I see that the build backend hatchling offers hatch CLI as frontend, but now this functionality is also being worked at uv
+
+What will be the scope of this project in the long run?
+
+---
+
+_Comment by @zanieb on 2024-08-11 14:52_
+
+Yes, uv will be a full project manager. You can see a preview of the documentation for the new interface for a more expansive discussion of the scope #5605 
+
+
+---
+
+_Label `question` added by @zanieb on 2024-08-11 14:52_
+
+---
+
+_Closed by @orion160 on 2024-08-11 16:26_
+
+---

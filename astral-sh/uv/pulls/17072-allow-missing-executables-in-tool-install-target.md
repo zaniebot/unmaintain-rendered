@@ -1,0 +1,62 @@
+---
+number: 17072
+title: "Allow missing executables in tool install target when `--with-executables-from` is used"
+type: pull_request
+state: open
+author: zanieb
+labels:
+  - bug
+assignees: []
+base: main
+head: zb/executables-rom
+created_at: 2025-12-10T14:43:42Z
+updated_at: 2025-12-11T17:01:45Z
+url: https://github.com/astral-sh/uv/pull/17072
+synced_at: 2026-01-10T01:26:21Z
+---
+
+# Allow missing executables in tool install target when `--with-executables-from` is used
+
+---
+
+_Pull request opened by @zanieb on 2025-12-10 14:43_
+
+Closes https://github.com/astral-sh/uv/issues/17069
+
+I think it's a little too confusing otherwise
+
+---
+
+_Label `bug` added by @zanieb on 2025-12-10 14:43_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/tool_install.rs`:4418 on 2025-12-11 10:04_
+
+Can we pick a smaller example?
+
+---
+
+_@konstin approved on 2025-12-11 10:04_
+
+---
+
+_@zanieb reviewed on 2025-12-11 15:17_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/tool_install.rs`:4418 on 2025-12-11 15:17_
+
+Do you have one in mind? I specifically want one where the executables are from an existing dependency of the parent which has no executables.
+
+---
+
+_@konstin reviewed on 2025-12-11 17:01_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/tool_install.rs`:4418 on 2025-12-11 17:01_
+
+Something that depends on pytest maybe? Otherwise we could model something in packse.
+
+---

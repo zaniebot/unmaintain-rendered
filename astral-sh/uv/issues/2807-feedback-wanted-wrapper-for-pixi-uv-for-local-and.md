@@ -1,0 +1,60 @@
+---
+number: 2807
+title: "Feedback wanted: wrapper for pixi+uv for local and containerized python"
+type: issue
+state: open
+author: liquidcarbon
+labels: []
+assignees: []
+created_at: 2024-04-03T14:35:36Z
+updated_at: 2024-04-03T14:37:19Z
+url: https://github.com/astral-sh/uv/issues/2807
+synced_at: 2026-01-10T01:23:22Z
+---
+
+# Feedback wanted: wrapper for pixi+uv for local and containerized python
+
+---
+
+_Issue opened by @liquidcarbon on 2024-04-03 14:35_
+
+Hello and thanks for your work!  This is a non-issue kind of issue, more of a discussion / show & tell.
+
+Curious to learn about what's your view and vision for using [Pixi](https://github.com/prefix-dev/pixi) and uv together?  It seems to me like they complement each other, and belong together.  So I started a pet project.
+
+<img src="https://github.com/liquidcarbon/puppy/assets/47034358/da604ebd-4ce3-4e5d-b88b-ef46de7367fc" width="270">
+
+[Pup ](https://github.com/liquidcarbon/puppy) is a single script that transparently wraps around Pixi and uv.  Think of puppy as a recipe for using Pixi and uv together (or just as their fur baby, if you're so inclined).
+
+I've been thinking about how I want to organize my python work going forward, and the wishlist converged around the following design criteria.  Essentially, we're looking at a two-tiered environment.  The outer tier is managed by Pixi; the inner tier by uv.
+
+- base python should be:
+  - not system python
+  - non-invasive, isolated from any existing python, easy to setup and tear down without leaving a trace
+  - easy to swap versions (up or down as needed)
+  - bring along tools needed for other languages
+- environments should be
+  - super easy, oneliner-easy, to create, use, modify, freeze, take down
+  - reside in the same folder as the base python rather than all over
+  - easily ported to other machines or containers
+- the whole thing
+  - should work on Linux and Windows
+  - should support Conda and PyPI
+  - should be easy to recreate without relying on memory or Bash history
+
+
+[Here's a HuggingFace app](https://huggingface.co/spaces/liquidcarbon/pup-fileserver), built with `pup`, showing you the file structure you get.  Container base is `debian:latest`, and the python end can be constructed with the same `pup` commands you would use locally.
+![image](https://github.com/astral-sh/uv/assets/47034358/ce9584a9-03c7-49d1-b129-8a5898d06feb)
+
+
+If you'd like to give it a try and offer feedback, it would be much appreciated!
+
+---
+
+_Referenced in [astral-sh/uv#2661](../../astral-sh/uv/issues/2661.md) on 2024-04-03 15:03_
+
+---
+
+_Referenced in [winpython/winpython#1290](../../winpython/winpython/issues/1290.md) on 2024-04-14 08:34_
+
+---

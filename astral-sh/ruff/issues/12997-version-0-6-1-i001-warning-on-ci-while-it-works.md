@@ -1,0 +1,51 @@
+---
+number: 12997
+title: "Version 0.6.1: I001 warning on CI, while it works locally on macOS"
+type: issue
+state: closed
+author: amotl
+labels: []
+assignees: []
+created_at: 2024-08-19T22:01:08Z
+updated_at: 2024-08-19T23:44:15Z
+url: https://github.com/astral-sh/ruff/issues/12997
+synced_at: 2026-01-10T01:22:53Z
+---
+
+# Version 0.6.1: I001 warning on CI, while it works locally on macOS
+
+---
+
+_Issue opened by @amotl on 2024-08-19 22:01_
+
+Hi there,
+
+a Dependabot update to version 0.6.1 trips on CI
+
+- https://github.com/daq-tools/commons-codec/pull/22
+- https://github.com/daq-tools/commons-codec/actions/runs/10461452590/job/28969807264?pr=22
+
+... with errors like those.
+```
+I001 [*] Import block is un-sorted or un-formatted
+```
+
+However, when trying to ramp up for debugging this issue, now also using Ruff 0.6.1 locally on macOS after upgrading to it, the command `ruff check .` still succeeds. We tried to make sure we do not look at stale or otherwise bogus outcomes, by also deleting `.ruff_cache/` locally. Nothing changed: It works on my machine, but it trips on CI/GHA.
+
+Can someone spot any flaws, or has an idea where this might be coming from?
+
+With kind regards,
+Andreas.
+
+
+---
+
+_Comment by @amotl on 2024-08-19 23:43_
+
+Everything is right. After adding https://github.com/daq-tools/commons-codec/commit/ea72c9d6e2950, CI succeeds again. This was a non-issue, apparently I made a mistake evaluating the situation. Sorry for the noise.
+
+---
+
+_Closed by @amotl on 2024-08-19 23:43_
+
+---

@@ -1,0 +1,341 @@
+---
+number: 1846
+title: Add IsExternalSubcommand setting
+type: issue
+state: closed
+author: pksunkara
+labels:
+  - A-parsing
+assignees: []
+created_at: 2020-04-21T08:01:22Z
+updated_at: 2021-10-17T00:51:53Z
+url: https://github.com/clap-rs/clap/issues/1846
+synced_at: 2026-01-10T01:27:08Z
+---
+
+# Add IsExternalSubcommand setting
+
+---
+
+_Issue opened by @pksunkara on 2020-04-21 08:01_
+
+We need to perfect the external subcommand story. Let's take an example of `cargo` and its plugin `cargo-sample`. We have support for building `cargo` but we don't have proper support for building `cargo-sample`.
+
+```rust
+use clap::Clap;
+
+#[derive(Debug, Clap)]
+struct Opt {
+    #[clap(short, long)]
+    debug: bool,
+}
+
+#[derive(Debug, Clap)]
+#[clap(name = "cargo-sample", bin_name = "cargo")]
+enum Cargo {
+    #[clap(name = "sample")]
+    Sample(Opt),
+}
+
+fn main() {
+    let Cargo::Sample(opt) = Cargo::from_args();
+    println!("{:?}", opt);
+}
+```
+
+That is how the external subcommands are built. This is okay if we call using `cargo`.
+
+```
+→ cargo ws --help
+cargo-sample 0.1.0
+
+USAGE:
+    cargo sample [FLAGS]
+
+FLAGS:
+    -d, --debug      
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+
+But, if we call the binary directly:
+
+```
+→ cargo-sample --help
+cargo-sample 0.1.0
+
+USAGE:
+    cargo <SUBCOMMAND>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    help          Prints this message or the help of the given subcommand(s)
+    sample
+```
+
+We should add a setting such that when we call the binary directly, it should behave as if it was called by the `cargo`.
+
+---
+
+_Label `C: parsing` added by @pksunkara on 2020-04-21 08:01_
+
+---
+
+_Label `T: new setting` added by @pksunkara on 2020-04-21 08:01_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-04-21 08:01_
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-21 09:15_
+
+@pksunkara Could you please describe the semantics of `IsExternalSubcommand`. How does it work and what does it do?
+
+---
+
+_Comment by @pksunkara on 2020-04-21 09:51_
+
+I haven't figured out that implementation but I described the behaviour above. I am not sure why you were asking about what it does.
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-21 10:00_
+
+Because you described the problem at hand you've been having (different help from bare `cargo` and `cargo-sample`), and then you concluded that it can be resolved via some new setting. But what does this setting should do to solve your problem - this is what unclear to me? 
+
+An example of a program with this setting and without it - along with description of behavior differences - would probably help.
+
+I must admit, I don't fully understand what problem is about: the `cargo` and the plugin are two different binaries, different help is pretty much expected.
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-21 10:08_
+
+One way of solving your problem is `cargo bloat` way https://github.com/RazrFalcon/cargo-bloat/blob/bb8c5b10644ed185533b5e4536a996ff6b720fe3/src/main.rs#L137-L140
+
+---
+
+_Comment by @pksunkara on 2020-04-22 09:16_
+
+> different help from bare cargo and cargo-sample
+
+It's not just help. The binaries behaviour is different. `cargo-sample sample` is now same behaviour as `cargo sample`. What I want is a setting such that `cargo-sample` is the same behaviour as `cargo sample`.
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-22 09:33_
+
+Than you can simply check 
+
+```rust
+std::env::var("RUSTUP_TOOLCHAIN").is_ok()
+```
+
+cargo always sets this variable, see https://github.com/rust-lang/cargo/issues/7976#issuecomment-596236762
+
+If detected, proceed as normal. If not, apply [`AppSettings::NoBinaryName`](https://docs.rs/clap/2.33.0/clap/enum.AppSettings.html#variant.NoBinaryName) and proceed. 
+
+I see no need for a yet another option to be honest.
+
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-22 09:35_
+
+That got me thinking: `cargo sample args...` is supposed to be transformed to `cargo-sample args...` by cargo automatically. 
+
+From doc: https://github.com/rust-lang/cargo/wiki/Third-party-cargo-subcommands
+
+> Cargo is designed to be extensible with new subcommands without having to modify Cargo itself. This is achieved by translating a cargo invocation of the form cargo (?<command>[^ ]+) into an invocation of an external tool cargo-${command} that then needs to be present in one of the user's $PATH directories.
+
+Are you really encountering this problem?
+
+---
+
+_Comment by @CreepySkeleton on 2020-04-22 09:46_
+
+OK, I was wrong, the env var won't let to to differentiate between the invocations since it's always set.
+
+But what do you think about this (adapted from cargo bloat)
+```rust
+    let mut args = std::env::args().skip(1).collect();
+    if args.get(0).and_then(|s| s.to_str()) == Some("bloat") {
+        args.remove(0);
+    }
+    // Apply NoBinaryName
+    App::get_matches::from(&args);
+```
+
+---
+
+_Comment by @kbknapp on 2020-04-29 03:22_
+
+This is how 2.x worked as well. There was an issue (I can't seem to find right now) that asked for "default subcommands" which is more in line with what you're asking for. Basically it said that not calling any subcommand would default as if a particular one was called, in this case `sample`.
+
+The only thing that a default subcommand wouldn't do is allow one to let arguments "fall through" i.e. `cargo-sample --foo` being equiv to `cargo-sample sample --foo`.
+
+I'd also caution against leaning too heavily into this particular instance (how cargo handles subcommands) because it's not how all CLIs do.
+
+The problem stems from cargo passing the subcommand/plugin to the binary itself instead of stripping it. Other CLIs (most?) strip that name before passing it to the other binary. For instance `cargo foo --bar` in these other CLIs would end up calling `cargo-foo --bar`, but in cargo's instance it calls `cargo-foo foo --bar`.
+
+Not to get into a bike shedding debate, but I'd maybe lean towards a term like `Facade` instead of `IsExternalSubcommand` because we already have the term `ExternalSubcommand` used in a different context. In this context (issue 1846) External just means "further down the hierarchy), whereas in the `AppSettings` variant we have it means "external binary entirely"
+
+---
+
+_Removed from milestone `3.0` by @kbknapp on 2020-04-29 03:24_
+
+---
+
+_Added to milestone `3.1` by @kbknapp on 2020-04-29 03:24_
+
+---
+
+_Comment by @kbknapp on 2020-04-29 03:24_
+
+I changed the milestone as this isn't required for a 3.x release, and wouldn't be a breaking change so could happen any time after 3.0
+
+---
+
+_Comment by @CreepySkeleton on 2020-05-05 23:33_
+
+> I'd also caution against leaning too heavily into this particular instance (how cargo handles subcommands) because it's not how all CLIs do.
+
+It's been my concern too, but after giving it some thinking, I feel like we may consider this feature to help cargo plugins work "out-of-box". Cargo plugins are pretty common case in Rust world.
+
+The idea is to add `App::cargo_plugin` method that takes the name of the plugin:
+```rust
+fn cargo_plugin(name: &str);
+```
+
+By using this method, user signals that the app is cargo plugin.
+
+When we start the pasing, we check for this name. If it's present, we look at the second CL argument (or the first if `NoBinaryName` was set), and if it matches the plugin's name, we assume it was called as `cargo plugin_name` and simply skip it.
+
+Help messages can also be adjusted.
+
+This would allow people to design their CLI as if the plugin was always called via `cargo-plugin_name`, without the `cargo` as a mediator. 
+
+@pksunkara Based on your explanation, I believe this is exactly what you want, right? 
+@kbknapp Any thoughts?
+
+---
+
+_Comment by @pksunkara on 2020-05-06 05:44_
+
+Yeah, that is behaviour I want but your proposal is too specific to `cargo`. I would lean towards more abstraction. Normal binaries works if the external command works like `git`. It's only `cargo` like external commands that have an issue. We should fix this by enabling the binaries to ignore some args at the beginning.
+
+---
+
+_Comment by @CreepySkeleton on 2020-06-30 09:54_
+
+And now I  need to write a cargo plugin, too.
+
+>  Yeah, that is behaviour I want but your proposal is too specific to cargo. I would lean towards more abstraction.
+
+But right then you noticed that
+
+> Normal binaries works if the external command works like git. It's only cargo like external commands that have an issue
+
+So the `cargo_plugin` method I described should serve for... about every real use case out there. We may need to have it take `&[&str]` because some people alias the plugin name (`cargo workspaces & ws`), but otherwise I see no reason in generalizing it further.
+
+Also, the `cargo_plugin` name is so _fitting_, it basically makes cargo plugins first-class citizens which should help people create cargo plugins. Rust newcomers would find the feature especially useful since they wouldn't have to puzzle over plugin's args...
+
+---
+
+_Comment by @Walther on 2020-09-18 16:26_
+
+Any updates on workarounds for this?
+
+Tried the method listed in the first message here
+
+```rust
+#[derive(Debug, Clap)]
+struct Opts {
+    /// Prints more verbose information used for debugging.
+    #[clap(short, long)]
+    debug: bool,
+}
+
+#[derive(Debug, Clap)]
+#[clap(version = "0.1.2", name = "cargo-tips", bin_name = "cargo")]
+enum Cargo {
+    #[clap(name = "tips")]
+    Tips(Opts),
+}
+
+// snip
+
+fn main() {
+    let Cargo::Tips(opts) = Cargo::from_args();
+
+```
+
+and getting
+
+```
+error[E0599]: no variant or associated item named `from_args` found for enum `Cargo` in the current scope
+  --> src\main.rs:26:36
+   |
+13 | enum Cargo {
+   | ---------- variant or associated item `from_args` not found here
+...
+26 |     let Cargo::Tips(opts) = Cargo::from_args();
+   |                                    ^^^^^^^^^ variant or associated item not found in `Cargo`
+
+error: aborting due to previous error
+```
+
+both on `clap = { git = "https://github.com/clap-rs/clap/"}` as well as `clap = "3.0.0-beta.1"`
+
+---
+
+_Comment by @Walther on 2020-09-18 16:32_
+
+Aha, figured it out, it just needs to be 
+```rust
+let Cargo::Tips(opts) = Cargo::parse();
+```
+instead of `from_args` :D my bad!
+
+---
+
+_Comment by @pksunkara on 2021-10-16 21:47_
+
+@fishface60 Do you think we can use Multicall for this?
+
+---
+
+_Comment by @epage on 2021-10-16 22:43_
+
+Deja vu.  There is a discussion similar to this somewhere else, I wish I could remember where.
+
+On one hand, cargo binaries are a bit of a special case when it comes to external subcommands.  I've not seen another system like it.  On the other hand, Cargo being in Rust and for Rust and Clap being for Rust, the interests overlap.  Does this justify adding another configuration flag to support it or do we use workarounds to implement this?
+
+Is there even an expectation for cargo subcommands to be called directly?  It looks like `cargo bloat`, `cargo release`, and all of `cargo-edit` require `cargo-add add`, ie do not support the ahortcut for direct invocation.
+
+Personally, I think this is too specialized that the workarounds are sufficient for getting buy compared to baking yet another feature into clap.
+
+---
+
+_Comment by @pksunkara on 2021-10-17 00:51_
+
+>  cargo binaries are a bit of a special case when it comes to external subcommands
+
+Yeah, they went against the convention completely here.
+
+I am going to close this issue because `AppSettings::Multicall` does resolve this.
+
+---
+
+_Closed by @pksunkara on 2021-10-17 00:51_
+
+---
+
+_Referenced in [TeXitoi/structopt#58](../../TeXitoi/structopt/issues/58.md) on 2021-10-25 17:26_
+
+---

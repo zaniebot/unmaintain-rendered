@@ -1,0 +1,131 @@
+---
+number: 11573
+title: uv requires platform-specific wheels to be present, even on different platforms
+type: issue
+state: closed
+author: Audiopolis
+labels:
+  - question
+assignees: []
+created_at: 2025-02-17T08:10:32Z
+updated_at: 2025-02-19T02:08:34Z
+url: https://github.com/astral-sh/uv/issues/11573
+synced_at: 2026-01-10T01:25:07Z
+---
+
+# uv requires platform-specific wheels to be present, even on different platforms
+
+---
+
+_Issue opened by @Audiopolis on 2025-02-17 08:10_
+
+### Summary
+
+I'm migrating from poetry to uv. I'm installing dependencies in a Dockerfile. My dependencies include a Windows-specific wheel that is covered in .dockerignore, so it won't be present during the installation. Poetry had no problem with this as the wheel was not going to be needed in the docker build anyway. However, uv exits:
+
+```
+Creating virtual environment at: /.venv
+error: Failed to generate package metadata for `gdal==3.9.2 @ path+wheels/GDAL-3.9.2-cp312-cp312-win_amd64.whl`
+Caused by: Failed to read from the distribution cache
+Caused by: failed to query metadata of file `/wheels/GDAL-3.9.2-cp312-cp312-win_amd64.whl`: No such file or directory (os error 2)
+```
+
+The command:
+
+```dockerfile
+ENV PYTHON_VERSION=${PYTHON_VERSION} \
+    VIRTUAL_ENV="path/to/.venv" \
+    PYTHONDONTWRITEBYTECODE=0 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_CACHE_DIR=${UV_CACHE_DIR} \
+    UV_LOCKED=1 \
+    UV_PYTHON_PREFERENCE=only-system \
+    UV_PYTHON_DOWNLOADS=never
+
+RUN --mount=type=cache,target=${UV_CACHE_DIR} \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --no-default-groups --no-install-project --extra my-extra
+```
+
+This means I have to COPY the wheel into the build context, install deps (no wheel needed!), then remove the wheel again in the final build stage.
+
+Is this the intended behavior?
+
+### Platform
+
+python:3.12-slim docker image on Windows 10 x86_64
+
+### Version
+
+0.6.0
+
+### Python version
+
+3.12.9
+
+---
+
+_Label `bug` added by @Audiopolis on 2025-02-17 08:10_
+
+---
+
+_Comment by @zanieb on 2025-02-17 14:48_
+
+Can you use `UV_FROZEN=1` instead of `UV_LOCKED=1`?
+
+
+---
+
+_Comment by @charliermarsh on 2025-02-18 01:49_
+
+Yeah this is intentional, in a sense. `uv run --locked` (or `UV_LOCKED=1 uv run`) has to perform a resolution to verify that your dependencies are up-to-date. If you don't include that wheel, we can't resolve, and therefore can't vaidate the lockfile. Typically, you'd use `UV_FROZEN` instead here to skip that resolution step.
+
+---
+
+_Label `bug` removed by @charliermarsh on 2025-02-18 01:49_
+
+---
+
+_Label `question` added by @charliermarsh on 2025-02-18 01:49_
+
+---
+
+_Comment by @Audiopolis on 2025-02-18 16:08_
+
+That makes perfect sense. I should have known. Thank you.
+________________________________
+From: Charlie Marsh ***@***.***>
+Sent: Monday, February 17, 2025 21:50
+To: astral-sh/uv ***@***.***>
+Cc: Audiopolis ***@***.***>; Author ***@***.***>
+Subject: Re: [astral-sh/uv] uv requires platform-specific wheels to be present, even on different platforms (Issue #11573)
+
+
+Yeah this is intentional, in a sense. uv run --locked (or UV_LOCKED=1 uv run) has to perform a resolution to verify that your dependencies are up-to-date. If you don't include that wheel, we can't resolve, and therefore can't vaidate the lockfile. Typically, you'd use UV_FROZEN instead here to skip that resolution step.
+
+—
+Reply to this email directly, view it on GitHub<https://github.com/astral-sh/uv/issues/11573#issuecomment-2664426883>, or unsubscribe<https://github.com/notifications/unsubscribe-auth/AFKIWEVRTVN5MMSIP6IIX232QKGUFAVCNFSM6AAAAABXIWQE7SVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDMNRUGQZDMOBYGM>.
+You are receiving this because you authored the thread.Message ID: ***@***.***>
+
+[charliermarsh]charliermarsh left a comment (astral-sh/uv#11573)<https://github.com/astral-sh/uv/issues/11573#issuecomment-2664426883>
+
+Yeah this is intentional, in a sense. uv run --locked (or UV_LOCKED=1 uv run) has to perform a resolution to verify that your dependencies are up-to-date. If you don't include that wheel, we can't resolve, and therefore can't vaidate the lockfile. Typically, you'd use UV_FROZEN instead here to skip that resolution step.
+
+—
+Reply to this email directly, view it on GitHub<https://github.com/astral-sh/uv/issues/11573#issuecomment-2664426883>, or unsubscribe<https://github.com/notifications/unsubscribe-auth/AFKIWEVRTVN5MMSIP6IIX232QKGUFAVCNFSM6AAAAABXIWQE7SVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDMNRUGQZDMOBYGM>.
+You are receiving this because you authored the thread.Message ID: ***@***.***>
+
+
+---
+
+_Comment by @charliermarsh on 2025-02-19 02:08_
+
+No worries at all. Happy to help.
+
+---
+
+_Closed by @charliermarsh on 2025-02-19 02:08_
+
+---

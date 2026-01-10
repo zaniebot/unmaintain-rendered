@@ -1,0 +1,74 @@
+---
+number: 7196
+title: Rule C416 cause autofix error
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-09-06T15:29:11Z
+updated_at: 2023-09-06T16:25:03Z
+url: https://github.com/astral-sh/ruff/issues/7196
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# Rule C416 cause autofix error
+
+---
+
+_Issue opened by @qarmin on 2023-09-06 15:29_
+
+
+Ruff 0.0.287 (latest changes from main branch)
+```
+ruff  *.py --select C416 --no-cache --fix
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+class DefinitionParserOutput:
+        assert any(len(symbol_table.get_by_type(symbol_type)) > 0 for symbol_type in[t for t in SymbolType]), \
+           "DefinitionParserOutput: symbol table has not been populated by objects of any type."
+```
+
+error
+```
+/home/rafal/test/tmp_folder/619_IDX_0_RAND_40390906914543499371195.py:2:85: C416 Unnecessary `list` comprehension (rewrite using `list()`)
+Found 1 error.
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `/home/rafal/test/tmp_folder/619_IDX_0_RAND_40390906914543499371195.py`, the rule codes C416, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12539653/python_compressed.zip)
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-06 16:09_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-09-06 16:10_
+
+---
+
+_Label `fuzzer` added by @charliermarsh on 2023-09-06 16:10_
+
+---
+
+_Referenced in [astral-sh/ruff#7204](../../astral-sh/ruff/pulls/7204.md) on 2023-09-06 16:10_
+
+---
+
+_Closed by @charliermarsh on 2023-09-06 16:25_
+
+---

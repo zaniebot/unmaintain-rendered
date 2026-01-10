@@ -1,0 +1,87 @@
+---
+number: 17191
+title: "`uv self update` fails when /tmp is mounted noexec"
+type: issue
+state: open
+author: dotysan
+labels:
+  - bug
+assignees: []
+created_at: 2025-12-19T20:49:19Z
+updated_at: 2026-01-06T18:47:43Z
+url: https://github.com/astral-sh/uv/issues/17191
+synced_at: 2026-01-10T01:26:14Z
+---
+
+# `uv self update` fails when /tmp is mounted noexec
+
+---
+
+_Issue opened by @dotysan on 2025-12-19 20:49_
+
+Not really sure if this is a uv bug or if uv can do anything about this. But here goes...
+ $ `uv self update`
+```
+info: Checking for updates...
+error: failed to execute installer
+  Caused by: Permission denied (os error 13)
+```
+
+Workaround is fairly straightforward...
+ $ `export TMPDIR="$HOME/.tmp" && mkdir -p "$TMPDIR" && uv self update`
+```
+info: Checking for updates...
+success: Upgraded uv from v0.7.19 to v0.9.18! https://github.com/astral-sh/uv/releases/tag/0.9.18
+```
+
+---
+
+_Label `bug` added by @zanieb on 2025-12-19 20:58_
+
+---
+
+_Comment by @zanieb on 2025-12-19 20:58_
+
+Thanks for the report!
+
+---
+
+_Comment by @nooscraft on 2025-12-20 07:05_
+
+@zanieb I think this is primarily an external issue with axoupdater, not uv itself?
+
+---
+
+_Comment by @zanieb on 2025-12-20 10:40_
+
+Often problems here require changes in axoupdater, yeah. We're maintainers there though.
+
+---
+
+_Comment by @nooscraft on 2025-12-20 12:51_
+
+Oh jee, I didn't know that!
+
+---
+
+_Comment by @dotysan on 2025-12-23 23:56_
+
+Thx! Should I open ticket here? https://github.com/axodotdev/axoupdater
+
+---
+
+_Comment by @konstin on 2026-01-05 18:55_
+
+yes!
+
+---
+
+_Referenced in [axodotdev/axoupdater#324](../../axodotdev/axoupdater/issues/324.md) on 2026-01-05 20:36_
+
+---
+
+_Comment by @dotysan on 2026-01-06 18:47_
+
+Possibly (hopefully) fixed by https://github.com/axodotdev/axoupdater/pull/327 but I'm just learning Rust...so it could start WW3 instead. ¯\_(ツ)_/¯
+
+---

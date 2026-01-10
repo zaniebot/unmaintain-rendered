@@ -1,0 +1,121 @@
+---
+number: 4521
+title: Allow global args in top-level multicall
+type: issue
+state: open
+author: jaskij
+labels:
+  - C-enhancement
+  - S-waiting-on-decision
+  - A-builder
+assignees: []
+created_at: 2022-11-29T12:02:32Z
+updated_at: 2022-12-05T17:46:09Z
+url: https://github.com/clap-rs/clap/issues/4521
+synced_at: 2026-01-10T01:27:57Z
+---
+
+# Allow global args in top-level multicall
+
+---
+
+_Issue opened by @jaskij on 2022-11-29 12:02_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.0.27
+
+### Describe your use case
+
+When writing a multicall program, I have some options that I'd like to be available to all commands. In addition, to reduce boilerplate, I would like them to be in the top-level struct.
+
+A prime example of this would be log level, which is set once, just after parsing the commandline, before entering a specific subcommand.
+
+### Describe the solution you'd like
+
+This looks good enough - as is, this is rejected by debug asserts.
+
+```rust
+#[derive(Debug, clap::Parser)]
+#[command(multicall(true))]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+
+    #[arg(global = true)]
+    log_level: LogLevel,
+}
+```
+
+### Alternatives, if applicable
+
+A workaround would be to add the log level enum as an option on all subcommands - doable, but seems to require some amount of repetitive code, which is always an issue when it comes to later changes.
+
+The amount of repetition could perhaps be eased by using a declarative macro, but those are somewhat annoying to write and not everyone is comfortable with them.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @jaskij on 2022-11-29 12:02_
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2022-11-29 12:26_
+
+---
+
+_Label `A-builder` added by @epage on 2022-11-29 12:26_
+
+---
+
+_Comment by @epage on 2022-11-29 12:35_
+
+When I prevented arguments on the multicall command, I was trying to balance
+- Correct parsing behavior (ie disallowing `$ --verbose cmd`)
+- Correct `$ help` behavior (not showing arguments)
+- Minimal binary size impact
+  - At the moment, I would classify this a small scope feature (few people would use it) which means we prioritize binary size over conveniences.
+
+It would be nice to support global arguments but any solution should maintain the above balance unless we find a reason to re-evaluate our priorities for this feature.
+
+---
+
+_Comment by @paulyoung on 2022-12-05 06:45_
+
+I’m trying to understand if this is the same as my use case or not, and if my use case is supported even if the one in this issue isn’t.
+
+I have an existing program set up with the derive API that takes 2 positional arguments, e.g. `foo a b`
+
+I’d like to also be able to call this as `bar a b` and behave differently based on the executable name.
+
+Is this possible when using `multicall(true)`?
+
+I was only able to get trivial examples like `hostname` to work but couldn’t figure out how to port what I already have.
+
+It seems like a reasonable thing to support so perhaps I’m overlooking how to do it.
+
+---
+
+_Comment by @epage on 2022-12-05 14:25_
+
+Yes, this is supported. Could you open a Discussion with more details to figure out what is going on? This issue is specifically for `Arg::global` which I'm assuming is unrelated.
+
+---
+
+_Comment by @paulyoung on 2022-12-05 17:38_
+
+I created https://github.com/clap-rs/clap/discussions/4541. Sorry for the confusion.
+
+---
+
+_Referenced in [thin-edge/thin-edge.io#3311](../../thin-edge/thin-edge.io/pulls/3311.md) on 2025-01-03 13:51_
+
+---

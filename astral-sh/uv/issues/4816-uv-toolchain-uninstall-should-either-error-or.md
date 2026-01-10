@@ -1,0 +1,86 @@
+---
+number: 4816
+title: "`uv toolchain uninstall` should either error or remove all Pythons"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - cli
+  - preview
+assignees: []
+created_at: 2024-07-04T17:59:26Z
+updated_at: 2024-07-04T22:31:41Z
+url: https://github.com/astral-sh/uv/issues/4816
+synced_at: 2026-01-10T01:23:41Z
+---
+
+# `uv toolchain uninstall` should either error or remove all Pythons
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-04 17:59_
+
+Right now, it looks like it passes an empty request vector to the command.
+
+Further down, there's a match against `matches!(requests.as_slice(), [PythonRequest::Any])`. Is that possible to trigger?
+
+
+---
+
+_Label `cli` added by @charliermarsh on 2024-07-04 17:59_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-07-04 17:59_
+
+---
+
+_Comment by @zanieb on 2024-07-04 19:00_
+
+I think we should probably not uninstall them all without some sort of explicit opt-in, although it would loosely match the semantics of `install`.
+
+---
+
+_Comment by @zanieb on 2024-07-04 19:09_
+
+That match statement is just copied from the `install` implementation but isn't easy to get right now, maybe we should make it easier to construct the `Any` case in `PythonRequest::parse` e.g. with "any"
+
+---
+
+_Comment by @charliermarsh on 2024-07-04 20:01_
+
+I think it should probably just error? Require at least one specifier.
+
+---
+
+_Comment by @charliermarsh on 2024-07-04 20:01_
+
+Right now, how does the `::Any` request work, how does one "create" that?
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-04 20:03_
+
+---
+
+_Referenced in [astral-sh/uv#4820](../../astral-sh/uv/pulls/4820.md) on 2024-07-04 20:03_
+
+---
+
+_Comment by @charliermarsh on 2024-07-04 20:04_
+
+We could _also_ accept `all` or have a `--all` flag that's mutually exclusive with `targets`.
+
+---
+
+_Comment by @zanieb on 2024-07-04 20:18_
+
+> Right now, how does the `::Any` request work, how does one "create" that?
+
+I think it's just the default request and you can't ask for it explicitly which seems weird. "all" makes sense in this context but not for requests in general. Lots of reasonable approaches here, I think.
+
+---
+
+_Closed by @charliermarsh on 2024-07-04 22:31_
+
+---

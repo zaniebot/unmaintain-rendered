@@ -1,0 +1,38 @@
+---
+number: 17077
+title: Setting the data dir with config file
+type: issue
+state: open
+author: andersmmg
+labels:
+  - question
+assignees: []
+created_at: 2025-12-10T18:02:51Z
+updated_at: 2025-12-10T18:02:51Z
+url: https://github.com/astral-sh/uv/issues/17077
+synced_at: 2026-01-10T01:26:13Z
+---
+
+# Setting the data dir with config file
+
+---
+
+_Issue opened by @andersmmg on 2025-12-10 18:02_
+
+### Question
+
+I would like to have the persistent data directory on a different drive (using Linux) but there doesn't seem to be a config option to change that. The closest thing is env variables setting specific parts, but I want the entire thing somewhere other than $XDG_DATA_HOME
+
+### Platform
+
+Arch Linux
+
+### Version
+
+uv 0.9.16 (a63e5b62e 2025-12-06)
+
+---
+
+_Label `question` added by @andersmmg on 2025-12-10 18:02_
+
+---

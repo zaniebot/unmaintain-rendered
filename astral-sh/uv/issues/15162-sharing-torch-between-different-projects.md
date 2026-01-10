@@ -1,0 +1,179 @@
+---
+number: 15162
+title: Sharing torch between different projects
+type: issue
+state: open
+author: classronin
+labels:
+  - question
+assignees: []
+created_at: 2025-08-08T09:44:47Z
+updated_at: 2025-08-19T12:05:24Z
+url: https://github.com/astral-sh/uv/issues/15162
+synced_at: 2026-01-10T01:25:53Z
+---
+
+# Sharing torch between different projects
+
+---
+
+_Issue opened by @classronin on 2025-08-08 09:44_
+
+### Question
+
+目标实现如下：
+┏━ pytorch (torch2.8.0、nvidia-cudnn...)
+┃ ---------------------------- ⇧
+┣━ A(comfyui)━━━━━┫                    
+┗━ B(open-webui) ━━━┫ 
+------------------------------------------
+
+设置环境 "PYTHONPATH=E:\pytorch\.venv\Lib\site-packages"
+pip install torch 会检测 PYTHONPATH 的存在就可以跳过安装 torch 。
+uv pip install torch 不会检测 PYTHONPATH 。
+
+这应该如何是好呢？
+
+
+### Platform
+
+_No response_
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @classronin on 2025-08-08 09:44_
+
+---
+
+_Comment by @zanieb on 2025-08-08 12:12_
+
+Using Claude to translate...
+
+> **Question**  
+> **Goal to achieve the following:**
+> 
+> ```
+> ┏━ pytorch (torch2.8.0、nvidia-cudnn...)
+> ┃ ---------------------------- ⇧
+> ┣━ A(comfyui)━━━━━┫
+> ┗━ B(open-webui) ━━━┫
+> ```
+> 
+> Setting the environment variable "PYTHONPATH=E:\pytorch.venv\Lib\site-packages", `pip install torch` will detect the existence of PYTHONPATH and can skip installing torch. However, `uv pip install torch` does not detect PYTHONPATH.
+> 
+> What should be done about this?
+
+We don't have a great way to support using a system installation of pytorch right now. Our cache will deduplicate pytorch installations, so you can have them in multiple environments without replicating the files, but you can't skip the installation.
+
+---
+
+_Comment by @classronin on 2025-08-08 12:45_
+
+@zanieb 
+UV_CACHE_DIR 和 UV_LINK_MODE 的确能解决缓存机制，但问题是A和B的目录占用空间，还有能在未来实现避免重复安装torch。
+
+---
+
+_Comment by @zanieb on 2025-08-08 12:49_
+
+> UV_CACHE_DIR and UV_LINK_MODE can indeed solve the caching mechanism, but the problem is the directory space occupation of A and B, and whether it's possible to avoid duplicate torch installations in the future.
+
+The default link mode uses hardlinks, which appears to use the space in both directories but does not actually consume additional disk space. Are you getting warnings about a copy fallback? 
+
+---
+
+_Comment by @zanieb on 2025-08-08 12:49_
+
+We'd like to support using distributions that are already installed more broadly, e.g., not just in the uv cache — but it's pretty hard to do correctly.
+
+---
+
+_Comment by @classronin on 2025-08-08 13:02_
+
+@zanieb uv为什么不尊重PYTHONPATH?
+
+---
+
+_Comment by @classronin on 2025-08-08 13:13_
+
+@zanieb 
+
+
+```
+
+(aaa) E:\下载\aaa>set PYTHONPATH=E:\AppData\PyTorch\.venv\Lib\site-packages
+
+(aaa) E:\下载\aaa>pip install torch
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Requirement already satisfied: torch in e:\appdata\pytorch\.venv\lib\site-packages (2.8.0+cu128)
+Requirement already satisfied: filelock in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (3.18.0)
+Requirement already satisfied: typing-extensions>=4.10.0 in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (4.14.1)
+Requirement already satisfied: sympy>=1.13.3 in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (1.14.0)
+Requirement already satisfied: networkx in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (3.5)
+Requirement already satisfied: jinja2 in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (3.1.6)
+Requirement already satisfied: fsspec in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (2025.7.0)
+Requirement already satisfied: setuptools in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (80.9.0)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in e:\appdata\pytorch\.venv\lib\site-packages (from sympy>=1.13.3->torch) (1.3.0)
+Requirement already satisfied: MarkupSafe>=2.0 in e:\appdata\pytorch\.venv\lib\site-packages (from jinja2->torch) (3.0.2)
+
+(aaa) E:\下载\aaa>uv pip install torch
+Resolved 10 packages in 2.71s
+⠙ Preparing packages... (0/1)
+torch                ------------------------------ 661.40 KiB/3.22 GiB                                                                     ^C
+(aaa) E:\下载\aaa>
+
+```
+
+---
+
+_Comment by @classronin on 2025-08-08 13:22_
+
+“UV_PYTHONPATH”这将允许UV尊重PYTHONPATH。这对UV的结构有什么影响？请告知我，尽管我非编程员或者程序员，但至少让新手了解。
+
+---
+
+_Comment by @zanieb on 2025-08-08 14:22_
+
+I can't really explain why it's hard, it's pretty complicated. You can see an attempt at https://github.com/astral-sh/uv/pull/11670
+
+---
+
+_Comment by @konstin on 2025-08-08 16:23_
+
+`PYTHONPATH` is unfortunately much more complex than it seems. For example, if uv need to install a different torch version because the version in `PYTHONPATH` is incompatible with another dependency in the project, do we change the version in `PYTHONPATH`? What if that `PYTHONPATH` is also used in another project and it would break that project? This is one example, but there lots of similar case, those make it easy to introduce all sorts of problems. We found that it gives a better user experience to not have packages in a separate directory, even if their are big.
+
+I highly recommend to not use `PYTHONPATH`, and to instead install everything in one venv. uv is highly optimized and tries to copy as few data as possible on installation, through the hardlinking trick we use it torch shouldn't take up much space or time during installation. 
+
+---
+
+_Renamed from "torch 共享多项目的解决问题。" to "Sharing torch between different projects" by @konstin on 2025-08-08 16:24_
+
+---
+
+_Comment by @classronin on 2025-08-08 17:14_
+
+@konstin 
+明白了，对于团队而言，这的确优先的方案。
+但对于个人而言，追求一个torch共享多个项目。
+
+---
+
+_Comment by @zanieb on 2025-08-08 17:17_
+
+> Understood, for teams, this is indeed the preferred solution. But for individuals, pursuing one torch shared across multiple projects.
+
+uv will use a single cached torch across multiple projects using uv. I don't know how else we can explain it to you. We can't support what you're asking for.
+
+---
+
+_Comment by @danielhollas on 2025-08-19 12:05_
+
+> uv will use a single cached torch across multiple projects using uv. 
+
+That is not exactly true though. If a user creates a new venv and installs (say) torch into it, the resolution algorithm by default picks the latest version so in practice it seems impossible to avoid having multiple torch versions lying around?
+
+---

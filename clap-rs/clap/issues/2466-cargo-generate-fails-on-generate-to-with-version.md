@@ -1,0 +1,61 @@
+---
+number: 2466
+title: Cargo generate fails on generate_to with version beta.2
+type: issue
+state: closed
+author: HoolaBoola
+labels: []
+assignees: []
+created_at: 2021-05-02T18:28:34Z
+updated_at: 2021-05-02T18:35:22Z
+url: https://github.com/clap-rs/clap/issues/2466
+synced_at: 2026-01-10T01:27:18Z
+---
+
+# Cargo generate fails on generate_to with version beta.2
+
+---
+
+_Issue opened by @HoolaBoola on 2021-05-02 18:28_
+
+### Rust Version
+
+`rustc 1.49.0 (e1884a8e3 2020-12-29)`
+
+### Affected Version of clap
+
+`version = "3.0.0-beta.2"`
+
+### Error message
+
+Here's the error message
+
+```
+❯ cargo build
+----
+  thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', /home/username/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_generate-3.0.0-beta.2/src/lib.rs:132:53
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+Here is a link to our `build.rs`, where the `generate_to` function is called:
+
+https://github.com/rage/tmc-cli-rust/blob/43df1a74d900b689acf7948533f49a83817d2049/build.rs
+
+And here is how we have defined our Clap app:
+
+https://raw.githubusercontent.com/rage/tmc-cli-rust/43df1a74d900b689acf7948533f49a83817d2049/src/cli.rs
+
+Please let me know if the issue needs fixing
+
+
+---
+
+_Comment by @pksunkara on 2021-05-02 18:35_
+
+Fixed on master.
+
+---
+
+_Closed by @pksunkara on 2021-05-02 18:35_
+
+---

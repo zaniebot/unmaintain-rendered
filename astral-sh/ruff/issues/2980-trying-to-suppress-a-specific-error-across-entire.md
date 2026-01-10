@@ -1,0 +1,92 @@
+---
+number: 2980
+title: Trying to suppress a specific error across entire file suppresses all errors
+type: issue
+state: closed
+author: michaelhball
+labels: []
+assignees: []
+created_at: 2023-02-17T09:12:53Z
+updated_at: 2023-02-17T12:49:05Z
+url: https://github.com/astral-sh/ruff/issues/2980
+synced_at: 2026-01-10T01:22:41Z
+---
+
+# Trying to suppress a specific error across entire file suppresses all errors
+
+---
+
+_Issue opened by @michaelhball on 2023-02-17 09:12_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Ruff version: 0.0.247
+
+Ruff settings, `pyproject.toml`
+```toml
+[tool.ruff]
+select = ["E", "W", "F", "I"]
+```
+
+Attempting to suppress a specific error across an entire file results in _all_ errors being suppressed for that file (when using `noqa` syntax). The `per-file-ignores` configuration works perfectly, but we'd prefer to keep this rule suppressions local to the files they concern. Tested using `ruff: noqa` and `flake8: noqa`.
+
+To be specific, running the command `ruff check doot.py` on 
+```python
+import matplotlib as mpl
+mpl.use("Agg")
+
+import io
+
+
+x_func = lambda x: x * 2
+```
+correctly indicates four errors
+```bash
+doot.py:5:1: E402 Module level import not at top of file
+doot.py:5:1: I001 [*] Import block is un-sorted or un-formatted
+doot.py:5:8: F401 [*] `io` imported but unused
+doot.py:8:1: E731 [*] Do not assign a `lambda` expression, use a `def`
+Found 4 errors.
+[*] 3 potentially fixable with the --fix option.
+```
+but if I add `"ruff: noqa: E402"` to the top of `doot.py` (or `flake8`)
+```python
+# ruff: noqa: E402
+import matplotlib as mpl
+mpl.use("Agg")
+
+import io
+
+
+x_func = lambda x: x * 2
+```
+all errors are suppressed.
+
+---
+
+_Comment by @charliermarsh on 2023-02-17 12:48_
+
+Funnily enough I just added support for this! https://github.com/charliermarsh/ruff/pull/2978
+
+(Note as a word of caution that Flake8 doesn't support this, so if you're using `# noqa: flake8: F481` or similar in existing code, Flake8 treats that as a whole-file ignore.)
+
+---
+
+_Closed by @charliermarsh on 2023-02-17 12:48_
+
+---
+
+_Comment by @charliermarsh on 2023-02-17 12:49_
+
+(It'll go out in the next release, before the end of the weekend.)
+
+---

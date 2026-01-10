@@ -1,0 +1,123 @@
+---
+number: 16846
+title: "Is there a workaround to exempt packages without an upload date from `exclude-newer`?"
+type: issue
+state: open
+author: SAI-Marko
+labels:
+  - enhancement
+  - configuration
+assignees: []
+created_at: 2025-11-25T15:39:42Z
+updated_at: 2025-11-26T13:15:34Z
+url: https://github.com/astral-sh/uv/issues/16846
+synced_at: 2026-01-10T01:26:10Z
+---
+
+# Is there a workaround to exempt packages without an upload date from `exclude-newer`?
+
+---
+
+_Issue opened by @SAI-Marko on 2025-11-25 15:39_
+
+### Question
+
+When running uv lock on a project that depends on packages missing an upload date and `exclude-newer` is set, the resolution step does (of course) fail. Is there a way to selectively disable the `exclude-newer` for some packages?
+
+# Example
+
+Consider a project using CPU-only PyTorch wheels (adapted from the [uv PyTorch integration guide](https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index)):
+
+```toml
+[project]
+name = "project"
+version = "0.1.0"
+requires-python = ">=3.12.0"
+dependencies = [
+  "torch>=2.7.0",
+  "torchvision>=0.22.0",
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu" },
+]
+torchvision = [
+    { index = "pytorch-cpu" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+# Forbid packages newer than a specified cutoff date:
+[tool.uv]
+exclude-newer = "2025-11-25T00:00:00Z"
+```
+
+Running uv lock produces:
+
+```
+$ uv lock
+warning: torch-2.9.1+cpu-cp310-cp310-manylinux_2_28_aarch64.whl is missing an upload date, but user provided: 2025-11-25T00:00:00Z
+[...]
+warning: torch-2.6.0+cpu-cp39-cp39-win_amd64.whl is missing an upload date, but user provided: 2025-11-25T00:00:00Z
+× No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of torch and your project depends on torch>=2.7.0, we  can conclude that your project's requirements are unsatisfiable.
+```
+
+# Question
+
+Is there a recommended way to handle packages missing upload dates when using `exclude-newer`? Is it for example possible to selectively ignore `exclude-newer` for such packages?
+
+### Platform
+
+Ubuntu 24.04.3 LTS Linux 6.8.0-87-generic x86_64 GNU/Linux
+
+### Version
+
+uv 0.9.11
+
+---
+
+_Label `question` added by @SAI-Marko on 2025-11-25 15:39_
+
+---
+
+_Comment by @zanieb on 2025-11-25 19:55_
+
+I guess we could add something like `exclude-newer-package { name = false }` to override the global `exclude-newer` value?
+
+---
+
+_Label `question` removed by @zanieb on 2025-11-25 19:55_
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-11-25 19:55_
+
+---
+
+_Label `configuration` added by @zanieb on 2025-11-25 19:55_
+
+---
+
+_Comment by @zanieb on 2025-11-25 19:55_
+
+Related https://github.com/astral-sh/uv/issues/16813
+
+---
+
+_Referenced in [astral-sh/uv#16854](../../astral-sh/uv/pulls/16854.md) on 2025-11-26 00:19_
+
+---
+
+_Comment by @neutrinoceros on 2025-11-26 13:15_
+
+> I guess we could add something like `exclude-newer-package { name = false }` to override the global exclude-newer value?
+
+I don't know about the issue at stake, but this would *definitely* be useful in at least one case I know of.
+xref: https://github.com/astropy/astropy/issues/17788
+
+---

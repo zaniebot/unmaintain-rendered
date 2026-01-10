@@ -1,0 +1,141 @@
+---
+number: 12016
+title: "uvx inside docker can't connect internet"
+type: issue
+state: closed
+author: gauraputu
+labels:
+  - bug
+  - duplicate
+assignees: []
+created_at: 2025-03-06T19:01:39Z
+updated_at: 2025-03-07T01:13:39Z
+url: https://github.com/astral-sh/uv/issues/12016
+synced_at: 2026-01-10T01:25:14Z
+---
+
+# uvx inside docker can't connect internet
+
+---
+
+_Issue opened by @gauraputu on 2025-03-06 19:01_
+
+### Summary
+
+Trying to use `shadcn-django` inside a docker container but got the following error
+```
+# uvx shadcn_django init
+  × Failed to download `annotated-types==0.7.0`
+  ├─▶ Failed to fetch:
+  │   `https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl`
+  ├─▶ Could not connect, are you offline?
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url
+  │   (https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl)
+  ├─▶ client error (Connect)
+  ├─▶ dns error: failed to lookup address information: Try again
+  ╰─▶ failed to lookup address information: Try again
+  help: `annotated-types` (v0.7.0) was included because `shadcn-django` (v0.12.2) depends on `copier` (v9.5.0) which depends on
+        `pydantic` (v2.10.6) which depends on `annotated-types`
+```
+running `uv pip install -r requirements.txt` also result in the following error
+```
+# uv venv
+Using CPython 3.12.8 interpreter at: /usr/local/bin/python
+Creating virtual environment at: .venv
+# uv pip install -r requirements.txt
+⠹ Resolving dependencies...                                                                                                              error: Failed to fetch: `https://pypi.org/simple/django/`
+  Caused by: Could not connect, are you offline?
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/django/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Try again
+  Caused by: failed to lookup address information: Try again
+```
+
+# Minimal Reproducible Example
+dockerfile
+```
+FROM python:3.12.8-slim-bookworm
+# Install uv for working with shadcn-django
+COPY --from=ghcr.io/astral-sh/uv:0.6.4 /uv /uvx /bin/
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# activate virtual environtment
+ENV PATH=".venv/bin:$PATH"
+
+COPY . /app/
+RUN apt-get update && apt-get install -y gettext libmagic1 git
+RUN pip install -r requirements.txt --upgrade pip
+```
+docker compose
+```
+services:
+  app-test:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    tty: true
+```
+sample requirements.txt
+```
+asgiref==3.8.1
+certifi==2025.1.31
+charset-normalizer==3.4.1
+click==8.1.8
+django==5.1.6
+django-browser-reload==1.18.0
+django-cotton==1.6.0
+django-tailwind-cli==4.1.0
+django-typer==3.0.0
+django-unfold==0.50.0
+dotenv==0.9.9
+idna==3.10
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1
+requests==2.32.3
+semver==3.0.4
+shellingham==1.5.4
+sqlparse==0.5.3
+typer-slim==0.15.2
+typing-extensions==4.12.2
+urllib3==2.3.0
+```
+
+### Platform
+
+Linux 6.6.75-2-MANJARO x86_64 GNU/Linux
+
+### Version
+
+uv 0.6.4
+
+### Python version
+
+Python 3.12.8
+
+---
+
+_Label `bug` added by @gauraputu on 2025-03-06 19:01_
+
+---
+
+_Comment by @zanieb on 2025-03-06 19:27_
+
+I think this is a duplicate of https://github.com/astral-sh/uv/issues/8450
+
+---
+
+_Label `duplicate` added by @zanieb on 2025-03-06 20:46_
+
+---
+
+_Closed by @charliermarsh on 2025-03-07 01:13_
+
+---

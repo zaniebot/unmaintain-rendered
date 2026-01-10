@@ -1,0 +1,155 @@
+---
+number: 5953
+title: "Completing of unbound positionals doesn't allow completing of flags"
+type: issue
+state: closed
+author: krobelus
+labels:
+  - C-bug
+  - E-medium
+  - A-completion
+assignees: []
+created_at: 2025-03-18T18:11:01Z
+updated_at: 2025-03-19T21:00:46Z
+url: https://github.com/clap-rs/clap/issues/5953
+synced_at: 2026-01-10T01:28:19Z
+---
+
+# Completing of unbound positionals doesn't allow completing of flags
+
+---
+
+_Issue opened by @krobelus on 2025-03-18 18:11_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+stable
+
+### Clap Version
+
+master
+
+### Minimal reproducible code
+
+```rust
+fn main() {
+    let cmd = clap::Command::new("foo")
+        .arg(
+            clap::Arg::new("positional")
+                .value_parser(["pos_1", "pos_2"])
+                .index(1)
+                .num_args(1..),
+        )
+        .arg(
+            clap::Arg::new("--format")
+                .long("format")
+                .short('F')
+                .value_parser(["json", "yaml", "toml"]),
+        );
+    if std::env::var_os("COMPLETE").is_some() {
+        let _ = clap_complete::CompleteEnv::with_factory(|| cmd.clone())
+            .try_complete(std::env::args_os(), None);
+    }
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+`cargo b && COMPLETE=fish target/debug/foo -- target/debug/foo pos_1 --`
+
+### Actual Behaviour
+
+outputs nothing
+
+### Expected Behaviour
+
+output option completion:
+```
+--format
+--help	Print help
+```
+
+### Additional Context
+
+Regressed in f0bd4750 (feat(clap_complete): Support multi-values of positional argument with `num_arg(N)`, 2024-07-26)
+
+Some work at https://github.com/clap-rs/clap/pull/5949
+Sorry for creating faulty PR without discussing beforehand.
+
+### Debug Output
+
+```
+[clap_builder::builder::command]Command::_build: name="foo"
+[clap_builder::builder::command]Command::_propagate:foo
+[clap_builder::builder::command]Command::_check_help_and_version:foo expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:foo
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:positional
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:--format
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_complete::engine::complete] 	complete: args=["target/debug/foo", "--"], arg_index=1, current_dir=None
+[clap_builder::builder::command]Command::_build: name="foo"
+[clap_builder::builder::command]Command::_build: already built
+[clap_builder::builder::command]Command::_build_bin_names
+[clap_builder::builder::command]Command::_build_bin_names: already built
+[clap_complete::engine::complete] 	complete: target_cursor=ArgCursor { cursor: 2 }
+[clap_complete::engine::complete] 	complete::next: arg="--", current_state=ValueDone, cursor=ArgCursor { cursor: 2 }
+[clap_complete::engine::complete] 	complete_arg: arg=ParsedArg { inner: "--" }, cmd="foo", current_dir=None, pos_index=1, state=ValueDone
+[clap_complete::engine::complete] 	complete_subcommand: cmd="foo", value="--"
+[clap_complete::engine::complete] 	subcommands: name=foo
+[clap_complete::engine::complete] 	subcommands: Has subcommands...false
+[clap_complete::engine::complete] 	complete_arg_value: arg=Arg { id: "positional", help: None, long_help: None, action: Some(Append), value_parser: Some(ValueParser::other(alloc::string::String)), blacklist: [], settings: ArgFlags(0), overrides: [], groups: [], requires: [], r_ifs: [], r_unless: [], short: None, long: None, aliases: [], short_aliases: [], disp_ord: None, val_names: [], num_vals: Some(1..), val_delim: None, default_vals: [], default_vals_ifs: [], terminator: None, index: Some(1), help_heading: Some(None), default_missing_vals: [], ext: Extensions { extensions: FlatMap { keys: [], values: [] } } }, value=Ok("--")
+[clap_complete::engine::complete] 	longs: name=foo
+[clap_complete::engine::complete] 	longs: name=foo
+```
+
+---
+
+_Label `C-bug` added by @krobelus on 2025-03-18 18:11_
+
+---
+
+_Label `A-completion` added by @epage on 2025-03-19 12:42_
+
+---
+
+_Renamed from "Regression causing missing option completion inside multi-arg options" to "Completing of unbound positionals doesn't allow completing of flags" by @epage on 2025-03-19 12:42_
+
+---
+
+_Label `E-medium` added by @epage on 2025-03-19 12:42_
+
+---
+
+_Comment by @epage on 2025-03-19 12:43_
+
+From https://github.com/clap-rs/clap/pull/5949#discussion_r1999671613
+
+> imo the crux of this problem is that for variable `num_args`, it is both valid to have a positional _and_ a flag. `complete_arg`s [`ParseState::Pos`](https://github.com/clap-rs/clap/blob/master/clap_complete/src/engine/complete.rs#L248-L255) should take that into account. Just copying the code over could end up making things messy, so a separate refactor of some kind should probably done first once we understand what the final state of the function should look like.
+
+
+
+---
+
+_Comment by @epage on 2025-03-19 21:00_
+
+See #5949
+
+---
+
+_Closed by @epage on 2025-03-19 21:00_
+
+---

@@ -1,0 +1,57 @@
+---
+number: 15905
+title: "Add \"--not-required\" option to uv pip list"
+type: issue
+state: open
+author: NdagiStanley
+labels:
+  - enhancement
+  - compatibility
+assignees: []
+created_at: 2025-09-17T09:56:05Z
+updated_at: 2025-09-17T15:18:52Z
+url: https://github.com/astral-sh/uv/issues/15905
+synced_at: 2026-01-10T01:26:01Z
+---
+
+# Add "--not-required" option to uv pip list
+
+---
+
+_Issue opened by @NdagiStanley on 2025-09-17 09:56_
+
+### Summary
+
+I think feature parity between `pip list` and `uv pip list` is an ideal goal.
+
+"--not-required" is not an option in `uv pip list`.
+
+<img height="120" alt="Image" src="https://github.com/user-attachments/assets/c9592cca-0c02-491b-83bf-ba93a64d2b86" />
+
+"--not-required" included in the `pip list` options.
+
+<img height="1200" alt="Image" src="https://github.com/user-attachments/assets/79b05e4f-8b58-4fd0-97f7-2805a3684ef3" />
+
+I use "--not-required --format=freeze > requirements.txt" to generate a clean, top-level requirements file.
+
+While this might seem like a niche use case, I'm proposing this addition more for parity's sake, especially for new uv users familiar with it.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @NdagiStanley on 2025-09-17 09:56_
+
+---
+
+_Label `compatibility` added by @zanieb on 2025-09-17 10:58_
+
+---
+
+_Comment by @NdagiStanley on 2025-09-17 15:18_
+
+@zanieb I'm willing to take a stab at this.
+
+---

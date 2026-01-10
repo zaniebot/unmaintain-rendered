@@ -1,0 +1,66 @@
+---
+number: 6936
+title: "\"Why is it fast\" documentation"
+type: issue
+state: closed
+author: valentincalomme
+labels:
+  - documentation
+assignees: []
+created_at: 2024-09-02T12:16:48Z
+updated_at: 2024-12-31T02:24:59Z
+url: https://github.com/astral-sh/uv/issues/6936
+synced_at: 2026-01-10T01:24:08Z
+---
+
+# "Why is it fast" documentation
+
+---
+
+_Issue opened by @valentincalomme on 2024-09-02 12:16_
+
+I've been trying to track down some info related to "why is uv" faster than `pip` and I was somehow successful. I found that this is often the first question I get when I mention `uv` to people. I say "it's faster than `pip`" and people say "yeah, but how, you're still downloading the same stuff?".
+
+I would find it extremely helpful to have some section explaining the performance gains.
+
+Obviously, no need to delve into `rust`-specific optimization or even internal secrets, but I think it would be great to have some sort of blog-like section explaining why `uv` works as fast as it does
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-09-02 17:21_
+
+---
+
+_Comment by @zanieb on 2024-09-03 14:45_
+
+I think this probably makes more sense as a blog post than documentation that we maintain, but yeah it'd be cool to write! cc @konstin who did some work on this previously.
+
+---
+
+_Comment by @charliermarsh on 2024-09-08 18:19_
+
+I'm also giving two talks on this over the next two months, which will be public and recorded.
+
+---
+
+_Comment by @timotk on 2024-10-24 14:31_
+
+Here's one of the talks: https://www.youtube.com/watch?v=gSKTfG1GXYQ
+
+Thanks Charlie!
+
+---
+
+_Comment by @charliermarsh on 2024-12-31 02:24_
+
+Here's the other: https://www.youtube.com/watch?v=zOY9mc-zRxk. I think I'll close this for now!
+
+---
+
+_Closed by @charliermarsh on 2024-12-31 02:24_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-12-31 02:24_
+
+---

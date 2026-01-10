@@ -1,0 +1,232 @@
+---
+number: 1400
+title: "AppSettings::ColorAlways appears to have no effect"
+type: issue
+state: closed
+author: ExoticMatter
+labels: []
+assignees: []
+created_at: 2018-12-23T05:55:50Z
+updated_at: 2019-04-11T00:17:48Z
+url: https://github.com/clap-rs/clap/issues/1400
+synced_at: 2026-01-10T01:26:51Z
+---
+
+# AppSettings::ColorAlways appears to have no effect
+
+---
+
+_Issue opened by @ExoticMatter on 2018-12-23 05:55_
+
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+### Rust Version
+
+* rustc 1.31.0 (abe02cefd 2018-12-04)
+
+### Affected Version of clap
+
+* 2.32.0
+
+### Summary
+
+`AppSetting::ColorAlways` doesn't prevent TTY detection.
+
+### Expected Behavior
+
+The message printed to the console or returned through `clap::Error` should always be colored if `ColorAlways` is used.
+
+### Actual Behavior
+
+The message is only colored if the output stream that would normally be used is a TTY. Essentially, `ColorAlways` seems to be no different than `ColorAuto`. (On the other hand, `ColorNever` works as intended.)
+
+### Steps to Reproduce the issue
+
+Run the following sample in a minimal `cargo` project, and redirect stdout or stderr to `cat` (or a file, and then `cat` the file.)
+
+### Sample Code
+
+```rust
+extern crate clap;
+
+use clap::{App, AppSettings};
+
+fn main() {
+    let _ = App::new("foo")
+        .global_setting(AppSettings::ColoredHelp)
+        .global_setting(AppSettings::ColorAlways)
+        .get_matches();
+}
+```
+
+### Debug output
+
+<details>
+<summary>Help message with ColoredHelp: <code>cargo run -- --help | cat</code></summary>
+<pre>
+<code>    Finished dev [unoptimized + debuginfo] target(s) in 0.02s                                           
+     Running `target/debug/claptest --help`
+DEBUG:clap:Parser::propagate_settings: self=foo, g_settings=AppFlags(
+    COLORED_HELP | COLOR_ALWAYS
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"--help"' ([45, 45, 104, 101, 108, 112])
+DEBUG:clap:Parser::is_new_arg:"--help":NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg="--help"
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Found valid flag '--help'
+DEBUG:clap:Parser::check_for_help_and_version_str;
+DEBUG:clap:Parser::check_for_help_and_version_str: Checking if --help is help or version...Help
+DEBUG:clap:Parser::_help: use_long=true
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Help::write_parser_help;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Always
+DEBUG:clap:is_a_tty: stderr=false
+DEBUG:clap:Help::new;
+DEBUG:clap:Help::write_help;
+DEBUG:clap:Help::write_default_help;
+DEBUG:clap:Help::write_bin_name;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Help::write_version;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=claptest
+DEBUG:clap:Help::write_all_args;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Help::write_args;
+DEBUG:clap:Help::write_args: Current Longest...2
+DEBUG:clap:Help::write_args: New Longest...6
+DEBUG:clap:Help::write_args: Current Longest...6
+DEBUG:clap:Help::write_args: New Longest...9
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Help::long;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Help::val: arg=--help
+DEBUG:clap:Help::spec_vals: a=--help
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...23 > (120 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=7
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+DEBUG:clap:Help::write_arg;
+DEBUG:clap:Help::short;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Help::long;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Help::val: arg=--version
+DEBUG:clap:Help::spec_vals: a=--version
+DEBUG:clap:Help::val: Has switch...Yes
+DEBUG:clap:Help::val: force_next_line...false
+DEBUG:clap:Help::val: nlh...false
+DEBUG:clap:Help::val: taken...21
+DEBUG:clap:Help::val: help_width > (width - taken)...26 > (120 - 21)
+DEBUG:clap:Help::val: longest...9
+DEBUG:clap:Help::val: next_line...No
+DEBUG:clap:write_spaces!: num=4
+DEBUG:clap:Help::help;
+DEBUG:clap:Help::help: Next Line...false
+DEBUG:clap:Help::help: Too long...No
+foo 
+
+USAGE:
+&nbsp;   claptest
+
+FLAGS:
+&nbsp;   -h, --help       Prints help information
+&nbsp;   -V, --version    Prints version information
+
+</code>
+</pre>
+</details>
+
+<details>
+<summary>Error message: <code>cargo run -- foobar 2> >(cat)</code></summary>
+<pre><code>    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/claptest foobar`
+DEBUG:clap:Parser::propagate_settings: self=foo, g_settings=AppFlags(
+    COLORED_HELP | COLOR_ALWAYS
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '"foobar"' ([102, 111, 111, 98, 97, 114])
+DEBUG:clap:Parser::is_new_arg:"foobar":NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg="foobar"
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::get_matches_with: Positional counter...1
+DEBUG:clap:Parser::get_matches_with: Low index multiples...false
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=claptest
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Always
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+error: Found argument 'foobar' which wasn't expected, or isn't valid in this context
+
+USAGE:
+&nbsp;   claptest
+
+For more information try --help
+
+</code>
+</pre>
+</details>
+
+---
+
+_Referenced in [clap-rs/clap#1402](../../clap-rs/clap/pulls/1402.md) on 2018-12-31 19:12_
+
+---
+
+_Closed by @ExoticMatter on 2019-04-11 00:17_
+
+---
+
+_Referenced in [clap-rs/clap#2651](../../clap-rs/clap/pulls/2651.md) on 2021-07-31 23:02_
+
+---

@@ -1,0 +1,119 @@
+---
+number: 9571
+title: "Workspaces with common code and `uv run` with subset of packages?"
+type: issue
+state: open
+author: bepuca
+labels:
+  - question
+assignees: []
+created_at: 2024-12-02T09:06:46Z
+updated_at: 2025-05-16T07:19:43Z
+url: https://github.com/astral-sh/uv/issues/9571
+synced_at: 2026-01-10T01:24:42Z
+---
+
+# Workspaces with common code and `uv run` with subset of packages?
+
+---
+
+_Issue opened by @bepuca on 2024-12-02 09:06_
+
+Hello! I am using workspaces for my project and they are really a game changer. I was waiting for some tooling supporting this nicely for a very very long time and had to do different shanenigans to simulate it. Now, I have a bit of a specific situation and I am unsure what would be the recommended way to solve it using `uv`. I have the hunch it is solvable in a nice way but I am not sure how to put the pieces together.
+
+## Context
+
+The project is related to machine learning. Within the project, we have several packages that are responsible for different things. Think "data prep", "train model 1", "train model 2", "eval", for instance. Each of these is now a workspace, which works nicely. In my developer environment, aka my laptop, I want one big environment which uv solves nicely. The thing is that most of these packages are expensive payloads that require GPUs or GPU clusters, so they need to be submitted to the cloud. To submit them to the cloud, I'd like to bundle the bare minimum (both files and dependencies) into a Docker image. For this, we currently just package the workspace folder and extract the requirements from the super lock into a package specific requirements.txt with `uv export --package`. It is important to have the bare minimum for 2 reasons: size of image and understanding the payload. If I bundle the whole repo, it is hard to know what code is relevant. If I bundle the bare minimum, understanding (and reproducing) is much easier.
+
+Now, I also want to make sure there is no leaking of dependencies (use a dep from another workspace that is not installed in the relevant package) that in the IDE does not complain but would fail after packaging in the cloud. For that, we are using `uv run --isolate --package ...` and, once again, works brilliantly.
+
+## The Problem
+
+Now the problem arises when I have common code. For instance, a class representing my data contract that could be the output types of data prep that go to be inputs of model train. The "ideal" way I can think of is that `common` or `shared` is a workspace of its own. Then, use `uv export` with the dependencies of the two packages and `uv run --package X --package common`. But this does not work as `error: the argument '--package <PACKAGE>' cannot be used multiple times`. I do not want to go through the pain of publishing common anywhere, as it adds a lot of complexity.
+
+So in summary I need:
+- Ability to export a lock/requirements.txt that covers the dependencies of two packages (I could bypass that but just centralizing dependencies in the non "common" workspace).
+- Ability to `uv run --isolate --package A` a script of pkg A that can import "common" package and also pkg A but has no knowledge of packages B,C,D.
+
+I had a look at https://github.com/astral-sh/uv/issues/6935 and linked solutions, which makes me think the pieces are there but I am struggling to piece them together. Hence, I thought it would be amazing if someone with deep knowledge could help me understand what would be the recommended pattern for this.
+
+
+
+---
+
+_Comment by @zanieb on 2024-12-02 23:38_
+
+Would `uv run --package X --with ./common` work?
+
+---
+
+_Label `question` added by @zanieb on 2024-12-02 23:38_
+
+---
+
+_Comment by @bepuca on 2024-12-09 13:31_
+
+This does kinda work, but long term it feels a bit like a patch. Is it in the roadmap to be able to do `uv export --package X --package Y`? 
+I find a few instances in which we may require this and it would be super helpful. In our current case, we need to extract the code into a temp dir with a few more things, so we are exporting the requirements and running from there. I guess we can extract multiple files and since they all come from the same lock, they should be able to install together. The problem is this adds a bit of complexity. Nothing terrible, but I think being able to slice a number of packages for commands would be useful.
+
+---
+
+_Referenced in [astral-sh/uv#8334](../../astral-sh/uv/issues/8334.md) on 2024-12-20 15:47_
+
+---
+
+_Comment by @zanieb on 2025-01-07 19:33_
+
+cc @charliermarsh 
+
+It seems fine to allow `--package` to be repeated in `uv export`. I think there's another issue about that but can't find it.
+
+---
+
+_Comment by @MCRE-BE on 2025-05-16 07:19_
+
+If I understand your issue, this is how I solved it.
+Package structure as follows:
+
+```python
+albatross
+├── packages
+│   ├── bird-feeder  # from github.com/org/bird-feeder, but this directory is in top-level .gitignore
+│   │   ├── pyproject.toml
+│   │   ├── uv.lock  # is this allowed?
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds # from github.com/org/seeds, also ignored
+│       ├── pyproject.toml
+│       ├── uv.lock
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── albatross
+        └── main.py
+```
+
+in main.py I declare my dependencies inlines as follows : 
+
+```python
+# %%
+# /// script
+# dependencies = [
+#   "tqdm",
+#   "albatross.seeds",
+# ]
+# [tool.uv.sources]
+# albatross.seeds= { path = "../../../pacakges/seeds" }
+# ///
+```
+
+With this, I can simply run `uv run main.py`
+
+---

@@ -1,0 +1,135 @@
+---
+number: 15661
+title: extra-build-dependencies resolves match-runtime requirement even when not needed
+type: issue
+state: closed
+author: befelix
+labels:
+  - bug
+assignees: []
+created_at: 2025-09-03T13:26:58Z
+updated_at: 2025-09-04T12:34:54Z
+url: https://github.com/astral-sh/uv/issues/15661
+synced_at: 2026-01-10T01:25:58Z
+---
+
+# extra-build-dependencies resolves match-runtime requirement even when not needed
+
+---
+
+_Issue opened by @befelix on 2025-09-03 13:26_
+
+### Summary
+
+Specifying a requirement together with `match-runtime = true` for an `extra-build-dependencies` overwrite, currently has a hard-requirement that the requirement is always in the dependency resolution when running `uv sync` (i.e., part of the main dependencies or dev dependencies). However, frequently these will be dependency groups that we do not want to include always.
+
+Here's a minimal example of the error. I have the following `pyproject.toml` file:
+```
+[project]
+name = "project"
+version = "0.1.0"
+description = "..."
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+cuda = [
+  "torch",
+  "flash-attn>=2.7.2.post1,<3",
+]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = "torch", match-runtime = true }]
+```
+
+Running `uv sync --group cuda` works fine, but `uv sync` errors out with 
+```
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+Resolved 28 packages in 12ms
+error: `torch` was declared as an extra build dependency with `match-runtime = true`, but was not found in the resolution
+```
+
+The expected behavior would be to not look for the `torch` requirement if `flash-attn` is not part of the installed packages in the environment.
+
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+uv 0.8.14
+
+### Python version
+
+Python 3.12
+
+---
+
+_Label `bug` added by @befelix on 2025-09-03 13:27_
+
+---
+
+_Renamed from "extra-build-dependencies resolves match-runtime even when not needed" to "extra-build-dependencies resolves match-runtime requirement even when not needed" by @befelix on 2025-09-03 13:27_
+
+---
+
+_Comment by @zanieb on 2025-09-03 13:38_
+
+Thanks! That looks like a bug.
+
+---
+
+_Comment by @huntjk on 2025-09-03 19:01_
+
+Experiencing a similar issue, except additionally `uv run ...` throws the same error, even when all optional dependencies are installed.
+```
+[project]
+name = "project"
+version = "0.1.0"
+description = "..."
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+cuda = [
+  "torch",
+  "flash-attn",
+]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = "torch", match-runtime = true }]
+```
+
+Running `uv sync --all-extras`, followed by `uv run python ...` throws:
+```
+$ uv run python -m foo_script
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+error: `torch` was declared as an extra build dependency with `match-runtime = true`, but was not found in the resolution
+```
+
+This error does not occur when `torch` and `flash_attn` are defined in the standard `dependencies = [...]` list, after running `uv sync`.
+
+---
+
+_Comment by @zanieb on 2025-09-03 20:06_
+
+When using `uv run` after a sync operation you either need to include `--no-sync` or repeat the flags, e.g., `uv run --all-extras python ...`
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-09-04 02:16_
+
+---
+
+_Referenced in [astral-sh/uv#15671](../../astral-sh/uv/pulls/15671.md) on 2025-09-04 02:34_
+
+---
+
+_Closed by @charliermarsh on 2025-09-04 12:34_
+
+---
+
+_Referenced in [Aleph-Alpha-Research/eval-framework#61](../../Aleph-Alpha-Research/eval-framework/pulls/61.md) on 2025-09-09 07:25_
+
+---

@@ -1,0 +1,91 @@
+---
+number: 12903
+title: uv tool run should not perform network request if version is fully frozen
+type: issue
+state: open
+author: gsemet
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-04-15T20:27:11Z
+updated_at: 2025-05-06T05:32:18Z
+url: https://github.com/astral-sh/uv/issues/12903
+synced_at: 2026-01-10T01:25:26Z
+---
+
+# uv tool run should not perform network request if version is fully frozen
+
+---
+
+_Issue opened by @gsemet on 2025-04-15 20:27_
+
+### Summary
+
+For example when i do a
+```bash
+uv tool run -- poetry@2.0.0 
+```
+Once installed, any subsequent execution shall not make any network access. i am able to get a network error when my proxy goes down, while there is nothing to do, since the tool is already installed in the right version.
+
+When using @latest i guess i understand the automatic update, when executing n times the same command line versioned, it would be better to avoid unuseful network connection error.
+
+This is not the `uv tool run --offline` mode, if the tool is not installed it needs to be installed.
+It is not `--reinstall`, i do not want the package to be reinstalled if the version is already the right one.
+
+It may be `--resolution=lowest` if we are sure it does not try to perform any network connectivity if there is not need to. And i need my tool and all its dependencies to be at the "latest" of there dependencies at the time it has been installed.
+
+My proposal:
+
+```bash
+uv tool run -- toolname@2.0.0
+```
+when version is a number, install the package. no network check whatsoever if the version already matches.
+
+to force update to later of v2, allow syntax such as @2, @2.0 to perform a network connection to check if any new package 2.0.x is available.
+
+```
+uv tool run -- toolname@2
+
+### Platform
+
+Mac OS
+
+### Version
+
+0.6.11
+
+### Python version
+
+3.10
+
+---
+
+_Label `bug` added by @gsemet on 2025-04-15 20:27_
+
+---
+
+_Label `bug` removed by @konstin on 2025-04-16 08:24_
+
+---
+
+_Label `enhancement` added by @konstin on 2025-04-16 08:24_
+
+---
+
+_Comment by @charliermarsh on 2025-04-17 12:37_
+
+Yeah I think this shouldn't make a network request.
+
+---
+
+_Comment by @tjni on 2025-05-06 05:32_
+
+I think I have a similar request (but not exactly the same).
+
+I'd like to always use `uvx run package@latest` to quickly deliver the latest code changes to my consumers, but dependency resolution for my package takes about a minute. I think I'm looking for a way to make the semantics of `latest` mean: check for a new version but if the latest version is still the same as last time, use the cached one without dependency resolution.
+
+---
+
+_Referenced in [astral-sh/uv#17089](../../astral-sh/uv/issues/17089.md) on 2025-12-11 18:20_
+
+---

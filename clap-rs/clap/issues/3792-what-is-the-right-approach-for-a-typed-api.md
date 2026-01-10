@@ -1,0 +1,358 @@
+---
+number: 3792
+title: What is the right approach for a typed API
+type: issue
+state: closed
+author: epage
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - S-waiting-on-decision
+  - A-validators
+assignees: []
+created_at: 2022-06-06T14:23:55Z
+updated_at: 2022-07-22T17:38:44Z
+url: https://github.com/clap-rs/clap/issues/3792
+synced_at: 2026-01-10T01:27:46Z
+---
+
+# What is the right approach for a typed API
+
+---
+
+_Issue opened by @epage on 2022-06-06 14:23_
+
+This is a follow up to #2683
+
+# State of Clap 3.0
+
+Clap's builder API only natively supports two types, `OsString` and `String`, controlled via `Arg::allow_invalid_utf8` and then accessed via `ArgMarches::value_of{,_os}`.
+
+The user can provide extra validation via
+- `Arg::forbid_empty_value`
+- `Arg::possible_values`
+- `Arg::validator`
+- `Arg::validator_regex`
+
+`ArgMatches::value_of_t` then adapts to the user type via `FromStr`.
+
+`clap_derive` allows users to set a custom adapter to their type (instead of the fixed one of `value_of_t`.  This then automatically gets put in as an `Arg::validator`, causing it to be run twice (#3589).
+
+This requires users to know how to use `Path`s correctly, see #3496
+
+Basic Builder
+```rust
+#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { path = "../clap", features = ["derive"] }
+//! ```
+
+fn main() {
+    let cmd =
+        clap::Command::new("test").arg(clap::Arg::new("value").long("value").takes_value(true));
+    let args = cmd.get_matches();
+    dbg!(args.value_of_t_or_exit::<u64>("value"));
+}
+```
+Output:
+```console
+$ ./clap-from_str.rs --value foo
+error: Invalid value "foo" for 'value': The argument 'foo' isn't a valid value for 'value': invalid digit found in string
+```
+*(note: no coloring)*
+
+Basic Derive:
+```rust
+#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { path = "../clap", features = ["derive"] }
+//! ```
+
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+pub struct Args {
+    #[clap(long)]
+    value: u64,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+```
+Output:
+```console
+$ ./clap-derive_t.rs --value foo
+error: Invalid value "foo" for '--value <VALUE>': invalid digit found in string
+
+For more information try --help
+```
+
+# State of 3.2
+
+With #3732 and many follow up, we've made the API typed.  This removes all of those extra validators and makes the builder API closer to the derive API.
+
+Basic Builder
+```rust
+#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { path = "../clap", features = ["derive"] }
+//! ```
+
+fn main() {
+    let cmd = clap::Command::new("test").arg(
+        clap::Arg::new("value")
+            .long("value")
+            .takes_value(true)
+            .value_parser(clap::value_parser!(u64)),
+    );
+    let args = cmd.get_matches();
+    dbg!(args.get_one::<u64>("value").unwrap());
+}
+```
+Output:
+```console
+$ ./clap-from_str.rs --value foo
+error: Invalid value "foo" for '--value <value>': invalid digit found in string
+
+For more information try --help
+```
+
+Problems with this approach:
+- With [ArgAction::Count](https://github.com/clap-rs/clap/pull/3775) (the builder replacement for derive's `parse(from_occurrences)` only works with `u64` and only through docs / asserts can we tell users
+- Users have to match the type from `Arg::value_parser` with `ArgMatches::get_one::<T>`
+- The user's type is forced to be `std::any::Any + Clone + Send + Sync + 'static`, before `Clone` wasn't required, allowing it to be used with more types
+  - Ideally we'd also track `std::fmt::Debug`...
+- Our storage is effectively `(Vec<Box<T>>, Vec<OsString>)`, causing an extra allocation per value while still having to have the `OsString` for validation
+  - [`any_vec`](https://docs.rs/any_vec) might help in the future to take `Vec<Box<T>>` to `Vec<T>`
+  - Maybe as we break compatibility, we can ooch away from tracking the Raw Value
+- In addition, we have to do a lot of type casting
+
+# Alternatives
+
+## Double-down on storing `OsString`
+
+- The Builder API would only work with `OsString`
+- `get_one::<T>(id, typed_value_parser)` would replace `value_of_t_or_exit` (`try_` would replace the non-`exit` version)
+- Derive would use `try_get_one` / `try_get_many`
+
+Compared to the 3.0 solution
+- :white_check_mark: Simpler
+- :white_check_mark: Builder users have greater control over the parser used
+- :white_check_mark: We could deprecate all validators but `Arg::possible_values`
+- Error messages would be on-par with the basic solution
+
+Compared to the 3.2 solution
+- :white_check_mark: Simpler
+- :white_check_mark: `ArgAction::Count` would support any type, unlike the 3.2 solution
+- :x: `value_parser` would likely not be as featureful
+- :x: `value_parser` wouldn't have access to look up `ignore_case` but would need its own independent `ignore_case`
+- :x: We'd still need `Arg::possible_values`
+- :x: Error messages would regress without access to the `Command` for color support, knowing what help to suggest and access to `Arg` for showing the flag name or checking if ignore case is set (used also by the default/required rules)
+  - Derive error messages for `Parser` would be slightly better because we would call `err.format(&mut cmd)` implicitly.  If the user uses `CommandFactory` / `FromArgMatches` directly, they are on their own
+  - We could take the hit of rendering the flag name for all args that are parsed. That is one render / allocation performance hit per arg definition used by the user
+- :white_check_mark: Less overhead per arg value
+- :white_check_mark: Less restrictive on traits used
+
+---
+
+_Label `C-enhancement` added by @epage on 2022-06-06 14:23_
+
+---
+
+_Label `M-breaking-change` added by @epage on 2022-06-06 14:23_
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2022-06-06 14:23_
+
+---
+
+_Label `A-validators` added by @epage on 2022-06-06 14:23_
+
+---
+
+_Added to milestone `4.0` by @epage on 2022-06-06 14:23_
+
+---
+
+_Referenced in [clap-rs/clap#3794](../../clap-rs/clap/pulls/3794.md) on 2022-06-06 16:49_
+
+---
+
+_Comment by @pksunkara on 2022-06-06 19:18_
+
+> With https://github.com/clap-rs/clap/pull/3775 (the builder replacement for derive's parse(from_occurrences) only works with u64 and only through docs / asserts can we tell users
+
+I don't really see a need for it to work with other types. Am I missing something?
+
+> Maybe as we break compatibility, we can ooch away from tracking the Raw Value
+
+Yes, we shouldn't be storing raw values once we store typed ones.
+
+> Users have to match the type from Arg::value_parser with ArgMatches::get_one::<T>
+
+The typed approach is more suited for derive parser and I wouldn't mind if the users have to do it.
+
+> before Clone wasn't required
+
+I am not sure why we needed this. Ideally we should prefer to avoid this, but I would consider this low priority.
+
+---
+
+_Comment by @epage on 2022-06-06 19:40_
+
+Thanks for the feedback! I appreciate a sounding board on this especially with how invasive of a change this is and how much work it is for users to migrate if we change this too soon due to the API's pervasiveness.
+
+To confirm / summarize, it sounds like, at a high level, you are comfortable with what is currently in `master` and will soon be `3.2`.
+
+> I don't really see a need for it to work with other types. Am I missing something?
+
+[Most users today are using it with a mixture of types](https://github.com/search?l=&p=2&q=from_occurrences+extension%3Ars&ref=advsearch&type=Code).   Technically, `u64` takes up more memory than is necessary in most cases but people are likely to not have many `Count` arguments and they can structure their application to drop the args and adapt to what is needed.
+
+As for the choice in type, I was torn on what to make the upper bound, so I just left it as a basic `u64`.
+
+> Yes, we shouldn't be storing raw values once we store typed ones.
+
+This might make `default_value_if` and `required_if_eq` a bit more difficult to deal with unless we also require a `PartialEq` impl.  We could possibly make the `ValueParser` responsible for knowing how to do these comparisons.  We can make the default impls required `PartialEq` but the user can make their own impl that works without `PartialEq` if need be.  The benefit this has is we could then completely move `ignore_case` into the `ValueParser` I think
+
+> > before Clone wasn't required
+> I am not sure why we needed this. Ideally we should prefer to avoid this, but I would consider this low priority.
+
+`ArgMatches` is currently `Clone`, so the contents must be `Clone`.  In 4.0, we can choose whether `ArgMatches` will be `Clone` or not which determines whether the values must be `Clone`.  I think an expectation for `Clone` is common enough that `ArgMatches` should be `Clone`.
+
+So that requires some more caveats.  We actually are storing `Arc<dyn Any>` rather than `Box<dyn Any>` so we aren't relying on the users `Clone` for `impl Clone for ArgMatches`, mostly because I've not gotten everything to work out to fully leverage the type's `Clone`.   Where we still use `Clone` is with `remove_one`.  I made the assumption people want to move their type out of `ArgMatches`.  Moving out of an `Arc` can only happen if the ref count is 1.  In all other cases, we need an alternative approach.  Right now we effectively are using [Arc::unwrap_or_clone](https://doc.rust-lang.org/std/sync/struct.Arc.html#method.unwrap_or_clone).  We don't rely on something like [`Arc::try_unwrap`](https://doc.rust-lang.org/std/sync/struct.Arc.html#method.try_unwrap) because that requires us to return a usable value in the alternate case but I'm trying not to expose some of these implementation details in `ArgMatches`.  We could panic but users might not appreciate that.  
+
+---
+
+_Comment by @pksunkara on 2022-06-09 01:03_
+
+> Most users today are using it with a mixture of types.
+
+Ah, yeah. `u64` is a good default. But I am worried about IoT and small systems. Maybe `u8` can be a good default? I don't expect people to have a high count.
+
+> We could possibly make the ValueParser responsible for knowing how to do these comparisons
+
+Yup, that is what I was thinking too before.
+
+As I said, the `Clone` is not a big issue on my side.
+
+
+---
+
+_Referenced in [clap-rs/clap#3589](../../clap-rs/clap/issues/3589.md) on 2022-06-09 02:23_
+
+---
+
+_Comment by @epage on 2022-06-09 14:06_
+
+> > We could possibly make the ValueParser responsible for knowing how to do these comparisons
+> 
+> Yup, that is what I was thinking too before.
+
+I think we can gradually explore this so I created #3707 #3708, and #3709 so we don't block the next release on this.
+
+---
+
+_Referenced in [clap-rs/clap#3810](../../clap-rs/clap/pulls/3810.md) on 2022-06-09 16:12_
+
+---
+
+_Comment by @epage on 2022-06-10 18:50_
+
+As an update, `ArgAction::Count` now uses a `u8`.
+
+I did just find #408 which is where clap went from using u8 everywhere to u64.  That was more focused on number of values though it also tests for a large number of flag occurrences.  I'm not seeing any associated use cases or reason we need to support counting that many flags, so I don't think this changes anything.
+
+---
+
+_Comment by @jaskij on 2022-06-14 13:27_
+
+> [Most users today are using it with a mixture of types](https://github.com/search?l=&p=2&q=from_occurrences+extension%3Ars&ref=advsearch&type=Code). Technically, `u64` takes up more memory than is necessary in most cases but people are likely to not have many `Count` arguments and they can structure their application to drop the args and adapt to what is needed.
+> 
+> As for the choice in type, I was torn on what to make the upper bound, so I just left it as a basic `u64`.
+
+The default, I believe, should be `usize`, for various reasons. First, it's the closest we get to native word size on the target. Second, Rust's standard library often uses `usize` to represent, eg. count of items in a container.
+
+As to why people use different types, experience with MCU programming taught me to be frugal with types, so I default to using the smallest type which will fit my value. On the other hand, for Clap's use case you are right that this doesn't particularly matter.
+
+> Ah, yeah. `u64` is a good default. But I am worried about IoT and small systems. Maybe `u8` can be a good default? I don't expect people to have a high count.
+
+Looking through the official [platform support document](https://doc.rust-lang.org/nightly/rustc/platform-support.html) there are 16 bit and even 8 bit targets in Tier 3 (may or may not work, no guarantees). Nothing lower than 32 bit in T1 or T2. I think `usize` is available regardless of availability of `std` too.
+
+---
+
+_Comment by @blyxxyz on 2022-06-14 13:54_
+
+> The default, I believe, should be `usize`, for various reasons. First, it's the closest we get to native word size on the target. Second, Rust's standard library often uses `usize` to represent, eg. count of items in a container.
+
+`usize` isn't supposed to be used as a "default" integer type, [RFC 0544](https://rust-lang.github.io/rfcs/0544-rename-int-uint.html) even changed its name from `uint` to discourage that. I'm not sure it's bad, other languages make other decisions, but it's at least unidiomatic.
+
+Container lengths are limited by the size of memory, so it makes sense there. But [`std::fs::Metadata::size()`](https://doc.rust-lang.org/std/fs/struct.Metadata.html#method.size) returns `u64`, for example.
+
+I'd say that:
+
+- `u8` covers all basically reasonable cases (if a flag has to be passed more than 255 times then something's wrong with the API)
+- `u16` covers all unreasonable cases someone might earnestly attempt (bad APIs do exist)
+- `u32` covers all cases that are actually allowed by the operating system (operating systems balk before you reach two gigabytes)
+
+`u8` is practical because you can `.into()` it into most other integer types.
+
+---
+
+_Comment by @tmccombs on 2022-06-18 08:24_
+
+I've been working on swtiching to the new 3.2 non-deprecated apis, and one pain point I've run into is `get_one` returns a `&String`, but I want a `&str` (or similar with `&PathBuf` and `&Path` or `&OsString` and `&OsStr`), so I have to do something like `.map( |s| s.as_str())`. And that map in turn hinders type inference in some cases. 
+
+---
+
+_Comment by @epage on 2022-06-18 17:28_
+
+I had considered finding some type tricks to pull to allow specifying the borrowed type.  My concern with it was on the usability
+- Keep the types the same between the definition (`value_parser!(String)`) and access (`get_one::<String>`)
+- Keeps symmetry with any other call, like `remove_one::<String>`
+
+Now, we could also consider `get_one<T>(&self, id: Id) -> T::Borrowed`.  I'm not sure if all the traits are available to do this unless we rely on type inference which comes with its own host of trade offs.
+
+In an ideal world, we'd also implicitly copy any `Copy` type.
+
+---
+
+_Comment by @tmccombs on 2022-06-24 04:53_
+
+Some other things that are less ergonomic than one might hope:
+
+1. Checking if a flag is set. If you use the `SetTrue` action, as is recommended for flags, you have have to do something like `*matches.get_one::<bool>("my-arg").unwrap()` as opposed to the previous `matches.is_present("my-arg")`. In particular, notice that it requires unwrapping the option, because it should always have a value, and dereferencing it, because it returns a reference instead of an actual `bool`. Given the prevalance of boolean flags, maybe there should be a dedicated method for this use case?si
+2. If using the `Count` ArgAction, then similar to 1, it is necessary to unwrap the option and derefernce. 
+3. When using `get_many` or `remove_many`, I find it often necessary to do something like `.map_or(Vec::new(), Iterator::collect)` in order to get a possibly empty vec of the results.
+
+---
+
+_Comment by @epage on 2022-06-28 01:56_
+
+> Checking if a flag is set. If you use the SetTrue action, as is recommended for flags, you have have to do something like *matches.get_one::<bool>("my-arg").unwrap() as opposed to the previous matches.is_present("my-arg"). In particular, notice that it requires unwrapping the option, because it should always have a value, and dereferencing it, because it returns a reference instead of an actual bool. Given the prevalance of boolean flags, maybe there should be a dedicated method for this use case?si
+
+Thank you for your feedback on this.  When considering the trade offs, I went forward with the less ergonomic API due to what it allows but recognizing the cost.  The assumption going into it was that people tend to prefer the Derive API for ergonomics and the Builder API for control, so reducing the ergonomics a little for improved control seemed aligned.  Feedback like this helps in evaluating whether this is the right decision.
+
+> When using get_many or remove_many, I find it often necessary to do something like .map_or(Vec::new(), Iterator::collect) in order to get a possibly empty vec of the results.
+
+The iterators should be implementing `Default` so you should be able to call `get_many("arg").unwrap_or_default()`.
+
+---
+
+_Comment by @epage on 2022-07-22 17:38_
+
+Since 3.2 came out, there has been some grumbling about the ergonomics but I think it went well enough that we no longer need to proactively track alternatives.  Instead we can wait for more concrete user reports.
+
+---
+
+_Closed by @epage on 2022-07-22 17:38_
+
+---

@@ -1,0 +1,264 @@
+---
+number: 7538
+title: "\"uv run\" runs resolve too much"
+type: issue
+state: closed
+author: PetterS
+labels:
+  - question
+  - performance
+assignees: []
+created_at: 2024-09-19T09:07:02Z
+updated_at: 2024-12-06T16:13:04Z
+url: https://github.com/astral-sh/uv/issues/7538
+synced_at: 2026-01-10T01:24:16Z
+---
+
+# "uv run" runs resolve too much
+
+---
+
+_Issue opened by @PetterS on 2024-09-19 09:07_
+
+I have a script that starts with
+```
+#!/usr/bin/env -S uv run
+# /// script
+# dependencies = ["colorama==0.4.6"]
+# ///
+```
+It is supposed to run fast but uv often starts with a blocking message "⠷ Resolving dependencies...".  But the single depedency is pinned to a version so if it is installed there is nothing to resolve.So I think uv should be able to start this script faster.
+
+- Platform: Linux
+- uv version: 0.4.10
+
+
+Right now `uv run` is too slow for most of my use cases since it resolves way too much.
+
+
+---
+
+_Comment by @zanieb on 2024-09-19 11:05_
+
+The dependencies of that package need to be resolved still.
+
+How long is it taking?
+
+---
+
+_Label `question` added by @zanieb on 2024-09-19 11:05_
+
+---
+
+_Label `performance` added by @zanieb on 2024-09-19 11:05_
+
+---
+
+_Comment by @PetterS on 2024-09-20 16:02_
+
+> The dependencies of that package need to be resolved still.
+
+It does not happen every time I run the program. `uv` seems to cache the result for some time. But if all versions are exactly pinned, it seems the result could be cached indefinitely?
+
+---
+
+_Comment by @zanieb on 2024-09-20 18:22_
+
+Here you're not pinning all versions, just the version of `colorama` which may depend on, e.g., `foo >= 1.0.0` in which case we need to check if there is a new version of `foo`. Right?
+
+Related #6318 
+
+---
+
+_Comment by @PetterS on 2024-09-25 08:47_
+
+> Here you're not pinning all versions, just the version of `colorama` which may depend on, e.g., `foo >= 1.0.0` in which case we need to check if there is a new version of `foo`. Right?
+
+I was under the impression that `colorama` does not have any dependencies: https://github.com/tartley/colorama/blob/master/requirements.txt
+
+---
+
+_Comment by @PetterS on 2024-09-25 08:53_
+
+If the same script is run a second time immediately after the first one, `uv` does not resolve dependencies again. Is it possible to control this?
+
+---
+
+_Comment by @zanieb on 2024-10-21 22:09_
+
+I don't really get it, the resolver runs in 1ms in subsequent operations
+
+```
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+Installed 1 package in 4ms
+uv run example.py  0.06s user 0.03s system 53% cpu 0.179 total
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+uv run example.py  0.02s user 0.02s system 89% cpu 0.050 total
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+uv run example.py  0.02s user 0.02s system 89% cpu 0.049 total
+❯ time uv run example.py
+Reading inline script metadata from `example.py`
+uv run example.py  0.02s user 0.02s system 88% cpu 0.048 total
+❯ uv run example.py -v
+Reading inline script metadata from `example.py`
+❯ uv run -v example.py
+DEBUG uv 0.4.22 (34be3af84 2024-10-15)
+Reading inline script metadata from `example.py`
+DEBUG Reading requests from `/Users/zb/workspace/uv/.python-version`
+DEBUG Searching for Python 3.12 in managed installations or system path
+DEBUG Found `cpython-3.12.6-macos-aarch64-none` at `/Users/zb/workspace/uv/.venv/bin/python3` (virtual environment)
+DEBUG Caching via base interpreter: `/Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/bin/python3.12`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.6
+DEBUG Solving with target Python version: >=3.12.6
+DEBUG Adding direct dependency: colorama==0.4.6
+DEBUG Found fresh response for: https://pypi.org/simple/colorama/
+DEBUG Searching for a compatible version of colorama (==0.4.6)
+DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl.metadata
+DEBUG Tried 1 versions: colorama 1
+DEBUG Split specific environment resolution took 0.001s
+Resolved 1 package in 1ms
+DEBUG Using Python 3.12.6 interpreter at: /Users/zb/Library/Caches/uv/archive-v0/iv1kmyvak8JleeDF6HCzK/bin/python3
+DEBUG Running `python example.py`
+DEBUG Command exited with code: 0
+```
+
+I think we'd need a better example to help here.
+
+---
+
+_Closed by @zanieb on 2024-10-21 22:09_
+
+---
+
+_Comment by @notatallshaw on 2024-10-21 22:57_
+
+FYI, the big help for me was adding the `--offline` flag after the first run, as I can be in situations where the HTTP calls can be either slow or just break (due to random enterprise network stuff).
+
+I would prefer uv to try and run first without making any HTTP calls, and only hit the network if it can't resolve the dependencies from the cache.
+
+I do wonder if this is what the user is facing, very slow but responding HTTP responses.
+
+---
+
+_Comment by @PetterS on 2024-11-09 20:24_
+
+@zanieb if you rerun it with uv immediately after it will be fast. But when i you run after a while it will be slow.
+
+> uv often starts with a blocking message "⠷ Resolving dependencies...". 
+
+I think this could be much improved
+
+---
+
+_Comment by @zanieb on 2024-11-11 15:01_
+
+I still need a clearer MRE with logs to do anything to help you here.
+
+---
+
+_Comment by @notatallshaw on 2024-11-11 16:58_
+
+> I still need a clearer MRE with logs to do anything to help you here.
+
+I've only had issues when I've had network problems where the network is intermittently working, not sure how to reproduce.
+
+---
+
+_Comment by @PetterS on 2024-11-15 09:48_
+
+The MRE is this file
+```
+#!/usr/bin/env -S uv run
+# /// script
+# dependencies = ["colorama==0.4.6"]
+# ///
+pass
+```
+
+Run with
+```
+$ time test-uv.py
+```
+Sometimes uv decides to resolve dependencies (again!) and this will be printed:
+```
+real    0m0,772s
+user    0m0,055s
+sys     0m0,015s
+```
+
+Tried with `uv 0.5.2` now
+
+
+Again, note that running it many times in rapid succession will be fast. But the first execution after a pause will show this slowness
+
+---
+
+_Comment by @PetterS on 2024-11-15 09:50_
+
+@zanieb reopen?
+
+---
+
+_Comment by @charliermarsh on 2024-11-15 14:01_
+
+I think this is by design? We refresh the dependencies every 10 minutes or so.
+
+---
+
+_Comment by @notatallshaw on 2024-11-15 14:19_
+
+> I think this is by design? We refresh the dependencies every 10 minutes or so.
+
+What's the motivation for that? It's definetly problematic on poor network connections (like I say, I reccomend `--offline` as a workaround).
+
+---
+
+_Comment by @charliermarsh on 2024-11-15 14:20_
+
+When we see the list of dependencies, we have to resolve them -- there's no lockfile. So by default we would adhere to PyPI's 10-minute caching headers.
+
+---
+
+_Comment by @notatallshaw on 2024-11-15 14:23_
+
+Ah I see, I guess it would require something non-trivial to "fix" then, e.g. implicitly creating a lockfile for each script and caching the lockfile.
+
+---
+
+_Comment by @charliermarsh on 2024-11-15 14:24_
+
+Yeah we could do that internally. It's a good idea. My only concern is that it might be a bit confusing if you run a script, then come back to it a few weeks later and we don't automatically use "newer" versions of the dependencies, because we're implicitly using a lockfile behind the scenes.
+
+---
+
+_Comment by @zanieb on 2024-11-15 14:25_
+
+We could at least cache with a longer timespan in that context.
+
+---
+
+_Comment by @notatallshaw on 2024-11-15 14:27_
+
+> then come back to it a few weeks later and we don't automatically use "newer" versions of the dependencies, because we're implicitly using a lockfile behind the scenes
+
+I think the user experience goes both ways, I found it confusing that once I've run once it downloads dependencies again (sometimes they're big and it's noticable waiting for them even on my fast home connection). I would have expected to have to run `--upgrade` to get refreshed dependencies.
+
+But I'm sure some users may feel the opposite. 
+
+
+---
+
+_Referenced in [astral-sh/uv#9688](../../astral-sh/uv/issues/9688.md) on 2024-12-06 16:12_
+
+---
+
+_Comment by @notatallshaw on 2024-12-06 16:13_
+
+FYI, I created a specific feature request for this: https://github.com/astral-sh/uv/issues/9688.
+
+---

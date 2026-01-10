@@ -1,0 +1,87 @@
+---
+number: 4428
+title: Option to treat all arguments as positional
+type: issue
+state: closed
+author: ofek
+labels:
+  - C-enhancement
+assignees: []
+created_at: 2022-10-28T05:35:32Z
+updated_at: 2022-10-28T15:42:16Z
+url: https://github.com/clap-rs/clap/issues/4428
+synced_at: 2026-01-10T01:27:55Z
+---
+
+# Option to treat all arguments as positional
+
+---
+
+_Issue opened by @ofek on 2022-10-28 05:35_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4
+
+### Describe your use case
+
+I have a subcommand that needs to forward absolutely everything to an external environment.
+
+```rust
+#[derive(Args, Debug)]
+#[command()]
+pub struct Cli {
+    args: Vec<String>,
+}
+```
+
+### Describe the solution you'd like
+
+Option to treat all arguments as positional
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @ofek on 2022-10-28 05:35_
+
+---
+
+_Comment by @epage on 2022-10-28 14:28_
+
+There are a couple ways of doing this with different trade offs
+- External subcommands
+  - You have to validate the subcommand name yourself
+- `#[arg(trailing_var_args = true, allow_hyphen_values = true)]`
+  - Some flags can still be used before the captured set starts
+- `#[arg(last = true)]`
+  - Requires `--` before the captured arguments
+
+---
+
+_Referenced in [clap-rs/clap-verbosity-flag#45](../../clap-rs/clap-verbosity-flag/issues/45.md) on 2022-10-28 15:13_
+
+---
+
+_Comment by @ofek on 2022-10-28 15:42_
+
+`#[arg(trailing_var_arg = true, allow_hyphen_values = true)]` seems to work as desired thank you very much!!!
+
+Clap is as awesome as Python's Click, well done 🙂 
+
+---
+
+_Closed by @ofek on 2022-10-28 15:42_
+
+---

@@ -1,0 +1,89 @@
+---
+number: 2722
+title: Unexpected command line interaction with pyproject.toml package
+type: issue
+state: closed
+author: bluss
+labels:
+  - enhancement
+assignees: []
+created_at: 2024-03-28T22:19:39Z
+updated_at: 2024-04-04T15:53:19Z
+url: https://github.com/astral-sh/uv/issues/2722
+synced_at: 2026-01-10T01:23:21Z
+---
+
+# Unexpected command line interaction with pyproject.toml package
+
+---
+
+_Issue opened by @bluss on 2024-03-28 22:19_
+
+This command line interaction is surprising. My directory contains a pyproject.toml:
+
+
+```
+uv pip install --dry-run pyproject.toml  
+Resolved 9 packages in 13ms
+Would download 1 package
+Would install 9 packages
+ + attrs==23.2.0
+ + jsonschema==4.21.1
+ + jsonschema-specifications==2023.12.1
+ + pyproject-toml==0.0.10
+ + referencing==0.34.0
+ + rpds-py==0.18.0
+ + setuptools==69.2.0
+ + toml==0.10.2
+ + wheel==0.43.0
+```
+
+It has replaced `pyproject.toml` with package `pyproject-toml` from PyPI. (User error: must use `-r` to install from a pyproject.toml file.)
+I'm sure this normalization sometimes makes sense, but here one mistake can lead to the wrong package being installed.
+
+For the record, pip 24.0 behaves the same way.
+
+
+```
+uv -V
+uv 0.1.26
+platform: linux (x86_64)
+```
+
+---
+
+_Comment by @charliermarsh on 2024-03-28 22:22_
+
+Lol oh no...
+
+---
+
+_Comment by @zanieb on 2024-03-28 22:25_
+
+We should save people from this :)
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-03-28 22:27_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-01 01:26_
+
+---
+
+_Comment by @charliermarsh on 2024-04-04 03:51_
+
+Closed by #2746.
+
+---
+
+_Closed by @charliermarsh on 2024-04-04 03:51_
+
+---
+
+_Comment by @bluss on 2024-04-04 15:53_
+
+Thanks
+
+---

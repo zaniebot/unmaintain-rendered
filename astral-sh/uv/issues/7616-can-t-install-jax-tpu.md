@@ -1,0 +1,71 @@
+---
+number: 7616
+title: "can't install jax[tpu]"
+type: issue
+state: closed
+author: GallagherCommaJack
+labels:
+  - question
+assignees: []
+created_at: 2024-09-21T20:47:24Z
+updated_at: 2024-09-22T17:22:52Z
+url: https://github.com/astral-sh/uv/issues/7616
+synced_at: 2026-01-10T01:24:17Z
+---
+
+# can't install jax[tpu]
+
+---
+
+_Issue opened by @GallagherCommaJack on 2024-09-21 20:47_
+
+here's a snippet to reproduce
+
+```
+uv add jax==0.4.33 --extra tpu --prerelease=allow -f https://storage.googleapis.com/jax-releases/libtpu_releases.html
+```
+
+and here's the error:
+
+```
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of libtpu-nightly==0.1.dev20240916 and jax[tpu]==0.4.33 depends on
+      libtpu-nightly==0.1.dev20240916, we can conclude that jax[tpu]==0.4.33 cannot be used.
+      And because your project depends on jax[tpu]==0.4.33, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+```
+
+fix suggested in #2010 doesn't seem to work, doing `uv pip install` has the same error
+
+---
+
+_Comment by @charliermarsh on 2024-09-21 21:11_
+
+You probably need to add `libtpu-nightly==0.1.dev20240916+nightly`, I guess? Just looking at the releases here: https://storage.googleapis.com/jax-releases/libtpu_releases.html
+
+---
+
+_Label `question` added by @charliermarsh on 2024-09-21 21:12_
+
+---
+
+_Comment by @GallagherCommaJack on 2024-09-22 02:40_
+
+that's painful... pip can figure it out automatically, why can't uv?
+
+---
+
+_Comment by @charliermarsh on 2024-09-22 17:22_
+
+Local version identifiers are hard to get right and we don't support the full spec (the semantics / behaviors break a lot of assumptions about version-solving). You can read more here: https://docs.astral.sh/uv/pip/compatibility/#local-version-identifiers.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-22 17:22_
+
+---
+
+_Closed by @charliermarsh on 2024-09-22 17:22_
+
+---

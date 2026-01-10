@@ -1,0 +1,192 @@
+---
+number: 2011
+title: "Help subcommand behaves different than help flags when `App::replace` is used"
+type: issue
+state: closed
+author: nickelc
+labels:
+  - C-bug
+  - A-help
+  - S-waiting-on-design
+assignees: []
+created_at: 2020-07-13T17:33:23Z
+updated_at: 2023-03-28T16:48:46Z
+url: https://github.com/clap-rs/clap/issues/2011
+synced_at: 2026-01-10T01:27:11Z
+---
+
+# Help subcommand behaves different than help flags when `App::replace` is used
+
+---
+
+_Issue opened by @nickelc on 2020-07-13 17:33_
+
+Using clap `master`
+### Code
+```rust
+use clap::clap_app;
+
+fn main() {
+    let app = clap_app!(prog =>
+        (replace: "install", &["module", "install"])
+        (@subcommand module =>
+            (@subcommand "install" =>
+                (about: "Install module")
+            )
+        )
+    );
+    app.get_matches();
+}
+```
+
+### Steps to reproduce the issue
+1. Run `cargo r -- install --help`
+2. Run `cargo r -- help install`
+
+#### `cargo r -- install --help` Output
+```
+prog-module-install 
+Install module
+
+USAGE:
+    prog module install
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+```
+#### `cargo r -- help install` Output
+```
+error:  The subcommand 'install' wasn't recognized
+
+USAGE:
+	prog help <subcommands>...
+
+For more information try --help
+```
+
+I expected the replacement of `help install` with `help module install`
+
+---
+
+_Label `T: bug` added by @nickelc on 2020-07-13 17:33_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-07-19 12:48_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2020-07-19 12:48_
+
+---
+
+_Comment by @pksunkara on 2020-07-19 12:50_
+
+I am still deciding whether this is intended or not. `replace` is similar to aliases but for more args than just one.
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-07-19 12:50_
+
+---
+
+_Comment by @pksunkara on 2020-08-23 05:05_
+
+@CreepySkeleton Need your opinion on this.
+
+---
+
+_Comment by @CreepySkeleton on 2020-08-23 09:27_
+
+My opinion is that `replace` was a badly designed feature. Something that OP described (cross-level subcommand aliases) was the reason `replace` was added in the first place, and while it does kinda solve the problem, it adds more problems (help messages don't mention it at all and there's no way for them to do so, malfunctioning help subcommand) and it doesn't quite blend with the rest of the machinery (essentially being a C-like dumb preprocessor the rest of clap isn't even aware of). 
+
+I think the solution here is to develop a working cross-level aliasing mechanism (and possibly ditch `replace` but that questionable). 
+
+---
+
+_Label `C: alias` added by @pksunkara on 2020-08-23 09:40_
+
+---
+
+_Removed from milestone `3.0` by @pksunkara on 2021-10-09 00:38_
+
+---
+
+_Added to milestone `4.0` by @pksunkara on 2021-10-09 00:38_
+
+---
+
+_Removed from milestone `4.0` by @epage on 2021-10-09 10:41_
+
+---
+
+_Added to milestone `3.0` by @epage on 2021-10-09 10:41_
+
+---
+
+_Comment by @epage on 2021-10-09 10:45_
+
+In case people want history, `replace` was added in https://github.com/clap-rs/clap/pull/1697 to resolve https://github.com/clap-rs/clap/issues/1603
+
+---
+
+_Referenced in [clap-rs/clap#2836](../../clap-rs/clap/issues/2836.md) on 2021-10-09 15:42_
+
+---
+
+_Removed from milestone `3.0` by @epage on 2021-10-09 15:49_
+
+---
+
+_Comment by @epage on 2021-10-09 15:50_
+
+Cleared the milestone since it looks like we are punting on this by putting `App::replace` behind a feature flag.  See https://github.com/clap-rs/clap/issues/2836
+
+---
+
+_Referenced in [epage/clapng#158](../../epage/clapng/issues/158.md) on 2021-12-06 20:16_
+
+---
+
+_Referenced in [epage/clapng#212](../../epage/clapng/issues/212.md) on 2021-12-06 22:17_
+
+---
+
+_Label `C: help message` added by @epage on 2021-12-08 19:51_
+
+---
+
+_Label `C: alias` removed by @epage on 2021-12-08 19:51_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-10 21:39_
+
+---
+
+_Referenced in [spinframework/spin#1117](../../spinframework/spin/issues/1117.md) on 2023-02-14 00:21_
+
+---
+
+_Comment by @epage on 2023-03-23 20:49_
+
+Cross posting from #2836 for greater visibility
+
+> Due to the lack of interest on this tracking issue, I'm considering removing this unstable feature.
+> 
+> Any concerns people want to raise?
+
+---
+
+_Referenced in [clap-rs/clap#4805](../../clap-rs/clap/pulls/4805.md) on 2023-03-28 16:29_
+
+---
+
+_Closed by @epage on 2023-03-28 16:45_
+
+---
+
+_Closed by @epage on 2023-03-28 16:48_
+
+---

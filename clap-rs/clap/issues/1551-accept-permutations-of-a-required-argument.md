@@ -1,0 +1,74 @@
+---
+number: 1551
+title: Accept permutations of a required argument
+type: issue
+state: closed
+author: Matelasse
+labels:
+  - S-waiting-on-decision
+  - E-hard
+assignees: []
+created_at: 2019-09-26T04:14:40Z
+updated_at: 2020-02-02T05:27:29Z
+url: https://github.com/clap-rs/clap/issues/1551
+synced_at: 2026-01-10T01:26:57Z
+---
+
+# Accept permutations of a required argument
+
+---
+
+_Issue opened by @Matelasse on 2019-09-26 04:14_
+
+### Bug or Feature Request Summary
+I have this example use case, in my program I will be accepting 120 arguments, but no more. Ideally, I would want Clap's intelligent suggestions around them, but I don't want to type an array of 120 items, instead I want to type the 6 characters and get all their permutations generated for me. To clarify, an example program needs to accept `abcdef` passed in any order. These are fine: `./program --req abcdef | ./program --req bacdef`, but this is not fine `./program --req abcdefg` (Note that this feature request is exclusively for TOML Clap) 
+
+### Expected Behavior Summary
+I want to be able to do this by adding one line like `permuations: "accepted"` or something in the similar fashion.
+
+### Actual Behavior Summary
+Now, the programmer would have to resort to filling up an array of `n!` items in TOML, which is not ideal.
+
+----------------------------------------------
+
+This use-case sounds a bit contrived, but nevertheless I believe there exist projects that can benefit from this. Please, let me know your thoughts too and thanks for working on clap.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-01 12:13_
+
+@Matelasse If you're still interested, could you please explain your use case to us? It sounds like a really rare case and I'm not sure we want to go into it.
+
+---
+
+_Label `C: args` added by @CreepySkeleton on 2020-02-01 12:14_
+
+---
+
+_Label `D: hard` added by @CreepySkeleton on 2020-02-01 12:14_
+
+---
+
+_Label `T: new feature` added by @CreepySkeleton on 2020-02-01 12:14_
+
+---
+
+_Label `W: maybe` added by @CreepySkeleton on 2020-02-01 12:14_
+
+---
+
+_Comment by @pksunkara on 2020-02-01 20:02_
+
+I agree. This is very niche. You can use validators to achieve this.
+
+---
+
+_Comment by @CreepySkeleton on 2020-02-02 05:27_
+
+OK, let's be proactive here and close it. @Matelasse , you are free to reopen it.
+
+---
+
+_Closed by @CreepySkeleton on 2020-02-02 05:27_
+
+---

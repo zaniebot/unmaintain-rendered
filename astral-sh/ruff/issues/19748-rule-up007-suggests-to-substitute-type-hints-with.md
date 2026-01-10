@@ -1,0 +1,146 @@
+---
+number: 19748
+title: "Rule UP007 suggests to substitute type hints with Union with a pipe | even with Python 3.9"
+type: issue
+state: open
+author: JumboBear
+labels:
+  - question
+assignees: []
+created_at: 2025-08-04T18:41:27Z
+updated_at: 2025-08-04T19:19:31Z
+url: https://github.com/astral-sh/ruff/issues/19748
+synced_at: 2026-01-10T01:23:00Z
+---
+
+# Rule UP007 suggests to substitute type hints with Union with a pipe | even with Python 3.9
+
+---
+
+_Issue opened by @JumboBear on 2025-08-04 18:41_
+
+### Summary
+
+I found that in my code there was a potential part that Ruff would suggest to fix regarding the usage of type hints. The fix would substitute a type hint using Union with the new pipe operator even if the Python target version is still 3.9 and not 3.10 as [PEP 604](https://peps.python.org/pep-0604/) would allow. I suspect the rule that is affected is the UP007 but I am not sure.
+
+The following command list should explain everything by itself anyway.
+```
+# work on an empty directory
+cd $(mktemp -d)
+
+# ensure Python 3.9 is actually used inside a venv
+python3.9 -m venv .venv
+
+. ./.venv/bin/activate
+
+python --version
+Python 3.9.23
+
+# install Ruff
+pip install ruff
+
+ruff --version
+ruff 0.12.7
+
+# verify the minimal configuration that will show the rule
+cat ~/.config/ruff/ruff.toml
+# Assume Python 3.9
+target-version = "py39"
+
+lint.select = ["ALL"]
+lint.ignore = ["D", "T201"]
+
+# show the source
+cat test.py 
+from typing import Union
+
+
+def foo_bar() -> Union[str, int]:
+    print("foo")
+    return "bar"
+
+def main() -> None:
+    print(foo_bar())
+
+if __name__ == "__main__":
+    main()
+
+# check it actually works as intended
+python test.py 
+foo
+bar
+
+ruff check .
+test.py:4:18: FA100 Add `from __future__ import annotations` to simplify `typing.Union`
+  |
+4 | def foo_bar() -> Union[str, int]:
+  |                  ^^^^^ FA100
+5 |     print("foo")
+6 |     return "bar"
+  |
+  = help: Add `from __future__ import annotations`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+ruff check --fix --diff --unsafe-fixes .
+--- test.py
++++ test.py
+@@ -1,7 +1,7 @@
+-from typing import Union
++from __future__ import annotations
+ 
+ 
+-def foo_bar() -> Union[str, int]:
++def foo_bar() -> str | int:
+     print("foo")
+     return "bar"
+ 
+
+Would fix 5 errors.
+```
+
+
+This is the [playground](https://play.ruff.rs/7789df0c-3ba2-4293-b4cc-cf1b965b60df) with the same code.
+
+### Version
+
+ruff 0.12.7
+
+---
+
+_Comment by @ntBre on 2025-08-04 19:18_
+
+By selecting `ALL`, you also have [future-rewritable-type-annotation (FA100)](https://docs.astral.sh/ruff/rules/future-rewritable-type-annotation/#future-rewritable-type-annotation-fa100) selected. This allows Ruff to add the `from __future__ import annotations` import to the top of the file:
+
+```diff
+-from typing import Union
++from __future__ import annotations
+```
+
+which in turn allows the union to be rewritten. So I think this is working as intended. You can see this from the `ruff check` invocation, which only flags FA100. But after fixing that, UP007 can be fixed as well.
+
+With the `__future__` import, this code should be fine on Python 3.9:
+
+```pycon
+Python 3.9.21 (main, Feb 12 2025, 14:50:43)
+[Clang 19.1.6 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> def foo() -> str | int: ...
+...
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unsupported operand type(s) for |: 'type' and 'type'
+>>> from __future__ import annotations
+>>> def foo() -> str | int: ...
+...
+>>>
+```
+
+You can ignore `FA100` or use the [keep-runtime-typing](https://docs.astral.sh/ruff/settings/#lint_pyupgrade_keep-runtime-typing) setting mentioned in the [docs](https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/#options) to suppress this behavior.
+
+---
+
+_Label `question` added by @ntBre on 2025-08-04 19:19_
+
+---

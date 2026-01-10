@@ -1,0 +1,43 @@
+---
+number: 2694
+title: "Replace custom `Finder` with `Resolver` in `pip sync`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+created_at: 2024-03-27T16:20:54Z
+updated_at: 2024-03-27T21:36:39Z
+url: https://github.com/astral-sh/uv/issues/2694
+synced_at: 2026-01-10T01:23:20Z
+---
+
+# Replace custom `Finder` with `Resolver` in `pip sync`
+
+---
+
+_Issue opened by @charliermarsh on 2024-03-27 16:20_
+
+We see bug from time-to-time that only manifest themselves in `pip sync`. The issue is that `pip sync` uses a custom mini-resolver to take advantage of the fact that we expect versions to be pinned.
+
+I think the resolver is now optimized enough that this shouldn't really matter. Let's try removing the `Finder` and doing some basic benchmarking.
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-03-27 16:20_
+
+---
+
+_Label `internal` added by @charliermarsh on 2024-03-27 16:20_
+
+---
+
+_Referenced in [astral-sh/uv#2696](../../astral-sh/uv/pulls/2696.md) on 2024-03-27 17:22_
+
+---
+
+_Closed by @charliermarsh on 2024-03-27 21:36_
+
+---

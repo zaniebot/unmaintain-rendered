@@ -1,0 +1,171 @@
+---
+number: 2664
+title: Optional dependency missing compared to pip-compile from pip-tools
+type: issue
+state: closed
+author: mcarans
+labels:
+  - question
+assignees: []
+created_at: 2024-03-26T01:03:57Z
+updated_at: 2024-03-26T02:14:07Z
+url: https://github.com/astral-sh/uv/issues/2664
+synced_at: 2026-01-10T01:23:20Z
+---
+
+# Optional dependency missing compared to pip-compile from pip-tools
+
+---
+
+_Issue opened by @mcarans on 2024-03-26 01:03_
+
+uv pip compile seems to miss an optional dependency that pip-compile includes. You can reproduce:
+```
+echo pytest-cov > requirements.in
+pip-compile requirements.in 
+uv pip compile requirements.in
+```
+
+pip-compile gives:
+```
+coverage[toml]==7.4.4
+    # via pytest-cov
+iniconfig==2.0.0
+    # via pytest
+packaging==24.0
+    # via pytest
+pluggy==1.4.0
+    # via pytest
+pytest==8.1.1
+    # via pytest-cov
+pytest-cov==5.0.0
+    # via -r requirements.in
+```
+
+uv pip compile gives:
+```
+coverage==7.4.4
+    # via pytest-cov
+iniconfig==2.0.0
+    # via pytest
+packaging==24.0
+    # via pytest
+pluggy==1.4.0
+    # via pytest
+pytest==8.1.1
+    # via pytest-cov
+pytest-cov==5.0.0
+```
+
+pytest-cov has the following in its setup.py:
+```
+    install_requires=[
+        'pytest>=4.6',
+        'coverage[toml]>=5.2.1',
+    ],
+```
+
+I think that uv pip compile should include `coverage[toml]`
+
+I am running uv 0.1.24 and Python 3.11.6 on Kubuntu 23.10.
+
+Here is the verbose output:
+```
+> uv pip compile requirements.in --verbose 
+DEBUG Starting interpreter discovery for active Python
+INFO Found a virtualenv through VIRTUAL_ENV at: /tmp/test
+DEBUG Cached interpreter info for Python 3.11.6, skipping probing: test/bin/python
+DEBUG Using Python 3.11.6 interpreter at test/bin/python for builds
+DEBUG Using registry request timeout of 300s
+DEBUG Solving with target Python version 3.11.6
+DEBUG Adding direct dependency: pytest-cov*
+DEBUG Found stale response for: https://pypi.org/simple/pytest-cov/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pytest-cov/
+DEBUG No credentials found for: https://pypi.org/simple/pytest-cov/
+DEBUG Found not-modified response for: https://pypi.org/simple/pytest-cov/
+DEBUG Searching for a compatible version of pytest-cov (*)
+DEBUG Selecting: pytest-cov==5.0.0 (pytest_cov-5.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency: pytest>=4.6
+DEBUG Adding transitive dependency: coverage>=5.2.1
+DEBUG Adding transitive dependency: coverage[toml]>=5.2.1
+DEBUG Found stale response for: https://pypi.org/simple/pytest/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pytest/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/pytest/
+DEBUG No credentials found for: https://pypi.org/simple/pytest/
+DEBUG Found stale response for: https://pypi.org/simple/coverage/
+DEBUG Sending revalidation request for: https://pypi.org/simple/coverage/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/coverage/
+DEBUG No credentials found for: https://pypi.org/simple/coverage/
+DEBUG Found not-modified response for: https://pypi.org/simple/coverage/
+DEBUG Found not-modified response for: https://pypi.org/simple/pytest/
+DEBUG Searching for a compatible version of pytest (>=4.6)
+DEBUG Selecting: pytest==8.1.1 (pytest-8.1.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/4d/7e/c79cecfdb6aa85c6c2e3cf63afc56d0f165f24f5c66c03c695c4d9b84756/pytest-8.1.1-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency: iniconfig*
+DEBUG Adding transitive dependency: packaging*
+DEBUG Adding transitive dependency: pluggy>=1.4, <2.0
+DEBUG Found stale response for: https://pypi.org/simple/iniconfig/
+DEBUG Sending revalidation request for: https://pypi.org/simple/iniconfig/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/iniconfig/
+DEBUG No credentials found for: https://pypi.org/simple/iniconfig/
+DEBUG Found stale response for: https://pypi.org/simple/packaging/
+DEBUG Sending revalidation request for: https://pypi.org/simple/packaging/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/packaging/
+DEBUG No credentials found for: https://pypi.org/simple/packaging/
+DEBUG Found stale response for: https://pypi.org/simple/pluggy/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pluggy/
+DEBUG No credentials found for already-seen URL: https://pypi.org/simple/pluggy/
+DEBUG No credentials found for: https://pypi.org/simple/pluggy/
+DEBUG Searching for a compatible version of coverage[toml] (>=5.2.1)
+DEBUG Selecting: coverage[toml]==7.4.4 (coverage-7.4.4-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ab/1c/f8fefae78482f1998f7a9d68419b22089b5ce69a7e0fa0035827d2ce2206/coverage-7.4.4-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+DEBUG Searching for a compatible version of coverage (==7.4.4)
+DEBUG Selecting: coverage==7.4.4 (coverage-7.4.4-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+DEBUG Found not-modified response for: https://pypi.org/simple/pluggy/
+DEBUG Found not-modified response for: https://pypi.org/simple/iniconfig/
+DEBUG Found not-modified response for: https://pypi.org/simple/packaging/
+DEBUG Searching for a compatible version of iniconfig (*)
+DEBUG Selecting: iniconfig==2.0.0 (iniconfig-2.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a5/5b/0cc789b59e8cc1bf288b38111d002d8c5917123194d45b29dcdac64723cc/pluggy-1.4.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of packaging (*)
+DEBUG Selecting: packaging==24.0 (packaging-24.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/49/df/1fceb2f8900f8639e278b056416d49134fb8d84c5942ffaa01ad34782422/packaging-24.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pluggy (>=1.4, <2.0)
+DEBUG Selecting: pluggy==1.4.0 (pluggy-1.4.0-py3-none-any.whl)
+```
+
+---
+
+_Renamed from "Optional dependency missing compared to pip-compile" to "Optional dependency missing compared to pip-compile from pip-tools" by @mcarans on 2024-03-26 01:05_
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 01:17_
+
+They're actually no different, because `coverage[toml]` just means "add extra dependencies to `coverage`", but those extra dependencies are already included in the output -- so the extras (`[toml]`) is redundant.
+
+You can pass `--no-strip-extras` if you want to retain them, though this will also be `pip-compile`'s default in their next version.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-03-26 01:17_
+
+---
+
+_Comment by @mcarans on 2024-03-26 01:21_
+
+Thanks for the helpful explanation! Closing.
+
+---
+
+_Closed by @mcarans on 2024-03-26 01:21_
+
+---
+
+_Comment by @charliermarsh on 2024-03-26 02:14_
+
+No prob!
+
+---

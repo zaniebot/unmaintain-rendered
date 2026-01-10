@@ -1,0 +1,163 @@
+---
+number: 14451
+title: "uv build backend doesn't support PEP420 implicit namespace packages without __init__.py"
+type: issue
+state: closed
+author: karlicoss
+labels:
+  - question
+  - build-backend
+assignees: []
+created_at: 2025-07-03T23:31:17Z
+updated_at: 2025-07-04T14:48:08Z
+url: https://github.com/astral-sh/uv/issues/14451
+synced_at: 2026-01-10T01:25:45Z
+---
+
+# uv build backend doesn't support PEP420 implicit namespace packages without __init__.py
+
+---
+
+_Issue opened by @karlicoss on 2025-07-03 23:31_
+
+### Summary
+
+Here's a simple reproducer https://github.com/karlicoss/uv_build_pep420
+
+The package structure is just
+```
+pyproject.toml
+src/
+src/uv_build_pep420/
+src/uv_build_pep420/module.py
+```
+
+## What happens with `uv build`
+
+```
+$ uv build
+Building source distribution (uv build backend)...
+  × Failed to build `/path/to/uv_build_pep420`
+  ╰─▶ Expected a Python module at: `src/uv_build_pep420/__init__.py`
+```
+
+## Expecteed result:
+
+`uv_build` should be able to build the package.
+
+According to [PEP 420](https://peps.python.org/pep-0420/#specification), this is a valid implicit namespace package; e.g. something like this works when using setuptools/hatchling build backends (there are examples of configuration commented out `pyproject.toml`).
+
+E.g. hatchling results in the following wheel:
+
+```
+$ unzip -l uv_build_pep420-0.1.0-py3-none-any.whl
+Archive:  uv_build_pep420-0.1.0-py3-none-any.whl
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  02-02-2020 00:00   uv_build_pep420/module.py
+       83  02-02-2020 00:00   uv_build_pep420-0.1.0.dist-info/METADATA
+       87  02-02-2020 00:00   uv_build_pep420-0.1.0.dist-info/WHEEL
+      307  02-02-2020 00:00   uv_build_pep420-0.1.0.dist-info/RECORD
+---------                     -------
+      477                     4 files
+```
+
+It also works as expected in runtime:
+
+```
+uv run python3 -c 'import uv_build_pep420 as P; print(P.__path__)'
+_NamespacePath(['/path/to/uv_build_pep420/src/uv_build_pep420'])
+```
+
+I also tried using [`namespace`](https://docs.astral.sh/uv/reference/settings/#build-backend_namespace) option, but it doesn't see to make any difference.
+
+The documentation says `Build a PEP 420 implicit namespace package, allowing more than one root __init__.py` -- however in this case there aren't any `__init__.py` at all, so I wonder if it's just been an unhandled/forgotten case?
+
+## Related issues
+- https://github.com/astral-sh/uv/issues/12832
+- https://github.com/astral-sh/uv/pull/13833
+
+### Platform
+
+Darwin 24.3.0 arm64
+
+### Version
+
+uv 0.7.19 (38ee6ec80 2025-07-02)
+
+### Python version
+
+3.12.0
+
+---
+
+_Label `bug` added by @karlicoss on 2025-07-03 23:31_
+
+---
+
+_Comment by @charliermarsh on 2025-07-04 02:05_
+
+\cc @konstin 
+
+---
+
+_Label `build-backend` added by @konstin on 2025-07-04 08:02_
+
+---
+
+_Assigned to @konstin by @konstin on 2025-07-04 14:28_
+
+---
+
+_Comment by @konstin on 2025-07-04 14:40_
+
+This works for me by setting:
+
+```
+[tool.uv.build-backend]
+namespace = true
+```
+
+---
+
+We could extend the search namespace package to support single-file module in addition to directory modules, but this seems to be a rare enough case that `namespace = true` is fine here.
+
+---
+
+_Unassigned @konstin by @konstin on 2025-07-04 14:40_
+
+---
+
+_Label `bug` removed by @konstin on 2025-07-04 14:40_
+
+---
+
+_Label `question` added by @konstin on 2025-07-04 14:40_
+
+---
+
+_Comment by @karlicoss on 2025-07-04 14:47_
+
+Sorry, I'm an idiot, I've been putting `namespace = true` in the wrong section like this:
+```
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8"]
+build-backend = "uv_build"
+namespace = true
+```
+
+After using
+```
+[tool.uv.build-backend]
+namespace = true
+```
+, it works as expected! 
+
+Not sure if `uv` should complain about wrong attribute name in the `[build-system]` section (not sure if this section has a fixed schema?), but irrelevant to the issue here.
+Thanks!
+
+---
+
+_Closed by @karlicoss on 2025-07-04 14:47_
+
+---

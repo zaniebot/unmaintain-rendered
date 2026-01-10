@@ -1,0 +1,110 @@
+---
+number: 9383
+title: "Workspace packages are skipped in `uv sync --only-group [group]`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+created_at: 2024-11-23T14:42:53Z
+updated_at: 2024-11-26T02:56:16Z
+url: https://github.com/astral-sh/uv/issues/9383
+synced_at: 2026-01-10T01:24:40Z
+---
+
+# Workspace packages are skipped in `uv sync --only-group [group]`
+
+---
+
+_Issue opened by @charliermarsh on 2024-11-23 14:42_
+
+If the workspace package is _in_ `[group]`, it should still be installed.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-23 14:42_
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-11-23 14:42_
+
+---
+
+_Comment by @charliermarsh on 2024-11-23 14:43_
+
+(I haven't tested this, but it was reported on Discord.)
+
+---
+
+_Referenced in [astral-sh/uv#9385](../../astral-sh/uv/pulls/9385.md) on 2024-11-23 15:33_
+
+---
+
+_Label `bug` removed by @charliermarsh on 2024-11-23 15:33_
+
+---
+
+_Comment by @charliermarsh on 2024-11-23 15:33_
+
+I think we handle this correctly?
+
+---
+
+_Comment by @charliermarsh on 2024-11-23 15:48_
+
+It look like the case we don't handle is this:
+
+```toml
+[project]
+name = "htmst"
+version = "0.0.0"
+readme = "README.md"
+description = "HTML to AST"
+authors = [{ name = "Al Mahdi", email = "picometproject@gmail.com" }]
+license = { text = "MIT" }
+classifiers = [
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+test = ["htmst", "pytest==8.3.3"]
+dev = ["pre-commit==4.0.1", "pytest-watcher==0.4.3", "ruff==0.8.0"]
+```
+
+@srosen -- sorry to ping, but is this allowed in PEP 735? For a group to reference the project itself? (I know a project isn't guaranteed to exist in this context, but it does here.)
+
+---
+
+_Comment by @charliermarsh on 2024-11-23 17:04_
+
+As far as I can tell from the spec, this _is_ allowed, despite this section: https://peps.python.org/pep-0735/#why-not-support-a-dependency-group-which-includes-the-current-project. It's a bit strange, since you could also reference the current package with extras enabled.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-23 17:54_
+
+---
+
+_Label `needs-mre` removed by @charliermarsh on 2024-11-23 21:24_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-11-23 21:24_
+
+---
+
+_Closed by @charliermarsh on 2024-11-26 02:56_
+
+---
+
+_Closed by @charliermarsh on 2024-11-26 02:56_
+
+---

@@ -1,0 +1,437 @@
+---
+number: 3114
+title: Custom collections
+type: issue
+state: open
+author: epage
+labels:
+  - C-enhancement
+  - A-derive
+  - S-waiting-on-design
+assignees: []
+created_at: 2021-12-09T16:10:29Z
+updated_at: 2024-11-15T19:29:26Z
+url: https://github.com/clap-rs/clap/issues/3114
+synced_at: 2026-01-10T01:27:33Z
+---
+
+# Custom collections
+
+---
+
+_Issue opened by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/vorner"><img src="https://avatars.githubusercontent.com/u/11783500?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [vorner](https://github.com/vorner)**
+_Friday Mar 09, 2018 at 11:20 GMT_
+_Originally opened as https://github.com/TeXitoi/structopt/issues/79_
+
+----
+
+Hello
+
+I discovered I'm missing one use case of command line parsing. Something like the `-D` parameter of GCC, where you can do `-D NDEBUG=1` ‒ basically way to parse key-value pairs.
+
+I'm not sure if there needs to be some support from clap, but AFAIK clap just returns bunch of strings for each parameter (if multiple are allowed) and type-conversion is up to structop.
+
+So I was wondering, similar as structopt provides `Vec<T>`, it could be extended to either `Vec<(Key, Value)>` or `HashMap/BTreeMap<Key, Value>`.
+
+Does that make sense? Or is a better place to add such feature?
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Friday Mar 09, 2018 at 15:58 GMT_
+
+----
+
+You can do https://github.com/TeXitoi/structopt/blob/master/examples/keyvalue.rs
+
+It may be interesting to be able to choose to use a dedicated collection, but that's really not trivial to propose a great syntax. Maybe something like:
+
+```rust
+fn parse_key_val(s: &str) -> Result<(String, String), String> {
+    unimplemented!()
+}
+struct Opt {
+    #[structopt(short = "D", collect(try_from_str = "parse_key_val"))]
+    defines: HashMap<String, String>,
+}
+```
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/vorner"><img src="https://avatars.githubusercontent.com/u/11783500?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [vorner](https://github.com/vorner)**
+_Friday Mar 09, 2018 at 16:43 GMT_
+
+----
+
+I understand I can „force“ it to do what I want with custom functions and so on. My point was more about if structopt should be able to handle these out of the box. If there should be a way for it to recognize these other collections (sets could be easy) and do The Right Thing.
+
+But I admit I don't have a concrete idea how that should work exactly ‒ because I might want to specify how the separator looks like, or how to specify the parser for both left and right side. Maybe having a special-case of `(String, T)` and the parser would be for the right side only (as one part of the solution) and recognizing other collections other than Vec (trivial for sets, rewriting to parsing tuples for maps).
+
+Anyway, that's mostly brainstorming.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Friday Mar 09, 2018 at 16:58 GMT_
+
+----
+
+As structopt works at the macro level, there is no type information. You can't check if some type implement `FromIterator`, as I can't check if some type implement `From<OsStr>`. Thus only black magic can do that, and I don't want black magic in structopt.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/vorner"><img src="https://avatars.githubusercontent.com/u/11783500?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [vorner](https://github.com/vorner)**
+_Saturday Mar 10, 2018 at 07:58 GMT_
+
+----
+
+I understand you can't check if the type implements `FromIterator` or something. But still, it is possible to check for concrete types. I wasn't really thinking about black magic. There's a special case for `Option<T>` and for `Vec<T>` (there must be ‒ it sets options on clap), so I was thinking it would be possible to special-case `HashSet<T>` and `BTreeSet<T>` in the exactly same way as `Vec<T>` and `HashMap<String, T>`, `BTreeMap<String, T>`, `Vec<(String, T)>` with the key-value parsing. If you wanted, I could give it a try… but I don't have much free time, so it would be a while before I get to it.
+
+I understand having many special cases isn't good for the code. So if that wouldn't look good, does it make sense to provide some common parser functions as part of the library, so one could reuse them instead of implementing (I'm talking about the one from the example). The `collect(parser_fn)` thing didn't look bad either.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/pksunkara"><img src="https://avatars.githubusercontent.com/u/174703?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [pksunkara](https://github.com/pksunkara)**
+_Friday Jan 17, 2020 at 18:59 GMT_
+
+----
+
+What about adding support for `HashMap<K,V>` in clap? Wouldn't that be a better solution?
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [CreepySkeleton](https://github.com/CreepySkeleton)**
+_Saturday Jan 18, 2020 at 12:12 GMT_
+
+----
+
+I'm not a big fun of specializing types that are not in `prelude`. Specializing in proc-macros has it's own drawbacks.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Saturday Jan 18, 2020 at 12:23 GMT_
+
+----
+
+I agree, and I'd prefere to support all the collections implementing FromIterator.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [CreepySkeleton](https://github.com/CreepySkeleton)**
+_Saturday Jan 18, 2020 at 12:43 GMT_
+
+----
+
+Hey, @TeXitoi , care to join https://rust-lang.zulipchat.com/#narrow/stream/220302-wg-cli ?
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/pickfire"><img src="https://avatars.githubusercontent.com/u/4687791?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [pickfire](https://github.com/pickfire)**
+_Sunday Mar 29, 2020 at 14:17 GMT_
+
+----
+
+Any news on this?
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [TeXitoi](https://github.com/TeXitoi)**
+_Sunday Mar 29, 2020 at 14:26 GMT_
+
+----
+
+No, nothing new AFAIK.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/pickfire"><img src="https://avatars.githubusercontent.com/u/4687791?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [pickfire](https://github.com/pickfire)**
+_Sunday Mar 29, 2020 at 14:45 GMT_
+
+----
+
+@TeXitoi Can the automatic `Vec` handling act like a fallback so the parsing functions for `try_parse_str` could return `Result<Vec<T>, E>`?
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [CreepySkeleton](https://github.com/CreepySkeleton)**
+_Sunday Mar 29, 2020 at 14:46 GMT_
+
+----
+
+@pickfire Could you explain what you mean? A piece of pseudocode would help a lot
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/pickfire"><img src="https://avatars.githubusercontent.com/u/4687791?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [pickfire](https://github.com/pickfire)**
+_Sunday Mar 29, 2020 at 15:35 GMT_
+
+----
+
+```rust
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(..., try_from_str = parse_format_string)]
+    // without format: Format,
+    format: Vec<Token>,
+}
+
+// without fn parse_format_string(input: &str) -> Format {
+fn parse_format_string(input: &str) -> Vec<Token> {
+    ...
+}
+
+// without type Format = Vec<Token>;
+```
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [CreepySkeleton](https://github.com/CreepySkeleton)**
+_Sunday Mar 29, 2020 at 16:24 GMT_
+
+----
+
+This is not how validators in clap work: they check arguments one by one. `-> Vec<T>` is not gonna work.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/pickfire"><img src="https://avatars.githubusercontent.com/u/4687791?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [pickfire](https://github.com/pickfire)**
+_Sunday Mar 29, 2020 at 16:49 GMT_
+
+----
+
+No, I mean the function needs to return `Vec<T>` by just using one argument, like separating `,` or parsing a string into list of tokens.
+
+
+---
+
+_Comment by @epage on 2021-12-09 16:10_
+
+<a href="https://github.com/rustonaut"><img src="https://avatars.githubusercontent.com/u/7632017?v=4" align="left" width="48" height="48" hspace="10"></img></a> **Comment by [rustonaut](https://github.com/rustonaut)**
+_Tuesday Jan 12, 2021 at 01:16 GMT_
+
+----
+
+I believe a solution to "custom" collections should:
+
+- Allow different kinds of collections including map and set, but also custom data types.
+- Allow custom parsing value parsing (potentially splitting values in one or even multiple key 
+  value pairs)
+- Allow deciding how duplicate keys are handled (for a map collection). Should they replace the old value, error or merge the values for the same key in some manner.
+
+I think a good idea would be to first initialize a empty container (using some `default` like mechanism) and then fold all occurrences of given argument (value) into the empty container with a fallible folding function.
+
+For example something like following rust *sketch*:
+
+```rust
+use thiserror::Error;
+use std::collections::HashMap;
+
+[derive(Debug, StructOpt)[
+struct Options {
+    #[structopt(
+        short="k",
+        // implies takes_value=true,multiple=true
+        try_fold(fold_kv_map),
+    )]
+    kv_map: HashMap<String, String>
+}
+
+fn fold_kv_map(
+    mut state: HashMap<String, String>,
+    raw: &str
+) -> Result<HashMap<String, String>, Error> {
+    let (key, value) = parse_key_value(raw)?;
+    let old = state.insert(key.to_owned(), value.to_owned());
+    if old.is_some() {
+        Err(Error::DuplicateKey { key: key.to_owned() })
+    } else {
+        Ok(state)
+    }
+}
+
+#[derive(Debug, Error)]
+enum Error {
+    #[error("...")]
+    MalformedKVPair,
+    #[error("...")]
+    DuplicateKey { key: String }
+}
+```
+
+By default `Default::default()` is used to create the initial folding value.
+
+Alternatively something like:
+
+`#[structopt(try_fold(init=create_container, fold_kv_map)]`
+
+To not rely on `Default::default()`.
+
+EDIT: Shortened sketch example.
+
+
+------
+
+I myself have run recently into this issue when I needed arguments like `-k key:v1,v2 -k key2:v1,v4 -k key3` mapping to `HashMap<String, Vec<String>>` (with some parts like combining duplicate keys) which wouldn't nicely resolve with a   `FromIterator` based approach. As far as I can tell a folding based approach covers more or less all potential use cases, it's even usable with some `Settings: Default` struct with isn't a collection in the classical sense (not that you would normally need that).
+
+
+
+
+---
+
+_Label `A-derive` added by @epage on 2021-12-09 16:13_
+
+---
+
+_Label `C-enhancement` added by @epage on 2021-12-09 16:14_
+
+---
+
+_Label `S-triage` added by @epage on 2021-12-13 22:38_
+
+---
+
+_Comment by @stevefan1999-personal on 2022-06-17 09:22_
+
+This is a pretty good feature, as we can use it for directly deriving set relations with multiple values.
+
+Right now I have iterate through the vector then collect them as HashSet/BTreeSet which incurs extra allocation cost, although some may argue I can just use into_iter to consume the vector, this is not ergonomic to manually do this all the time from my perspective.
+
+Also, having set support would let us have a nice little feature to preempt errors early about duplicated values, by first cloning the vector (or the iterator) and then cast it into a set data structure. 
+
+Thanks to set theory, if the length of both container doesn't match, there must be duplicates. Based off this we can have more optimization opportunities such as saving the length of the original vector and then convert it into a set directly.
+
+---
+
+_Label `S-triage` removed by @epage on 2022-11-08 04:57_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2022-11-08 04:57_
+
+---
+
+_Comment by @valkum on 2023-02-13 16:35_
+
+I came up with the following solution for supporting a custom collection (even a little bit more advanced).
+Sadly, it requires a lot of manual implementations. Derive support would be really nice. Maybe allow the exclusion of the generation of the `FromArgMatches` impl and support for defining parse-time intermediate types (multiple occurrences end up in a Vec internally, so it makes sense to not have the final collection type stored in this internal Vec).
+
+https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=d2e25bdbfebd50d941b16a11cc1cd0c4
+
+---
+
+_Comment by @epage on 2023-02-13 16:54_
+
+> Sadly, it requires a lot of manual implementations. Derive support would be really nice
+
+The first step for general support is defining how users interact with it.  Ideally, we'd just leverage `FromIterator` on types but we'd need to know when to use `remove_many` + `FromIterator` instead of `remove_one` as currently the use of `remove_many` is controlled by the type being a `Vec`.
+
+Maybe #3912 or #4626 could help
+
+> Maybe allow the exclusion of the generation of the FromArgMatches impl 
+
+You are welcome to create an API proposal for this
+
+> support for defining parse-time intermediate types (multiple occurrences end up in a Vec internally, so it makes sense to not have the final collection type stored in this internal Vec).
+
+This would be more of an optimization than anything else.  I think it would be great to do eventually but it will be a lot of work and can come at the risk (depending on the implementation) of losing support for things like [`requires_if`](https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.requires_if) and friends
+
+---
+
+_Referenced in [clap-rs/clap#4626](../../clap-rs/clap/issues/4626.md) on 2023-02-13 18:24_
+
+---
+
+_Comment by @domenkozar on 2024-02-29 09:02_
+
+It would be great if I could parse `--option key value --option key value` into `HashMap<String, String>`.
+
+---
+
+_Comment by @kriswuollett on 2024-11-15 11:39_
+
+> [<img alt="" width="48" height="48" src="https://avatars.githubusercontent.com/u/5787066?v=4">](https://github.com/TeXitoi) **Comment by [TeXitoi](https://github.com/TeXitoi)** _Friday Mar 09, 2018 at 15:58 GMT_
+> 
+> You can do https://github.com/TeXitoi/structopt/blob/master/examples/keyvalue.rs
+> 
+> It may be interesting to be able to choose to use a dedicated collection, but that's really not trivial to propose a great syntax. Maybe something like:
+> 
+> ```rust
+> fn parse_key_val(s: &str) -> Result<(String, String), String> {
+>     unimplemented!()
+> }
+> struct Opt {
+>     #[structopt(short = "D", collect(try_from_str = "parse_key_val"))]
+>     defines: HashMap<String, String>,
+> }
+> ```
+
+Is deciding on a specific collection type, or allowing for customization, even necessary? Are there performance constraints for command-line parsing that discourage the requirement to move values from say a `HashMap` to a `BTreeMap` if the downstream app prefers? Let alone for those that want a `Vec<(String, String)>` instead for multi-value.
+
+Isn't `ArgMatches` a collection? The `--map=key=value` / `--map key=value`  / `--map key value` arguments look to me as a different way of encoding arguments to what `clap` calls a `Command`. From a near-term pragmatic point of view, there could be a `ArgMatchesValueParser` which is built literally from a `Command`. Probably behind a feature flag if distributed by `clap` itself to somewhat discourage usage until and if some better design is proposed. But at least it would evolve in sync with the rest of the code.
+
+As a user I still would probably want a simple string map value parser behind a feature flag to avoid copy and pasting the example in projects if validation isn't necessary or possible at command line argument parsing time.
+
+Longer term if the idea makes sense, it seems that some refactoring would be involved, but I don't have an idea nor opinion on how `clap` would represent what you could say in another programming language that something called like an `OptionList` is a subclass of `Command`, and `OptionMatches` is a subclass of `ArgMatches`.
+
+
+---
+
+_Comment by @epage on 2024-11-15 19:29_
+
+> Is deciding on a specific collection type, or allowing for customization, even necessary? Are there performance constraints for command-line parsing that discourage the requirement to move values from say a HashMap to a BTreeMap if the downstream app prefers? Let alone for those that want a Vec<(String, String)> instead for multi-value.
+
+We have baked in `Vec` today.  Other types could be useful in terms of (1) being more natural to express for their application or (2) better fitting their application domain.
+
+> Isn't ArgMatches a collection? The --map=key=value / --map key=value / --map key value arguments look to me as a different way of encoding arguments to what clap calls a Command. From a near-term pragmatic point of view, there could be a ArgMatchesValueParser which is built literally from a Command. Probably behind a feature flag if distributed by clap itself to somewhat discourage usage until and if some better design is proposed. But at least it would evolve in sync with the rest of the code.
+
+`ArgMatches` has a tight relationship to the parser and would be difficult to generalize.  If you are suggesting user-provided `ArgMatchesValueParser`, then that would also be a very heavy-handed solution for what is being discussed here.  If you are suggesting the derive generate the implemetnation to cut out the `ArgMatches` middleman, that is an interesting idea but we would still need a solution for how to populate the users fields.
+
+---

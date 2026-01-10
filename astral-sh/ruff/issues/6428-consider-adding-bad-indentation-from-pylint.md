@@ -1,0 +1,57 @@
+---
+number: 6428
+title: "Consider adding \"bad indentation\" (from pylint)"
+type: issue
+state: closed
+author: NeilGirdhar
+labels: []
+assignees: []
+created_at: 2023-08-08T15:19:56Z
+updated_at: 2023-08-08T18:46:43Z
+url: https://github.com/astral-sh/ruff/issues/6428
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Consider adding "bad indentation" (from pylint)
+
+---
+
+_Issue opened by @NeilGirdhar on 2023-08-08 15:19_
+
+Consider:
+```python
+class X:
+        x: int
+```
+Pylint says:
+```
+************* Module a
+a.py:2:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+```
+but Ruff says nothing.
+
+Could we consider adding a bad indentation rule?  That might also necessitate adding a setting for "indentation" (like line-length).
+
+---
+
+_Comment by @153957 on 2023-08-08 15:41_
+
+This is also tracked by https://github.com/astral-sh/ruff/issues/970
+
+---
+
+_Comment by @NeilGirdhar on 2023-08-08 16:51_
+
+@153957 Ah, my mistake.  I searched for issues, but forgot about that one.  Should we close this then?
+
+---
+
+_Comment by @zanieb on 2023-08-08 18:46_
+
+Thanks!
+
+---
+
+_Closed by @zanieb on 2023-08-08 18:46_
+
+---

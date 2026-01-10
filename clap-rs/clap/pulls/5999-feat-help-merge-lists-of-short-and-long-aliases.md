@@ -1,0 +1,50 @@
+---
+number: 5999
+title: "feat(help): Merge lists of short and long aliases"
+type: pull_request
+state: merged
+author: cenviity
+labels: []
+assignees: []
+merged: true
+base: master
+head: push-tqqzyttsoktu
+created_at: 2025-05-11T10:35:38Z
+updated_at: 2025-06-05T08:50:24Z
+url: https://github.com/clap-rs/clap/pull/5999
+synced_at: 2026-01-10T01:28:26Z
+---
+
+# feat(help): Merge lists of short and long aliases
+
+---
+
+_Pull request opened by @cenviity on 2025-05-11 10:35_
+
+Short aliases are displayed before long aliases, consistent with the order of the short and long argument variants at the start of each line.
+
+Based on [this suggestion][1] from @epage.
+
+[1]: https://github.com/clap-rs/clap/pull/5996#discussion_r2083363726
+
+---
+
+_Review comment by @epage on `clap_builder/src/output/help_template.rs`:798 on 2025-05-23 18:07_
+
+How about we simplify this down so that we always log the `debug!` messages and `extend` so we don't need peeking?
+
+---
+
+_@epage reviewed on 2025-05-23 18:07_
+
+---
+
+_@cenviity reviewed on 2025-05-26 06:34_
+
+---
+
+_Review comment by @cenviity on `clap_builder/src/output/help_template.rs`:798 on 2025-05-26 06:34_
+
+Done.
+
+---

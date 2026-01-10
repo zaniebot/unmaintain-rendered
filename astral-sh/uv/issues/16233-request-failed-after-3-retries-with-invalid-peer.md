@@ -1,0 +1,57 @@
+---
+number: 16233
+title: "Request failed after 3 retries with \"invalid peer certificate: UnknownIssuer\""
+type: issue
+state: open
+author: aswordok
+labels:
+  - question
+assignees: []
+created_at: 2025-10-10T15:52:53Z
+updated_at: 2025-10-10T15:55:37Z
+url: https://github.com/astral-sh/uv/issues/16233
+synced_at: 2026-01-10T01:26:04Z
+---
+
+# Request failed after 3 retries with "invalid peer certificate: UnknownIssuer"
+
+---
+
+_Issue opened by @aswordok on 2025-10-10 15:52_
+
+D:\+AI\uv\312>uv venv
+error: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.12.11%2B20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20251007/cpython-3.12.11%2B20251007-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+
+这里给大家提供一个解决方法，事实上 我用浏览器下载上面这个文件，一点问题也没有，为什么出错呢？很可能是延迟太高，解析太慢，uv给的超时时间太短了。
+先从这里找到一个最快的代理 https://github.akams.cn/
+我炮制了这样一个链接 [https://jiashu.1win.eu.org/https://github.com/astral-sh/python-build-standalone/releases/download](https://jiashu.1win.eu.org/https:/github.com/astral-sh/python-build-standalone/releases/download)
+然后
+D:+AI\uv\312>set UV_PYTHON_INSTALL_MIRROR=https://jiashu.1win.eu.org/https://github.com/astral-sh/python-build-standalone/releases/download
+D:\+AI\uv\312>setx UV_PYTHON_INSTALL_MIRROR "https://jiashu.1win.eu.org/https://github.com/astral-sh/python-build-standalone/releases/download"
+就解决问题了。
+
+---
+
+_Comment by @zanieb on 2025-10-10 15:55_
+
+> Caused by: invalid peer certificate: UnknownIssuer
+
+There's a problem with a proxy, I presume? You might want to search for other TLS / UnknownIssuer issues. You may want to use `--native-tls`.
+
+---
+
+_Label `question` added by @zanieb on 2025-10-10 15:55_
+
+---
+
+_Renamed from "Request failed after 3 retries" to "Request failed after 3 retries with "invalid peer certificate: UnknownIssuer"" by @zanieb on 2025-10-10 15:55_
+
+---
+
+_Referenced in [astral-sh/uv#16235](../../astral-sh/uv/issues/16235.md) on 2025-10-10 15:56_
+
+---

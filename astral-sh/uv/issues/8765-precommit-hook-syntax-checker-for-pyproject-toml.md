@@ -1,0 +1,74 @@
+---
+number: 8765
+title: "precommit-hook: Syntax checker for pyproject.toml - equivalent for \"poetry check\""
+type: issue
+state: open
+author: woutervh
+labels:
+  - wish
+assignees: []
+created_at: 2024-11-02T14:21:43Z
+updated_at: 2024-11-05T13:28:47Z
+url: https://github.com/astral-sh/uv/issues/8765
+synced_at: 2026-01-10T01:24:32Z
+---
+
+# precommit-hook: Syntax checker for pyproject.toml - equivalent for "poetry check"
+
+---
+
+_Issue opened by @woutervh on 2024-11-02 14:21_
+
+Using uv 0.4.29
+
+I went through the docs, but I did not find an equivalent for "poetry check" that check for syntax errors in pyproject.toml.
+
+
+imagine a typo in a required key of pyproject.toml:
+```
+[project]
+nameZ = "foo"
+
+```
+
+resulting in errors like:
+````
+> 
+uv lock
+error: Failed to parse: `pyproject.toml`
+  Caused by: `pyproject.toml` is using the `[project]` table, but the required `project.name` field is not set
+  Caused by: TOML parse error at line 17, column 1
+   |
+17 | [project]
+   | ^^^^^^^^^
+missing field `name`
+
+```
+
+
+Poetry has a check-command that check the syntax of pyproject.toml
+```
+ > poetry check
+The Poetry configuration is invalid:
+  - The fields ['name'] are required in package mode.
+  - Additional properties are not allowed ('_name' was unexpected)
+
+```
+
+Use-case: precommit-hooks
+
+
+
+
+
+---
+
+_Label `wish` added by @charliermarsh on 2024-11-02 16:48_
+
+---
+
+_Comment by @tcoliver on 2024-11-05 13:27_
+
+I've been using `uv lock --dry-run >/dev/null 2>&1` for uses like this, but I agree an explicit command would be a good improvement. 
+
+---

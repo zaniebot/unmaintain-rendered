@@ -1,0 +1,94 @@
+---
+number: 4890
+title: Bug with install Numpy
+type: issue
+state: closed
+author: 17Reset
+labels:
+  - question
+assignees: []
+created_at: 2024-07-08T12:42:28Z
+updated_at: 2024-07-09T17:45:54Z
+url: https://github.com/astral-sh/uv/issues/4890
+synced_at: 2026-01-10T01:23:42Z
+---
+
+# Bug with install Numpy
+
+---
+
+_Issue opened by @17Reset on 2024-07-08 12:42_
+
+```
+× No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of numpy are available:
+          numpy<1.26.4
+          numpy>=1.27.dev0
+      and you require numpy>=1.26.4,<1.27.dev0, we can conclude that the requirements are unsatisfiable.
+
+      hint: numpy was requested with a pre-release marker (e.g., numpy>=1.26.4,<1.27.dev0), but pre-releases
+      weren't enabled (try: `--prerelease=allow`)
+ ```
+
+---
+
+_Comment by @charliermarsh on 2024-07-08 13:23_
+
+Can you mind providing more information? E.g.:
+
+- The command you ran
+- The `uv` version
+- The input requirements
+- The output of running with the `--verbose` flag
+
+---
+
+_Label `needs-mre` added by @charliermarsh on 2024-07-08 13:24_
+
+---
+
+_Comment by @17Reset on 2024-07-09 07:14_
+
+1. I encountered this problem when I deployed llama.cpp
+2. The latest version of uv used
+3. Command used:
+```
+uv venv llm_venv_llamacpp && source llm_venv_llamacpp/bin/activate
+git clone https://github.com/ggerganov/llama.cpp.git
+cd llama.cpp
+uv pip install --no-cache --requirement requirements.txt
+```
+
+---
+
+_Comment by @charliermarsh on 2024-07-09 17:45_
+
+You need to run with `--index-strategy unsafe-first-match`. The issue is that one of those requirements adds an extra index for PyTorch, and the PyTorch index includes NumPy but not at the requested version.
+
+---
+
+_Comment by @charliermarsh on 2024-07-09 17:45_
+
+See https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#packages-that-exist-on-multiple-indexes for more.
+
+---
+
+_Closed by @charliermarsh on 2024-07-09 17:45_
+
+---
+
+_Label `needs-mre` removed by @charliermarsh on 2024-07-09 17:45_
+
+---
+
+_Label `question` added by @charliermarsh on 2024-07-09 17:45_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-09 17:45_
+
+---
+
+_Referenced in [astral-sh/uv#5681](../../astral-sh/uv/issues/5681.md) on 2024-08-01 07:27_
+
+---

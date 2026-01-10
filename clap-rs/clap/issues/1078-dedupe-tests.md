@@ -1,0 +1,118 @@
+---
+number: 1078
+title: Dedupe Tests
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - E-medium
+  - E-help-wanted
+  - E-easy
+assignees: []
+created_at: 2017-10-24T19:46:29Z
+updated_at: 2021-12-08T20:05:25Z
+url: https://github.com/clap-rs/clap/issues/1078
+synced_at: 2026-01-10T01:26:43Z
+---
+
+# Dedupe Tests
+
+---
+
+_Issue opened by @kbknapp on 2017-10-24 19:46_
+
+The test suite could use some massive amounts of de-duping. This could include everything from simply creating some common functions (per file) so calls to build `App`s are not duplicated, to simply removing some tests which all test the exact same functionality.
+
+As for removing tests wholesale which are covered by other tests, I *do* want to be careful and make sure we don't remove any tests with duplicate functionality where the duplication is happenstance. So we'll need to be careful with that one. 
+
+I'm also willing to mentor people in this effort, and merge PRs in partial form (i.e. only a few tests were deduped, not the entire suite).
+
+---
+
+_Label `C: tests` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `D: easy` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `E: tedious` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `good first issue` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `help wanted` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `M: mentored` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `P4: nice to have` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `T: refactor` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Label `W: 2.x` added by @kbknapp on 2017-10-24 19:46_
+
+---
+
+_Comment by @kbknapp on 2017-10-26 20:49_
+
+Using [assert_cli](https://github.com/killercup/assert_cli) would be awesome!
+
+---
+
+_Comment by @kbknapp on 2017-11-06 18:00_
+
+I tried playing with `assert_cli` a little, and for the internal clap tests it's difficult because we're not just running a single binary, it's the test binary that's generated. However, there probably still are so many places it could be used.
+
+---
+
+_Comment by @ghost on 2018-01-11 17:34_
+
+I'd like to give this a shot this weekend if classes and work allow.
+
+---
+
+_Label `W: 3.x` added by @kbknapp on 2018-07-22 02:47_
+
+---
+
+_Label `W: 2.x` removed by @kbknapp on 2018-07-22 02:47_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-04-09 07:14_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Removed from milestone `3.0` by @epage on 2021-10-16 18:11_
+
+---
+
+_Referenced in [epage/clapng#81](../../epage/clapng/issues/81.md) on 2021-12-06 16:36_
+
+---
+
+_Comment by @epage on 2021-12-08 20:05_
+
+imo we should instead just refactor as we go or have more specific feedback for test changes.  Closing this out.
+
+---
+
+_Closed by @epage on 2021-12-08 20:05_
+
+---

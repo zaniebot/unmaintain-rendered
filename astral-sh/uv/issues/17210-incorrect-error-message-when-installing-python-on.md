@@ -1,0 +1,49 @@
+---
+number: 17210
+title: Incorrect error message when installing Python on armv7l
+type: issue
+state: open
+author: zanieb
+labels: []
+assignees: []
+created_at: 2025-12-21T21:46:34Z
+updated_at: 2025-12-22T00:49:06Z
+url: https://github.com/astral-sh/uv/issues/17210
+synced_at: 2026-01-10T01:26:15Z
+---
+
+# Incorrect error message when installing Python on armv7l
+
+---
+
+_Issue opened by @zanieb on 2025-12-21 21:46_
+
+> Looks like the [latest release in `astral-sh/python-build-standalone`](https://github.com/astral-sh/python-build-standalone/releases/tag/20250828) includes "dynamically linked aarch64 musl builds"! 🥳
+> 
+> Does this (and the fact that this issue is closed) mean that the following shouldn't happen?
+> 
+> ```
+> bash-5.2$ uv self version
+> uv 0.9.18
+> bash-5.2$ uv python install 3.12
+> error: uv does not yet provide musl Python distributions on aarch64.
+> bash-5.2$ uname -a
+> Linux OpenWrt 6.6.73 #0 SMP Mon Feb  3 23:09:37 2025 armv7l GNU/Linux
+> bash-5.2$
+> ```
+> 
+> Or is there another blocker to what I'm trying to do? (Install python via uv on openwrt running on a linksys wrt3200acm) 
+
+ _Originally posted by @kopf in [#6890](https://github.com/astral-sh/uv/issues/6890#issuecomment-3678691975)_
+
+---
+
+_Referenced in [astral-sh/uv#17213](../../astral-sh/uv/pulls/17213.md) on 2025-12-22 00:42_
+
+---
+
+_Comment by @dijor0310 on 2025-12-22 00:49_
+
+Opened a PR, please take a look. From what I can tell, we can now just remove the custom error handling block, as uv now **does** support musl distributions on aarch64. Let me know if I'm missing something :)
+
+---

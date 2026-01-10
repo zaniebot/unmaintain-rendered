@@ -1,0 +1,89 @@
+---
+number: 8723
+title: Pin package to pypi index?
+type: issue
+state: closed
+author: TheWizier
+labels:
+  - question
+assignees: []
+created_at: 2024-10-31T13:26:36Z
+updated_at: 2024-10-31T15:25:30Z
+url: https://github.com/astral-sh/uv/issues/8723
+synced_at: 2026-01-10T01:24:32Z
+---
+
+# Pin package to pypi index?
+
+---
+
+_Issue opened by @TheWizier on 2024-10-31 13:26_
+
+Hey, I have encountered an issue where we have a package on our private package index that was published to pypi and further developed. So naturally UV refuses to install the newer version from pypi as it sees that we have an older version on our index. How can I pin the package to the pypi index?
+
+Here is an example to perhaps make it more clear:
+[project]
+...
+dependencies = [
+    "some-pkg >= 1.2",
+]
+
+[tool.uv.sources]
+some-pkg = { index = "our_index" }
+problematic-pkg= { index = "pyPI" } # I want to pin this to pypi as it exists in both our_index and on pypi
+
+[[tool.uv.index]]
+name = "our_index"
+url = "https://git..."
+
+[tool.uv]
+dev-dependencies = [
+"problematic-pkg >= 1.4"
+]
+
+(uv 0.4.25 linux)
+
+---
+
+_Comment by @charliermarsh on 2024-10-31 13:30_
+
+I would suggest creating a named PyPI index, like:
+
+```toml
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+explicit = true
+
+[tool.uv.sources]
+some-pkg = { index = "our_index" }
+problematic-pkg= { index = "pypi" }
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2024-10-31 13:50_
+
+---
+
+_Comment by @TheWizier on 2024-10-31 15:11_
+
+Thanks that worked like a charm! Any gotchas I should be aware of with this or is this completely safe?
+
+---
+
+_Comment by @charliermarsh on 2024-10-31 15:18_
+
+Should be totally safe, it'll only be used for that one dependency since it's marked as `explicit = true`.
+
+---
+
+_Comment by @TheWizier on 2024-10-31 15:25_
+
+OK, thanks!
+
+---
+
+_Closed by @TheWizier on 2024-10-31 15:25_
+
+---

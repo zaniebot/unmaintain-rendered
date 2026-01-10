@@ -1,0 +1,190 @@
+---
+number: 1335
+title: Support excluding a subcommand from shell completion
+type: issue
+state: closed
+author: kpcyrd
+labels:
+  - C-bug
+  - A-completion
+  - E-help-wanted
+  - E-easy
+assignees: []
+created_at: 2018-08-27T21:39:29Z
+updated_at: 2024-08-10T00:34:55Z
+url: https://github.com/clap-rs/clap/issues/1335
+synced_at: 2026-01-10T01:26:49Z
+---
+
+# Support excluding a subcommand from shell completion
+
+---
+
+_Issue opened by @kpcyrd on 2018-08-27 21:39_
+
+### Feature Request Summary
+
+I would like to exclude some subcommands from the generated shell completion. For example, the command to generate those completions is usually only used during installation and shouldn't be suggested to the user. I've managed to hide the subcommand from the help text with `AppSettings::Hidden`, but it's still included in the shell completion.
+
+### Expected Behavior Summary
+
+`foo <tab><tab>`
+
+All commands that are marked with `AppSettings::Hidden` are not suggested
+
+### Actual Behavior Summary
+
+`foo <tab><tab>`
+
+All commands are suggested.
+
+---
+
+_Label `C: completion gen` added by @CreepySkeleton on 2020-02-02 07:23_
+
+---
+
+_Label `C: subcommands` added by @CreepySkeleton on 2020-02-02 07:23_
+
+---
+
+_Label `help wanted` added by @CreepySkeleton on 2020-02-02 07:23_
+
+---
+
+_Label `W: 3.x` added by @CreepySkeleton on 2020-02-02 07:25_
+
+---
+
+_Added to milestone `3.1` by @CreepySkeleton on 2020-02-02 07:25_
+
+---
+
+_Label `W: 3.x` removed by @pksunkara on 2021-08-13 10:40_
+
+---
+
+_Referenced in [epage/clapng#100](../../epage/clapng/issues/100.md) on 2021-12-06 17:36_
+
+---
+
+_Referenced in [gleam-lang/gleam#1374](../../gleam-lang/gleam/pulls/1374.md) on 2021-12-07 06:44_
+
+---
+
+_Label `C: subcommands` removed by @epage on 2021-12-08 20:13_
+
+---
+
+_Comment by @epage on 2021-12-08 20:14_
+
+Related:
+- https://github.com/clap-rs/clap/issues/2541
+
+---
+
+_Removed from milestone `3.1` by @epage on 2021-12-08 20:14_
+
+---
+
+_Label `E-easy` added by @epage on 2021-12-09 18:37_
+
+---
+
+_Label `C-bug` added by @epage on 2021-12-09 18:37_
+
+---
+
+_Referenced in [clap-rs/clap#2541](../../clap-rs/clap/issues/2541.md) on 2021-12-10 16:28_
+
+---
+
+_Comment by @pksunkara on 2021-12-10 16:30_
+
+Ideally, we would want this to be configured while creating the generator, but there's a lot more generation related work we would want to look at first to see if the current code is viable for future or not.
+
+---
+
+_Comment by @epage on 2022-07-19 14:17_
+
+See also #3951 for native completion support
+
+---
+
+_Referenced in [clap-rs/clap#4265](../../clap-rs/clap/issues/4265.md) on 2022-09-26 22:02_
+
+---
+
+_Referenced in [clap-rs/clap#4853](../../clap-rs/clap/issues/4853.md) on 2023-04-21 14:09_
+
+---
+
+_Referenced in [JuliaLang/juliaup#789](../../JuliaLang/juliaup/issues/789.md) on 2024-01-15 10:30_
+
+---
+
+_Comment by @fingolfin on 2024-01-15 12:37_
+
+This issue has labels marking it as "easy" and "help wanted". But at the same time it sounds like there are open fundamental questions about whether you want it: e.g. from issue #2541 @pksunkara said Jun 17, 2021:
+> Need the version you are looking at because this is fixed in master.
+
+and then in Dec 10, 2021:
+> I think we went back on the decision regarding this and are currently generating hidden subcommands too.
+
+And earlier on this issue, also on Dec 10, 2021
+> Ideally, we would want this to be configured while creating the generator, but there's a lot more generation related work we would want to look at first to see if the current code is viable for future or not.
+
+
+So... which is it, is this "easy" and "help wanted", or is there in contrast actually need for design work and experiments and what not? In other words, if someone made a PR for this, would it actually have a chance of being merged?
+
+---
+
+_Label `E-help-wanted` removed by @epage on 2024-01-15 22:08_
+
+---
+
+_Label `E-easy` removed by @epage on 2024-01-15 22:08_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2024-01-15 22:08_
+
+---
+
+_Label `S-waiting-on-design` removed by @epage on 2024-01-15 22:14_
+
+---
+
+_Label `E-help-wanted` added by @epage on 2024-01-15 22:14_
+
+---
+
+_Label `E-easy` added by @epage on 2024-01-15 22:14_
+
+---
+
+_Comment by @epage on 2024-01-15 22:16_
+
+Its been a couple years and I unfortunately didn't take enough notes here.  I think it'd be reasonable to emulate what we can from the proposal in #3951 would be reasonable.  That basically means (1) don't suggest hidden items but (2) complete within them where we can.  The part we likely can't emulate is "complete the hidden item if its the only choice left".
+
+---
+
+_Comment by @kpcyrd on 2024-01-16 18:34_
+
+For my specific use case it would be fine to have it fully excluded, without the need for (2). (however I wouldn't mind having (2)).
+
+The subcommand is `foo generate-completions ...` and probably only ever used when generating a package. It's useful to have this subcommand available but the user would likely never want to invoke it themselves (if they really want to they could however).
+
+---
+
+_Comment by @epage on 2024-08-10 00:34_
+
+This was resolved in #5549.  When using `clap_complete::dynamic`, we only show hidden subcommands if there is no other valid completion option.
+
+To track stabilization, see #3166
+
+---
+
+_Closed by @epage on 2024-08-10 00:34_
+
+---

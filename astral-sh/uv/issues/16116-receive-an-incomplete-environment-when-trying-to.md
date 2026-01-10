@@ -1,0 +1,137 @@
+---
+number: 16116
+title: Receive an incomplete environment when trying to install packaging==25.0
+type: issue
+state: closed
+author: tqa236
+labels:
+  - question
+assignees: []
+created_at: 2025-10-03T17:25:54Z
+updated_at: 2025-10-06T17:21:52Z
+url: https://github.com/astral-sh/uv/issues/16116
+synced_at: 2026-01-10T01:26:03Z
+---
+
+# Receive an incomplete environment when trying to install packaging==25.0
+
+---
+
+_Issue opened by @tqa236 on 2025-10-03 17:25_
+
+### Summary
+
+# Description
+
+In a new venv, it works normally when I tried  `uv pip install packaging==24.1`,  inside the installed location, it also looks complete
+
+```
+__init__.py    _structures.py  requirements.py
+_elffile.py    _tokenizer.py   specifiers.py
+_manylinux.py  markers.py      tags.py
+_musllinux.py  metadata.py     utils.py
+_parser.py     py.typed        version.py
+```
+
+However, also in a new venv, when I tried `uv pip install packaging==25.0`,  inside the installed location, a lot of files seem to be missing
+
+```
+__init__.py  _structures.py  licenses  version.py
+```
+
+In addition, there's a warning that looks somewhat related
+
+```
+warning: Failed to uninstall package at test/lib/python3.12/site-packages/packaging-25.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
+```
+
+# Expected behavior
+
+`uv pip install packaging==25.0` correctly installs `packaging==25.0`
+
+### Platform
+
+WSL (Ubuntu Questing Quokka (development branch)) on Windows 11 x86_64
+
+### Version
+
+uv 0.8.22
+
+### Python version
+
+happens across Python 3.10-13
+
+---
+
+_Label `bug` added by @tqa236 on 2025-10-03 17:25_
+
+---
+
+_Referenced in [python/typeshed#14827](../../python/typeshed/issues/14827.md) on 2025-10-03 17:28_
+
+---
+
+_Comment by @konstin on 2025-10-06 10:29_
+
+Does `uv cache clean` fix this?
+
+---
+
+_Comment by @tqa236 on 2025-10-06 17:05_
+
+hi @konstin, thank you for the tip. Before I had a chance to try your solution, I updated to `uv==0.8.23` and face a somewhat puzzling behavior below, when `uv` is not found inside a virtual environment. Do you know what happens there and how can I overcome it? Thank you very much.
+
+```bash
+(default) ➜  venv uv --version
+uv 0.8.23
+(default) ➜  venv uv venv test2
+Using CPython 3.12.6
+Creating virtual environment at: test2
+Activate with: source test2/bin/activate
+(default) ➜  venv source test2/bin/activate
+(test2) ➜  venv uv --version
+zsh: command not found: uv
+```
+
+---
+
+_Comment by @konstin on 2025-10-06 17:06_
+
+How did you install uv? What does `which uv` say?
+
+---
+
+_Comment by @tqa236 on 2025-10-06 17:08_
+
+@konstin I used `curl -LsSf https://astral.sh/uv/install.sh | sh`. The situation persists after I uninstalled and reinstalled too
+
+```
+> which uv
+/path/to/home/.local/bin/uv
+```
+
+---
+
+_Comment by @tqa236 on 2025-10-06 17:15_
+
+@konstin wanna let you know that I figured that out. I had a remnant `. "$HOME/.cargo/env"` in `.zshrc` that somehow is conflicted with  `. "$HOME/.local/bin/env"`. Now I have `uv` within my env
+
+---
+
+_Comment by @tqa236 on 2025-10-06 17:17_
+
+`uv cache clean` solves my problem too, thank you very much. Please feel free to close the issue.
+
+---
+
+_Label `bug` removed by @konstin on 2025-10-06 17:21_
+
+---
+
+_Label `question` added by @konstin on 2025-10-06 17:21_
+
+---
+
+_Closed by @konstin on 2025-10-06 17:21_
+
+---

@@ -1,0 +1,65 @@
+---
+number: 14305
+title: "[red-knot] Asserts on invalid match pattern"
+type: issue
+state: closed
+author: sharkdp
+labels:
+  - ty
+assignees: []
+created_at: 2024-11-13T08:08:17Z
+updated_at: 2024-11-13T19:31:56Z
+url: https://github.com/astral-sh/ruff/issues/14305
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# [red-knot] Asserts on invalid match pattern
+
+---
+
+_Issue opened by @sharkdp on 2024-11-13 08:08_
+
+Red knot currently runs into a failing debug assertion on the following invalid match pattern:
+```py
+match some_int:
+    case x:=2:
+        pass
+```
+
+The [way this is parsed](https://play.ruff.rs/cc7622ca-7608-4112-b92e-15628c397c1a) is interesting. The first part
+```py
+match some_int:
+    case x:
+```
+is parsed as a `Match`. So far, so good. But then the next part (`=2:`) is parsed as an assignment statement with a type annotation (`AnnAssign`). Strangely, it contains `2` as the *target* of the assignment. And an empty `Name` for the annotation (with `ExprContext::Invalid`, which is what triggers the assertion). It's unclear to me if this could be improved in the parser, but it should definitely be fixed in red knot.
+
+---
+
+_Label `red-knot` added by @sharkdp on 2024-11-13 08:08_
+
+---
+
+_Assigned to @sharkdp by @sharkdp on 2024-11-13 08:08_
+
+---
+
+_Referenced in [astral-sh/ruff#14306](../../astral-sh/ruff/pulls/14306.md) on 2024-11-13 08:12_
+
+---
+
+_Comment by @MichaReiser on 2024-11-13 08:32_
+
+Just for context
+
+For recovery, there are two important constraints:
+
+1. The parser must generate a valid AST. Meaning, recovery is constraint by whatever can be represented in the AST (and adding more constraints to the AST adds more constraints to how well the parser can recover)
+2. The parser should not discard any tokens, or worse,  nodes, or even entire subtrees. This can help with round-tripping to avoid accidentally deleting code. It also allows downstream tools to make some more assumptions about how the code looks (there's no surprise that the case contains a `=2` between the colon
+
+I suspect that these two constraints are the reason why the parser recovers somewhat awkwardly for this given example. 
+
+---
+
+_Closed by @sharkdp on 2024-11-13 09:07_
+
+---

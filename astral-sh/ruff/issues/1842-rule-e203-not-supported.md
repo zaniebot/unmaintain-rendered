@@ -1,0 +1,73 @@
+---
+number: 1842
+title: Rule E203 not supported? 
+type: issue
+state: closed
+author: gabohc
+labels: []
+assignees: []
+created_at: 2023-01-13T01:45:12Z
+updated_at: 2023-03-23T16:58:22Z
+url: https://github.com/astral-sh/ruff/issues/1842
+synced_at: 2026-01-10T01:22:39Z
+---
+
+# Rule E203 not supported? 
+
+---
+
+_Issue opened by @gabohc on 2023-01-13 01:45_
+
+When running flake8-to-ruff, it warns that 'E203'  is an unsupported prefix code. The docs say that ruff supports pycodestyle rules E (https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes).
+
+Am I missing something here?
+
+---
+
+_Comment by @charliermarsh on 2023-01-13 01:52_
+
+No, that's right! [We don't support some of the E-level rules that are made redundant by Black.](https://github.com/charliermarsh/ruff#how-does-ruff-compare-to-flake8)
+
+And here's a [link](https://github.com/charliermarsh/ruff#pycodestyle-e-w) to the E-level rules that we do support.
+
+This work is being tracked in https://github.com/charliermarsh/ruff/issues/1073.
+
+---
+
+_Closed by @charliermarsh on 2023-01-13 01:52_
+
+---
+
+_Comment by @gabohc on 2023-01-13 01:54_
+
+Oh, thanks, I was misreading it. Sorry
+
+---
+
+_Comment by @charliermarsh on 2023-01-13 01:55_
+
+No prob!
+
+---
+
+_Comment by @awgymer on 2023-03-23 15:33_
+
+I just ran into this but following the links from the README to the docs on the supported `E` codes I can see `E203` in [the list](https://beta.ruff.rs/docs/rules/#error-e)? Are the docs out of date here?
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-23 16:09_
+
+Yes, they should not be present.
+
+---
+
+_Comment by @charliermarsh on 2023-03-23 16:58_
+
+Yeah, I think they accidentally got added when I moved from a feature flag to a debug assertion for the pycodestyle rules.
+
+---
+
+_Referenced in [astral-sh/ruff#3686](../../astral-sh/ruff/issues/3686.md) on 2023-03-23 17:08_
+
+---

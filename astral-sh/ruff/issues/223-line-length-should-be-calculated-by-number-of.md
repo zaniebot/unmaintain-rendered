@@ -1,0 +1,54 @@
+---
+number: 223
+title: Line length should be calculated by number of chars in UTF-32 (E501)
+type: issue
+state: closed
+author: sgryjp
+labels: []
+assignees: []
+created_at: 2022-09-18T07:20:05Z
+updated_at: 2022-09-18T16:45:53Z
+url: https://github.com/astral-sh/ruff/issues/223
+synced_at: 2026-01-10T01:22:37Z
+---
+
+# Line length should be calculated by number of chars in UTF-32 (E501)
+
+---
+
+_Issue opened by @sgryjp on 2022-09-18 07:20_
+
+As of v0.0.40, ruff uses [number of bytes in UTF-8](https://github.com/charliermarsh/ruff/blob/v0.0.40/src/check_lines.rs#L38) as line length but flake8 (actually pycodestyle) uses [number of characters in UTF-32](https://github.com/PyCQA/pycodestyle/blob/2.9.1/pycodestyle.py#L279). Because of this difference, ruff may report E501 for lines containing characters which requires multiple bytes.
+
+In the example below, '亜' (U+4E9C, `E4 BA 9C` in UTF-8) is counted as 1 by flake8 but 3 by ruff:
+
+```shell
+$ cat linelength.py
+# -------1---------2---------3---------4---------5---------6---------7---------8----5678
+_ = "---------------------------------------------------------------------------AAAAAAA"
+_ = "---------------------------------------------------------------------------亜亜亜亜亜亜亜"
+$ flake8 --max-line-length=88 linelength.py
+$ ruff linelength.py
+Found 1 error(s).
+./linelength.py:3:89: E501 Line too long (102 > 88 characters)
+```
+
+Note that using number of characters in UTF-32 is not the best way to measure "visual" width of a line but pycodestyle [chose that way in 2016](https://github.com/PyCQA/pycodestyle/pull/345). So, to be compatible with flake8, I think ruff should follow the same way.
+
+_(Amended the example: '亜' is actually 3 bytes in UTF-8, not 2 bytes...)_
+
+---
+
+_Comment by @charliermarsh on 2022-09-18 16:45_
+
+Resolved by #224.
+
+---
+
+_Closed by @charliermarsh on 2022-09-18 16:45_
+
+---
+
+_Referenced in [quarylabs/sqruff#1431](../../quarylabs/sqruff/issues/1431.md) on 2025-03-19 15:01_
+
+---

@@ -1,0 +1,56 @@
+---
+number: 197
+title: Tool to compare resolutions again pip-tools
+type: issue
+state: closed
+author: konstin
+labels: []
+assignees: []
+created_at: 2023-10-26T11:42:39Z
+updated_at: 2023-12-04T08:54:49Z
+url: https://github.com/astral-sh/uv/issues/197
+synced_at: 2026-01-10T01:23:03Z
+---
+
+# Tool to compare resolutions again pip-tools
+
+---
+
+_Issue opened by @konstin on 2023-10-26 11:42_
+
+At the moment, we have no way of checking that our resolution are correct
+
+---
+
+_Comment by @konstin on 2023-10-26 11:44_
+
+Very basic script:
+```bash
+#!/usr/bin/env bash
+
+TEMPD=$(mktemp -d)
+
+time RUST_LOG=puffin=debug cargo run --bin puffin -- pip-compile ${1} > $TEMPD/puffin.txt
+# > WARNING: --strip-extras is becoming the default in version 8.0.0. To silence this warning, either use --strip-extras
+# > to opt into the new default or use --no-strip-extras to retain the existing behavior.
+time pip-compile --strip-extras -o - -q ${1} > $TEMPD/pip-compile.txt
+diff -u $TEMPD/pip-compile.txt $TEMPD/puffin.txt
+```
+
+---
+
+_Comment by @charliermarsh on 2023-12-04 04:38_
+
+Should we close this for now?
+
+---
+
+_Comment by @konstin on 2023-12-04 08:54_
+
+Yes, `compare_with_pip.py` works fine.
+
+---
+
+_Closed by @konstin on 2023-12-04 08:54_
+
+---

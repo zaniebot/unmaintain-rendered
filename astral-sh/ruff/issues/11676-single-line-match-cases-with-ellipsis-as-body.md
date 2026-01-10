@@ -1,0 +1,107 @@
+---
+number: 11676
+title: "Single-line match-cases with Ellipsis (`...`) as body"
+type: issue
+state: open
+author: pfaion
+labels:
+  - formatter
+  - style
+assignees: []
+created_at: 2024-06-01T08:44:42Z
+updated_at: 2024-06-01T09:44:43Z
+url: https://github.com/astral-sh/ruff/issues/11676
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# Single-line match-cases with Ellipsis (`...`) as body
+
+---
+
+_Issue opened by @pfaion on 2024-06-01 08:44_
+
+Thanks for the great work on ruff!
+
+Not sure if this a bug, probably rather a feature request. Curious to hear what you think about this:
+
+I work with complexly nested data and sometimes I want to extract a value from potentially different parts of the data, depending on the structure of the data. I realized that you can quite nicely use "structural pattern matching" for that, e.g. here's a simple example:
+
+```python
+class User(BaseModel):
+    global_name: str
+    # ...
+
+class Member(BaseModel):
+    nickname: Optional[str]
+    user: User
+    # ...
+
+name: str
+match member:
+    case Member(nickname=str(name)): ...
+    case Member(user=User(global_name=str(name))): ...
+    
+# Now `name` is bound, depending on which structure first "resolved". If the member had
+# a nickname defined, we prefer using that. Otherwise we use the global_name.
+```
+
+I wrote the single-line case statements similar to how you can write single-line function signatures for e.g. Protocols (e.g. refer to https://github.com/astral-sh/ruff/issues/10026). However, ruff will always reformat them to:
+
+```python
+name: str
+match member:
+    case Member(nickname=str(name)):
+        ...
+    case Member(user=User(global_name=str(name))):
+        ...
+```
+
+I was wondering if case-statements should also allowed to be single-line if the body is an Ellipsis `...` for consistency?
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2024-06-01 08:54_
+
+---
+
+_Label `style` added by @MichaReiser on 2024-06-01 09:28_
+
+---
+
+_Comment by @MichaReiser on 2024-06-01 09:30_
+
+I'm open to this but I don't think it should be specific to match cases. Instead, it is a more general question if `...` bodies should be collapsed in compound statements. 
+
+---
+
+_Comment by @pfaion on 2024-06-01 09:38_
+
+What other cases would there be? Any statement ending with a `:`?
+
+First brainstorm:
+```python
+if expr: ...
+elif expr: ...
+else: ...
+
+while expr: ...
+
+for val in expr: ...
+
+class Foo: ...
+
+def foo(): ...
+async def foo(): ...
+
+match expr: ...
+    case pattern: ...
+
+try: ...
+except: ...
+finally: ...
+
+with expr as val: ...
+async with expr as val: ...
+```
+
+---

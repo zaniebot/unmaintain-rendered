@@ -1,0 +1,258 @@
+---
+number: 2505
+title: value_of_t() is difficult to use with optional arguments 
+type: issue
+state: closed
+author: dimo414
+labels:
+  - C-enhancement
+  - M-breaking-change
+  - A-parsing
+  - S-waiting-on-design
+assignees: []
+created_at: 2021-05-28T07:23:24Z
+updated_at: 2022-05-29T17:01:39Z
+url: https://github.com/clap-rs/clap/issues/2505
+synced_at: 2026-01-10T01:27:19Z
+---
+
+# value_of_t() is difficult to use with optional arguments 
+
+---
+
+_Issue opened by @dimo414 on 2021-05-28 07:23_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the existing issues
+
+### Describe your use case
+
+**See https://github.com/clap-rs/clap/discussions/2453 for earlier discussion**
+
+The `value_of_t()` function [notes](https://github.com/clap-rs/clap/blob/ecd60b69a3afbad7e77dbc083038abafbcae6aad/src/parse/matches/arg_matches.rs#L308) "there are two types of errors, parse failures and those where the argument wasn't present", and suggests callers differentiate between the two by inspecting the `ErrorKind` in the `Result`.
+
+Note these two cases reflect two different types of issues. Parse failures occur when the user passes an invalid string on the command line, and typically an application would `e.exit()` in response. Absent arguments occur when the user simply didn't pass anything at all, which for optional arguments\* is expected and typical applications should proceed.
+
+While it is possible to inspect the `ErrorKind`, doing so is not very ergonomic or intuitive. Here's one such implementation:
+
+```rust
+let arg: Option<Duration> = match value_t!(matches.value_of("arg"), humantime::Duration) {
+    Ok(t) => Ok(Some(t.into())),
+    Err(e) => {
+        match e.kind {
+            ::clap::ErrorKind::ArgumentNotFound => Ok(None),
+            _ => Err(e),
+        }
+    }
+}.unwrap_or_else(|e| e.exit());
+```
+
+It would be nice if Clap made parsing optional arguments easier, or at a minimum improved the documentation of `value_of_t()` to describe how callers are intended to work with optional arguments and `ErrorKind`.
+
+*\* Note that Clap handles missing `required()` arguments before control reaches a `value_of_t()` call, so there's little reason for the application to reject an absent argument at this step.*
+
+### Describe the solution you'd like
+
+Ideally, I'd like to see `value_of_t()` handle these two cases more distinctly, such as by changing the return type to `Result<Option<R>, Error>`. This would better align with the return type of `value_of()` and allow callers to cleanly and clearly handle these two separate situations, e.g.:
+
+```rust
+let len: Option<u32> = matches.value_of_t("length").unwrap_or_else(|e| e.exit());
+```
+
+I don't know if this sort of breaking change would still be possible for Clap 3.0, but if you're open to it I'd gladly send a PR.
+
+### Alternatives, if applicable
+
+* Add a wrapper function that converts a `Result<R, Error>` into a `Result<Option<R>, Error>` if the `ErrorKind` is `ArgumentNotFound`; this would be less user-friendly than above but would be safe to add.
+* Clarify in the documentation of `value_of_t()` and siblings how callers are intended to handle these separate situations.
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `T: new feature` added by @dimo414 on 2021-05-28 07:23_
+
+---
+
+_Label `T: new feature` removed by @pksunkara on 2021-05-28 07:29_
+
+---
+
+_Label `C: matches` added by @pksunkara on 2021-05-28 07:29_
+
+---
+
+_Label `D: medium` added by @pksunkara on 2021-05-28 07:29_
+
+---
+
+_Label `T: enhancement` added by @pksunkara on 2021-05-28 07:29_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2021-05-28 07:29_
+
+---
+
+_Comment by @dimo414 on 2021-05-30 07:33_
+
+@pksunkara I see you added this to the 3.0 milestone, would you welcome a PR changing this to `Result<Option<R>, Error>`? Or do you have a different fix in mind?
+
+---
+
+_Comment by @pksunkara on 2021-05-30 08:27_
+
+Not sure yet. Because it seems to be tied into other issues for 3.0
+
+---
+
+_Comment by @dimo414 on 2021-05-30 09:02_
+
+Ok, happy to help whenever makes sense.
+
+---
+
+_Referenced in [clap-rs/clap#751](../../clap-rs/clap/issues/751.md) on 2021-07-21 21:32_
+
+---
+
+_Comment by @epage on 2021-07-22 14:24_
+
+A workaround: for this would be to calll [`is_present`](https://docs.rs/clap/2.33.3/clap/struct.ArgMatches.html#method.is_present)
+
+---
+
+_Comment by @dimo414 on 2021-07-22 17:47_
+
+Sure, but that's not what's documented :) Personally I'd prefer to avoid duplicating the flag name too.
+
+---
+
+_Comment by @epage on 2021-07-22 17:51_
+
+> Sure, but that's not what's documented
+
+As in there is behavior contrary to documentation or it would help if documentation talked about it?
+
+---
+
+_Comment by @dimo414 on 2021-07-22 19:15_
+
+The documentation recommends inspecting the `ErrorKind`, and makes no mention of `is_present`. IMO the API of `value_of_t()` should be changed (e.g. to return `Result<Option<R>, Error>`) but the root of the issue is that the documented way of handling this situation is unclear and cumbersome. If the expectation is actually to use `is_present` that should be documented. See https://github.com/clap-rs/clap/discussions/2453 if you haven't already, which has a bit more detail.
+
+---
+
+_Comment by @epage on 2021-07-22 19:19_
+
+Like I said, I was giving a workaround and not making a determination and what the proper fix is for this.
+
+If we add an Option, I'm mixed on whether it should go on the inside or outside.
+
+---
+
+_Referenced in [clap-rs/clap#2683](../../clap-rs/clap/issues/2683.md) on 2021-08-13 01:05_
+
+---
+
+_Comment by @dimo414 on 2021-10-13 17:47_
+
+@epage @pksunkara is it still possible to contribute a fix here before 3.0 is cut? It really seems unfortunate that the value_of functionality was redesigned from 2->3 but still carries this limitation.
+
+---
+
+_Comment by @pksunkara on 2021-10-13 17:50_
+
+As you can see from #2683, it is in the plan to rework this a little bit. Just focussing on other things first.
+
+---
+
+_Comment by @dimo414 on 2021-10-14 01:04_
+
+Ah great thanks! I just wasn't clear whether it was a release blocker. Again, very happy to draft a PR if it would be helpful.
+
+---
+
+_Comment by @pksunkara on 2021-10-14 01:07_
+
+It's not a confirmed release blocker. I planned it to be a few months ago but with the other 2 maintainers being active, we need to discuss and see if we want to keep it like that or not.
+
+First step of the discussion is for me to summarize the issues surrounding this in #2683.
+
+---
+
+_Comment by @epage on 2021-10-16 18:20_
+
+I'm sorry but this won't be making it in the 3.0 release.
+
+People have been waiting for clap3 for years and people are wanting access to the improvements that are already out there [to the point that some have talked about forking it](https://github.com/clap-rs/clap/discussions/2616#discussioncomment-1440924).  We need to narrow of focus for this release and come up with a plan for how we want to address these larger issues before making a further commitment on when for something like this.
+
+Short term and long term opportunities:
+- While I know its not for everyone, `clap_derive` (fork of `structopt`) takes care of problems like this.
+- I have [floated the idea of baking the expected types into `ArgMatches`](https://github.com/clap-rs/clap/discussions/2832), which would remove the need for these functions and would instead behave like the regular ones
+- We flesh out and implement @pksunkara idea in #2683
+
+---
+
+_Removed from milestone `3.0` by @epage on 2021-10-16 18:20_
+
+---
+
+_Added to milestone `4.0` by @epage on 2021-10-16 18:20_
+
+---
+
+_Label `E: breaking change` added by @pksunkara on 2021-10-16 18:57_
+
+---
+
+_Removed from milestone `4.0` by @pksunkara on 2021-10-16 18:57_
+
+---
+
+_Comment by @dimo414 on 2021-10-17 16:58_
+
+That's too bad, especially since this functionality was already reimplemented for 3.0 so everyone upgrading will have to swap to the new behavior, only to (presumably) have to do so again at some future date.
+
+---
+
+_Referenced in [epage/clapng#188](../../epage/clapng/issues/188.md) on 2021-12-06 21:15_
+
+---
+
+_Label `C: matches` removed by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `A-parsing` added by @epage on 2021-12-08 20:21_
+
+---
+
+_Label `D: medium` removed by @epage on 2021-12-13 16:39_
+
+---
+
+_Label `S-waiting-on-design` added by @epage on 2021-12-13 16:39_
+
+---
+
+_Referenced in [clap-rs/clap#3459](../../clap-rs/clap/issues/3459.md) on 2022-02-13 02:43_
+
+---
+
+_Referenced in [clap-rs/clap#3732](../../clap-rs/clap/pulls/3732.md) on 2022-05-17 21:47_
+
+---
+
+_Closed by @epage on 2022-05-18 00:15_
+
+---
+
+_Comment by @dimo414 on 2022-05-29 17:01_
+
+I haven't played with the new parser yet but looking at the PR description it sounds great! Thanks :)
+
+---

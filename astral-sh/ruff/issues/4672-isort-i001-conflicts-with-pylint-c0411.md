@@ -1,0 +1,267 @@
+---
+number: 4672
+title: Isort I001 conflicts with pylint C0411
+type: issue
+state: closed
+author: sansmoraxz
+labels:
+  - question
+assignees: []
+created_at: 2023-05-26T18:49:04Z
+updated_at: 2023-05-28T07:16:20Z
+url: https://github.com/astral-sh/ruff/issues/4672
+synced_at: 2026-01-10T01:22:43Z
+---
+
+# Isort I001 conflicts with pylint C0411
+
+---
+
+_Issue opened by @sansmoraxz on 2023-05-26 18:49_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Take the following code block as an example:
+
+```py
+import numpy as np
+from lamdacust.handler import lambda_handler
+from moto import mock_s3, mock_sqs
+```
+
+Here `lamdacust` is the user defined module
+
+The above order is valid according to ruff's rule I001, but not according to pylint C0411 which says to follow the order of standard imports first, then third-party libraries, then local imports.
+
+Ruff version: 0.0.269
+Editor: VSCode
+
+---
+
+_Comment by @charliermarsh on 2023-05-26 18:51_
+
+I'm guessing that Ruff isn't picking up lambdacust as first-party. Can you share your directory structure and configuration file? E.g., are you using a `src` directory or something like that?
+
+---
+
+_Label `question` added by @charliermarsh on 2023-05-26 18:51_
+
+---
+
+_Comment by @sansmoraxz on 2023-05-26 19:01_
+
+No not using src
+
+Here's the structure
+```
+.
+├── lamdacust
+│   ├── handler.py
+│   ├── __init__.py
+│   └── loaders.py
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+└── tests
+    ├── data
+    │   └── text.txt
+    ├── __init__.py
+    ├── pyproject.toml
+    └── test_handler.py
+```
+
+
+
+---
+
+_Comment by @sansmoraxz on 2023-05-26 19:02_
+
+The config I addopted from somewhere not sure where from
+
+```toml
+[tool.poetry]
+name = "lamdacust"
+version = "0.1.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.24.3"
+pillow = "^9.5.0"
+
+[tool.poetry.group.dev.dependencies]
+boto3 = "^1.26.135"
+botocore = "^1.29.135"
+jupyter = "^1.0.0"
+boto3-stubs = {version = "^1.26.135", extras = ["s3", "sqs"]}
+moto = {extras = ["s3","sqs"], version = "^4.1.9"}
+pytest = "^7.3.1"
+pytest-cov = "^4.0.0"
+ruff = "*"
+ruff-lsp = "*"
+pylint = "^2.17.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+skip-string-normalization = 1
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+select = ["ALL"]
+
+[tool.black]
+skip-string-normalization = 1
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+select = ["ALL"]
+
+
+ignore = ["INP001", # implicit-namespace-package
+          "ANN",    # type annotations
+          "T20",    # flake8-print (warns when there are print statements)
+          "ARG001", # unused-argument
+
+          "D212", # See https://github.com/charliermarsh/ruff/issues/2281
+
+          "D211", # See https://github.com/charliermarsh/ruff/issues/2281
+]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+per-file-ignores = {}
+
+# Same as black.
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.10.
+target-version = "py310"
+
+# Enumerate all fixed violations.
+show-fixes = true
+# Show source code for each violation.
+show-source = true
+
+# This is how you tell Q000 errors to prefer single quotes
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.pydocstyle]
+convention = "numpy"  # Or "numpy", or "pep257" or "google"
+
+```
+
+Edit: Forgot to add moto mock sqs dependency.
+
+---
+
+_Comment by @sansmoraxz on 2023-05-26 19:04_
+
+For the tests I disabled S101 but other than that that's the entire config
+
+---
+
+_Comment by @charliermarsh on 2023-05-26 21:38_
+
+This works correctly for me:
+
+```py
+❯ cargo run -p ruff_cli -- check bar.py --select I -n --fix
+    Finished dev [unoptimized + debuginfo] target(s) in 0.15s
+     Running `/Users/crmarsh/workspace/staging/target/debug/ruff check bar.py --select I -n --fix`
+
+Fixed 1 error:
+- bar.py:
+    1 × I001 (unsorted-imports)
+
+Found 1 error (1 fixed, 0 remaining)
+```
+
+And `bar.py` now contains:
+
+```py
+import numpy as np
+from moto import mock_s3, mock_sqs
+
+from lamdacust.handler import lambda_handler
+```
+
+I'm happy to take another look if you're able to produce a repro, maybe something that works with `--isolated`?
+
+---
+
+_Comment by @sansmoraxz on 2023-05-27 13:49_
+
+OK I figured it out. It works for code inside that module or at root level
+
+The issue was coming from tests, maybe because it assumed it as a root module because of the nested pyproject.toml.
+
+This was the entire content in it
+
+```
+[tool.ruff]
+extend = "../pyproject.toml"
+ignore = ["S101"]
+```
+
+---
+
+_Comment by @sansmoraxz on 2023-05-27 13:53_
+
+Seems similar to #4674 .
+
+---
+
+_Comment by @charliermarsh on 2023-05-27 19:19_
+
+Yeah I think it's roughly the same issue. You could add `src = ["../"]` to the nested configuration, or `src= ["."]` to the top-level configuration -- I _think_ either would solve the problem.
+
+---
+
+_Comment by @sansmoraxz on 2023-05-28 07:16_
+
+Yeah that fixed it. Thanks,
+
+---
+
+_Closed by @sansmoraxz on 2023-05-28 07:16_
+
+---

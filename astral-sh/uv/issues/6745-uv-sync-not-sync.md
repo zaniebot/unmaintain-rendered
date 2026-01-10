@@ -1,0 +1,201 @@
+---
+number: 6745
+title: uv sync - not sync
+type: issue
+state: closed
+author: emcek
+labels:
+  - question
+assignees: []
+created_at: 2024-08-28T12:03:55Z
+updated_at: 2024-08-29T14:10:42Z
+url: https://github.com/astral-sh/uv/issues/6745
+synced_at: 2026-01-10T01:24:05Z
+---
+
+# uv sync - not sync
+
+---
+
+_Issue opened by @emcek on 2024-08-28 12:03_
+
+uv 0.3.5 (6c62d9fbf 2024-08-27) Windows 11
+
+Reproduction:
+```console
+$ mkdir new_proj
+$ cd new_proj
+$ uv venv
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+$ .venv\Scripts\activate
+$ (new_proj) pip install pydantic
+```
+Add `pyproject.toml`:
+``` toml
+[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'dcspy'
+authors = [{name = 'Michal Plichta'}]
+maintainers = [{name = 'Michal Plichta'}]
+description = ''
+license = {text = 'MIT License'}
+requires-python = '>=3.9'
+readme = 'README.md'
+dynamic = ['version']
+dependencies = [
+    'pydantic==2.8.2',
+]
+```
+Make lock file:
+```console
+$ (new_proj) pip list
+Package           Version
+----------------- -------
+annotated-types   0.7.0
+pip               24.0
+pydantic          2.8.2
+pydantic_core     2.20.1
+typing_extensions 4.12.2
+$ uv lock
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Resolved 5 packages in 2.65s
+```
+lock file has inside:
+```toml
+[[package]]
+name = "pydantic"
+version = "2.8.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "annotated-types" },
+    { name = "pydantic-core" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8c/99/d0a5dca411e0a017762258013ba9905cd6e7baa9a3fd1fe8b6529472902e/pydantic-2.8.2.tar.gz", hash = "sha256:6f62c13d067b0755ad1c21a34bdd06c0c12625a22b0fc09c6b149816604f7c2a", size = 739834 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl", hash = "sha256:73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8", size = 423875 },
+]
+```
+Now I just downgrade pydantic (simulating my project is behind requirements):
+```console
+$ (new_proj) pip install -U pydantic==2.8.1
+Installing collected packages: pydantic
+  Attempting uninstall: pydantic
+    Found existing installation: pydantic 2.8.2
+    Uninstalling pydantic-2.8.2:
+      Successfully uninstalled pydantic-2.8.2
+Successfully installed pydantic-2.8.1
+```
+Now try update venv:
+```console
+(new_proj) PS C:\Users\mplichta\Projects\new_proj> uv sync
+Resolved 5 packages in 2ms
+   Built dcspy @ file:///C:/Users/mplichta/Projects/new_proj
+Prepared 5 packages in 2.10s
+Installed 5 packages in 23ms
+ + annotated-types==0.7.0
+ + dcspy==0.0.0 (from file:///C:/Users/mplichta/Projects/new_proj)
+ + pydantic==2.8.2
+ + pydantic-core==2.20.1
+ + typing-extensions==4.12.2
+(new_proj) PS C:\Users\mplichta\Projects\new_proj> pip list
+Package           Version
+----------------- -------
+annotated-types   0.7.0
+pip               24.2
+pydantic          2.8.1
+pydantic_core     2.20.1
+typing_extensions 4.12.2
+(new_proj) PS C:\Users\mplichta\Projects\new_proj> uv sync -U
+Resolved 5 packages in 641ms
+Audited 5 packages in 0.23ms
+(new_proj) PS C:\Users\mplichta\Projects\new_proj> pip list
+Package           Version
+----------------- -------
+annotated-types   0.7.0
+pip               24.2
+pydantic          2.8.1
+pydantic_core     2.20.1
+typing_extensions 4.12.2
+```
+Why `pydantic` wasn't updated? How `uv sync` supposed to work?
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 12:56_
+
+If your `pyproject.toml` contains `pydantic==2.8.2`, then we can't upgrade beyond `2.8.2`. If you `pyproject.toml` instead contained just `pydantic`, or `pydantic>=2.8.2`, _then_ we could upgrade Pydantic when you run `uv sync -U`.
+
+---
+
+_Label `question` added by @charliermarsh on 2024-08-28 12:57_
+
+---
+
+_Comment by @emcek on 2024-08-28 13:46_
+
+Yes, it is `pydantic==2.8.2` in `pyproject.toml` but then I downgateded to `2.8.1` and still `uv sync` didn't upgraded back to `2.8.2`
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 13:48_
+
+Oh, there's no `pip` in that virtual environment by default (you can run `uv venv --seed` to include pip, or use `uv pip list`). You might be modifying a different environment there.
+
+---
+
+_Comment by @emcek on 2024-08-29 12:42_
+
+yes you are right... I `pip list` system wide. But I get another "complain" I do not see point of:
+```console
+$ uv venv .my_venv
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Creating virtualenv at: .my_venv
+Activate with: source .my_venv/Scripts/activate
+$ .my_venv/Scripts/activate.ps1
+```
+since `uv sync` always crate default `.venv` anyway:
+```console
+$ (.my_venv) ls -la
+total 17
+drwxr-xr-x 1 mplichta 1049089   0 Aug 29 14:38 ./
+drwxr-xr-x 1 mplichta 1049089   0 Aug 29 14:35 ../
+drwxr-xr-x 1 mplichta 1049089   0 Aug 29 14:35 .my_venv/
+-rw-r--r-- 1 mplichta 1049089 374 Aug 29 14:38 pyproject.toml
+
+$ (.my_venv) uv sync
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Creating virtualenv at: .venv
+Resolved 6 packages in 2.01s
+   Built dcspy @ file:///C:/Users/mplichta/Projects/new
+Prepared 6 packages in 1.88s
+Installed 6 packages in 76ms
+ + annotated-types==0.7.0
+ + dcspy==0.0.0 (from file:///C:/Users/mplichta/Projects/new)
+ + pip==24.2
+ + pydantic==2.8.2
+ + pydantic-core==2.20.1
+ + typing-extensions==4.12.2
+ ```
+
+
+---
+
+_Comment by @charliermarsh on 2024-08-29 14:10_
+
+`uv venv` is intended for use-cases in the `uv pip` API. If you're using `uv sync` or `uv lock`, you shouldn't need `uv venv`. Check out: https://docs.astral.sh/uv/pip/.
+
+---
+
+_Closed by @charliermarsh on 2024-08-29 14:10_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-08-29 14:10_
+
+---

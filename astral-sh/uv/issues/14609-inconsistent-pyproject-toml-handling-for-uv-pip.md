@@ -1,0 +1,126 @@
+---
+number: 14609
+title: "Inconsistent pyproject.toml handling for `uv pip install` for `git+` and local install"
+type: issue
+state: closed
+author: MilkClouds
+labels:
+  - question
+assignees: []
+created_at: 2025-07-14T15:53:27Z
+updated_at: 2025-07-16T13:43:05Z
+url: https://github.com/astral-sh/uv/issues/14609
+synced_at: 2026-01-10T01:25:46Z
+---
+
+# Inconsistent pyproject.toml handling for `uv pip install` for `git+` and local install
+
+---
+
+_Issue opened by @MilkClouds on 2025-07-14 15:53_
+
+### Summary
+
+```sh
+$ uv pip install git+https://github.com/open-world-agents/open-world-agents
+$ uv pip show owa-core
+Name: owa-core
+Version: 0.5.3
+Location: /opt/conda/envs/owa/lib/python3.11/site-packages
+Requires: av, griffe, loguru, pillow, pydantic, pyyaml, requests
+Required-by: agent, mcap-owa-support, owa, owa-cli, owa-env-desktop, owa-env-gst, owa-msgs
+
+$ git clone --depth=1 https://github.com/open-world-agents/open-world-agents
+$ uv pip install open-world-agents
+Name: owa-core
+Version: 0.5.3
+Summary: Core framework and registry system for Open World Agents
+Home-page: 
+Author: 
+Author-email: 
+License: MIT
+Location: /opt/conda/envs/owa/lib/python3.11/site-packages
+Editable project location: /workspace/projects/owa-core
+Requires: av, griffe, loguru, pillow, pydantic, pyyaml, requests
+Required-by: agent, mcap-owa-support, owa, owa-cli, owa-env-desktop, owa-env-gst, owa-msgs
+```
+
+There's evident inconsistent handling for `git+` install and local install. I do not care about other issue, but inconsistent behavior for handling `[tool.uv.sources]` section's `editable` option matters to me. I need a way to ignore the `editable=true` configured in `[tool.uv.sources]` for `uv pip install`.
+
+Also I have some questions:
+- Is `[tool.uv.sources]` consideration in `uv pip install` intended or not? I have no clue about it's intended or not, but with my brief thought, it would be more admirable for `[tool.uv.sources]` to be ignored to match `pip install`'s behavior. Of course, introducing argument or any way to ignore it or not may be more helpful.
+
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+uv 0.7.20
+
+### Python version
+
+3.11
+
+---
+
+_Label `bug` added by @MilkClouds on 2025-07-14 15:53_
+
+---
+
+_Comment by @MilkClouds on 2025-07-14 15:54_
+
+For reader's convenience, I attach `pyproject.toml` of open-world-agents repo:
+```
+[project]
+name = "owa"
+version = "0.5.3"
+description = "Everything you need to build state-of-the-art foundation multimodal desktop agent, end-to-end."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcap-owa-support==0.5.3",
+    "ocap==0.5.3",
+    "owa-cli==0.5.3",
+    "owa-core==0.5.3",
+    "owa-env-desktop==0.5.3",
+    "owa-env-gst==0.5.3",
+    "owa-msgs==0.5.3",
+]
+
+[tool.uv.sources]
+mcap-owa-support = { path = "projects/mcap-owa-support", editable = true }
+ocap = { path = "projects/ocap", editable = true }
+owa-cli = { path = "projects/owa-cli", editable = true }
+owa-core = { path = "projects/owa-core", editable = true }
+owa-env-desktop = { path = "projects/owa-env-desktop", editable = true }
+owa-env-gst = { path = "projects/owa-env-gst", editable = true }
+owa-msgs = { path = "projects/owa-msgs", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+bypass-selection = true
+```
+
+---
+
+_Comment by @zanieb on 2025-07-14 16:18_
+
+I believe it's intentional we respect the `tool.uv.sources` entries in a Git dependency, we consider that an installation from a "source tree". You can use `--no-sources` to ignore them.
+
+---
+
+_Label `bug` removed by @zanieb on 2025-07-14 16:18_
+
+---
+
+_Label `question` added by @zanieb on 2025-07-14 16:18_
+
+---
+
+_Closed by @charliermarsh on 2025-07-16 13:43_
+
+---

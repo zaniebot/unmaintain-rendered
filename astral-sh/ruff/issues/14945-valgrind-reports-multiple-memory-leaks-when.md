@@ -1,0 +1,219 @@
+---
+number: 14945
+title: Valgrind reports multiple memory leaks, when checking random folders with red_knot
+type: issue
+state: closed
+author: qarmin
+labels:
+  - ty
+assignees: []
+created_at: 2024-12-12T20:09:43Z
+updated_at: 2024-12-14T02:14:23Z
+url: https://github.com/astral-sh/ruff/issues/14945
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# Valgrind reports multiple memory leaks, when checking random folders with red_knot
+
+---
+
+_Issue opened by @qarmin on 2024-12-12 20:09_
+
+ruff 0.8.2+1582 (45b565cbb 2024-12-12)
+
+When testing with red_knot(`valgrind  --leak-check=full red_knot_normal --current-directory .`) random directories, I see in valgrind such memory leaks
+```
+==184012== 684,137 (1,368 direct, 682,769 indirect) bytes in 1 blocks are definitely lost in loss record 177 of 177
+==184012==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==184012==    by 0x8965A0: UnknownInlinedFun (library/std/src/sys/alloc/unix.rs:14)
+==184012==    by 0x8965A0: UnknownInlinedFun (library/std/src/alloc.rs:401)
+==184012==    by 0x8965A0: alloc (alloc.rs:99)
+==184012==    by 0x8965A0: alloc_impl (alloc.rs:195)
+==184012==    by 0x8965A0: allocate (alloc.rs:257)
+==184012==    by 0x8965A0: exchange_malloc (alloc.rs:352)
+==184012==    by 0x8965A0: new<alloc::sync::ArcInner<salsa::zalsa::Zalsa>> (boxed.rs:254)
+==184012==    by 0x8965A0: new<salsa::zalsa::Zalsa> (sync.rs:391)
+==184012==    by 0x8965A0: <salsa::storage::Storage<Db> as core::default::Default>::default (storage.rs:49)
+==184012==    by 0x8515F6: red_knot_workspace::db::RootDatabase::new (db.rs:41)
+==184012==    by 0x862DF6: run (main.rs:194)
+==184012==    by 0x862DF6: red_knot::main (main.rs:126)
+==184012==    by 0x8579D2: call_once<fn() -> red_knot::ExitStatus, ()> (function.rs:250)
+==184012==    by 0x8579D2: std::sys::backtrace::__rust_begin_short_backtrace (backtrace.rs:152)
+==184012==    by 0x893E68: std::rt::lang_start::{{closure}} (rt.rs:195)
+==184012==    by 0xE1C39C: call_once<(), (dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe)> (function.rs:284)
+==184012==    by 0xE1C39C: do_call<&(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe), i32> (panicking.rs:573)
+==184012==    by 0xE1C39C: try<i32, &(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe)> (panicking.rs:536)
+==184012==    by 0xE1C39C: catch_unwind<&(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe), i32> (panic.rs:358)
+==184012==    by 0xE1C39C: {closure#1} (rt.rs:174)
+==184012==    by 0xE1C39C: do_call<std::rt::lang_start_internal::{closure_env#1}, isize> (panicking.rs:573)
+==184012==    by 0xE1C39C: try<isize, std::rt::lang_start_internal::{closure_env#1}> (panicking.rs:536)
+==184012==    by 0xE1C39C: catch_unwind<std::rt::lang_start_internal::{closure_env#1}, isize> (panic.rs:358)
+==184012==    by 0xE1C39C: std::rt::lang_start_internal (rt.rs:174)
+==184012==    by 0x869F6B: main (in /home/rafal/.cargo/bin/red_knot_normal)
+
+```
+```
+==184012== 40 bytes in 1 blocks are definitely lost in loss record 40 of 177
+==184012==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==184012==    by 0x8965D3: UnknownInlinedFun (library/std/src/sys/alloc/unix.rs:14)
+==184012==    by 0x8965D3: UnknownInlinedFun (library/std/src/alloc.rs:401)
+==184012==    by 0x8965D3: alloc (alloc.rs:99)
+==184012==    by 0x8965D3: alloc_impl (alloc.rs:195)
+==184012==    by 0x8965D3: allocate (alloc.rs:257)
+==184012==    by 0x8965D3: exchange_malloc (alloc.rs:352)
+==184012==    by 0x8965D3: new<alloc::sync::ArcInner<salsa::storage::Coordinate>> (boxed.rs:254)
+==184012==    by 0x8965D3: new<salsa::storage::Coordinate> (sync.rs:391)
+==184012==    by 0x8965D3: <salsa::storage::Storage<Db> as core::default::Default>::default (storage.rs:50)
+==184012==    by 0x8515F6: red_knot_workspace::db::RootDatabase::new (db.rs:41)
+==184012==    by 0x862DF6: run (main.rs:194)
+==184012==    by 0x862DF6: red_knot::main (main.rs:126)
+==184012==    by 0x8579D2: call_once<fn() -> red_knot::ExitStatus, ()> (function.rs:250)
+==184012==    by 0x8579D2: std::sys::backtrace::__rust_begin_short_backtrace (backtrace.rs:152)
+==184012==    by 0x893E68: std::rt::lang_start::{{closure}} (rt.rs:195)
+==184012==    by 0xE1C39C: call_once<(), (dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe)> (function.rs:284)
+==184012==    by 0xE1C39C: do_call<&(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe), i32> (panicking.rs:573)
+==184012==    by 0xE1C39C: try<i32, &(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe)> (panicking.rs:536)
+==184012==    by 0xE1C39C: catch_unwind<&(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe), i32> (panic.rs:358)
+==184012==    by 0xE1C39C: {closure#1} (rt.rs:174)
+==184012==    by 0xE1C39C: do_call<std::rt::lang_start_internal::{closure_env#1}, isize> (panicking.rs:573)
+==184012==    by 0xE1C39C: try<isize, std::rt::lang_start_internal::{closure_env#1}> (panicking.rs:536)
+==184012==    by 0xE1C39C: catch_unwind<std::rt::lang_start_internal::{closure_env#1}, isize> (panic.rs:358)
+==184012==    by 0xE1C39C: std::rt::lang_start_internal (rt.rs:174)
+==184012==    by 0x869F6B: main (in /home/rafal/.cargo/bin/red_knot_normal)
+
+```
+
+Precompiled binary with debug symbols, updated daily - https://github.com/qarmin/Automated-Fuzzer/releases/download/Nightly/red_knot_normal.7z
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-12-12 21:34_
+
+---
+
+_Comment by @MichaReiser on 2024-12-13 07:08_
+
+Can you try commenting out this line 
+
+https://github.com/astral-sh/ruff/blob/81e5830585f2538df7029c8f467511937d83afca/crates/red_knot/src/main.rs#L216
+
+We intentionally "leak" the Database right before shutting down the CLI because it's expensive to deallocate and we know that the process is going to end in a few ms anyway.
+
+---
+
+_Comment by @qarmin on 2024-12-13 21:28_
+
+When I compile red_knot locally, then I see in valgrind such error (https://github.com/rui314/mold/issues/1240)
+```
+--171610-- WARNING: Serious error when reading debug info
+--171610-- When reading debug info from /home/rafal/test/ruff/target/debug/red_knot:
+--171610-- Can't make sense of .rodata section mapping
+```
+so in valgrind I see now only this leaks, which looks a little like false positives
+```
+==172909== 56 bytes in 1 blocks are possibly lost in loss record 9 of 70
+==172909==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==172909==    by 0x1B7E530: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x97AE39: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x504328A: __libc_start_main@@GLIBC_2.34 (libc-start.c:360)
+==172909==    by 0x9781E4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1FFEFFF377: ???
+==172909==    by 0x37: ???
+==172909== 
+==172909== 304 bytes in 1 blocks are possibly lost in loss record 29 of 70
+==172909==    at 0x4E0C6E5: calloc (vg_replace_malloc.c:1595)
+==172909==    by 0x40145AB: calloc (rtld-malloc.h:44)
+==172909==    by 0x40145AB: allocate_dtv (dl-tls.c:370)
+==172909==    by 0x40145AB: _dl_allocate_tls (dl-tls.c:629)
+==172909==    by 0x50B6606: allocate_stack (allocatestack.c:429)
+==172909==    by 0x50B6606: pthread_create@@GLIBC_2.34 (pthread_create.c:655)
+==172909==    by 0x1B90E31: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x9A25A1: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x97AE39: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x504328A: __libc_start_main@@GLIBC_2.34 (libc-start.c:360)
+==172909==    by 0x9781E4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1FFEFFF377: ???
+==172909==    by 0x37: ???
+==172909== 
+==172909== 348 bytes in 3 blocks are possibly lost in loss record 30 of 70
+==172909==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==172909==    by 0x17C8CCA: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xDDF495: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x50B5A93: start_thread (pthread_create.c:447)
+==172909==    by 0x5142A33: clone (clone.S:100)
+==172909== 
+==172909== 2,128 bytes in 1 blocks are possibly lost in loss record 46 of 70
+==172909==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==172909==    by 0x19C5D6A: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xA929F3: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x97AE39: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x504328A: __libc_start_main@@GLIBC_2.34 (libc-start.c:360)
+==172909==    by 0x9781E4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1FFEFFF377: ???
+==172909==    by 0x37: ???
+==172909== 
+==172909== 2,432 bytes in 8 blocks are possibly lost in loss record 49 of 70
+==172909==    at 0x4E0C6E5: calloc (vg_replace_malloc.c:1595)
+==172909==    by 0x40145AB: calloc (rtld-malloc.h:44)
+==172909==    by 0x40145AB: allocate_dtv (dl-tls.c:370)
+==172909==    by 0x40145AB: _dl_allocate_tls (dl-tls.c:629)
+==172909==    by 0x50B6606: allocate_stack (allocatestack.c:429)
+==172909==    by 0x50B6606: pthread_create@@GLIBC_2.34 (pthread_create.c:655)
+==172909==    by 0x1B90E31: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xDE6574: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xDDFBFB: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xDF1C83: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x97AE39: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x504328A: __libc_start_main@@GLIBC_2.34 (libc-start.c:360)
+==172909==    by 0x9781E4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1FFEFFF377: ???
+==172909==    by 0x37: ???
+==172909== 
+==172909== 16,128 bytes in 7 blocks are possibly lost in loss record 60 of 70
+==172909==    at 0x4E0D0FB: posix_memalign (vg_replace_malloc.c:2099)
+==172909==    by 0x1B8D83D: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1A21F0A: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1A23DE9: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x50B5A93: start_thread (pthread_create.c:447)
+==172909==    by 0x5142A33: clone (clone.S:100)
+==172909== 
+==172909== 19,581 bytes in 774 blocks are possibly lost in loss record 66 of 70
+==172909==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==172909==    by 0x1BAB63D: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x13AAFB4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xED5293: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x97AE39: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x504328A: __libc_start_main@@GLIBC_2.34 (libc-start.c:360)
+==172909==    by 0x9781E4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1FFEFFF377: ???
+==172909==    by 0x37: ???
+==172909== 
+==172909== 33,808 bytes in 1 blocks are possibly lost in loss record 69 of 70
+==172909==    at 0x4E050C5: malloc (vg_replace_malloc.c:442)
+==172909==    by 0x19C5D6A: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0xED5293: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x97AE39: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x504328A: __libc_start_main@@GLIBC_2.34 (libc-start.c:360)
+==172909==    by 0x9781E4: ??? (in /home/rafal/test/ruff/target/debug/red_knot)
+==172909==    by 0x1FFEFFF377: ???
+==172909==    by 0x37: ???
+
+```
+
+---
+
+_Comment by @carljm on 2024-12-14 02:14_
+
+I'm not super experienced reading valgrind output, but the remaining issues don't look like anything addressable in red-knot. Are we satisfied that the only real leak is the known and intentional `db` leak at shutdown, and we can close this issue?
+
+(I'm going to hazard a guess on "yes" and go ahead and optimistically close this, but feel free to comment if you think it should be re-opened and I'll happily do so.)
+
+---
+
+_Closed by @carljm on 2024-12-14 02:14_
+
+---
+
+_Referenced in [astral-sh/ty#689](../../astral-sh/ty/issues/689.md) on 2025-06-21 13:01_
+
+---

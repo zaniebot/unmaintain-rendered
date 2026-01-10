@@ -1,0 +1,46 @@
+---
+number: 15411
+title: "Pyodide should be included in the \"Python implementation support\" list"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2025-08-21T13:28:08Z
+updated_at: 2025-11-09T16:20:29Z
+url: https://github.com/astral-sh/uv/issues/15411
+synced_at: 2026-01-10T01:25:55Z
+---
+
+# Pyodide should be included in the "Python implementation support" list
+
+---
+
+_Issue opened by @zanieb on 2025-08-21 13:28_
+
+At `uv/concepts/python-versions/#python-implementation-support`
+
+Related #15410 
+
+---
+
+_Label `documentation` added by @zanieb on 2025-08-21 13:28_
+
+---
+
+_Comment by @chilin0525 on 2025-11-09 06:50_
+
+@zanieb  Has this issue already been addressed by https://github.com/astral-sh/uv/pull/15962?
+
+---
+
+_Comment by @zanieb on 2025-11-09 16:20_
+
+Thanks!
+
+---
+
+_Closed by @zanieb on 2025-11-09 16:20_
+
+---

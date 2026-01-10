@@ -1,0 +1,92 @@
+---
+number: 1637
+title: "Failed to parse `example @ example.whl; sys_platform == 'win32'`"
+type: issue
+state: closed
+author: jan11011977
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2024-02-18T10:07:12Z
+updated_at: 2024-02-20T16:38:37Z
+url: https://github.com/astral-sh/uv/issues/1637
+synced_at: 2026-01-10T01:23:08Z
+---
+
+# Failed to parse `example @ example.whl; sys_platform == 'win32'`
+
+---
+
+_Issue opened by @jan11011977 on 2024-02-18 10:07_
+
+I have a requirements file with a line that tries to install a local .whl file, but only on Windows. When I try to run this, UV gives an error:
+```
+error: Failed to parse `python_ldap @ wheels/python_ldap-3.4.0-cp311-cp311-win_amd64.whl;   sys_platform == 'win32'`
+  Caused by: Expected end of input or ';', found 's'
+python_ldap @ wheels/python_ldap-3.4.0-cp311-cp311-win_amd64.whl;   sys_platform == 'win32'
+                                                                    ^
+```
+
+If I remove the sys_platform part it works. sys_platform does also work if I'm not installing a local package, but I haven't been able to combine the local package syntax with the sys_platform filter.
+
+This was on Windows, UV version 0.1.4. Apologies if I'm doing something wrong here, but I couldn't figure it out.
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-18 14:59_
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 15:01_
+
+I need to look into the spec, but it does work if you separate with a space, like:
+
+```
+python_ldap @ wheels/python_ldap-3.4.0-cp311-cp311-win_amd64.whl ; sys_platform == 'win32'
+```
+
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 15:01_
+
+I believe there's some syntactic ambiguity here (or are parsing logic is slightly wrong). Will look into it.
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 15:03_
+
+Related to https://github.com/astral-sh/uv/issues/1110.
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 15:10_
+
+\cc @konstin for when you're back.
+
+---
+
+_Comment by @jan11011977 on 2024-02-18 15:48_
+
+Thank you for the quick reply! I can confirm that putting a space in front of the ; makes it work.
+
+---
+
+_Comment by @charliermarsh on 2024-02-20 02:00_
+
+I think we can require the space, but we should have a better error message for this.
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2024-02-20 02:01_
+
+---
+
+_Referenced in [astral-sh/uv#1746](../../astral-sh/uv/pulls/1746.md) on 2024-02-20 11:21_
+
+---
+
+_Closed by @konstin on 2024-02-20 16:38_
+
+---

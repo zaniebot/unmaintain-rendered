@@ -1,0 +1,33 @@
+---
+number: 2528
+title: Installer does not generate __pycache__
+type: issue
+state: closed
+author: gaborbernat
+labels: []
+assignees: []
+created_at: 2024-03-18T23:12:58Z
+updated_at: 2024-03-18T23:18:47Z
+url: https://github.com/astral-sh/uv/issues/2528
+synced_at: 2026-01-10T01:23:18Z
+---
+
+# Installer does not generate __pycache__
+
+---
+
+_Issue opened by @gaborbernat on 2024-03-18 23:12_
+
+Is this expected? Differs from pip in that sense 🤔 
+
+---
+
+_Comment by @gaborbernat on 2024-03-18 23:18_
+
+Duplicate of https://github.com/astral-sh/uv/issues/1788
+
+---
+
+_Closed by @gaborbernat on 2024-03-18 23:18_
+
+---

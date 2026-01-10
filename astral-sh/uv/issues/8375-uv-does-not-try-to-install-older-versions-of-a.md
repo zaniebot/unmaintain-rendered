@@ -1,0 +1,206 @@
+---
+number: 8375
+title: "`uv` does not try to install older versions of a package if an error occurs"
+type: issue
+state: closed
+author: alphavector
+labels:
+  - question
+assignees: []
+created_at: 2024-10-19T21:50:36Z
+updated_at: 2024-12-26T16:51:48Z
+url: https://github.com/astral-sh/uv/issues/8375
+synced_at: 2026-01-10T01:24:27Z
+---
+
+# `uv` does not try to install older versions of a package if an error occurs
+
+---
+
+_Issue opened by @alphavector on 2024-10-19 21:50_
+
+When specifying `7lk-ocr-deploy<=0.1.69` an error occurs, uv crashes, pip-compile tries to install an older version and manages to install `7lk-ocr-deploy==0.1.68`
+
+
+```sh
+/# uv --version
+uv 0.4.24
+/# uv pip compile --no-cache <(echo -e "7lk-ocr-deploy==0.1.69")
+⠼ anyjson==0.3.3                                                                                                      × Failed to download and build `anyjson==0.3.3`
+  ╰─▶ Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+      [stderr]
+      /tmp/.tmpwrO4no/builds-v0/.tmpWbhra3/lib/python3.12/site-packages/setuptools/_distutils/dist.py:261:
+      UserWarning: Unknown distribution option: 'test_suite'
+        warnings.warn(msg)
+      error in anyjson setup command: use_2to3 is invalid.
+```
+
+
+```sh
+/# pip-compile --version
+pip-compile, version 7.4.1
+/# pip-compile -v -r <(echo -e "7lk-ocr-deploy<=0.1.69") -o /dev/null
+Using indexes:
+  https://pypi.org/simple
+
+                          ROUND 1
+  Collecting 7lk-ocr-deploy<=0.1.69 (from -r /dev/fd/63 (line 1))
+    Downloading 7lk_ocr_deploy-0.1.69.tar.gz (29 kB)
+    Preparing metadata (setup.py) ... done
+  Collecting Django==1.8 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading Django-1.8-py2.py3-none-any.whl.metadata (1.3 kB)
+  Collecting numpy==1.10.1 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading numpy-1.10.1.zip (4.6 MB)
+       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.6/4.6 MB 110.6 MB/s eta 0:00:00
+    Preparing metadata (setup.py) ... done
+  Collecting Pillow==3.0.0 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading Pillow-3.0.0.zip (9.9 MB)
+       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 27.2 MB/s eta 0:00:00
+    Preparing metadata (setup.py) ... done
+  Collecting PyYAML==3.11 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading PyYAML-3.11.zip (371 kB)
+    Preparing metadata (setup.py) ... done
+  Collecting django_nose>=1.4.1 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading django_nose-1.4.7-py2.py3-none-any.whl.metadata (8.3 kB)
+  Collecting nose>=1.3.7 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading nose-1.3.7-py3-none-any.whl.metadata (1.7 kB)
+  Collecting pylint>=1.4.4 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading pylint-3.3.1-py3-none-any.whl.metadata (12 kB)
+  Collecting pylint-django>=0.6.1 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading pylint_django-2.6.1-py3-none-any.whl.metadata (7.1 kB)
+  Collecting celery==3.1.19 (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading celery-3.1.19-py2.py3-none-any.whl.metadata (14 kB)
+  WARNING: Ignoring version 3.1.19 of celery since it has invalid metadata:
+  Requested celery==3.1.19 from https://files.pythonhosted.org/packages/55/e1/65d2b3ded641a5388055bdd8845a9a8e5b60e0bfd8280fc2bd85f931dc3a/celery-3.1.19-py2.py3-none-any.whl (from 7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1)) has invalid metadata: Expected matching RIGHT_PARENTHESIS for LEFT_PARENTHESIS, after version specifier
+      pytz (>dev)
+           ~^
+  Please use pip<24.1 if you need to use this version.
+  INFO: pip is looking at multiple versions of 7lk-ocr-deploy to determine which version is compatible with other requirements. This could take a while.
+  Collecting 7lk-ocr-deploy<=0.1.69 (from -r /dev/fd/63 (line 1))
+    Downloading 7lk_ocr_deploy-0.1.68.tar.gz (29 kB)
+    Preparing metadata (setup.py) ... done
+  Collecting platformdirs>=2.2.0 (from pylint>=1.4.4->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading platformdirs-4.3.6-py3-none-any.whl.metadata (11 kB)
+  Collecting astroid<=3.4.0-dev0,>=3.3.4 (from pylint>=1.4.4->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading astroid-3.3.5-py3-none-any.whl.metadata (4.5 kB)
+  Collecting isort!=5.13.0,<6,>=4.2.5 (from pylint>=1.4.4->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading isort-5.13.2-py3-none-any.whl.metadata (12 kB)
+  Collecting mccabe<0.8,>=0.6 (from pylint>=1.4.4->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading mccabe-0.7.0-py2.py3-none-any.whl.metadata (5.0 kB)
+  Collecting tomlkit>=0.10.1 (from pylint>=1.4.4->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading tomlkit-0.13.2-py3-none-any.whl.metadata (2.7 kB)
+  Collecting dill>=0.3.6 (from pylint>=1.4.4->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading dill-0.3.9-py3-none-any.whl.metadata (10 kB)
+  Collecting pylint-plugin-utils>=0.8 (from pylint-django>=0.6.1->7lk-ocr-deploy<=0.1.69->-r /dev/fd/63 (line 1))
+    Downloading pylint_plugin_utils-0.8.2-py3-none-any.whl.metadata (3.0 kB)
+  Downloading Django-1.8-py2.py3-none-any.whl (6.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 133.1 MB/s eta 0:00:00
+  Downloading django_nose-1.4.7-py2.py3-none-any.whl (26 kB)
+  Downloading nose-1.3.7-py3-none-any.whl (154 kB)
+  Downloading pylint-3.3.1-py3-none-any.whl (521 kB)
+  Downloading pylint_django-2.6.1-py3-none-any.whl (42 kB)
+  Downloading astroid-3.3.5-py3-none-any.whl (274 kB)
+  Downloading dill-0.3.9-py3-none-any.whl (119 kB)
+  Downloading isort-5.13.2-py3-none-any.whl (92 kB)
+  Downloading mccabe-0.7.0-py2.py3-none-any.whl (7.3 kB)
+  Downloading platformdirs-4.3.6-py3-none-any.whl (18 kB)
+  Downloading pylint_plugin_utils-0.8.2-py3-none-any.whl (11 kB)
+  Downloading tomlkit-0.13.2-py3-none-any.whl (37 kB)
+
+WARNING: --strip-extras is becoming the default in version 8.0.0. To silence this warning, either use --strip-extras to opt into the new default or use --no-strip-extras to retain the existing behavior.
+#
+# This file is autogenerated by pip-compile with Python 3.12
+# by the following command:
+#
+#    pip-compile --output-file=/dev/null /dev/fd/63
+#
+7lk-ocr-deploy==0.1.68
+    # via -r /dev/fd/63
+astroid==3.3.5
+    # via pylint
+dill==0.3.9
+    # via pylint
+django==1.8
+    # via 7lk-ocr-deploy
+django-nose==1.4.7
+    # via 7lk-ocr-deploy
+isort==5.13.2
+    # via pylint
+mccabe==0.7.0
+    # via pylint
+nose==1.3.7
+    # via
+    #   7lk-ocr-deploy
+    #   django-nose
+numpy==1.10.1
+    # via 7lk-ocr-deploy
+pillow==3.0.0
+    # via 7lk-ocr-deploy
+platformdirs==4.3.6
+    # via pylint
+pylint==3.3.1
+    # via
+    #   7lk-ocr-deploy
+    #   pylint-django
+    #   pylint-plugin-utils
+pylint-django==2.6.1
+    # via 7lk-ocr-deploy
+pylint-plugin-utils==0.8.2
+    # via pylint-django
+pyyaml==3.11
+    # via 7lk-ocr-deploy
+tomlkit==0.13.2
+    # via pylint
+```
+
+---
+
+_Comment by @zanieb on 2024-10-20 14:22_
+
+`pip-compile` fails to build this package too. Even if you add `<=03.3`, it doesn't continue to resolve and try older versions. I don't think we should attempt older versions of a package if a build error occurs, they'll usually just fail too.
+
+```
+❯ echo 'anyjson==0.3.3' | uvx --from pip-tools pip-compile --output-file example -
+    error: subprocess-exited-with-error
+    
+    × python setup.py egg_info did not run successfully.
+    │ exit code: 1
+    ╰─> [3 lines of output]
+        /Users/zb/Library/Caches/uv/archive-v0/b_ybKioL6b5fdMYG4CuU-/lib/python3.13t/site-packages/setuptools/_distutils/dist.py:261: UserWarning: Unknown distribution option: 'test_suite'
+          warnings.warn(msg)
+        error in anyjson setup command: use_2to3 is invalid.
+        [end of output]
+```
+
+What you're encountering here is that we solve dependencies in a different order than pip. See [this document](https://docs.astral.sh/uv/concepts/resolution/#basic-examples) for a basic example of how resolution can differ across resolvers but still be valid. You'll want to add a lower bound to `anyjson` reflecting it's incompatibility, then we won't try to build an old version.
+
+There are other issues discussing this, e.g., https://github.com/astral-sh/uv/issues/8128
+
+---
+
+_Label `question` added by @zanieb on 2024-10-20 14:22_
+
+---
+
+_Comment by @notatallshaw on 2024-10-20 20:54_
+
+> `pip-compile` fails to build this package too. Even if you add `<=03.3`, it doesn't continue to resolve and try older versions.
+
+`pip-compile` inherits this behavior from `pip` and it is intentional: https://github.com/pypa/pip/pull/10722
+
+---
+
+_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2024-11-25 10:05_
+
+---
+
+_Comment by @charliermarsh on 2024-12-26 16:51_
+
+This behavior is intentional, so going to close.
+
+---
+
+_Closed by @charliermarsh on 2024-12-26 16:51_
+
+---

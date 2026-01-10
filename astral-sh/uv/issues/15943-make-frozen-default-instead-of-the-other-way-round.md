@@ -1,0 +1,87 @@
+---
+number: 15943
+title: Make --frozen default instead of the other way round
+type: issue
+state: closed
+author: ghpqans
+labels:
+  - enhancement
+  - needs-decision
+assignees: []
+created_at: 2025-09-19T07:59:42Z
+updated_at: 2025-09-29T15:29:25Z
+url: https://github.com/astral-sh/uv/issues/15943
+synced_at: 2026-01-10T01:26:01Z
+---
+
+# Make --frozen default instead of the other way round
+
+---
+
+_Issue opened by @ghpqans on 2025-09-19 07:59_
+
+### Summary
+
+Forgetting to specify `--frozen` on `uv sync`, `uv run` etc. mostly changes `uv.lock` file.
+However, the sense of the `uv.lock` file is to maintain exactly the same set of dependencies over source-trees of different developers working at the same project.
+
+I think it would be better to make it the default to not implicitly change the `uv.lock` file until explicitly requested.
+
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @ghpqans on 2025-09-19 07:59_
+
+---
+
+_Label `needs-decision` added by @samypr100 on 2025-09-22 23:00_
+
+---
+
+_Label `breaking` added by @samypr100 on 2025-09-22 23:00_
+
+---
+
+_Comment by @wu-clan on 2025-09-26 03:08_
+
+One way that might be useful is to perform `uv-lock` with `pre-commit` in CI.
+
+I don't know when the `--frozen` flag is no longer used, but it does not change the `uv.lock` file anymore.
+
+<img width="301" height="161" alt="Image" src="https://github.com/user-attachments/assets/3eef9a2e-e360-4885-a4dd-61ab93c23aeb" />
+
+---
+
+_Label `breaking` removed by @konstin on 2025-09-26 07:26_
+
+---
+
+_Comment by @ghpqans on 2025-09-29 07:30_
+
+Do I understand correctly, that the `--frozen` is already the default in newer versions of `uv`? Is this kind of deprecating my request? Please clarify 
+
+> I don't know when the --frozen flag is no longer used, but it does not change the uv.lock file anymore.
+
+---
+
+_Comment by @konstin on 2025-09-29 09:50_
+
+We're unlikely to change the current default behavior, while there are pros and cons, we found automatic lockfile updates to work better with most workflows. You can set the `UV_FROZEN=1` environment variable if you want to change this behavior on your machine.
+
+---
+
+_Comment by @ghpqans on 2025-09-29 14:31_
+
+> You can set the UV_FROZEN=1 environment variable if you want to change this behavior on your machine.
+
+I'll try that. Sounds doable.
+
+---
+
+_Closed by @zanieb on 2025-09-29 15:29_
+
+---

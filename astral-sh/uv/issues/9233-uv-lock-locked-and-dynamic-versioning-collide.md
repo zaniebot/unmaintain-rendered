@@ -1,0 +1,72 @@
+---
+number: 9233
+title: uv lock --locked and dynamic versioning collide.
+type: issue
+state: closed
+author: mjpieters
+labels: []
+assignees: []
+created_at: 2024-11-19T16:26:51Z
+updated_at: 2024-11-19T16:28:47Z
+url: https://github.com/astral-sh/uv/issues/9233
+synced_at: 2026-01-10T01:24:38Z
+---
+
+# uv lock --locked and dynamic versioning collide.
+
+---
+
+_Issue opened by @mjpieters on 2024-11-19 16:26_
+
+As part of our CI lint check, we validate that the lock file is current:
+
+```sh
+uv lock --locked 2>/dev/null || {
+    echo -e '\033[0;31mThe lockfile at `uv.lock` needs to be updated. To update the lockfile, run `uv lock`\033[0m'.
+    exit 1
+} >&2
+```
+
+This project is built using `hatch`, together with the `hatch-vcs` plugin to set the version from the current git context:
+
+```toml
+[project]
+# ...
+dynamic = ["version"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "_version.py"
+
+[tool.hatch.version]
+source = "vcs"
+```
+
+This does mean that the version **changes with every commit**. Currently. this projects version is `0.15.2.dev3+g417c8ff`, meaning it is 3 commits away from the nearest tagged commit (which was tagged `v0.15.1`), and the current commit hash (shortened) is `417c8ff`. Once a commit is tagged for a new version (say, `0.16.0`) the project version reflects this. Thats great, because this lets our developers create a release version from a PR branch and test it against other projects simply by updating a dependency elsewhere to point to a development release.
+
+However, `uv lock` puts this version in the lock file too. And so `uv lock --locked` **fails for every new commit**. And we could update the lock file, commit it, and... the lock file would immediately be outdated because with a new commit, there's a new commit hash and a new version, that's not going to match the lock file.
+
+Is there any way we can _avoid_ this problem?
+
+
+---
+
+_Comment by @my1e5 on 2024-11-19 16:28_
+
+Lots of discussion about this topic here: 
+* https://github.com/astral-sh/uv/issues/7533
+
+---
+
+_Comment by @charliermarsh on 2024-11-19 16:28_
+
+Yeah let's keep the conversation over there. Right now VCS-based dynamic versions are in conflict with locking.
+
+---
+
+_Closed by @charliermarsh on 2024-11-19 16:28_
+
+---

@@ -1,0 +1,88 @@
+---
+number: 9772
+title: "UX: `uv run`'s `--frozen` flag silently ignores `--resolution` (and presumably `--prerelease`) arguments"
+type: issue
+state: open
+author: neutrinoceros
+labels:
+  - error messages
+  - needs-decision
+assignees: []
+created_at: 2024-12-10T12:17:35Z
+updated_at: 2024-12-10T13:37:10Z
+url: https://github.com/astral-sh/uv/issues/9772
+synced_at: 2026-01-10T01:24:45Z
+---
+
+# UX: `uv run`'s `--frozen` flag silently ignores `--resolution` (and presumably `--prerelease`) arguments
+
+---
+
+_Issue opened by @neutrinoceros on 2024-12-10 12:17_
+
+setup 
+```shell
+export UV_NO_CONFIG=1
+uv init --lib test
+cd test
+uv add "pytest>=7.0"
+uv lock
+```
+
+now 
+```
+uv run --frozen --resolution=lowest-direct pytest
+```
+
+outputs
+```
+=========================================== test session starts ===========================================
+platform darwin -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
+rootdir: /private/tmp/test
+configfile: pyproject.toml
+collected 0 items
+
+========================================== no tests ran in 0.00s ==========================================
+```
+(evidently we still have pytest 8.3.4 != 7.0)
+Arguably the behavior is correct, assuming `--frozen` is expected to take precedent over `--resolution`, but my issue is that this happens silently, whereas a helpful warning is shown if I drop the `--frozen` flag
+```
+uv run --frozen --resolution=lowest-direct pytest
+```
+
+```
+Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+Uninstalled 1 package in 16ms
+Installed 1 package in 9ms
+=========================================== test session starts ===========================================
+platform darwin -- Python 3.13.1, pytest-7.0.0, pluggy-1.5.0
+rootdir: /private/tmp/test
+collected 0 items
+
+========================================== no tests ran in 0.01s ==========================================
+```
+
+I think the same problem might exist with `--frozen` + `--prerelease` options (although I'm not sure how to check it right now).
+
+In hindsight, it's pretty obvious to me what I did wrong here, but it took me a couple minutes to figure it out the first time I made this mistake because I wanted to call `uv run` exclusively with the `--frozen` flag, and conditionally included `--resolution` arguments.
+It might also bite anyone who sets the `UV_FROZEN` environment variables.
+
+I think a warning might be sufficient to pin point the issue, although an error would make sense too. Whatever type of message is emitted, it should probably pop up only when the value attached to `--resolution` (or `--prerelease`) isn't compatible with the existing lock file.
+
+
+
+---
+
+_Label `error messages` added by @charliermarsh on 2024-12-10 13:34_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-12-10 13:34_
+
+---
+
+_Comment by @charliermarsh on 2024-12-10 13:37_
+
+I'm a little torn... I guess we could show a warning like the above. Erroring seems potentially problematic since it would lead to errors if both or one were set via an environment variable.
+
+---

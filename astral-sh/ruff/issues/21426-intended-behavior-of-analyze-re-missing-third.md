@@ -1,0 +1,76 @@
+---
+number: 21426
+title: "Intended behavior of `analyze` re missing third party dependencies"
+type: issue
+state: open
+author: gwdekker
+labels:
+  - question
+assignees: []
+created_at: 2025-11-13T12:25:38Z
+updated_at: 2025-11-13T14:21:37Z
+url: https://github.com/astral-sh/ruff/issues/21426
+synced_at: 2026-01-10T01:23:02Z
+---
+
+# Intended behavior of `analyze` re missing third party dependencies
+
+---
+
+_Issue opened by @gwdekker on 2025-11-13 12:25_
+
+### Question
+
+Take this example:
+
+```
+import requests
+import pandas
+
+def main():
+    print("Hello from try-analyze-broken-imports!")
+
+
+if __name__ == "__main__":
+    main()
+    print(requests.__version__)
+    print(pandas.__version__)
+```
+
+The output of `ruff analyze graph --python .venv/bin/python` on this code depends on the state of the python interpreter. If I have installed `requests` there, it lists requests in the graph. It ignores the `pandas` import statement fully without error. Is this by design, what is the reasoning behind it? My naive expectation would have been that an import that can not be understood given the state of the python environment and the code base would throw an error, but instead it silently gets ignored.
+
+### Version
+
+_No response_
+
+---
+
+_Label `question` added by @gwdekker on 2025-11-13 12:25_
+
+---
+
+_Comment by @MichaReiser on 2025-11-13 13:18_
+
+I think it wouldn't be unreasonable to log unresolved imports or return a counter saying how many imports couldn't be resolved. 
+
+I don't think the tool should return an error if it failed to resolve an import. It's not a type checker (and erroring would require a form to suppress known unresolvable imports). 
+
+Long term, I suspect that `analyze` will be integrated into `ty` where you can run `ty check` to verify that `ty` finds all imports and then run `ty analyze dependency-tree` or similar to dump the dependency tree.
+
+---
+
+_Comment by @gwdekker on 2025-11-13 14:16_
+
+I see, yes that's a reasonable position to hold. 
+
+I was indeed exploring combining with `ty` already to see if that would be a solution. On that note, is there a way for me to run `ty` only for one rule (so ignore all rules except the ones I select)? I tried ` uv run ty check --error unresolved-import .` but that still runs all other default rules. I cannot find how to do so, and I can also not find in the documentation a list of all default rules. Best I have for that is probably going through the [list of all rules](https://docs.astral.sh/ty/reference/rules) and explicitly ignore all of them that are default: error? 
+
+---
+
+_Comment by @MichaReiser on 2025-11-13 14:21_
+
+> I was indeed exploring combining with ty already to see if that would be a solution. On that note, is there a way for me to run ty only for one rule (so ignore all rules except the ones I select)?
+
+There's no easy way to do this today other than deselecting (`--ignore`) every single rule that's enabled by default.
+
+---

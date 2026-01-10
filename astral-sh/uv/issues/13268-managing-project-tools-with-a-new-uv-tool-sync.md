@@ -1,0 +1,98 @@
+---
+number: 13268
+title: "managing project tools with a new `uv tool sync` subcommand"
+type: issue
+state: open
+author: itcarroll
+labels:
+  - enhancement
+  - needs-design
+assignees: []
+created_at: 2025-05-02T15:32:44Z
+updated_at: 2025-05-02T15:49:54Z
+url: https://github.com/astral-sh/uv/issues/13268
+synced_at: 2026-01-10T01:25:31Z
+---
+
+# managing project tools with a new `uv tool sync` subcommand
+
+---
+
+_Issue opened by @itcarroll on 2025-05-02 15:32_
+
+### Summary
+
+I would like `uv` to help manage my frequently used tools by 1) knowing about the tools (with their version constraints and extras) used in development for a project and 2) ensuring that matching tools are available.
+
+### Example
+
+For instance, suppose I have a  `pyproject.toml` that includes a "tools" dependency group.
+
+```toml
+[dependency-groups]
+tools = [
+    "dvc[s3]>=3",
+]
+```
+
+The name "tools" wouldn't be special, as there would be a new setting like:
+```toml
+[tool.uv]
+install-tools = ["tools"]
+```
+
+When I am working in this project, I would execute the new subcommand.
+```shell
+$ uv tool sync
+```
+
+As a result, I would get
+```shell
+$ dvc --version
+3.59.1
+```
+
+Which would be great, because trying to use a 2.x version of `dvc` or one without `s3` extra would not work at all.
+
+I'm sure there are better people than me to improve on the useage, but I hope that example demonstrates the goal. Being able to easily share the tools I want my collaborators to have available this way would help me move away from installing tools in project virtual environments, which seems common but annoying nowadays.
+
+Thank you for a great tool!
+
+---
+
+_Label `enhancement` added by @itcarroll on 2025-05-02 15:32_
+
+---
+
+_Comment by @zanieb on 2025-05-02 15:34_
+
+This overlaps with
+
+- https://github.com/astral-sh/uv/issues/12533
+- "Project level tools" from https://github.com/astral-sh/uv/issues/3560 
+
+---
+
+_Comment by @itcarroll on 2025-05-02 15:46_
+
+Thanks, @zanieb. It looks like `uv tool sync` (along with `uv tool add` and `uv tool remove`) were considered but not included in the original implementation of `uv tool`. Perhaps with the `depency-groups` table, there is now much less potential for confusion. I'm glad there is support for something similar expressed in #12533. I'll leave this open though, as I don't think my description duplicates that one. But no worries if you prefer to close this one!
+
+---
+
+_Comment by @zanieb on 2025-05-02 15:49_
+
+Yeah we sort of wanted to wait for the `dependency-groups` table to move forward on a design there. I think there's still some design work to be done before we can ship something, but definitely agree it will be nice to have!
+
+---
+
+_Label `needs-design` added by @zanieb on 2025-05-02 15:49_
+
+---
+
+_Referenced in [astral-sh/uv#12533](../../astral-sh/uv/issues/12533.md) on 2025-05-02 17:12_
+
+---
+
+_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2025-05-22 22:32_
+
+---

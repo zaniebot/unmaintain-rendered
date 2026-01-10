@@ -1,0 +1,115 @@
+---
+number: 11943
+title: "Ruff does not recognise the fictitious `builtins.ellipsis` type from typeshed"
+type: issue
+state: closed
+author: RandallPittmanOrSt
+labels: []
+assignees: []
+created_at: 2024-06-19T20:25:06Z
+updated_at: 2024-06-19T21:25:46Z
+url: https://github.com/astral-sh/ruff/issues/11943
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# Ruff does not recognise the fictitious `builtins.ellipsis` type from typeshed
+
+---
+
+_Issue opened by @RandallPittmanOrSt on 2024-06-19 20:25_
+
+`ellipsis` is a valid name in type signatures, but Ruff doesn't seem to have it its grammar.
+
+- Keywords searched for before creating this issue:  "ellipsis", "Undefined name"
+- Ruff version: 0.4.9
+- Example:
+
+  ```python
+  from typing import Union
+  class MyCollection:
+      def __getitem__(self, slc : Union[int, slice, ellipsis]):
+          ...
+  ```
+
+  ```console
+  me@localhost$ ruff check my_collection.py
+  my_collection.py:3:51: F821 Undefined name `ellipsis`
+  Found 1 error.
+  ```
+
+
+  
+
+---
+
+_Comment by @trag1c on 2024-06-19 20:31_
+
+ruff is right, there's no `ellipsis`; you probably meant `Ellipsis`?
+
+---
+
+_Comment by @RandallPittmanOrSt on 2024-06-19 20:37_
+
+> ruff is right, there's no `ellipsis`; you probably meant `Ellipsis`?
+
+No, you can't use `Ellipsis` in an annotation as it is a variable (according to both mypy and Pyright).
+
+I'm basing my annotations on those of `numpy.ndarray.__getitem__`: <https://github.com/numpy/numpy/blob/64ee06a641f8bd087bd74712ef4b1cbd1241f08c/numpy/__init__.pyi#L1514>
+
+
+---
+
+_Comment by @AlexWaygood on 2024-06-19 20:43_
+
+This is due to a historical hack in typeshed, where a fictitious type "builtins.ellipsis" is invented for static type checkers so that they are able to understand what the type of the `Ellipsis` singleton is: https://github.com/python/typeshed/blob/fdce887b9479a4c8a69ea040145f276caa28ce0e/stdlib/builtins.pyi#L1834-L1850. It would be nice to remove this hack over at typeshed, but it might be difficult: some people (such as numpy, apparently) are using the hack in their annotations, so there are backwards compatibility implications; the "real" type of `Ellipsis` is only exposed at runtime as `types.EllipsisType` on Python 3.10+, while typeshed still supports Python 3.8; and some type checkers might also rely on `builtins.ellipsis` being in the stub.
+
+Ruff does not use typeshed's stubs for resolving builtin symbols at the moment, although we will do at some point. At that point, we might start understanding the fictious `builtins.ellipsis` type in the same way that mypy and pyright do. Whether we do or don't, however, I'd encourage you to use `types.EllipsisType` instead of `builtins.ellipsis` if at all possible since, unlike `builtins.ellipsis`, `types.EllipsisType` actually exists at runtime.
+
+---
+
+_Renamed from "`ellipsis` is missing from ruff's grammar" to "Ruff does not recognise the fictitious `builtins.ellipsis` type from typeshed" by @AlexWaygood on 2024-06-19 20:43_
+
+---
+
+_Comment by @RandallPittmanOrSt on 2024-06-19 20:45_
+
+@AlexWaygood You're totally right, I just discovered that. My mistake, thanks.
+
+
+---
+
+_Comment by @AlexWaygood on 2024-06-19 20:47_
+
+No need to apologise @RandallPittmanOrSt, this is a pretty obscure corner case! Happy to help :-)
+
+I think I'll close this for now, though, since there's not much actionable for us here -- we're already working on using typeshed stubs for resolving builtin symbols 👍
+
+---
+
+_Closed by @AlexWaygood on 2024-06-19 20:47_
+
+---
+
+_Comment by @RandallPittmanOrSt on 2024-06-19 20:53_
+
+Thanks again, @AlexWaygood. FFR, here's ~my workaround~ a modified version of typeshed's hack as a workaround:
+
+mypy doesn't like overriding typeshed's `ellipsis` hack, hence the `if not TYPE_CHECKING`
+
+```python
+from typing import TYPE_CHECKING
+import sys
+if sys.version_info >= (3, 10):
+    from types import EllipsisType
+    ellipsis = EllipsisType
+elif not TYPE_CHECKING:
+    class ellipsis: ...
+```
+
+In a type stub, the `@type_check_only` decorator can be added to the `ellipsis` class.
+
+---
+
+_Referenced in [Unidata/netcdf4-python#1302](../../Unidata/netcdf4-python/pulls/1302.md) on 2024-06-24 23:15_
+
+---

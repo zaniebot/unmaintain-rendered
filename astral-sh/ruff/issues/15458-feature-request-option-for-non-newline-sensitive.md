@@ -1,0 +1,122 @@
+---
+number: 15458
+title: "feature request: option for non newline sensitive output of call-expressions-with-a-single-multiline-string-argument"
+type: issue
+state: open
+author: trim21
+labels:
+  - formatter
+  - style
+assignees: []
+created_at: 2025-01-13T15:36:36Z
+updated_at: 2025-01-13T15:47:51Z
+url: https://github.com/astral-sh/ruff/issues/15458
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# feature request: option for non newline sensitive output of call-expressions-with-a-single-multiline-string-argument
+
+---
+
+_Issue opened by @trim21 on 2025-01-13 15:36_
+
+We have a newline sensitive output for the case of https://docs.astral.sh/ruff/formatter/black/#call-expressions-with-a-single-multiline-string-argument
+
+Is it possible to have a formatter option to remove the newline sensitivity?
+
+(I have no option on which style is the best and what output it should yield, but I don't like the different format result caused by newline)
+
+For example
+
+```
+# Input
+call(
+  """"
+  A multiline
+  string
+  """
+)
+
+dedent(""""
+    A multiline
+    string
+""")
+```
+
+with:
+
+```toml
+[tool.ruff.format]
+call-expressions-with-a-single-multiline-string-argument = 'preserve'
+```
+
+we don't change the code, which is the current behavoir
+
+and for
+
+```toml
+[tool.ruff.format]
+call-expressions-with-a-single-multiline-string-argument = 'add-indent' # or call if black?
+```
+
+we yield same output with black:
+
+```python
+call(
+    """
+  A multiline
+  string
+  """
+)
+
+dedent(
+    """
+    A multiline
+    string
+"""
+)
+```
+
+and for
+
+```toml
+[tool.ruff.format]
+call-expressions-with-a-single-multiline-string-argument = 'hug' # or some other option name
+```
+
+we always yield
+
+```python
+call("""
+  A multiline
+  string
+  """)
+
+dedent("""
+    A multiline
+    string
+""")
+```
+
+
+---
+
+_Renamed from "feature request: option for stable output of call-expressions-with-a-single-multiline-string-argument" to "feature request: option for non newline sensitive output of call-expressions-with-a-single-multiline-string-argument" by @trim21 on 2025-01-13 15:41_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2025-01-13 15:45_
+
+---
+
+_Label `style` added by @MichaReiser on 2025-01-13 15:45_
+
+---
+
+_Comment by @MichaReiser on 2025-01-13 15:47_
+
+Thanks for opening a separate issue. 
+
+This is the first time this has come up which is why I want to hold back with introducing an option unless there's more demand for it. An alternative is to change the heuristic or remove it entirely.
+
+---

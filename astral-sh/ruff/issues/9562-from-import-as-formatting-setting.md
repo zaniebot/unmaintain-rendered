@@ -1,0 +1,95 @@
+---
+number: 9562
+title: "\"from import as\" formatting setting?"
+type: issue
+state: closed
+author: Modexus
+labels:
+  - question
+assignees: []
+created_at: 2024-01-17T12:04:10Z
+updated_at: 2024-01-17T16:28:12Z
+url: https://github.com/astral-sh/ruff/issues/9562
+synced_at: 2026-01-10T01:22:49Z
+---
+
+# "from import as" formatting setting?
+
+---
+
+_Issue opened by @Modexus on 2024-01-17 12:04_
+
+Is there a way to control formatting of "from import as" blocks" such as:
+```python
+from foo import (
+    bar as baz,
+    bar2 as baz2,
+    bar3 as baz3,
+    bar4 as baz4,
+    bar5 as baz5,
+    bar6 as baz6,
+)
+```
+
+this currently formats to
+```python
+from foo import (
+    bar as baz,
+)
+from foo import (
+    bar2 as baz2,
+)
+from foo import (
+    bar3 as baz3,
+)
+from foo import (
+    bar4 as baz4,
+)
+from foo import (
+    bar5 as baz5,
+)
+from foo import (
+    bar6 as baz6,
+)
+```
+As I have a bunch of these it makes it quite unreadable and there does not seem to be a way to ignore it without completely disabling I001.
+
+
+---
+
+_Comment by @charliermarsh on 2024-01-17 15:21_
+
+Yup: [`combine-as-imports`](https://docs.astral.sh/ruff/settings/#isort-combine-as-imports).
+
+```toml
+[tool.ruff.isort]
+combine-as-imports = true
+```
+
+---
+
+_Comment by @charliermarsh on 2024-01-17 15:21_
+
+Example here (notice that it's not flagged as a violation): https://play.ruff.rs/15ce8c9b-7e61-4831-8d63-24af163b5a0e
+
+---
+
+_Closed by @charliermarsh on 2024-01-17 15:21_
+
+---
+
+_Label `question` added by @charliermarsh on 2024-01-17 15:21_
+
+---
+
+_Comment by @Modexus on 2024-01-17 16:04_
+
+Thanks a lot! I missed that isort is configurable in the settings, very useful.
+
+---
+
+_Comment by @charliermarsh on 2024-01-17 16:28_
+
+No prob! I think at one point we defaulted this setting to true, but changed it to false to match isort’s defaults.
+
+---

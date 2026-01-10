@@ -1,0 +1,134 @@
+---
+number: 5976
+title: Hang on multiline nested f-string missing placeholder with CRLF line endings
+type: issue
+state: closed
+author: DanGonite57
+labels:
+  - bug
+assignees: []
+created_at: 2023-07-22T12:47:56Z
+updated_at: 2023-07-26T11:48:02Z
+url: https://github.com/astral-sh/ruff/issues/5976
+synced_at: 2026-01-10T01:22:45Z
+---
+
+# Hang on multiline nested f-string missing placeholder with CRLF line endings
+
+---
+
+_Issue opened by @DanGonite57 on 2023-07-22 12:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+`ruff 0.0.280`
+
+Running a check on a CRLF file containing a multiline nested f-string that is missing a placeholder causes the program to hang.
+
+`cargo run -p ruff_cli -- check 'test.py' --isolated --no-cache -v`
+```
+f"""1
+{f'2'}"""
+```
+
+Having done some basic digging, I believe the issue lies at https://github.com/astral-sh/ruff/blob/33657d3a1ccc5ccfefa26f50758ba46b74946da0/crates/ruff/src/rules/pyflakes/rules/f_string_missing_placeholders.rs#L56-L57
+
+`locator.contents() = "f\"\"\"1\r\n{f'2'}\"\"\"\r\n"`
+
+The given slice range (`7..11`) may be treating `\r\n` as a single character, and so the resulting slice is incorrect (`&contents = "{f'2"`) and causes the lexer to hang. The issue does not occur if the file is switched to LF.
+
+This may be related to and/or compounded by https://github.com/astral-sh/ruff/issues/5907
+
+`cargo dev print-ast` gives:
+```
+[
+    Expr(
+        StmtExpr {
+            range: 0..16,
+            value: JoinedStr(
+                ExprJoinedStr {
+                    range: 0..16,
+                    values: [
+                        Constant(
+                            ExprConstant {
+                                range: 0..16,
+                                value: Str(
+                                    "1\n",
+                                ),
+                                kind: None,
+                            },
+                        ),
+                        FormattedValue(
+                            ExprFormattedValue {
+                                range: 0..16,
+                                value: JoinedStr(
+                                    ExprJoinedStr {
+                                        range: 7..11,
+                                        values: [
+                                            Constant(
+                                                ExprConstant {
+                                                    range: 7..11,
+                                                    value: Str(
+                                                        "2",
+                                                    ),
+                                                    kind: None,
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                conversion: None,
+                                format_spec: None,
+                            },
+                        ),
+                    ],
+                },
+            ),
+        },
+    ),
+]
+```
+
+If the range of the inner constant is corrected, it is possible the issue will go away by itself.
+
+---
+
+_Comment by @charliermarsh on 2023-07-22 13:38_
+
+Thanks for the clear issue!
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-07-22 13:38_
+
+---
+
+_Comment by @MichaReiser on 2023-07-24 07:29_
+
+> Thanks for the clear issue!
+
+Any chance that this is due to the `Lexer` normalizing newlines to `\n`. We should re-test the issue on top of #6012 that removes this normalization
+
+---
+
+_Comment by @DanGonite57 on 2023-07-26 11:48_
+
+Looks to be fixed after the merge of https://github.com/astral-sh/ruff/pull/6012. Cheers!
+
+---
+
+_Closed by @DanGonite57 on 2023-07-26 11:48_
+
+---
+
+_Referenced in [astral-sh/ruff#17040](../../astral-sh/ruff/issues/17040.md) on 2025-03-28 17:16_
+
+---

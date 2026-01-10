@@ -1,0 +1,64 @@
+---
+number: 3679
+title: Undefined variables (names) are not detected
+type: issue
+state: closed
+author: axbender
+labels: []
+assignees: []
+created_at: 2023-03-23T08:23:11Z
+updated_at: 2023-03-23T17:02:57Z
+url: https://github.com/astral-sh/ruff/issues/3679
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# Undefined variables (names) are not detected
+
+---
+
+_Issue opened by @axbender on 2023-03-23 08:23_
+
+I would expect the following code to be rejected by ruff  (`select = ["ALL"]`, `ignore = []`):
+
+```python
+import pycurl
+
+def have_curl():
+    try:
+        curl = pycurl.Curl()
+    except Exception as e:
+        return False
+    finally:
+        curl.close()   # curl may be undefined here
+    return True
+
+
+def stuff(var):
+    try:
+        b = 1 / 0
+        a = var % 7
+    except:
+        b = 8
+    finally:
+        stuff(a)   # a may be undefined here
+```
+pylint detects these errors. Am I missing something...?
+
+---
+
+_Comment by @axbender on 2023-03-23 10:14_
+
+Sorry, I just saw that E0601 is on your list for the full pylint implementation...
+Will keep waiting hopefully ;-)
+
+---
+
+_Comment by @charliermarsh on 2023-03-23 17:02_
+
+Yeah we don't have sufficiently sophisticated branch analysis to handle this right now. Going to close just in favor of the broader Pylint issue!
+
+---
+
+_Closed by @charliermarsh on 2023-03-23 17:02_
+
+---

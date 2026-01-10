@@ -1,0 +1,44 @@
+---
+number: 137
+title: Global arguments should propagate further than 1 level deep
+type: issue
+state: closed
+author: kbknapp
+labels:
+  - C-bug
+assignees: []
+created_at: 2015-06-02T12:57:24Z
+updated_at: 2015-06-06T20:48:45Z
+url: https://github.com/clap-rs/clap/issues/137
+synced_at: 2026-01-10T01:26:24Z
+---
+
+# Global arguments should propagate further than 1 level deep
+
+---
+
+_Issue opened by @kbknapp on 2015-06-02 12:57_
+
+_No description provided._
+
+---
+
+_Label `bug` added by @kbknapp on 2015-06-02 12:57_
+
+---
+
+_Assigned to @kbknapp by @kbknapp on 2015-06-02 12:57_
+
+---
+
+_Added to milestone `1.0 Release` by @kbknapp on 2015-06-02 12:57_
+
+---
+
+_Referenced in [kbknapp/docli-rs#12](../../kbknapp/docli-rs/issues/12.md) on 2015-06-04 19:12_
+
+---
+
+_Closed by @kbknapp on 2015-06-06 20:48_
+
+---

@@ -1,0 +1,222 @@
+---
+number: 3602
+title: write_long_help is wonky on get_subcommands_mut values
+type: issue
+state: closed
+author: Gankra
+labels:
+  - C-bug
+assignees: []
+created_at: 2022-04-02T02:49:21Z
+updated_at: 2022-04-19T15:33:55Z
+url: https://github.com/clap-rs/clap/issues/3602
+synced_at: 2026-01-10T01:27:44Z
+---
+
+# write_long_help is wonky on get_subcommands_mut values
+
+---
+
+_Issue opened by @Gankra on 2022-04-02 02:49_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.61.0-nightly (458262b13 2022-03-09)
+
+### Clap Version
+
+3.1.8
+
+### Minimal reproducible code
+
+The main thing is just:
+
+```rust
+    // Cli is derive(Parser)
+    let mut full_command = Cli::command();
+    let mut todo = vec![&mut full_command];
+
+    while let Some(command) = todo.pop() {
+        // Get the long help for this (sub)command
+        let mut help_buf = Vec::new();
+        command.write_long_help(&mut help_buf).unwrap();
+
+        // print help_buf...
+
+        // Add subcommands to working queue
+        todo.extend(command.get_subcommands_mut());
+    }
+```
+
+But the "complete" program is all of this:
+
+```rust
+
+use std::{io::Write, error::Error};
+
+use clap::{CommandFactory, Parser, Subcommand};
+
+#[derive(Parser)]
+#[clap(version, about, long_about = None)]
+#[clap(propagate_version = true)]
+struct Cli {
+    // Subcommands
+    #[clap(subcommand)]
+    command: Option<Commands>,
+
+    // Some random flags 
+    #[clap(long)]
+    locked: bool,
+    #[clap(long)]
+    log_file: Option<String>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// initialize buggyhelp for your project
+    #[clap(disable_version_flag = true)]
+    Init(InitArgs),
+
+    /// Fetch the source of `$crate $version`
+    #[clap(disable_version_flag = true)]
+    Fetch(FetchArgs),
+
+    /// Print --help as markdown (for generating docs)
+    #[clap(disable_version_flag = true)]
+    #[clap(hide = true)]
+    HelpMarkdown(HelpMarkdownArgs),
+}
+
+#[derive(clap::Args)]
+struct InitArgs {}
+
+#[derive(clap::Args)]
+struct FetchArgs {
+    krate: String,
+    version: String,
+}
+
+#[derive(clap::Args)]
+struct HelpMarkdownArgs {}
+
+
+fn main() -> Result<(), Box<dyn Error>>  {
+    let cli = Cli::parse();
+
+    match &cli.command {
+        Some(Commands::HelpMarkdown(..)) => cmd_help_markdown()?,
+        _ => unimplemented!(),
+    }
+
+    Ok(())
+}
+
+fn cmd_help_markdown() -> Result<(), Box<dyn Error>> {
+    let mut full_command = Cli::command();
+    let mut todo = vec![&mut full_command];
+
+    while let Some(command) = todo.pop() {
+        let mut help_buf = Vec::new();
+
+        command.write_long_help(&mut help_buf).unwrap();
+        let help = String::from_utf8(help_buf).unwrap();
+        println!("{}", help);
+
+        todo.extend(command.get_subcommands_mut());
+    }
+
+    Ok(())
+}
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```
+cargo run -- help-markdown
+```
+
+### Actual Behaviour
+
+The long_help outputs for the subcommands are weirdly different from `myapp subcommand --help`:
+
+* USAGE is `subcommand ...` instead of `myapp subcommand ...`
+* ARGS have weird amounts of padding
+
+```
+fetch 0.1.0
+Fetch the source of `$crate $version`
+
+USAGE:
+    fetch <KRATE> <VERSION>
+
+ARGS:
+    <KRATE>
+
+
+    <VERSION>
+
+
+OPTIONS:
+    -h, --help
+            Print help information
+```
+
+### Expected Behaviour
+
+It's not obvious why this would produce substantially different output from the "normal" way to get --help on the CLI.
+
+### Additional Context
+
+The reason I am doing these crimes is that I have a secret command that mangles the --help output into a usable markdown form to add to the end of a README.md: https://gist.github.com/Gankra/349dcf6732262ed33b2aa216243a75be
+
+
+
+### Debug Output
+
+_No response_
+
+---
+
+_Label `C-bug` added by @Gankra on 2022-04-02 02:49_
+
+---
+
+_Comment by @epage on 2022-04-03 01:10_
+
+This is  most likely due to an under-developed part of clap.  To work around it, you should call `full_command._build_all();` before doing anything else.
+
+https://github.com/clap-rs/clap/issues/2911 is the issue for improving this.
+
+---
+
+_Comment by @epage on 2022-04-19 14:53_
+
+Without any activity on this, I'm assuming the solution provided is sufficient.  If not, let us know and we can re-open!
+
+---
+
+_Closed by @epage on 2022-04-19 14:53_
+
+---
+
+_Comment by @Gankra on 2022-04-19 14:59_
+
+oh yes sorry, I patched around the issue by just "expecting" the wonky output, I haven't had a chance to look at `_build_all()` (leading underscore has me suspicious that this is no better than me hacking around it...).
+
+---
+
+_Referenced in [clap-rs/clap#3642](../../clap-rs/clap/pulls/3642.md) on 2022-04-19 15:14_
+
+---
+
+_Comment by @epage on 2022-04-19 15:33_
+
+I've released v3.1.10 with `Command::build` so people don't have to feel bad for using it until we've replaced it.
+
+---

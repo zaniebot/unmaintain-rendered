@@ -1,0 +1,109 @@
+---
+number: 16597
+title: uv tool run failing for gitlab private pypi packages
+type: issue
+state: open
+author: lmco-shuynh
+labels:
+  - bug
+assignees: []
+created_at: 2025-11-05T00:11:36Z
+updated_at: 2025-12-18T17:03:27Z
+url: https://github.com/astral-sh/uv/issues/16597
+synced_at: 2026-01-10T01:26:07Z
+---
+
+# uv tool run failing for gitlab private pypi packages
+
+---
+
+_Issue opened by @lmco-shuynh on 2025-11-05 00:11_
+
+### Summary
+
+As part of my Dockerfile, I do a uv install of a pypi package that I have in a private gitlab instance.
+
+```docker
+RUN uv tool install extendr --no-cache-dir --index https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.mydomain.com/api/v4/projects/165200/packages/pypi/simple
+```
+
+When I use the new docker image, I can see the uv tool installed correctly. 
+```shell
+[root@9e8409168a69 /]# uv tool list
+extendr v0.3.0
+- extendr
+```
+
+When I try to run the tool, I get the following error:
+```shell
+[root@9e8409168a69 /]# uv tool run extendr --version
+  × No solution found when resolving tool dependencies:
+  ╰─▶ Because extendr was not found in the package registry and you require extendr, we can conclude that your requirements are unsatisfiable.
+```
+It appears it tries to install the package from the default pypi repository instead of using the installed one.
+
+Running with DEBUG, I can see it is able to locate the installation:
+```shell
+DEBUG Checking for Python environment at: `/root/.local/share/uv/tools/extendr`
+DEBUG Found existing environment for tool `extendr`: /root/.local/share/uv/tools/extendr
+DEBUG Released lock at `/root/.local/share/uv/tools/.lock`
+```
+
+With some trial and error, I noticed that if I modify the `uv-receipt.toml` to remove the `tool.options` that was inserted during the install, I can run my application.
+
+```shell
+cat /root/.local/share/uv/tools/extendr/uv-receipt.toml
+[tool]
+requirements = [{ name = "extendr" }]
+entrypoints = [
+    { name = "extendr", install-path = "/root/.local/bin/extendr", from = "extendr" },
+]
+
+[tool.options]
+index = [{ url = "https://gitlab.mydomain.com/api/v4/projects/165200/packages/pypi/simple", explicit = false, default = false, format = "simple", authenticate = "auto" }]
+```
+
+I remove the `[tool.options]` so the file now looks like this:
+```shell
+cat /root/.local/share/uv/tools/extendr/uv-receipt.toml
+[tool]
+requirements = [{ name = "extendr" }]
+entrypoints = [
+    { name = "extendr", install-path = "/root/.local/bin/extendr", from = "extendr" },
+]
+```
+
+I can now successfully run my application
+```shell
+uv tool run extendr --version
+Extendr v0.3.0
+```
+
+Is this expected behavior? 
+
+
+
+
+### Platform
+
+Ubuntu 24.04
+
+### Version
+
+uv 0.9.7
+
+### Python version
+
+_No response_
+
+---
+
+_Label `bug` added by @lmco-shuynh on 2025-11-05 00:11_
+
+---
+
+_Comment by @konstin on 2025-12-18 17:03_
+
+Ideally the install directory should be in PATH (it uses the XDG bin dir by default), so running `extendr` should also work. But I agree that that's very unintuitive behavior to revalidate the index.
+
+---

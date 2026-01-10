@@ -1,0 +1,121 @@
+---
+number: 3945
+title: F821 at struct
+type: issue
+state: closed
+author: KyleJeong
+labels:
+  - question
+assignees: []
+created_at: 2023-04-12T04:35:21Z
+updated_at: 2023-04-13T02:34:18Z
+url: https://github.com/astral-sh/ruff/issues/3945
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# F821 at struct
+
+---
+
+_Issue opened by @KyleJeong on 2023-04-12 04:35_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I use ALE with Ruff for Python lint.
+I met "F821 Undefined name strcut" when I tried the code like this.
+~~~
+sec, usec, caplen, wirelen, dummy = struct.unpack(....)
+~~~
+
+In my understanding, struct is a basic component of Python. So I didn't import anything.
+The code worked fine, but Ruff gave me an F821 message.
+
+
+---
+
+_Comment by @charliermarsh on 2023-04-12 14:42_
+
+Hm, I believe `struct` is a standard library module that has to be imported, and not a builtin. E.g.:
+
+```
+Python 3.11.2 (main, Mar 20 2023, 17:17:17) [Clang 13.1.6 (clang-1316.0.21.2.5)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> struct.unpack
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'struct' is not defined
+```
+
+So it seems correct to warn here, but I'm wondering how your code worked without the import.
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-04-12 14:42_
+
+---
+
+_Comment by @dhruvmanila on 2023-04-12 17:55_
+
+It is indeed a standard library module: https://docs.python.org/3.10/library/struct.html (TIL)
+
+---
+
+_Comment by @KyleJeong on 2023-04-12 22:16_
+
+Thank you for your response.
+I will double-check soon and get back to you
+
+On Thu, Apr 13, 2023, 2:55 AM Dhruv Manilawala ***@***.***>
+wrote:
+
+> It is indeed a standard library module:
+> https://docs.python.org/3.10/library/struct.html (TIL)
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/charliermarsh/ruff/issues/3945#issuecomment-1505698648>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AJON2KFU52TGSEWFTC333KLXA3UBHANCNFSM6AAAAAAW3EHQAQ>
+> .
+> You are receiving this because you authored the thread.Message ID:
+> ***@***.***>
+>
+
+
+---
+
+_Comment by @charliermarsh on 2023-04-12 23:09_
+
+Thanks :)
+
+---
+
+_Comment by @KyleJeong on 2023-04-13 02:32_
+
+I am so sorry. You are correct. The sentence was designed to be executed in a specific condition. So I hadn't realized that that was the bug.
+
+I used another linter, but it didn't recognize the problem. Only Ruff identified the problem.
+
+Great linter!
+
+---
+
+_Comment by @charliermarsh on 2023-04-13 02:34_
+
+No worries, I'm glad we could resolve :)
+
+---
+
+_Closed by @charliermarsh on 2023-04-13 02:34_
+
+---

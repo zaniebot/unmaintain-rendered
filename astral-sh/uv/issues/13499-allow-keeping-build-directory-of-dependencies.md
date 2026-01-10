@@ -1,0 +1,66 @@
+---
+number: 13499
+title: Allow keeping build directory of dependencies (similar to pip install --no-clean)
+type: issue
+state: open
+author: Hawk777
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-05-16T21:46:02Z
+updated_at: 2025-09-08T18:38:39Z
+url: https://github.com/astral-sh/uv/issues/13499
+synced_at: 2026-01-10T01:25:34Z
+---
+
+# Allow keeping build directory of dependencies (similar to pip install --no-clean)
+
+---
+
+_Issue opened by @Hawk777 on 2025-05-16 21:46_
+
+### Summary
+
+When installing a dependency fails, it would be nice if I could ask UV to keep the build directory so I can look at log files in it. This is kind of similar to GH-12292, except (at least according to its title) that’s for the package being worked on, while I would like this for dependencies (or things installed via `uv pip`). As far as I can tell, this would be equivalent to `pip install --no-clean`. I tried `uv pip install --no-clean` in a vain hope that it had an undocumented option, but it doesn’t.
+
+### Example
+
+_No response_
+
+---
+
+_Label `enhancement` added by @Hawk777 on 2025-05-16 21:46_
+
+---
+
+_Comment by @sfc-gh-sbekman on 2025-09-05 23:21_
+
+that and preserving the wheel so it could be copied from `/tmp` and reused again and again, please and thank you!
+
+so for example a `pip install flash_attn  --no-build-isolation --no-clean` uv equivalent.
+
+---
+
+_Comment by @Hawk777 on 2025-09-06 07:02_
+
+What wheel would that be? If the build succeeds, uv already caches the wheel in its internal cache so that subsequent uses of it don’t need to recompile. If it fails, no wheel can have been created, can it?
+
+---
+
+_Comment by @stas00 on 2025-09-08 17:23_
+
+A wheel that could be re-used on other nodes that don't have the `uv` cache. 
+
+---
+
+_Comment by @Hawk777 on 2025-09-08 17:30_
+
+Ah, so maybe a way to extract a wheel from the cache?
+
+---
+
+_Comment by @sfc-gh-sbekman on 2025-09-08 18:38_
+
+whatever works. e.g. it could tell the path where the wheel was stored so that the user could copy it? same as `pip install ... -no-clean` does?
+
+---

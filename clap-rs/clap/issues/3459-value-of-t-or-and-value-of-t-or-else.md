@@ -1,0 +1,98 @@
+---
+number: 3459
+title: value_of_t_or and value_of_t_or_else
+type: issue
+state: closed
+author: letheed
+labels:
+  - C-enhancement
+  - A-parsing
+  - S-duplicate
+assignees: []
+created_at: 2022-02-12T16:26:14Z
+updated_at: 2022-02-13T02:43:52Z
+url: https://github.com/clap-rs/clap/issues/3459
+synced_at: 2026-01-10T01:27:41Z
+---
+
+# value_of_t_or and value_of_t_or_else
+
+---
+
+_Issue opened by @letheed on 2022-02-12 16:26_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+3.0.14
+
+### Describe your use case
+
+The use case is the parsing of optional arguments where a default value is provided when there is none.
+
+Currently I’m using this code:
+
+```rust
+const MY_ARG_DEFAULT = {…};
+
+let my_val = match args.value_of_t("MY_ARG") {
+        Err(error) if error.kind() == ErrorKind::ArgumentNotFound => Ok(MY_ARG_DEFAULT),
+        result => result,
+    }?;
+```
+
+### Describe the solution you'd like
+
+Ideally I would like something like:
+```rust
+let my_val = args.value_of_t_or("MY_ARG", MY_ARG_DEFAULT)?;
+```
+and for more expensive values:
+```rust
+let my_val = args.value_of_t_or_else("MY_ARG", || <expr>)?;
+```
+I’m actually a bit surprised something like that doesn’t exist because I though the derive feature would use something like that for `default_value_t` instead of a print/parse roundtrip.
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @letheed on 2022-02-12 16:26_
+
+---
+
+_Comment by @epage on 2022-02-13 02:43_
+
+> I’m actually a bit surprised something like that doesn’t exist because I though the derive feature would use something like that for default_value_t instead of a print/parse roundtrip.
+
+We've been tracking this with https://github.com/clap-rs/clap/issues/2505
+
+Keep in mind that `value_of_t` is new in clap 3.0, so our window of feedback has been small.  We just didn't have time to change the API to how it was proposed in there.  Your API proposals offer some alternatives that can be added in the mean time.  Naming between an erroring vs an optional version is unclear (not really seen a pattern for that emerge).
+
+We also will have #2683 impact some of these API choices.
+
+I'm going to close this out in favor of continuing the conversation on #2505 
+
+---
+
+_Closed by @epage on 2022-02-13 02:43_
+
+---
+
+_Label `A-parsing` added by @epage on 2022-02-13 02:43_
+
+---
+
+_Label `S-duplicate` added by @epage on 2022-02-13 02:43_
+
+---

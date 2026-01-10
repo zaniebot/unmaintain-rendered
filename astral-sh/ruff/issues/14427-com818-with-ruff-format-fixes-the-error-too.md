@@ -1,0 +1,92 @@
+---
+number: 14427
+title: COM818 with ruff format fixes the error too harshly
+type: issue
+state: open
+author: neikow
+labels:
+  - incompatibility
+assignees: []
+created_at: 2024-11-18T09:53:52Z
+updated_at: 2025-02-12T20:41:30Z
+url: https://github.com/astral-sh/ruff/issues/14427
+synced_at: 2026-01-10T01:22:55Z
+---
+
+# COM818 with ruff format fixes the error too harshly
+
+---
+
+_Issue opened by @neikow on 2024-11-18 09:53_
+
+Hi ! Thanks for providing us with such a great tool !
+
+When the rule COM818 is turned on and we run the formatter, it will wrap the trailing comma with paranthesis so when we run the linter again, the error will be corrected although it was probably a mistake to begin with.
+
+[Playground URL](https://play.ruff.rs/3d855131-5721-4bae-9a93-fb5522dd5637)
+
+I think it would be better to prevent the formatter to run on these types of issues when this particular rule is selected as it can lead to hard to spot errors.
+
+- Commands: ruff format / ruff lint
+- Version: v0.7.4
+- Relevant settings:
+```
+{
+  "lint":
+    "select": [
+       "COM818"
+    ]
+}
+```
+
+---
+
+_Comment by @MichaReiser on 2024-11-18 10:12_
+
+As note for myself:
+
+The input is
+
+```py
+test = {"ere": ""},
+```
+
+which gets formatted to
+
+```py
+test = ({"ere": ""},)
+```
+Which is no longer flagged by `COM818`. 
+
+Can you tell me more about your workflow? Our general recommendation is to run the linter (and apply fixes) first, then run the formatter.  That the formatter wraps bare tuples in parentheses was also a deliberate decision to make them more visible in, e.g., the editor's case. It also helped to identify many unwanted bare tuples in existing code bases, e.g., Django. But I don't think we ever received feedback on this. So thanks for reporting this specific case where I can see that it can lead to missed possibly-bare tuples.
+
+
+
+---
+
+_Label `incompatibility` added by @MichaReiser on 2024-11-18 10:12_
+
+---
+
+_Comment by @neikow on 2024-11-19 09:19_
+
+We run ruff via pre-commit with the lint phase before the formatting phase.
+
+1. When we try to commit the first time, it fails because of a lint error and because the formatter made somme changes.
+2. Usually developer think it was only the formatting that made the hook fail (and might not see the lint error) so they stage files and try to commit again and it pass this time (because de lint error is no longer present)
+
+Arguably the developer should inspect more precisely the output of the first try but in more normal cases, the lint error would still be present after the second try and therefore will not be missed.
+
+We thought about adding a hook for only the COM818 rule which would fail fast but it would increase the runtime of the hooks.
+Furthermore, marking ruff lint as fail_fast would mean we would need to commit three times at least:
+- once for the linting
+- once for the formatting
+- accepted commit
+
+---
+
+_Comment by @tylerlaprade on 2025-02-12 20:41_
+
+I have the same problem. When I `⌘ s` on a file containing `x = 2,` in VSCode, parentheses are incorrectly added around `2,`, which is not what I want. The correct code is `x=2`. This happens even if I add `COM818` to `unsafe-fixes` - that seems it's due to the formatter above.
+
+---

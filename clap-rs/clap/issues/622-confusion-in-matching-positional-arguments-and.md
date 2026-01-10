@@ -1,0 +1,93 @@
+---
+number: 622
+title: Confusion in matching positional arguments and subcommands
+type: issue
+state: closed
+author: guiniol
+labels: []
+assignees: []
+created_at: 2016-08-21T10:15:38Z
+updated_at: 2018-08-02T03:29:52Z
+url: https://github.com/clap-rs/clap/issues/622
+synced_at: 2026-01-10T01:26:33Z
+---
+
+# Confusion in matching positional arguments and subcommands
+
+---
+
+_Issue opened by @guiniol on 2016-08-21 10:15_
+
+If the positional argument's value starts with the same string as a subcommand, clap tries to match it as a subcommand. This can be seen with the example in the main README:
+
+```
+ $ cargo run -- input
+     Running `target/debug/mwe input`
+Value for config: default.conf
+Using input file: input
+No verbose info
+
+ $ cargo run -- input test
+     Running `target/debug/mwe input test`
+Value for config: default.conf
+Using input file: input
+No verbose info
+Printing normally...
+
+ $ cargo run -- test input
+     Running `target/debug/mwe test input`
+error: The following required arguments were not provided:
+    <INPUT>
+
+USAGE:
+    mwe [FLAGS] [OPTIONS] <INPUT> [SUBCOMMAND]
+
+For more information try --help
+error: Process didn't exit successfully: `target/debug/mwe test input` (exit code: 1)
+
+ $ cargo run -- testinput
+     Running `target/debug/mwe testinput`
+error: The subcommand 'testinput' wasn't recognized
+    Did you mean 'test'?
+
+If you believe you received this message in error, try re-running with 'mwe -- testinput'
+
+USAGE:
+    mwe [FLAGS] [OPTIONS] <INPUT> [SUBCOMMAND]
+
+For more information try --help
+error: Process didn't exit successfully: `target/debug/mwe testinput` (exit code: 1)
+```
+
+The first three attempts give the expected results. However, the last attempts tries to match `testinput` as a subcommand instead of as `INPUT`.
+
+
+---
+
+_Comment by @kbknapp on 2016-08-21 19:34_
+
+That is as expected. When compiled with the `"suggestions"` feature, clap tries to match input that may have been typed incorrectly. Things like typing, `--confg` instead of `--config`. This has the side affect that if many subcommands, or subcommands with common names are used, it may try to match an argument with those subcommand names. So there are two options, either don't compile with the `"suggestions"` feature, or you can re-run like is suggested in the error message
+
+```
+$ mwe -- testinput
+```
+
+This is just hard to see when using `cargo run` because I don't think you can do `cargo run -- -- testinput`
+
+
+---
+
+_Label `T: RFC / question` added by @kbknapp on 2016-08-21 19:34_
+
+---
+
+_Comment by @guiniol on 2016-08-24 14:10_
+
+Fair enough, and I think it would be pretty weird to have a positional argument before a subcommand anyhow. Also, I didn't realise it was `suggestions` telling me to do `mwe -- testinput` since I'm using `cargo run` ^^
+
+
+---
+
+_Closed by @guiniol on 2016-08-24 14:10_
+
+---

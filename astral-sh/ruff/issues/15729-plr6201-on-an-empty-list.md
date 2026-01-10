@@ -1,0 +1,84 @@
+---
+number: 15729
+title: PLR6201 on an empty list
+type: issue
+state: closed
+author: JelleZijlstra
+labels:
+  - bug
+  - rule
+  - preview
+assignees: []
+created_at: 2025-01-24T19:46:45Z
+updated_at: 2025-01-25T13:14:20Z
+url: https://github.com/astral-sh/ruff/issues/15729
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# PLR6201 on an empty list
+
+---
+
+_Issue opened by @JelleZijlstra on 2025-01-24 19:46_
+
+### Description
+
+The preview rule `PLR6201` turns `1 in []` into `1 in {}`. Now, that code is pretty useless and Ruff should probably complain about it somehow, but turning `[]` into `{}` is problematic for a couple of reasons:
+
+- The rule says you should use a set, but `{}` is an empty dictionary, not an empty set.
+- It's strictly more likely to throw an error, because `unhashable_object in {}` raises an error.
+- It's slower (because it has to hash the object).
+
+I'd recommend to not trigger PLR6201 on an empty collection, and possibly to add a separate lint rule that warns against `in` where the right-hand side is an empty collection.
+
+---
+
+_Referenced in [astral-sh/ruff#15732](../../astral-sh/ruff/pulls/15732.md) on 2025-01-24 20:41_
+
+---
+
+_Label `bug` added by @ntBre on 2025-01-24 21:45_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-01-24 21:45_
+
+---
+
+_Closed by @dylwil3 on 2025-01-25 02:42_
+
+---
+
+_Closed by @dylwil3 on 2025-01-25 02:42_
+
+---
+
+_Comment by @dylwil3 on 2025-01-25 02:43_
+
+Thanks again for the PR @JelleZijlstra and feel free to open another issue about
+
+> and possibly to add a separate lint rule that warns against `in` where the right-hand side is an empty collection.
+
+if you feel motivated to do so!
+
+---
+
+_Label `fixes` removed by @AlexWaygood on 2025-01-25 13:14_
+
+---
+
+_Label `rule` added by @AlexWaygood on 2025-01-25 13:14_
+
+---
+
+_Label `preview` added by @AlexWaygood on 2025-01-25 13:14_
+
+---
+
+_Referenced in [astral-sh/ruff#16480](../../astral-sh/ruff/pulls/16480.md) on 2025-03-03 19:12_
+
+---
+
+_Referenced in [astral-sh/ruff#16569](../../astral-sh/ruff/issues/16569.md) on 2025-03-08 19:53_
+
+---

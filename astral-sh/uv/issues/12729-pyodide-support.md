@@ -1,0 +1,98 @@
+---
+number: 12729
+title: Pyodide support?
+type: issue
+state: closed
+author: hoodmane
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-04-07T20:34:52Z
+updated_at: 2025-11-30T16:06:28Z
+url: https://github.com/astral-sh/uv/issues/12729
+synced_at: 2026-01-10T01:25:24Z
+---
+
+# Pyodide support?
+
+---
+
+_Issue opened by @hoodmane on 2025-04-07 20:34_
+
+I am looking into what it would take to add support for installing Pyodide wheels to uv. Supposing that I contribute it, would uv accept support for:
+* creating Pyodide virtual environments, and
+* installing Pyodide wheels?
+
+---
+
+_Comment by @zanieb on 2025-04-07 20:53_
+
+Yep!
+
+---
+
+_Label `enhancement` added by @zanieb on 2025-04-07 20:53_
+
+---
+
+_Referenced in [astral-sh/uv#12731](../../astral-sh/uv/pulls/12731.md) on 2025-04-07 21:59_
+
+---
+
+_Comment by @hoodmane on 2025-04-08 11:42_
+
+I added Pyodide support to `uv pip` in #12731. 
+
+What about installing the Pyodide runtime? I'm not sure how to handle the node dependency -- how would you feel about relying on an appropriate node version lying around on the path?
+
+I'm not sure whether/how to add an integration test to CI in #12731. Presumably it would be easier if `uv python install` knew how to install Pyodide, but perhaps in the short term it would make since to make an integration test that installs `pyodide-build` and have it install the Pyodide runtime for us.
+
+Windows support is also a completely open question.
+
+---
+
+_Comment by @agriyakhetarpal on 2025-04-08 13:50_
+
+Thanks for bring the conversation here, @hoodmane – this is great!
+
+> I'm not sure how to handle the node dependency -- how would you feel about relying on an appropriate node version lying around on the path?
+
+Resurfacing my previous suggestion here that we had decided to close earlier: https://github.com/pyodide/pyodide-build/issues/119
+
+> Windows support is also a completely open question.
+
+I think we could leave out Windows support until we support it upstream in Pyodide and in pyodide-build's CI, as it would be misleading if the `pyodide venv` command works with Windows when paired with `uv` and doesn't work with other Python builds.
+
+---
+
+_Comment by @hoodmane on 2025-04-08 14:00_
+
+Well my thought was that `pyodide venv` may continue not to work on windows but using `uv venv` could make pyodide venvs that work on windows. It might be easier.
+
+I do think it will be hard to support without getting a windows machine. And maybe supporting WSL is enough.
+
+---
+
+_Comment by @zanieb on 2025-04-08 17:35_
+
+> What about installing the Pyodide runtime? I'm not sure how to handle the node dependency -- how would you feel about relying on an appropriate node version lying around on the path?
+
+I'm not sure I know enough to say yet. What does installing the Pyodide runtime entail? Where and how would it be exposed to the user?
+
+> I'm not sure whether/how to add an integration test to CI in https://github.com/astral-sh/uv/pull/12731. Presumably it would be easier if uv python install knew how to install Pyodide, but perhaps in the short term it would make since to make an integration test that installs pyodide-build and have it install the Pyodide runtime for us.
+
+Generally, it's fine to install it however a user would. We have integration tests that install various Python distributions already.
+
+
+
+---
+
+_Comment by @hoodmane on 2025-04-09 08:01_
+
+Sounds good. For #12731, I will make an integration test that installs the Pyodide runtime the normal way. We can discuss whether we want `uv python` to be able to install/run Pyodide later, after #12731 is merged.
+
+---
+
+_Closed by @zanieb on 2025-11-30 16:06_
+
+---

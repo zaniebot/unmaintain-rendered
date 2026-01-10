@@ -1,0 +1,70 @@
+---
+number: 5490
+title: Installing no-executable packages can leave lingering executables around
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - bug
+  - preview
+assignees: []
+created_at: 2024-07-26T19:43:51Z
+updated_at: 2024-07-31T19:27:25Z
+url: https://github.com/astral-sh/uv/issues/5490
+synced_at: 2026-01-10T01:23:49Z
+---
+
+# Installing no-executable packages can leave lingering executables around
+
+---
+
+_Issue opened by @charliermarsh on 2024-07-26 19:43_
+
+On main, if you run:
+
+- `uv tool install black`
+- `uv tool install ./scripts/packages/black_editable`
+- `uv tool install black`
+
+Then that third invocation will fail with `error: Executable already exists: black (use `--force` to overwrite)`.
+
+The problem is that `./scripts/packages/black_editable` doesn't provide any executables, so when we install it, we don't remove the `black` and `blackd` executables installed in the first invocation. So, when we do that third invocation, we have a `black` and `blackd` that already exists but isn't mentioned in any receipts.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-07-26 19:43_
+
+---
+
+_Label `preview` added by @charliermarsh on 2024-07-26 19:43_
+
+---
+
+_Comment by @charliermarsh on 2024-07-26 19:44_
+
+I guess we should remove all the executables when replacing, even if they don't all exist in the new version?
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-07-30 16:06_
+
+---
+
+_Comment by @charliermarsh on 2024-07-31 18:28_
+
+Working on this now.
+
+---
+
+_Referenced in [astral-sh/uv#5666](../../astral-sh/uv/pulls/5666.md) on 2024-07-31 18:57_
+
+---
+
+_Closed by @charliermarsh on 2024-07-31 19:27_
+
+---
+
+_Closed by @charliermarsh on 2024-07-31 19:27_
+
+---

@@ -1,0 +1,79 @@
+---
+number: 17247
+title: Custom command hook for uv sync/lock/run/... calls
+type: issue
+state: open
+author: danijar
+labels:
+  - enhancement
+assignees: []
+created_at: 2025-12-28T20:10:03Z
+updated_at: 2026-01-06T19:20:26Z
+url: https://github.com/astral-sh/uv/issues/17247
+synced_at: 2026-01-10T01:26:15Z
+---
+
+# Custom command hook for uv sync/lock/run/... calls
+
+---
+
+_Issue opened by @danijar on 2025-12-28 20:10_
+
+### Summary
+
+We have been exploring uv extensively for our mono repository, and noticed that currently the only way to support our requirements is to wrap all uv commands to generate `pyproject.toml` entries before calling into uv.
+
+Being able to register a custom command with uv for ensuring a consistent environment would make this much easier, allowing our users to still call uv directly (and rely on the uv documentation).
+
+This could be done by specifying an environment variable `UV_PRE_SYNC_COMMAND="shell command"`. uv would execute this command each time it needs to ensure a consistent environment.
+
+### Example
+
+As one example, we want to specify our dependencies as repository-absolute paths like `org-deep-nested-namespace-dependency` instead of relative paths like `../../../namespace/dependency`.
+
+For this, we can add a custom section to the `pyproject.toml` of each package in the monorepo:
+
+```toml
+[tool.monorepo]
+dependencies = [
+  'org-deep-nested-namespace-dependency',
+]
+```
+
+We then have a custom `sync_deps.sh` script that finds all `pyproject.toml` files in the monorepo, reads the above config block, and generates the `[tool.uv.sources]` block with relatives paths as required by uv:
+
+```toml
+# generated
+[tool.uv.source]
+org-deep-nested-namespace-dependency = { path = "../../../namespace/dependency", editable = true }
+```
+
+Currently, we have to manually call `sync_deps.sh` each time we change a `pyproject.toml` file, which slows down developers and is easy to forget. We could also wrap all uv commands to always call `sync_deps.sh` (for the whole repo or just the `pyproject.toml` targeted by the uv command and its recursive dependencies) before forwarding the call to the uv binary, but then our developers can't call the familiar uv binary directly anymore.
+
+With a custom command hook, we'd register `sync_deps.sh` with uv, for example via an environment variable: 
+
+```
+export UV_PRE_SYNC_COMMAND="repo/sync_deps.sh"
+```
+
+We could then use uv natively and with low maintenance burden.
+
+---
+
+_Label `enhancement` added by @danijar on 2025-12-28 20:10_
+
+---
+
+_Referenced in [astral-sh/uv#17209](../../astral-sh/uv/issues/17209.md) on 2025-12-28 20:42_
+
+---
+
+_Referenced in [astral-sh/uv#17283](../../astral-sh/uv/issues/17283.md) on 2026-01-02 16:32_
+
+---
+
+_Comment by @konstin on 2026-01-06 19:20_
+
+This sounds like https://github.com/astral-sh/uv/issues/11826
+
+---

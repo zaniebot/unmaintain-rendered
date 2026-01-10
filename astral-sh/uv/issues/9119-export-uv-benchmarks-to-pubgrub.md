@@ -1,0 +1,36 @@
+---
+number: 9119
+title: Export uv benchmarks to pubgrub
+type: issue
+state: open
+author: konstin
+labels:
+  - help wanted
+assignees: []
+created_at: 2024-11-14T13:01:23Z
+updated_at: 2024-11-14T13:01:24Z
+url: https://github.com/astral-sh/uv/issues/9119
+synced_at: 2026-01-10T01:24:36Z
+---
+
+# Export uv benchmarks to pubgrub
+
+---
+
+_Issue opened by @konstin on 2024-11-14 13:01_
+
+It would be very helpful if we could run uv's main benchmarks (`jupyter`, `jupyter` universal, `apache-airflow[all]`) in pubgrub without uv, so we can benchmark and optimize pubgrub in isolation. This would require three pieces:
+
+* Some sort of exporter logic that runs in uv (e.g. as separate cargo feature in the uv-resolver crate) and emits the steps taken in the resolution (package selection, package versions, version selection, dependencies for the selected version) into a file.
+* A "pseudo-uv" shim in pubgrub that has uv's package type and uses the pep440 versions (there's a crate that's exported from uv) without actually depending on uv
+* A runner in pubgrub that reads the file from the first step and drives the resolver with it in a criterion benchmark.
+
+Part of this is being creative on a file format that shrinks the info of all the steps enough that we can store them in a repo, potentially one that we can use for all pubgrub benchmarks.
+
+Like uv, pubgrub uses [codspeed](https://codspeed.io/pubgrub-rs/pubgrub) for continuous benchmarking (it uses instruction counting over walltimes). The would exporter allows optimizing pubgrub for uv in isolation, getting the accurate perf impact of pubgrub changes without the noise from uv.
+
+---
+
+_Label `help wanted` added by @konstin on 2024-11-14 13:01_
+
+---

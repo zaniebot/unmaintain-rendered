@@ -1,0 +1,46 @@
+---
+number: 13748
+title: "Skip first line of source (\"`python -x`\")"
+type: issue
+state: closed
+author: mheden
+labels:
+  - question
+assignees: []
+created_at: 2024-10-14T11:57:15Z
+updated_at: 2024-10-14T14:24:08Z
+url: https://github.com/astral-sh/ruff/issues/13748
+synced_at: 2026-01-10T01:22:54Z
+---
+
+# Skip first line of source ("`python -x`")
+
+---
+
+_Issue opened by @mheden on 2024-10-14 11:57_
+
+Is it possible to make `ruff` ignore the first line of a source file.
+
+I have some scripts that are using a "non-unix" verson form of shebang which I then run them with `python -x`. Since this line is not proper Python the ruff parser bails out on the first line.
+
+---
+
+_Label `question` added by @MichaReiser on 2024-10-14 12:31_
+
+---
+
+_Comment by @MichaReiser on 2024-10-14 12:32_
+
+No. There's currently no support for skipping over lines at the start of a file. Supporting such functionality likely requires a per-file configuration option.
+
+---
+
+_Closed by @mheden on 2024-10-14 14:19_
+
+---
+
+_Comment by @mheden on 2024-10-14 14:24_
+
+I do something like this as a workaround: `tail -n +2 <file> |  ruff check -`. It is not optimal (line numbers are off by one) but works well enough. I don't have found a way of working around `ruff format` yet.
+
+---

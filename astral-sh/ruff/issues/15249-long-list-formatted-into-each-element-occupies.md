@@ -1,0 +1,132 @@
+---
+number: 15249
+title: Long list formatted into each element occupies one row
+type: issue
+state: closed
+author: paoxiaode
+labels:
+  - question
+  - formatter
+assignees: []
+created_at: 2025-01-04T10:42:40Z
+updated_at: 2025-01-04T14:54:26Z
+url: https://github.com/astral-sh/ruff/issues/15249
+synced_at: 2026-01-10T01:22:56Z
+---
+
+# Long list formatted into each element occupies one row
+
+---
+
+_Issue opened by @paoxiaode on 2025-01-04 10:42_
+
+Dear Developers, I am facing the same problem as this one in Ruff https://github.com/psf/black/issues/3935
+
+Before format
+
+```python
+idx = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19,
+    20, 21, 22, 23, 24, 25, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 39
+]
+```
+
+After format
+
+```python
+idx = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    27,
+    28,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+]
+```
+
+I want to know if ruff allows multiple elements to be on the same line at the same time.
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2025-01-04 10:50_
+
+---
+
+_Label `question` added by @AlexWaygood on 2025-01-04 10:50_
+
+---
+
+_Comment by @MichaReiser on 2025-01-04 11:06_
+
+Yes, this is something we're aware of but I haven't had time yet to work on an improved heuristic for array formatting. 
+
+For example, Prettier uses a "fill" layout where it tries to fit as many items as possible on each line if the values are simple (small numbers, constant string literals, etc). 
+
+```js
+const a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 16, 17, 18, 19, 20, 21, 22, 223, 34, 34, 44, 444]
+
+// Formatted
+const a = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 16, 17, 18, 19, 20, 21, 22,
+  223, 34, 34, 44, 444,
+];
+```
+
+I'd like to have something like this for Ruff. There's also a related discussion around `np.array` formatting, see https://github.com/astral-sh/ruff/discussions/8452
+
+For now, your best option is to either accept the formatting or use `fmt: skip` to disable formatting for that entire statement
+
+```py
+idx = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19,
+    20, 21, 22, 23, 24, 25, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 39
+]  # fmt: skip
+```
+
+---
+
+_Comment by @tdulcet on 2025-01-04 13:01_
+
+Also see #11886.
+
+---
+
+_Comment by @paoxiaode on 2025-01-04 14:36_
+
+Thanks for reply
+
+---
+
+_Closed by @MichaReiser on 2025-01-04 14:54_
+
+---

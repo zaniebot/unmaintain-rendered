@@ -1,0 +1,156 @@
+---
+number: 5516
+title: "False Positive `DTZ005`: When using `datetime.datetime.now().astimezone()`"
+type: issue
+state: closed
+author: LawrenceJGD
+labels:
+  - bug
+  - good first issue
+  - help wanted
+assignees: []
+created_at: 2023-07-04T21:47:41Z
+updated_at: 2023-07-06T04:03:24Z
+url: https://github.com/astral-sh/ruff/issues/5516
+synced_at: 2026-01-10T01:22:44Z
+---
+
+# False Positive `DTZ005`: When using `datetime.datetime.now().astimezone()`
+
+---
+
+_Issue opened by @LawrenceJGD on 2023-07-04 21:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+The DTZ005 rule of flake8-datetimez throws an error when using the `datetime.datetime.now()` class method without the `tz` argument in `now()` or when the argument is `None`, it does this to avoid problems with `datetime.datetime` objects without a timezone, but there is a way to get the local time and date using `datetime. datetime.now().astimezone()`, when astimezone() detects that the object does not have a timezone then it assigns the local one, but still flake8-datetimez detects this as an error, so it would be better to fix it, since in the end the object ends up having a timezone.
+
+This is referenced by pjknkda/flake8-datetimez#9 and #1249.
+
+The command I use is `ruff check test.py` and the example source code is this:
+
+```python3
+import datetime
+
+datetime.datetime.now().astimezone()
+```
+
+I'm using ruff 0.0.269 and my `pyproject.toml`:
+
+```toml
+[tool.ruff]
+select = [
+    "W", "C90", "I", "N", "D", "UP", "YTT", "ANN", "S", "BLE", "FBT", "B", "A",
+    "COM", "C4", "DTZ", "ICN", "PIE", "RSE", "RET", "SLF", "SIM", "TCH", "RUF",
+    "INT", "ARG", "TD", "EM", "PLC", "PLE", "PLR", "PLW", "TRY", "FLY", "E",
+    "F"
+]
+line-length = 88
+target-version = "py38"
+ignore = ["COM812"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39", "py310", "py311"]
+```
+
+---
+
+_Renamed from "False Positive when using .astimezone()" to "False Positive `DTZ005`: When using .astimezone()" by @LawrenceJGD on 2023-07-04 21:48_
+
+---
+
+_Renamed from "False Positive `DTZ005`: When using .astimezone()" to "False Positive `DTZ005`: When using `datetime.datetime.now().astimezone()`" by @LawrenceJGD on 2023-07-04 21:49_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-07-04 21:53_
+
+---
+
+_Comment by @charliermarsh on 2023-07-04 21:53_
+
+Seems reasonable to me!
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2023-07-05 02:11_
+
+---
+
+_Label `help wanted` added by @charliermarsh on 2023-07-05 02:11_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-07-05 02:35_
+
+---
+
+_Referenced in [astral-sh/ruff#5524](../../astral-sh/ruff/pulls/5524.md) on 2023-07-05 03:05_
+
+---
+
+_Closed by @charliermarsh on 2023-07-05 04:19_
+
+---
+
+_Comment by @bluetech on 2023-07-05 15:23_
+
+I'm not quite sure from reading pr #5524 if it explicitly checks for `astimezone()` with no arguments, or if it also allows with arguments. I think allowing the no-arguments case is OK, because `datetime` doesn't provide an easy way to refer to the local tzinfo (though I wouldn't recommend it either way, better to specify the timezone directly). But something like `datetime.datetime.now().astimezone(mytz)` shouldn't be allowed IMO, this usage is most likely bad and I've seen this mistake quite a lot.
+
+---
+
+_Comment by @dhruvmanila on 2023-07-05 17:20_
+
+Current implementation doesn't check if `astimezone` is called with or without any arguments i.e., it allows either of them.
+
+Could you provide an example of why `datetime.datetime.now().astimezone(mytz)` usage is considered bad?
+
+---
+
+_Comment by @LawrenceJGD on 2023-07-05 20:59_
+
+I think that if you want to create a `datetime.datetime` object with the current time using another time zone than the local one, it would be better to use `datetime.datetime.now(mytz)`, but is seems that this and `datetime.datetime.now().astimezone(mytz)` are both valid ways for achieving the same thing.
+
+BTW, thanks for being so fast solving this!
+
+---
+
+_Comment by @bluetech on 2023-07-05 23:36_
+
+You're right, `datetime.datetime.now().astimezone(mytz)` ends up being OK as well, because `now()` is naive local, and `astimezone` assumes naive is local.
+
+Here's my analysis on the yes-argument case:
+
+- :x: DTZ001 call-datetime-without-tzinfo, I've seen people do `datetime.datetime(2023, 7, 6, 2, 5).astimezone(mytz)` when they intended to do `datetime.datetime(2023, 7, 6, 2, 5, tzinfo=mytz)` (or `replace(tzinfo=mytz)`). IMO there is no good reason to use `astimezone(mytz)` here.
+
+- :heavy_check_mark: DTZ002 call-datetime-today, local time so OK.
+
+-  :x: DTZ003 call-datetime-utcnow, using `astimezone()` is going to be wrong always I believe (unless you live in Greenwich). `utcnow()` itself is deprecated now for being a footgun.
+
+- :x: DTZ004 call-datetime-utcfromtimestamp, same as DTZ003.
+
+- :heavy_check_mark: DTZ005 call-datetime-now-without-tzinfo, local time so OK.
+
+- :question: DTZ006 call-datetime-fromtimestamp, never used this function, not sure
+
+- ⍻ DTZ007 call-datetime-strptime-without-zone, depends on the input string. If it's in local time, usage is OK. If not, it's a bug. I suppose in such cases ruff should allow. From the rule description I think it's already allowed so OK.
+
+---
+
+_Comment by @dhruvmanila on 2023-07-06 04:03_
+
+You're correct in your analysis but I think the diagnostics are correct, it's the _usage_ which might be incorrect from the user side. I don't think we can assume anything about the usage. Correct me if I'm wrong but I think the goal for this rule is to detect if the initialized `datetime.datetime` object is timezone aware which will be the case if `astimezone` was called or if it was provided during initialization.
+
+---

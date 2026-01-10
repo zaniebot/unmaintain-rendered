@@ -1,0 +1,122 @@
+---
+number: 16395
+title: "`pip_install::config_settings_package` flaked on Windows with access denied to `setuptools_editable`"
+type: issue
+state: open
+author: zanieb
+labels:
+  - ci-flake
+assignees: []
+created_at: 2025-10-21T17:47:57Z
+updated_at: 2025-10-21T17:48:02Z
+url: https://github.com/astral-sh/uv/issues/16395
+synced_at: 2026-01-10T01:26:05Z
+---
+
+# `pip_install::config_settings_package` flaked on Windows with access denied to `setuptools_editable`
+
+---
+
+_Issue opened by @zanieb on 2025-10-21 17:47_
+
+```
+ FAIL [   4.354s] uv::it pip_install::config_settings_package
+  stdout ───
+
+    running 1 test
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: config_settings_package
+    Source: V:\uv:12095
+    ───────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ───────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬──────────────────────────────────────────────────────────────────
+        1       │-success: true
+        2       │-exit_code: 0
+              1 │+success: false
+              2 │+exit_code: 1
+        3     3 │ ----- stdout -----
+        4     4 │ 
+        5     5 │ ----- stderr -----
+        6     6 │ Resolved 2 packages in [TIME]
+        7       │-Prepared 2 packages in [TIME]
+        8       │-Installed 2 packages in [TIME]
+        9       │- + iniconfig==2.0.0
+       10       │- + setuptools-editable==0.1.0 (from file://[WORKSPACE]/scripts/packages/setuptools_editable)
+              7 │+  × Failed to build `setuptools-editable @ file://[WORKSPACE]/scripts/packages/setuptools_editable`
+              8 │+  ├─▶ The build backend returned an error
+              9 │+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_editable` failed (exit status: 1)
+             10 │+
+             11 │+      [stdout]
+             12 │+      running egg_info
+             13 │+      creating setuptools_editable.egg-info
+             14 │+      writing setuptools_editable.egg-info/PKG-INFO
+             15 │+
+             16 │+      [stderr]
+             17 │+      error: [WinError 5] Access is denied: 'V:\/uv\/scripts\/packages\/setuptools_editable\/setuptools_editable.egg-info\/tmp0aikpwnc' -> 'setuptools_editable.egg-info\/PKG-INFO'
+             18 │+
+             19 │+      hint: This usually indicates a problem with the package or the build environment.
+    ────────────┴──────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test pip_install::config_settings_package ... FAILED
+
+    failures:
+
+    failures:
+        pip_install::config_settings_package
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1959 filtered out; finished in 4.32s
+    
+  stderr ───
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    ----- stdout -----
+
+    ----- stderr -----
+    Resolved 2 packages in 44ms
+      × Failed to build `setuptools-editable @ file:///V:/uv/scripts/packages/setuptools_editable`
+      ├─▶ The build backend returned an error
+      ╰─▶ Call to `setuptools.build_meta:__legacy__.build_editable` failed (exit code: 1)
+
+          [stdout]
+          running egg_info
+          creating setuptools_editable.egg-info
+          writing setuptools_editable.egg-info\PKG-INFO
+
+          [stderr]
+          error: [WinError 5] Access is denied: 'V:\\uv\\scripts\\packages\\setuptools_editable\\setuptools_editable.egg-info\\tmp0aikpwnc' -> 'setuptools_editable.egg-info\\PKG-INFO'
+
+          hint: This usually indicates a problem with the package or the build environment.
+
+    ────────────────────────────────────────────────────────────────────────────────
+
+
+    thread 'pip_install::config_settings_package' panicked at V:/.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\insta-1.43.2\src\runtime.rs:694:13:
+    snapshot assertion for 'config_settings_package' failed in line 12095
+    stack backtrace:
+       0: std::panicking::begin_panic_handler
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\std\src\panicking.rs:697
+       1: core::panicking::panic_fmt
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\core\src\panicking.rs:75
+       2: insta::runtime::SnapshotAssertionContext::finalize
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\insta-1.43.2\src\runtime.rs:694
+       3: insta::runtime::assert_snapshot
+                 at V:\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\insta-1.43.2\src\runtime.rs:911
+       4: it::pip_install::config_settings_package
+                 at .\tests\it\common\mod.rs:1942
+       5: it::pip_install::config_settings_package::closure$0
+                 at .\tests\it\pip_install.rs:12082
+       6: core::ops::function::FnOnce::call_once<it::pip_install::config_settings_package::closure_env$0,tuple$<> >
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588\library\core\src\ops\function.rs:253
+       7: core::ops::function::FnOnce::call_once
+                 at /rustc/1159e78c4747b02ef996e55082b704c09b970588/library\core\src\ops\function.rs:253
+    note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+```
+
+---
+
+_Label `ci-flake` added by @zanieb on 2025-10-21 17:48_
+
+---

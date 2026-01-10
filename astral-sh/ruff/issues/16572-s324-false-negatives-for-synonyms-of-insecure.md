@@ -1,0 +1,76 @@
+---
+number: 16572
+title: S324 false negatives for synonyms of insecure algorithm names
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - documentation
+assignees: []
+created_at: 2025-03-08T23:57:45Z
+updated_at: 2025-09-24T20:10:25Z
+url: https://github.com/astral-sh/ruff/issues/16572
+synced_at: 2026-01-10T01:22:57Z
+---
+
+# S324 false negatives for synonyms of insecure algorithm names
+
+---
+
+_Issue opened by @dscorbett on 2025-03-08 23:57_
+
+### Summary
+
+[hashlib-insecure-hash-function (S324)](https://docs.astral.sh/ruff/rules/hashlib-insecure-hash-function/) misses some insecure algorithm names that are equivalent to names that it currently flags. `"ssl3-md5"` and `"1.2.840.113549.2.5"` are synonyms of `"md5"`. `"sha-1"`, `"ssl3-sha1"`, and `"1.3.14.3.2.26"` are synonyms of `"sha1"`. Trailing spaces are ignored after any name. The details depend on the version of OpenSSL that Python is using, but those are the false negatives I’ve found on my machine.
+
+```python
+import hashlib
+print(hashlib.new("md5  ").hexdigest())
+print(hashlib.new("sha-1").hexdigest())
+print(hashlib.new("ssl3-md5").hexdigest())
+print(hashlib.new("ssl3-sha1").hexdigest())
+print(hashlib.new("1.3.14.3.2.26").hexdigest())
+print(hashlib.new("1.2.840.113549.2.5").hexdigest())
+```
+
+### Version
+
+ruff 0.9.10 (0dfa810e9 2025-03-07)
+
+---
+
+_Referenced in [astral-sh/ruff#16580](../../astral-sh/ruff/pulls/16580.md) on 2025-03-09 20:19_
+
+---
+
+_Comment by @VascoSch92 on 2025-03-09 20:23_
+
+I opened a PR as I had already worked on a similar issue. I hope it is good.
+
+Just out of curiosity: Is there a reference with a list of insecure hash functions and their aliases/equivalent names?
+
+---
+
+_Comment by @dscorbett on 2025-03-09 21:05_
+
+I found these aliases in the OpenSSL source: [MD5](https://github.com/openssl/openssl/blob/openssl-3.4.1/providers/implementations/include/prov/names.h#L253) and [SHA-1](https://github.com/openssl/openssl/blob/openssl-3.4.1/providers/implementations/include/prov/names.h#L214). Another insecure hash function, which is caught by the upstream flake8-bandit’s S324, is MD4. [`suspicious-insecure-hash-usage` (S303)](https://docs.astral.sh/ruff/rules/suspicious-insecure-hash-usage/) also flags [MD2 and MD3](https://github.com/astral-sh/ruff/blob/0.9.10/crates/ruff_linter/src/rules/flake8_bandit/rules/suspicious_function_call.rs#L1030-L1034). MD4 and MD2 also have OID aliases. I don’t know of one authoritative reference listing all insecure hash functions.
+
+---
+
+_Comment by @MichaReiser on 2025-03-10 08:39_
+
+While this is correct, I think it's fine to change the documentation to say that we only lint for [guaranteed hash functions](https://docs.python.org/3/library/hashlib.html#hashlib.algorithms_guaranteed). I don't see us having the knowledge to maintain this list for all openssl supported hash functions (including some weird abbreviations). I'd also argue that most of them will be so rare, that it doesn't warrant our maintenance effort.
+
+---
+
+_Label `documentation` added by @MichaReiser on 2025-03-10 08:39_
+
+---
+
+_Referenced in [astral-sh/ruff#20534](../../astral-sh/ruff/pulls/20534.md) on 2025-09-23 13:58_
+
+---
+
+_Closed by @ntBre on 2025-09-24 20:10_
+
+---

@@ -1,0 +1,61 @@
+---
+number: 13849
+title: "uv installed python3.9.7's python3-config won't run"
+type: issue
+state: open
+author: krupan
+labels:
+  - bug
+assignees: []
+created_at: 2025-06-04T19:39:22Z
+updated_at: 2025-06-12T16:44:06Z
+url: https://github.com/astral-sh/uv/issues/13849
+synced_at: 2026-01-10T01:25:39Z
+---
+
+# uv installed python3.9.7's python3-config won't run
+
+---
+
+_Issue opened by @krupan on 2025-06-04 19:39_
+
+### Summary
+
+The version of python3.9.7 that uv installed under my `~/.local/share/uv/python` directory comes with a python3-config shell script and the first line of that shell script is this:
+
+```
+"exec" "$(dirname $0)/python3.9" "$0" "$@"
+```
+Which basically says, run this script with the python interpreter.  However, the rest of the script is in shell syntax, not python, so it errors out with a syntax error.
+
+I tried a python 3.9.0 installed by uv and the python3-config does not have that line.
+
+I have built python 3.9.7 from source and the included python3-config also does not have that line in it.
+
+### Platform
+
+archlinux, Rocky Linux 9
+
+### Version
+
+0.6.17 and 0.7.8
+
+### Python version
+
+Python 3.9.7
+
+---
+
+_Label `bug` added by @krupan on 2025-06-04 19:39_
+
+---
+
+_Comment by @zanieb on 2025-06-04 20:26_
+
+Thanks for the report!
+
+---
+
+_Assigned to @geofft by @geofft on 2025-06-12 16:44_
+
+---

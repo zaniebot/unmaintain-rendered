@@ -1,0 +1,48 @@
+---
+number: 1634
+title: SyntaxError for PEP 634 Structural Pattern Matching
+type: issue
+state: closed
+author: radupotop
+labels: []
+assignees: []
+created_at: 2023-01-04T16:22:55Z
+updated_at: 2023-01-04T16:27:10Z
+url: https://github.com/astral-sh/ruff/issues/1634
+synced_at: 2026-01-10T01:22:39Z
+---
+
+# SyntaxError for PEP 634 Structural Pattern Matching
+
+---
+
+_Issue opened by @radupotop on 2023-01-04 16:22_
+
+I get a `E999 SyntaxError: invalid syntax. Got unexpected token` whenever structural pattern matching occurs. e.g.:
+
+```
+def http_error(status):
+    match status:
+        case 400:
+            return "Bad request"
+        case 404:
+            return "Not found"
+        case 418:
+            return "I'm a teapot"
+        case _:
+            return "Something's wrong with the internet"
+```
+
+I'm running Python 3.10.9
+
+---
+
+_Comment by @charliermarsh on 2023-01-04 16:27_
+
+Yeah this is the one language feature we don't yet support unfortunately. It's being tracked here: #282.
+
+---
+
+_Closed by @charliermarsh on 2023-01-04 16:27_
+
+---

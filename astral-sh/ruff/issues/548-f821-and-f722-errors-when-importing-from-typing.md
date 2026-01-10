@@ -1,0 +1,120 @@
+---
+number: 548
+title: F821 and F722 errors when importing from typing_extensions in version 0.0.94
+type: issue
+state: closed
+author: StefanBRas
+labels: []
+assignees: []
+created_at: 2022-11-02T11:05:29Z
+updated_at: 2022-11-02T13:25:46Z
+url: https://github.com/astral-sh/ruff/issues/548
+synced_at: 2026-01-10T01:22:38Z
+---
+
+# F821 and F722 errors when importing from typing_extensions in version 0.0.94
+
+---
+
+_Issue opened by @StefanBRas on 2022-11-02 11:05_
+
+Importing from `typing_extensions` instead of `typing` gives some errors with ruff version 0.0.94
+
+```python
+from typing_extensions import Literal, List
+from pydantic import BaseModel
+from dataclasses import dataclass 
+
+f821_outer = Literal['x']              # No errors
+f722_outer = Literal['+', "-"]         # No errors        
+f821_List = List[Literal['x']]         # No errors             
+f722_List = List[Literal['+','-']]     # No errors             
+
+class Tmp(BaseModel):
+    a: Literal['x']                    # F821 Undefined name `x`                   
+    b: Literal['+', "-"]               # F722 Syntax error in forward annotation: `+`, # F722 Syntax error in forward annotation: `-`              
+    c: List[Literal['x']]              # F821 Undefined name `x`                                
+    d: List[Literal['+','-']]          # F722 Syntax error in forward annotation: `+`, # F722 Syntax error in forward annotation: `-`             
+    e: f821_outer                      # No errors                     
+    f: f722_outer                      # No errors                        
+
+@dataclass
+class Tmp1:
+    a: Literal['x']                    # F821 Undefined name `x`                                      
+    b: Literal['+', "-"]               # F722 Syntax error in forward annotation: `+`, # F722 Syntax error in forward annotation: `-`                    
+    c: List[Literal['x']]              # F821 Undefined name `x`                                
+    d: List[Literal['+','-']]          # F722 Syntax error in forward annotation: `+`, # F722 Syntax error in forward annotation: `-`             
+    e: f821_outer                      # No errors                        
+    f: f722_outer                      # No errors                        
+
+def tmp(
+    a: Literal['x'],                   # F821 Undefined name `x`                   
+    b: Literal['+', "-"],              # F722 Syntax error in forward annotation: `+`, # F722 Syntax error in forward annotation: `-`      
+    c: List[Literal['x']],             # F821 Undefined name `x`                                
+    d: List[Literal['+','-']],         # F722 Syntax error in forward annotation: `+`, # F722 Syntax error in forward annotation: `-`
+    e: f821_outer,                     # No errors                        
+    f: f722_outer,                     # No errors                        
+    ):
+    pass
+
+```
+yields
+
+```
+Found 18 error(s).
+f821.py:11:15: F821 Undefined name `x`
+f821.py:12:15: F722 Syntax error in forward annotation: `+`
+f821.py:12:20: F722 Syntax error in forward annotation: `-`
+f821.py:13:20: F821 Undefined name `x`
+f821.py:14:20: F722 Syntax error in forward annotation: `+`
+f821.py:14:24: F722 Syntax error in forward annotation: `-`
+f821.py:20:15: F821 Undefined name `x`
+f821.py:21:15: F722 Syntax error in forward annotation: `+`
+f821.py:21:20: F722 Syntax error in forward annotation: `-`
+f821.py:22:20: F821 Undefined name `x`
+f821.py:23:20: F722 Syntax error in forward annotation: `+`
+f821.py:23:24: F722 Syntax error in forward annotation: `-`
+f821.py:28:15: F821 Undefined name `x`
+f821.py:29:15: F722 Syntax error in forward annotation: `+`
+f821.py:29:20: F722 Syntax error in forward annotation: `-`
+f821.py:30:20: F821 Undefined name `x`
+f821.py:31:20: F722 Syntax error in forward annotation: `+`
+f821.py:31:24: F722 Syntax error in forward annotation: `-`
+```
+When changing the import from `typing_extensions` to `typing` I get 0 errors.
+When using ruff version 0.0.93 I get 0 errors (using either import)
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2022-11-02 12:34_
+
+Thank you! Will fix this today.
+
+---
+
+_Referenced in [astral-sh/ruff#550](../../astral-sh/ruff/pulls/550.md) on 2022-11-02 13:00_
+
+---
+
+_Closed by @charliermarsh on 2022-11-02 13:01_
+
+---
+
+_Comment by @charliermarsh on 2022-11-02 13:04_
+
+Thanks for this and apologies for the oversight. This is going out in [v0.0.95](https://github.com/charliermarsh/ruff/releases/tag/v0.0.95) (building now).
+
+---
+
+_Comment by @StefanBRas on 2022-11-02 13:25_
+
+No worries, I can hardly complain when there's a fix two hours after reporting.
+
+---
+
+_Referenced in [astral-sh/ruff#2342](../../astral-sh/ruff/issues/2342.md) on 2023-01-30 08:43_
+
+---

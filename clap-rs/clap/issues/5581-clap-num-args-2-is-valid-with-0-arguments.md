@@ -1,0 +1,280 @@
+---
+number: 5581
+title: "`#[clap(num_args = 2..)]` is valid with 0 arguments"
+type: issue
+state: closed
+author: Rignchen
+labels:
+  - C-bug
+assignees: []
+created_at: 2024-07-14T18:13:27Z
+updated_at: 2024-07-15T14:45:07Z
+url: https://github.com/clap-rs/clap/issues/5581
+synced_at: 2026-01-10T01:28:14Z
+---
+
+# `#[clap(num_args = 2..)]` is valid with 0 arguments
+
+---
+
+_Issue opened by @Rignchen on 2024-07-14 18:13_
+
+### Please complete the following tasks
+
+- [x] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Rust Version
+
+rustc 1.79.0 (129f3b996 2024-06-10)
+
+### Clap Version
+
+4.5.9
+
+### Minimal reproducible code
+
+```rust
+use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    #[clap(num_args = 2..)]
+    foo: Vec<String>
+}
+
+fn main() {
+    let args = Args::parse();
+    println!("{:?}", args.foo);
+}
+
+```
+
+
+### Steps to reproduce the bug with the above code
+
+```sh
+$ cargo run --
+[]
+$ cargo run -- bar
+error: 2 values required by '[FOO] [FOO]...'; only 1 was provided
+$ cargo run -- bar foobar
+["bar", "foobar"]
+```
+
+### Actual Behaviour
+
+the program runs when no arguments are given
+
+### Expected Behaviour
+
+the code should break when no arguments are given
+
+### Additional Context
+
+_No response_
+
+### Debug Output
+
+```sh
+$ cargo run --
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="clap"
+[clap_builder::builder::command]Command::_propagate:clap
+[clap_builder::builder::command]Command::_check_help_and_version:clap expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:foo:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:foo: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+[]
+
+$ cargo run -- bar
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="clap"
+[clap_builder::builder::command]Command::_propagate:clap
+[clap_builder::builder::command]Command::_check_help_and_version:clap expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"bar"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("bar")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::resolve_pending: id="foo"
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::write_help_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=help
+[ clap_builder::output::usage]Usage::needs_options_tag:iter Option is built-in
+[ clap_builder::output::usage]Usage::needs_options_tag: [OPTIONS] not required
+[ clap_builder::output::usage]Usage::write_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::write_subcommand_usage
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: clap [FOO] [FOO]...
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: 2 values required by '[FOO] [FOO]...'; only 1 was provided
+
+$ cargo run -- bar foobar
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name="clap"
+[clap_builder::builder::command]Command::_propagate:clap
+[clap_builder::builder::command]Command::_check_help_and_version:clap expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"bar"'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok("bar")
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '"foobar"'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::resolve_pending: id="foo"
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id="foo"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="foo", source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id="foo"
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id="Args", source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: ["bar", "foobar"]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=foo, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=2..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:foo:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:foo: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id="foo"
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="foo", conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id="Args", conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id="foo"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg="foo"
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:"foo"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"Args"
+[clap_builder::parser::validator]Validator::gather_requires:iter:"Args":group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+["bar", "foobar"]
+```
+
+---
+
+_Label `C-bug` added by @Rignchen on 2024-07-14 18:13_
+
+---
+
+_Comment by @epage on 2024-07-15 14:45_
+
+Taken from #5526:
+
+> > With num_args set to 2.. and user gives 0, it does not produce an error as it should because the minimum number of args is 2
+> 
+> The behavior is correct. From [the docs](https://docs.rs/clap/latest/clap/struct.Arg.html#method.num_args):
+> 
+> > Specifies the number of arguments parsed per occurrence
+> 
+> This isn't as obvious for positionals but for options, the behavior is more clear.
+> 
+> ```rust
+> use clap::Parser;
+> 
+> #[derive(Parser)]
+> struct Cli {
+>     /// Args
+>     #[arg(long, value_name = "ARG", num_args = 2..)]
+>     args: Vec<String>,
+> }
+> 
+> fn main() {
+>     let cli = Cli::parse();
+>     println!("{:#?}", cli.args);
+> }
+> ```
+> 
+> ```
+> $ # good: 2+ values
+> $ cmd --args asdf blah
+> $ # good: 2+ values
+> $ cmd --args asdf blah spam
+> $ # good: 2+ values per `--arg`
+> $ cmd --args asdf blah --arg spam pizza
+> $ # bad: too few values
+> $ cmd --args asdf
+> $ # bad: too few values for last `--arg`
+> $ cmd --args asdf blah --arg spam
+> $ # good:  no occurrences
+> $ cmd
+> ```
+> 
+> What you are looking for is `required = true`. You also likely want to set `action = ArgAction::Set` because a `Vec` is automatically an `Append`, see https://docs.rs/clap/latest/clap/_derive/index.html#arg-types
+> 
+> ```rust
+> use clap::Parser;
+> use clap::builder::ArgAction;
+> 
+> #[derive(Parser)]
+> struct Cli {
+>     /// Args
+>     #[arg(long, value_name = "ARG", num_args = 2.., required = true, action = ArgAction::Set)]
+>     args: Vec<String>,
+> }
+> 
+> fn main() {
+>     let cli = Cli::parse();
+>     println!("{:#?}", cli.args);
+> }
+> ```
+
+As this is expected behavior, I'm going to close this.  If there is a reason we should reconsider, let us know!
+
+---
+
+_Closed by @epage on 2024-07-15 14:45_
+
+---

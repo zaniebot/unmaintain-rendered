@@ -1,0 +1,83 @@
+---
+number: 7292
+title: "Relative paths in script sources don't work"
+type: issue
+state: closed
+author: SnirShechter
+labels:
+  - bug
+assignees: []
+created_at: 2024-09-11T14:14:45Z
+updated_at: 2024-09-11T18:36:42Z
+url: https://github.com/astral-sh/uv/issues/7292
+synced_at: 2026-01-10T01:24:13Z
+---
+
+# Relative paths in script sources don't work
+
+---
+
+_Issue opened by @SnirShechter on 2024-09-11 14:14_
+
+## The error
+```
+PS C:\whatever> uv run .\scripts\myscript.py
+Reading inline script metadata from: .\scripts\myscript.py
+error: path could not be converted to a URL: libs\mypackage
+```
+![image](https://github.com/user-attachments/assets/dcc2a159-33fa-478d-a2e8-417f51657d38)
+
+## In short
+Script sources (`[tool.uv.sources]`) use full paths, do not allow for relative paths e.g. `../libs/mypackage` and are thus not platform-agnostic and can't be used by multiple developers.
+
+## In depth
+
+Consider this script:
+```python
+from mypackage import hello
+
+hello("John")
+```
+
+Running `uv add --script myscript.py ./libs/mypackage --editable` results in this:
+```python
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "mypackage",
+# ]
+#
+# [tool.uv.sources]
+# mypackage = { path = 'C:\whatever\libs\mypackage', editable = true }
+# ///
+from mypackage import hello
+
+hello("John")
+```
+
+But obviously `C:\...` is not platform agnostic, so to make it work for all developers I need to change it to `..\libs\mypackage`, but that doesn't work (see the error above)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-09-11 15:24_
+
+---
+
+_Comment by @charliermarsh on 2024-09-11 15:24_
+
+Thanks, these look like bugs.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-09-11 15:25_
+
+---
+
+_Referenced in [astral-sh/uv#7301](../../astral-sh/uv/pulls/7301.md) on 2024-09-11 18:20_
+
+---
+
+_Closed by @charliermarsh on 2024-09-11 18:36_
+
+---

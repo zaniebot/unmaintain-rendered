@@ -1,0 +1,48 @@
+---
+number: 7049
+title: "`uv venv` and `uv sync` has different default shell prompts"
+type: issue
+state: closed
+author: leddy231
+labels: []
+assignees: []
+created_at: 2024-09-04T21:15:12Z
+updated_at: 2024-09-04T22:16:50Z
+url: https://github.com/astral-sh/uv/issues/7049
+synced_at: 2026-01-10T01:24:10Z
+---
+
+# `uv venv` and `uv sync` has different default shell prompts
+
+---
+
+_Issue opened by @leddy231 on 2024-09-04 21:15_
+
+
+`uv venv` creates a .venv where the default shell prompt is the name of the current folder. Nice!
+`uv sync` creates a .venv (if there is none) where the default shell prompt is just `(.venv)`. Confusing for monorepos.
+And `uv sync` does not allow specifying the prompt when invoking.
+
+Its a bit odd that they have different defaults, and personally I think the folder name as the default prompt is the better option.
+
+
+
+---
+
+_Comment by @tpgillam on 2024-09-04 21:49_
+
+I just realised this was addressed a few hours ago: https://github.com/astral-sh/uv/pull/7021
+
+With `uv sync` as-of uv 0.4.5 it works very nicely.
+
+---
+
+_Comment by @leddy231 on 2024-09-04 22:16_
+
+Haha race condition with the issue, I could not find an open issue and the latest release at the time (0.4.4) did not have the fix yet.
+
+---
+
+_Closed by @leddy231 on 2024-09-04 22:16_
+
+---

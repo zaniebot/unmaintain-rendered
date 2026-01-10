@@ -1,0 +1,130 @@
+---
+number: 6935
+title: ":beach_umbrella: Formatter Preview style"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+  - preview
+assignees: []
+created_at: 2023-08-28T08:46:22Z
+updated_at: 2024-01-10T16:53:00Z
+url: https://github.com/astral-sh/ruff/issues/6935
+synced_at: 2026-01-10T01:22:46Z
+---
+
+# :beach_umbrella: Formatter Preview style
+
+---
+
+_Issue opened by @MichaReiser on 2023-08-28 08:46_
+
+This is an umbrella issue to track the progress towards supporting the [preview style](https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#preview-style)
+
+* [x] #7218
+* [x] #6975
+* [ ] #6936
+* [ ] Improved parenthesis handling for long expressions
+     * [x] https://github.com/astral-sh/ruff/issues/8436 
+     * [x] #8437 
+     * [x] #8438 
+* [ ] [Improved multiline string handling](https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-multiline-string-handling)
+* [x] #7440
+* [x] #7995
+* [x] #8279 
+* [x] https://github.com/astral-sh/ruff/issues/8357 
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-08-28 08:46_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-08-28 08:46_
+
+---
+
+_Referenced in [astral-sh/ruff#6581](../../astral-sh/ruff/issues/6581.md) on 2023-09-02 08:21_
+
+---
+
+_Referenced in [astral-sh/ruff#7082](../../astral-sh/ruff/pulls/7082.md) on 2023-09-04 08:38_
+
+---
+
+_Label `preview` added by @MichaReiser on 2023-09-15 09:51_
+
+---
+
+_Renamed from ":beach_umbrella: Black Preview style" to ":beach_umbrella: Formatter Preview style" by @MichaReiser on 2023-10-17 00:43_
+
+---
+
+_Referenced in [astral-sh/ruff#8043](../../astral-sh/ruff/issues/8043.md) on 2023-10-18 22:03_
+
+---
+
+_Referenced in [fpgmaas/deptry#507](../../fpgmaas/deptry/pulls/507.md) on 2023-10-28 11:43_
+
+---
+
+_Referenced in [astral-sh/ruff#8357](../../astral-sh/ruff/issues/8357.md) on 2023-10-30 14:37_
+
+---
+
+_Comment by @konstin on 2023-11-14 17:11_
+
+I wrote up the state and TODOs of compatibility for the planned 2024 black stable style: https://github.com/astral-sh/ruff/issues/8678. Some of the items listed here are not included, e.g. the improved string processing
+
+---
+
+_Comment by @MichaReiser on 2023-11-27 06:58_
+
+> I wrote up the state and TODOs of compatibility for the planned 2024 black stable style: #8678. Some of the items listed here are not included, e.g. the improved string processing
+
+Thanks. I'll have a closer look once I manage to get through all notifications 😅 
+
+---
+
+_Comment by @MichaReiser on 2023-11-29 00:36_
+
+Closing in favor of https://github.com/astral-sh/ruff/issues/8678
+
+---
+
+_Closed by @MichaReiser on 2023-11-29 00:36_
+
+---
+
+_Removed from milestone `Formatter: Stable` by @MichaReiser on 2023-11-29 00:36_
+
+---
+
+_Comment by @zanieb on 2023-11-29 03:51_
+
+@MichaReiser I actually liked having this issue for general preview formatter style discussion whereas #8678 is specifically for the 2024 Black preview implementations.
+
+---
+
+_Comment by @charliermarsh on 2023-11-29 03:56_
+
+FWIW I'm fine with closing this, I don't really see the value it adds to track here separately. Shouldn't we use a discussion if we want to gather feedback on preview style, not this issue?
+
+---
+
+_Comment by @MichaReiser on 2023-11-29 04:01_
+
+@zanieb feel free to take the issue over and update its content. I closed it because the content it tracked is now identical to #8678. I don't mind keeping it around, if it serves a different purpose.
+
+---
+
+_Comment by @zanieb on 2023-11-29 04:03_
+
+Hm... let's leave it closed for now and we can re-open or create a new one if we need it later.
+
+---
+
+_Referenced in [astral-sh/ruff#9639](../../astral-sh/ruff/pulls/9639.md) on 2024-01-25 11:46_
+
+---

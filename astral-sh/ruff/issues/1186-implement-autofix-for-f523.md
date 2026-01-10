@@ -1,0 +1,40 @@
+---
+number: 1186
+title: "Implement autofix for `F523`"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - fixes
+assignees: []
+created_at: 2022-12-10T21:45:21Z
+updated_at: 2023-03-21T03:55:25Z
+url: https://github.com/astral-sh/ruff/issues/1186
+synced_at: 2026-01-10T01:22:38Z
+---
+
+# Implement autofix for `F523`
+
+---
+
+_Issue opened by @charliermarsh on 2022-12-10 21:45_
+
+See: #1144.
+
+---
+
+_Referenced in [astral-sh/ruff#1144](../../astral-sh/ruff/issues/1144.md) on 2022-12-10 21:45_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2022-12-31 18:16_
+
+---
+
+_Referenced in [astral-sh/ruff#3613](../../astral-sh/ruff/pulls/3613.md) on 2023-03-19 20:07_
+
+---
+
+_Closed by @charliermarsh on 2023-03-21 03:55_
+
+---

@@ -1,0 +1,82 @@
+---
+number: 16534
+title: Permission denied (os error 13) when adding dependency to script
+type: issue
+state: closed
+author: adamserafini
+labels:
+  - bug
+assignees: []
+created_at: 2025-10-31T11:32:00Z
+updated_at: 2025-10-31T14:53:36Z
+url: https://github.com/astral-sh/uv/issues/16534
+synced_at: 2026-01-10T01:26:07Z
+---
+
+# Permission denied (os error 13) when adding dependency to script
+
+---
+
+_Issue opened by @adamserafini on 2025-10-31 11:32_
+
+### Summary
+
+Successfully created a script with `uv init --script make-rider-token.py`
+
+When I try to add a dependency to that script:
+
+`uv add --script make-rider-token.py 'pyjwt'`
+
+```
+error: Permission denied (os error 13) at path "/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/.tmpqrttUW"
+```
+
+### Platform
+
+macOS 15.7.1, Apple Silicon
+
+### Version
+
+uv 0.5.9 (0652800cb 2024-12-13)
+
+### Python version
+
+Python 3.12.8
+
+---
+
+_Label `bug` added by @adamserafini on 2025-10-31 11:32_
+
+---
+
+_Comment by @charliermarsh on 2025-10-31 14:21_
+
+Do you mind trying a newer version of uv? (It might show the same result, but 0.5.9 is a little far behind.)
+
+---
+
+_Comment by @adamserafini on 2025-10-31 14:50_
+
+Interestingly, I'm also not able to upgrade:
+
+> uv self update
+info: Checking for updates...
+error: Permission denied (os error 13) at path "/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/.tmpEpisyf"
+
+---
+
+_Comment by @adamserafini on 2025-10-31 14:50_
+
+I will remove, reinstall and start again :), didn't realise how old 0.5.9 is!
+
+---
+
+_Comment by @adamserafini on 2025-10-31 14:53_
+
+works on 0.9.7! I guess uv has been Just Working for me for some time so hadn't upgraded! Sorry to bother you :)
+
+---
+
+_Closed by @adamserafini on 2025-10-31 14:53_
+
+---

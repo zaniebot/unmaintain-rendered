@@ -1,0 +1,48 @@
+---
+number: 12041
+title: "Remove `tab-size` setting"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - configuration
+assignees: []
+created_at: 2024-06-26T08:15:50Z
+updated_at: 2024-10-08T13:45:24Z
+url: https://github.com/astral-sh/ruff/issues/12041
+synced_at: 2026-01-10T01:22:51Z
+---
+
+# Remove `tab-size` setting
+
+---
+
+_Issue opened by @MichaReiser on 2024-06-26 08:15_
+
+https://github.com/astral-sh/ruff/pull/12006 made using `tab-size` a hard error (Ruff 0.5). We should remove the option in a future minor release (0.6 or 0.7?)
+
+---
+
+_Added to milestone `v0.6` by @MichaReiser on 2024-06-26 08:15_
+
+---
+
+_Label `configuration` added by @MichaReiser on 2024-06-26 08:15_
+
+---
+
+_Referenced in [astral-sh/ruff#12835](../../astral-sh/ruff/pulls/12835.md) on 2024-08-12 09:11_
+
+---
+
+_Removed from milestone `v0.6` by @MichaReiser on 2024-08-12 14:00_
+
+---
+
+_Added to milestone `v0.7` by @MichaReiser on 2024-08-12 14:00_
+
+---
+
+_Closed by @AlexWaygood on 2024-10-08 13:45_
+
+---

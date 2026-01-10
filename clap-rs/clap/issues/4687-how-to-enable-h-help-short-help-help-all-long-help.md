@@ -1,0 +1,206 @@
+---
+number: 4687
+title: "how to enable `-h` / `--help` (short help) + `--help-all` (long help)"
+type: issue
+state: closed
+author: asottile
+labels:
+  - C-enhancement
+  - S-waiting-on-decision
+  - A-help
+assignees: []
+created_at: 2023-01-30T18:15:23Z
+updated_at: 2023-07-17T15:54:02Z
+url: https://github.com/clap-rs/clap/issues/4687
+synced_at: 2026-01-10T01:27:59Z
+---
+
+# how to enable `-h` / `--help` (short help) + `--help-all` (long help)
+
+---
+
+_Issue opened by @asottile on 2023-01-30 18:15_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.1.4
+
+### Describe your use case
+
+I've found #3405 which hints at the same idea, but I wasn't able to follow whether this was implemented or not
+
+I have this, which is *close* but doesn't satisfy the "--help gives short help" (mostly, I find `clap`'s choice of `-h` and `--help` an odd one, and not one I've found precedence for elsewhere, the more common approach I've seen is `--help-all` or `--help-full` or `--help-{thing}` to give additional help for specific areas). 
+
+```rs
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+#[command(propagate_version = true)]
+#[clap(disable_help_flag = true)]
+struct Cli {
+    /// Should always be shown in all helps
+    #[arg(long)]
+    someopt: String,
+    /// Secret option, should only be shown in --help-all
+    #[arg(long, hide_short_help = true)]
+    wacky: String,
+    /// Print help
+    #[arg(short, long, action = clap::ArgAction::Help)]
+    help: bool,
+    /// Print help, including uncommon options
+    #[arg(long, action = clap::ArgAction::Help)]
+    help_all: bool,
+}
+
+
+fn main() {
+    let args = Cli::parse();
+    println!("Hello, world!, {:?}", args);
+}
+```
+
+### Describe the solution you'd like
+
+maybe something like this?
+
+```rust
+    /// Print help
+    #[arg(short, long, action = clap::ArgAction::HelpShort)]
+    help: bool,
+    /// Print help, including uncommon options
+    #[arg(long, action = clap::ArgAction::HelpLong)]
+    help_all: bool,
+```
+
+(`HelpShort` / `HelpLong`)
+
+### Alternatives, if applicable
+
+I am very new to `clap`, so I'd be happy enough if there's already a solution to this
+
+### Additional Context
+
+for example, `python`'s help:
+
+```console
+$ python3.12 --help
+usage: python3.12 [option] ... [-c cmd | -m mod | file | -] [arg] ...
+Options (and corresponding environment variables):
+-b     : issue warnings about str(bytes_instance), str(bytearray_instance)
+         and comparing bytes/bytearray with str. (-bb: issue errors)
+...
+--help-env      : print help about Python environment variables and exit
+--help-xoptions : print help about implementation-specific -X options and exit
+--help-all      : print complete help information and exit
+Arguments:
+file   : program read from script file
+-      : program read from stdin (default; interactive mode if a tty)
+arg ...: arguments passed to program in sys.argv[1:]
+```
+
+---
+
+_Label `C-enhancement` added by @asottile on 2023-01-30 18:15_
+
+---
+
+_Comment by @epage on 2023-01-30 18:41_
+
+For now, what you will need to do is use `ArgAction::SetTrue`, call `CommandFactory::command` on the top-level command, then call the appropriate short/long help rendering functions on `Command`.
+
+
+Hmm, I'm not finding in the notes why `HelpShort` and `HelpLong` weren't implemented.  I then assumed it was left to an issue but not finding an issue for it.  I vaguely remember considering ways to generalize this but do not remember the details, seeing as we are trying to keep the API small for easier discovery and for reduced compile times / API size.
+
+If we do this, we'd need similar for `Version`.
+
+---
+
+_Label `S-waiting-on-decision` added by @epage on 2023-01-30 18:41_
+
+---
+
+_Label `A-help` added by @epage on 2023-01-30 18:41_
+
+---
+
+_Comment by @asottile on 2023-01-30 19:36_
+
+cool!  are those available in the derive notation?  -- or would it be more that I check the arguments manually after `Cli::parse()` instead of using `ArgAction::Help` ?
+
+---
+
+_Comment by @epage on 2023-01-30 20:52_
+
+Yes, those instructions are for doing it manually.
+
+```rust
+let args = Cli::parse();
+if args.help {
+    let mut cmd = Cli::command();
+    cmd.build();
+    cmd.print_help();
+    std::process::exit(0);
+} else if args.help_all {
+    let mut cmd = Cli::command();
+    cmd.build();
+    cmd.print_long_help();
+    std::process::exit(0);
+}
+```
+
+---
+
+_Comment by @asottile on 2023-01-31 01:07_
+
+ah neat, unfortunately my case is a little more complicated and I've got subcommands -- so I need something more like:
+
+```rust
+    // I just let `help_all` use `action = ArgAction::Help` since it always triggers `long` help anyway!
+
+    if matches!(res.command, Some(Commands::Run(Run { help: true, .. }))) {
+        let mut cmd = Cli::command();
+        cmd.build();
+        cmd.find_subcommand_mut("run").unwrap().print_help()?;
+        std::process::exit(0);
+    }
+```
+
+this works fine for things which don't have any required arguments -- but as soon as there are required arguments it's too late to trigger the `store_true` or `::Help` (as an error occurs on the missing required argument)
+
+---
+
+_Referenced in [jj-vcs/jj#1525](../../jj-vcs/jj/pulls/1525.md) on 2023-04-16 21:57_
+
+---
+
+_Referenced in [clap-rs/clap#5015](../../clap-rs/clap/pulls/5015.md) on 2023-07-17 15:41_
+
+---
+
+_Comment by @epage on 2023-07-17 15:42_
+
+The main delay here is going back and forth on what this should look like from the API.  I figured, rather than worrying about perfection, I'll implement something and we can always change it when v5 comes around
+
+---
+
+_Closed by @epage on 2023-07-17 15:54_
+
+---
+
+_Referenced in [astral-sh/uv#4772](../../astral-sh/uv/pulls/4772.md) on 2024-07-03 14:32_
+
+---
+
+_Referenced in [clap-rs/clap#6014](../../clap-rs/clap/issues/6014.md) on 2025-05-24 06:16_
+
+---
+
+_Referenced in [mrswastik-robot/pixi#2](../../mrswastik-robot/pixi/pulls/2.md) on 2025-07-03 09:20_
+
+---

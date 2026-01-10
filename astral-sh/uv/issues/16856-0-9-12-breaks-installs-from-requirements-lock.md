@@ -1,0 +1,148 @@
+---
+number: 16856
+title: 0.9.12 breaks installs from requirements.lock
+type: issue
+state: closed
+author: jackdent
+labels:
+  - bug
+assignees: []
+created_at: 2025-11-26T03:23:36Z
+updated_at: 2025-11-26T16:33:41Z
+url: https://github.com/astral-sh/uv/issues/16856
+synced_at: 2026-01-10T01:26:10Z
+---
+
+# 0.9.12 breaks installs from requirements.lock
+
+---
+
+_Issue opened by @jackdent on 2025-11-26 03:23_
+
+### Summary
+
+We have a GitHub action that runs mypy:
+```
+name: Mypy
+on:
+  # Triggered whenever a commit is added to the main branch
+  push:
+    branches:
+      - main
+  # Triggered whenever a PR is opened or updated
+  pull_request:
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install dependencies
+        working-directory: ./src
+        # install everything from lock file, but no nvidia packages, separately install cpu-only torch
+        run: |
+          pip install --no-deps uv -r <( cat requirements.lock | grep torch==) --extra-index-url https://download.pytorch.org/whl/cpu
+          uv pip install --system --no-deps -r <( cat requirements.lock | grep -v nvidia | grep -v torch==)
+      - name: Run mypy
+        run: mypy . --config ./src/pyproject.toml
+```
+
+This started failing earlier today. After freezing to version 0.8.18 (our previous version), the GitHub action now succeeds:
+```
+name: Mypy
+on:
+  # Triggered whenever a commit is added to the main branch
+  push:
+    branches:
+      - main
+  # Triggered whenever a PR is opened or updated
+  pull_request:
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install dependencies
+        working-directory: ./src
+        # install everything from lock file, but no nvidia packages, separately install cpu-only torch
+        run: |
+          pip install --no-deps uv==0.8.18 -r <( cat requirements.lock | grep torch==) --extra-index-url https://download.pytorch.org/whl/cpu
+          uv pip install --system --no-deps -r <( cat requirements.lock | grep -v nvidia | grep -v torch==)
+      - name: Run mypy
+        run: mypy . --config ./src/pyproject.toml
+```
+The error we observed in the CI logs was: `warning: Requirements file `/dev/fd/63` does not contain any dependencies`:
+```
+Run pip install --no-deps uv -r <( cat requirements.lock | grep torch==) --extra-index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+Collecting uv
+  Downloading uv-0.9.12-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
+Collecting torch==2.3.1 (from -r /dev/fd/63 (line 1))
+  Downloading https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp311-cp311-linux_x86_64.whl (190.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 190.4/190.4 MB 84.5 MB/s  0:00:02
+Downloading uv-0.9.12-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (21.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 21.7/21.7 MB 22.7 MB/s  0:00:01
+Installing collected packages: uv, torch
+
+Successfully installed torch-2.3.1+cpu uv-0.9.12
+warning: Requirements file `/dev/fd/63` does not contain any dependencies
+Using Python 3.11.14 environment at: /opt/hostedtoolcache/Python/3.11.14/x64
+Audited in 49ms
+```
+
+### Platform
+
+Ubuntu 24.04.3
+
+### Version
+
+uv 0.9.12
+
+### Python version
+
+Python 3.11.14
+
+---
+
+_Label `bug` added by @jackdent on 2025-11-26 03:23_
+
+---
+
+_Comment by @charliermarsh on 2025-11-26 03:25_
+
+This is my bad. I will own the fix.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2025-11-26 03:25_
+
+---
+
+_Referenced in [astral-sh/uv#16857](../../astral-sh/uv/pulls/16857.md) on 2025-11-26 03:29_
+
+---
+
+_Closed by @charliermarsh on 2025-11-26 03:55_
+
+---
+
+_Comment by @Yamakaky on 2025-11-26 08:55_
+
+Thanks  for the quick fix!
+
+---
+
+_Comment by @zanieb on 2025-11-26 16:33_
+
+A fix is out in 0.9.13
+
+---

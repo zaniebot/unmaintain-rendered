@@ -1,0 +1,71 @@
+---
+number: 4989
+title: Support parsing smart pointers
+type: issue
+state: open
+author: KSXGitHub
+labels:
+  - C-enhancement
+  - A-derive
+assignees: []
+created_at: 2023-06-27T14:30:59Z
+updated_at: 2023-06-27T15:34:12Z
+url: https://github.com/clap-rs/clap/issues/4989
+synced_at: 2026-01-10T01:28:04Z
+---
+
+# Support parsing smart pointers
+
+---
+
+_Issue opened by @KSXGitHub on 2023-06-27 14:30_
+
+### Please complete the following tasks
+
+- [X] I have searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [X] I have searched the [open](https://github.com/clap-rs/clap/issues) and [rejected](https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed) issues
+
+### Clap Version
+
+4.3.8
+
+### Describe your use case
+
+`Box` of an unsized type is often smaller than its owned counterpart. And it is cheaper to clone `Rc` and `Arc` than cloning the owned version.
+
+### Describe the solution you'd like
+
+Allow parsing arguments directly to smart pointer types such as `Box`, `Rc`, and `Arc`. For example:
+
+```rust
+#[derive(Clone, Parser)]
+struct Args {
+    #[clap(long, short)]
+    tag: Arc<[Box<str>]>, // instead of Vec<String>
+    files: Arc<[Box<Path>]>, // instead of Vec<PathBuf>
+}
+```
+
+### Alternatives, if applicable
+
+_No response_
+
+### Additional Context
+
+_No response_
+
+---
+
+_Label `C-enhancement` added by @KSXGitHub on 2023-06-27 14:30_
+
+---
+
+_Comment by @epage on 2023-06-27 15:34_
+
+#4626 is a more general re-evaluation of how we infer meaning from types
+
+---
+
+_Label `A-derive` added by @epage on 2023-06-27 15:34_
+
+---

@@ -1,0 +1,424 @@
+---
+number: 1520
+title: No keyring support for authentication
+type: issue
+state: closed
+author: AngellusMortis
+labels:
+  - enhancement
+  - compatibility
+assignees: []
+created_at: 2024-02-16T18:05:17Z
+updated_at: 2025-06-14T17:54:08Z
+url: https://github.com/astral-sh/uv/issues/1520
+synced_at: 2026-01-10T01:23:07Z
+---
+
+# No keyring support for authentication
+
+---
+
+_Issue opened by @AngellusMortis on 2024-02-16 18:05_
+
+It appears `uv` does not have support for keyring like pip does. 
+
+https://pip.pypa.io/en/stable/topics/authentication/#keyring-support
+
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-16 18:53_
+
+---
+
+_Label `compatibility` added by @zanieb on 2024-02-16 18:53_
+
+---
+
+_Comment by @zanieb on 2024-02-16 18:53_
+
+This seems reasonable. We'll need to find a Rust equivalent to https://pypi.org/project/keyring/
+
+Perhaps https://github.com/hwchen/keyring-rs
+
+---
+
+_Comment by @AngellusMortis on 2024-02-16 18:57_
+
+keyring is a cli app already. Probably want to add support for existing Python one first to maximize compatibility. Different auth methods need different plugins. AWS, Azure and Google Cloud each have their own plugins to use the more secure auth methods (no username/password).
+
+Then you could migrate to a native only solution. 
+
+---
+
+_Comment by @chris-hartfield on 2024-02-16 20:43_
+
+Agreed that calling the cli is probably easiest.  The cli equivalent of what pip is calling in python is really simple: `keyring get <url> <username_which_is_often_empty>`
+
+---
+
+_Comment by @judahrand on 2024-02-21 15:01_
+
+> Agreed that calling the cli is probably easiest. The cli equivalent of what pip is calling in python is really simple: `keyring get <url> <username_which_is_often_empty>`
+
+`pip` does already actually directly call the CLI tool if `keyring` isn't installed in the Python environment but is available on `PATH` or `--keyring-provider subprocess` is passed - so this behaviour would be consistent. 
+
+https://pip.pypa.io/en/stable/topics/authentication/#using-keyring-as-a-command-line-application
+
+---
+
+_Comment by @zanieb on 2024-02-21 15:24_
+
+Thanks for the details! Much appreciated.
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-02-21 15:24_
+
+---
+
+_Comment by @judahrand on 2024-02-22 08:59_
+
+> This seems reasonable. We'll need to find a Rust equivalent to https://pypi.org/project/keyring/
+> 
+> Perhaps https://github.com/hwchen/keyring-rs
+
+I'd also discourage this approach. There are many Python plugins to `keyring` for various cloud hosted private Pypi registries (eg. Google Artifact Registry, Azure DevOps, etc). I imagine these would be incompatible with `keyring-rs` and so you'd lose a lot of the benefit of the `keyring` integration unless all of these plugins were also reimplemented.
+
+https://github.com/Microsoft/artifacts-keyring
+https://github.com/GoogleCloudPlatform/artifact-registry-python-tools
+
+---
+
+_Referenced in [astral-sh/uv#2055](../../astral-sh/uv/issues/2055.md) on 2024-02-28 21:06_
+
+---
+
+_Referenced in [astral-sh/uv#1700](../../astral-sh/uv/issues/1700.md) on 2024-03-05 15:05_
+
+---
+
+_Referenced in [astral-sh/uv#2254](../../astral-sh/uv/pulls/2254.md) on 2024-03-06 23:30_
+
+---
+
+_Referenced in [prefix-dev/pixi#588](../../prefix-dev/pixi/issues/588.md) on 2024-03-08 10:53_
+
+---
+
+_Comment by @BakerNet on 2024-03-14 00:20_
+
+As of #2254 `--keyring-provider subprocess` is available.  It has been tested on at least two Google artifact registry projects (using [keyrings.google-artifactregistry-auth](https://cloud.google.com/artifact-registry/docs/python/authentication#keyring) plugin) as working.
+
+---
+
+_Closed by @zanieb on 2024-03-14 00:23_
+
+---
+
+_Comment by @jonataseduardo on 2024-10-08 11:55_
+
+
+Sorry for continuing on this topic, but I'm trying to create a `uv` project that uses an `--extra-index-url` with Google Cloud Artifact Registry. However, it returns an error indicating that my package can't be found.  I am using `uv 0.4.18`
+
+Here's what I've tried so far:
+
+```
+  gcloud auth application-default login --project ${PROJECT_ID}                      
+  uv venv
+  source .venv/bin/activate
+  uv pip install keyring keyrings.google-artifactregistry-auth
+  uv pip install --keyring-provider subprocess ${MY_PACKAGE} --extra-index-url https://${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple                            
+```
+
+Interestingly, when I use standard pip, I can install my private package without any issues. Here's the code that works:
+
+```
+  gcloud auth application-default login --project ${PROJECT_ID}                      
+  python -m venv .venv
+  source .venv/bin/activate
+  pip install keyring keyrings.google-artifactregistry-auth
+  pip install ${MY_PACKAGE} --extra-index-url https://${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple                            
+```
+
+Am I  missing something? Any help would be appreciated!
+
+
+---
+
+_Comment by @ffissore on 2024-10-08 13:25_
+
+Try `--extra-index-url=https://oauth2accesstoken@${REGION}...`
+
+---
+
+_Comment by @jonataseduardo on 2024-10-08 14:25_
+
+> Try `--extra-index-url=https://oauth2accesstoken@${REGION}...`
+
+Thanks, it  worked when I used this command:
+```
+uv pip install ${MY_PACKAGE} --extra-index-url https://oauth2accesstoken:$(gcloud auth print-access-token)@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple
+```
+
+Does this not defeat the purpose of using a keyring?
+
+
+
+---
+
+_Comment by @zanieb on 2024-10-08 14:31_
+
+@jonataseduardo keyring requires a username to retrieve a password via the CLI — you can just provide the username in the index URL you don't need to include the token too.
+
+---
+
+_Comment by @jonataseduardo on 2024-10-08 14:52_
+
+
+Sure!
+
+The command 
+```
+uv pip install ${MY_PACKAGE} --keyring-provider subprocess --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple
+```
+worked. I had forgotten to include the `--keyring-provider subprocess` in my last attempt.
+
+It would be helpful to include something like the following in the documentation:
+
+```
+  gcloud auth application-default login --project ${PROJECT_ID}                      
+  uv venv
+  source .venv/bin/activate
+  uv pip install keyring keyrings.google-artifactregistry-auth
+  uv pip install --keyring-provider subprocess ${MY_PACKAGE} --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple                              
+```      
+
+Thanks a lot!
+
+
+---
+
+_Comment by @hcoona on 2025-02-11 00:03_
+
+Oh gosh! I find so many places to get it work. We should update our document for it, especially that we must add an arbitrary username for the index URL to make it work.
+
+---
+
+_Comment by @MXWest on 2025-03-09 14:21_
+
+Perhaps this may help someone in future. Perhaps that someone will be me.
+
+I am using `uv 0.6.5 (Homebrew 2025-03-06)`
+
+
+The docs as of 9 March 2025 indicate that you should install like this:
+```
+# Pre-install keyring and Artifact Registry plugin from the public PyPI
+uv tool install keyring --with keyrings.google-artifactregistry-auth
+
+# Enable keyring authentication
+export UV_KEYRING_PROVIDER=subprocess
+
+# Set the username for the index
+export UV_INDEX_PRIVATE_REGISTRY_USERNAME=oauth2accesstoken
+```
+
+This **does not work**.
+
+I replaced the line
+`uv tool install keyring --with keyrings.google-artifactregistry-auth`
+
+with
+`uv pip install keyring keyrings.google-artifactregistry-auth`
+
+----
+Here's the full installation script I used to test out my scenario:
+
+```
+# Pre-install keyring and Artifact Registry plugin from the public PyPI
+source venv/bin/activate
+#uv tool install keyring --with keyrings.google-artifactregistry-auth
+uv pip install keyring keyrings.google-artifactregistry-auth
+
+# Enable keyring authentication
+export UV_KEYRING_PROVIDER=subprocess
+
+# Set the username for the index
+export UV_INDEX_PRIVATE_REGISTRY_USERNAME=oauth2accesstoken
+
+UV_LOG=debug uv -v pip install -r requirements.txt
+```
+
+Here's the `pyproject.toml`:
+
+```
+[[tool.uv.index]]
+# Optional name for the index.
+name = "private-registry"
+# Required URL for the index.
+url = "https://us-central1-python.pkg.dev/path-to-my-private-pypi/simple"
+```
+
+
+---
+
+_Comment by @zanieb on 2025-03-09 15:38_
+
+I'm not sure I see why `uv tool install` wouldn't work, unless you also have keyring installed in an active virtual environment and it's shadowing the global one?
+
+---
+
+_Comment by @ridho-y on 2025-04-15 05:32_
+
+@MXWest Thank you so much! Confirming this solution works for AWS CodeArtifact as well. I'm using `uv 0.6.2`.
+
+---
+
+_Comment by @arthurlaquieze on 2025-04-29 10:18_
+
+@zanieb hey
+
+I had a hard time getting it to work with `uv tool install` inside docker:
+
+`
+RUN uv tool install keyring --with keyrings.google-artifactregistry-auth
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=secret,id=gcp_credentials,target=/run/secrets/gcp_credentials \
+    GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/gcp_credentials \
+    UV_KEYRING_PROVIDER=subprocess \
+    UV_INDEX_INTERNAL_GAR_PYPI_USERNAME=oauth2accesstoken \
+    uv --verbose sync --frozen --no-install-project
+`
+
+using `uv:0.6.17` and `ubuntu:22.04` base image
+
+logs : 
+
+2.225 DEBUG Checking keyring for credentials for oauth2accesstoken@https://europe-python.pkg.dev/.../hatchling/hatchling-1.27.0-py3-none-any.whl
+2.225 WARN Failure running `keyring` command: No such file or directory (os error 2)
+
+
+Solution I have is **adding the tools directory to PATH**, in my case 
+
+`ENV PATH="/root/.local/bin:$PATH"`
+
+
+I think this should be emphasized in the keyring install procedure for alternative indexes, especially for those who use this inside docker, in https://docs.astral.sh/uv/guides/integration/alternative-indexes/#authenticate-with-keyring-and-keyringsgoogle-artifactregistry-auth 
+
+And it could be better highlighted in the tools docs https://docs.astral.sh/uv/guides/tools/#installing-tools 
+
+@MXWest you can try that 
+
+---
+
+_Comment by @zanieb on 2025-04-30 13:30_
+
+This is at https://docs.astral.sh/uv/guides/integration/docker/#using-installed-tools and a warning is displayed during tool install if it's not included on the `PATH`. I'm not sure exactly where we'd want to highlight it.
+
+---
+
+_Comment by @herman-rogers on 2025-05-16 20:20_
+
+Not sure if it's in the docs somewhere but I was able to get this to work in a slightly different way mostly because we use google's federated identities (inside of github actions) so I couldn't use the application default credentials (and wanted it to work across envs):
+
+```sh
+ uv add my_package --keyring-provider subprocess --index https://<REGION>-python.pkg.dev/<PROJECT>/<LIB>/simple/
+```
+This will add it to the uv.lock file, it also adds a index in the pyproject.toml but I removed this (I think I can just use --extra-index-url but that's what I ran first, in any case).
+
+Then I setup my pyproject.toml as:
+
+```yaml
+[tool.uv]
+keyring-provider = "subprocess"
+extra-index-url = [
+    "https://oauth2accesstoken@<REGION>-python.pkg.dev/<PROJECT>/<LIB>/simple/",
+    "https://<REGION>-python.pkg.dev/<PROJECT>/<LIB>/simple/"
+]
+```
+This one is a bit goofy - basically I'm just adding the keyring provider twice but Windows refused to work with only the oauth2accesstoken and Linux servers (github actions) refused to work without oauth2accesstoken. So I added both as fall backs. Mac OS and Linux didn't seem to care much for local installs.
+
+Then inside of each project (and github actions) I just installed the tool which allowed me to run library syncs:
+
+```sh
+uv tool install keyring --with keyrings.google-artifactregistry-auth
+uv sync --all-extras --dev
+```
+
+I tried setting the environment variables above to get rid of the oauth2accesstoken section of the URLs but for whatever reason it didn't seem to like it if I had installed the google artifact library with uv add (so from the lock file). In any case this worked with federated auth + default application credentials (locally).
+
+---
+
+_Comment by @DevJake on 2025-06-14 17:54_
+
+Just chipping in to this with my Dockerfile contents, as I found this somewhat confusing as per the docs:
+
+```Dockerfile
+FROM ghcr.io/astral-sh/uv:0.7.13-python3.11-bookworm-slim AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/root/.local/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Compile the Python `.py` files to `.pyc` bytecode files
+ENV UV_COMPILE_BYTECODE=1
+# Copy the installed dependencies to the image, rather than linking them
+ENV UV_LINK_MODE=copy
+ENV UV_KEYRING_PROVIDER=subprocess
+ENV UV_INDEX_INTERNAL_GAR_PYPI_USERNAME=oauth2accesstoken
+
+RUN uv tool install keyring --with keyrings.google-artifactregistry-auth
+
+# Install the dependencies, without modifying the lock file. Do not install the project itself
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=secret,id=gcp_credentials,target=/run/secrets/gcp_credentials \
+    GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/gcp_credentials \
+    uv sync --locked --no-install-project --no-dev
+
+COPY src pyproject.toml uv.lock README.md /app
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=secret,id=gcp_credentials,target=/run/secrets/gcp_credentials \
+    GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/gcp_credentials \
+    uv sync --locked --no-dev
+
+# Reset the `uv` entrypoint
+ENTRYPOINT []
+
+CMD ["your", "startup", "command"]
+```
+
+And, this snippet from my `pyproject.toml`:
+```toml
+[[tool.uv.index]]
+name = "gcp"
+url = "https://oauth2accesstoken@<REGION>-python.pkg.dev/<PROJECT-ID>/<REPOSITORY-NAME>/simple/"
+
+
+[tool.uv]
+keyring-provider = "subprocess"
+```
+
+To build this, you'll need a GCP Service Account private key saved to a local `.json` file, for example, `gcp-key.json`:
+```
+docker build . --secret id=gcp_credentials,src=gcp-key.json
+```
+
+I hope this is able to help someone!
+
+---
+
+_Referenced in [bazel-contrib/rules_python#3405](../../bazel-contrib/rules_python/issues/3405.md) on 2025-11-10 15:11_
+
+---

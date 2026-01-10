@@ -1,0 +1,508 @@
+---
+number: 1526
+title: Add flag to allow global installs e.g. for CI
+type: issue
+state: closed
+author: zanieb
+labels:
+  - enhancement
+  - configuration
+assignees: []
+created_at: 2024-02-16T18:47:26Z
+updated_at: 2025-08-26T08:27:20Z
+url: https://github.com/astral-sh/uv/issues/1526
+synced_at: 2026-01-10T01:23:07Z
+---
+
+# Add flag to allow global installs e.g. for CI
+
+---
+
+_Issue opened by @zanieb on 2024-02-16 18:47_
+
+We require install into a virtual environment, but in ephemeral builds like CI or containers this may not be desired.
+
+---
+
+_Label `enhancement` added by @zanieb on 2024-02-16 18:47_
+
+---
+
+_Label `configuration` added by @zanieb on 2024-02-16 18:47_
+
+---
+
+_Comment by @yabirgb on 2024-02-16 19:37_
+
+I was facing the same issue. Maybe provide a `--no-env`or `--global` variable so the user can't do it by accident  
+
+---
+
+_Comment by @justinh-rahb on 2024-02-16 20:39_
+
+Ya, this has been a blocker to using this to speed up some slow container builds unfortunately.
+
+---
+
+_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-02-16 21:07_
+
+---
+
+_Comment by @henryiii on 2024-02-16 21:38_
+
+Workaround credit to @matthewfeickert:
+
+```yaml
+    - name: Set the VIRTUAL_ENV variable for uv to work
+      run: |
+        echo "VIRTUAL_ENV=${Python_ROOT_DIR}" >> $GITHUB_ENV
+```
+
+---
+
+_Comment by @matthewfeickert on 2024-02-16 22:26_
+
+I actually took that from https://github.com/astral-sh/uv/issues/1386#issuecomment-1947801083 and https://github.com/astral-sh/uv/issues/1386#issuecomment-1947835870. The important bit here is that it needs to be done in a seperate step before you want to use it, so you can't modify the `$GITHUB_ENV` in the same run command as you want to use it.
+
+---
+
+_Referenced in [astral-sh/uv#1550](../../astral-sh/uv/issues/1550.md) on 2024-02-17 00:31_
+
+---
+
+_Comment by @zanieb on 2024-02-17 00:40_
+
+This is a duplicate of https://github.com/astral-sh/uv/issues/1374; oops. I'll keep both for now since they're distinct titles.
+
+---
+
+_Comment by @hauntsaninja on 2024-02-17 01:01_
+
+(Naming the flag `--system` would mirror venv's `--system-site-packages`)
+
+---
+
+_Referenced in [astral-sh/uv#1578](../../astral-sh/uv/issues/1578.md) on 2024-02-17 12:02_
+
+---
+
+_Referenced in [rotki/rotki#7499](../../rotki/rotki/pulls/7499.md) on 2024-02-17 13:09_
+
+---
+
+_Comment by @yabirgb on 2024-02-17 13:29_
+
+I got this error pointing the env to the python location as @henryiii posted. Did anyone face the same issue? In the docker container it worked fine 
+
+![image](https://github.com/astral-sh/uv/assets/5068010/22384b90-84e3-451a-a886-e8cd06c3e87a)
+
+https://github.com/rotki/rotki/pull/7499
+
+
+
+---
+
+_Referenced in [astral-sh/uv#1584](../../astral-sh/uv/issues/1584.md) on 2024-02-17 19:35_
+
+---
+
+_Comment by @charliermarsh on 2024-02-18 16:06_
+
+I am a fan of a system flag though @zanieb has done a lot more work on the Python discovery stuff.
+
+---
+
+_Renamed from "Consider allowing global installs e.g. for CI" to "Add flag to allow global installs e.g. for CI" by @zanieb on 2024-02-18 17:08_
+
+---
+
+_Comment by @zanieb on 2024-02-18 17:08_
+
+I can probably take this on next week.
+
+---
+
+_Assigned to @zanieb by @zanieb on 2024-02-18 17:08_
+
+---
+
+_Comment by @kafonek on 2024-02-18 18:40_
+
+@zanieb not sure if you want this as a separate ticket, but in containers where we install system python through `apt-get`, `uv pip install` fails because there's no `/usr/lib/python3.10/site-packages` directory (all libs are just in `/usr/lib/python3.10` by the looks of it). Example Dockerfile to reproduce:
+
+```
+FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
+
+RUN apt-get update && \
+    apt-get install -y build-essential python3.10 python3.10-dev curl && \
+    apt-get clean
+
+RUN ln -s /usr/bin/python3.10 /usr/bin/python
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+ENV VIRTUAL_ENV="/usr"
+RUN /root/.cargo/bin/uv pip install ruff -v
+```
+
+
+```
+> [5/5] RUN /root/.cargo/bin/uv pip install ruff -v:
+0.286  uv::requirements::from_source source=ruff
+0.287     0.001892s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /usr
+0.288     0.001951s DEBUG uv_interpreter::interpreter Detecting markers for: /usr/bin/python
+0.308     0.022522s DEBUG uv::commands::pip_install Using Python 3.10.12 environment at /usr/bin/python
+0.310 error: Failed to list installed packages
+0.310   Caused by: failed to read directory `/usr/lib/python3.10/site-packages`
+0.310   Caused by: No such file or directory (os error 2)
+------
+```
+
+---
+
+_Comment by @pablodz on 2024-02-18 18:46_
+
+https://ryxcommar.com/2024/02/15/how-to-cut-your-python-docker-builds-in-half-with-uv/
+
+---
+
+_Referenced in [astral-sh/uv#1396](../../astral-sh/uv/issues/1396.md) on 2024-02-19 00:55_
+
+---
+
+_Referenced in [astral-sh/uv#1374](../../astral-sh/uv/issues/1374.md) on 2024-02-19 15:46_
+
+---
+
+_Comment by @ofek on 2024-02-19 16:24_
+
+Similar to #1396 a `--python` flag would solve this constraint. Additionally, it makes sense to simply use whatever comes first on PATH as a default; users have come to expect this.
+
+---
+
+_Referenced in [astral-sh/uv#1705](../../astral-sh/uv/issues/1705.md) on 2024-02-19 16:53_
+
+---
+
+_Comment by @qthequartermasterman on 2024-02-20 00:36_
+
+> I got this error pointing the env to the python location as @henryiii posted. Did anyone face the same issue? In the docker container it worked fine
+> 
+> ![image](https://private-user-images.githubusercontent.com/5068010/305646245-22384b90-84e3-451a-a886-e8cd06c3e87a.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDgzODk2OTEsIm5iZiI6MTcwODM4OTM5MSwicGF0aCI6Ii81MDY4MDEwLzMwNTY0NjI0NS0yMjM4NGI5MC04NGUzLTQ1MWEtYTg4Ni1lOGNkMDZjM2U4N2EucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI0MDIyMCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDAyMjBUMDAzNjMxWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9MDU5OTBjNDgzZWJmMDk2NTIxYmQ4YWMzMzdlMDc5NTRhZWFjMjZmNWE3MjQwMTU2MzVlZTYwODg0N2VmOWUzMiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ._3Hone7n4b22Wfryd42oDS6JVM-hZGOqyWT3GAcuCnQ)
+> 
+> [rotki/rotki#7499](https://github.com/rotki/rotki/pull/7499)
+
+I see this same error, but only in Python 3.9 and 3.10. Python 3.11 works fine.
+
+---
+
+_Referenced in [astral-sh/uv#1761](../../astral-sh/uv/issues/1761.md) on 2024-02-20 15:29_
+
+---
+
+_Referenced in [astral-sh/uv#1779](../../astral-sh/uv/issues/1779.md) on 2024-02-20 21:28_
+
+---
+
+_Comment by @mronphillips on 2024-02-22 21:41_
+
+> @zanieb not sure if you want this as a separate ticket, but in containers where we install system python through `apt-get`, `uv pip install` fails because there's no `/usr/lib/python3.10/site-packages` directory (all libs are just in `/usr/lib/python3.10` by the looks of it). Example Dockerfile to reproduce:
+> 
+> ```
+> FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
+> 
+> RUN apt-get update && \
+>     apt-get install -y build-essential python3.10 python3.10-dev curl && \
+>     apt-get clean
+> 
+> RUN ln -s /usr/bin/python3.10 /usr/bin/python
+> 
+> RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+> 
+> ENV VIRTUAL_ENV="/usr"
+> RUN /root/.cargo/bin/uv pip install ruff -v
+> ```
+> 
+> ```
+> > [5/5] RUN /root/.cargo/bin/uv pip install ruff -v:
+> 0.286  uv::requirements::from_source source=ruff
+> 0.287     0.001892s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /usr
+> 0.288     0.001951s DEBUG uv_interpreter::interpreter Detecting markers for: /usr/bin/python
+> 0.308     0.022522s DEBUG uv::commands::pip_install Using Python 3.10.12 environment at /usr/bin/python
+> 0.310 error: Failed to list installed packages
+> 0.310   Caused by: failed to read directory `/usr/lib/python3.10/site-packages`
+> 0.310   Caused by: No such file or directory (os error 2)
+> ------
+> ```
+
+We're facing the same with Ubuntu 22.04 and Python 3.10 in docker.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 04:25_
+
+In the next release, you can provide a `--python` flag to `uv pip install` and `uv pip sync` in lieu of setting the `VIRTUAL_ENV` variable in CI environments.
+
+`--python` can point to any Python interpreter -- it doesn't need to be a virtualenv (e.g., `--python $(which python3.12)` and so on).
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-28 04:25_
+
+---
+
+_Unassigned @zanieb by @charliermarsh on 2024-02-28 04:25_
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 04:27_
+
+(I'm undecided on adding a flag like `--system` or `--global`, since it'd just be a syntactic nicety over `--python`.)
+
+---
+
+_Comment by @pablodz on 2024-02-28 04:28_
+
+This only will be for cicd simplicity, maybe --cicd ?
+
+---
+
+_Comment by @zanieb on 2024-02-28 04:31_
+
+I'm not sure why this would be better specified as _just_ for CI.
+
+Would `--system` be exactly equivalent to `--python python3`? `--python python3` would be confusing to see when reviewing code.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 04:33_
+
+> Would --system be exactly equivalent to --python python3? --python python3 would be confusing to see when reviewing code.
+
+Roughly, yeah. (My assumption is that internally, we'd just use `find_default_python` instead of passing a selector to `find_requested_python`.)
+
+---
+
+_Comment by @NMertsch on 2024-02-28 05:18_
+
+Thank you for this great tool and the exceptional community support! ♥️
+
+`--python python3` could be confused with specifying "not Python 2". `--python python` looks weird to me.
+
+`--global`, `--system`, `--no-venv`, or `--python-executable XYZ` would solve this.
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 05:53_
+
+I think in CI environments like GitHub Actions (or Docker containers, etc.) I'd expect that you'd typically either encode the full path (`--python /usr/...`) or use `--python $(which python3)` or similar.
+
+(But I'm not really opposed to adding `--system` or `--global`.)
+
+---
+
+_Comment by @zanieb on 2024-02-28 06:55_
+
+I don't think using `which` is platform portable so that sounds annoying. I'm loosely in favor of adding a dedicated flag. I don't know if `--global` is any clearer than `--system` to me.
+
+> --python python3 could be confused with specifying "not Python 2"
+
+Is there a problem with that? It would be problematic if we picked up Python 2 because we don't support it. I am worried that people will do `--python python` and be confused when it picks up Python 2 which still seems weirdly common.
+
+---
+
+_Comment by @alexprengere on 2024-02-28 07:00_
+
+I think `--python ...` is fine, and there is no need for another flag that is syntactic sugar over this.
+
+My rationale is that I think if "regular pip" as "always part of a specific Python distribution" (installed via *ensurepip* or a system package), so `--system/--global` makes sense, as it refers to the implicit Python it was installed with.
+But I think of "uv pip" as a global command untied to any Python interpreter (installed from cargo/pipx/..), so `--system/--global` seems confusing. Hence the need to specify the Python interpreter.
+
+AFAICT a parallel is that `pip-compile` from pip-tools uses the Python it is installed with to generate the requirements, whereas `uv pip compile` has a `--python-version` (even though it is optional).
+
+Perhaps my mental model of this is inaccurate though 😉 
+
+---
+
+_Comment by @strickvl on 2024-02-28 07:06_
+
+When it comes to working with scripts / workflows in the CI, I think having a dedicated flag (precise name doesn't matter so much) would help simplify things at the user end. You're frequently working on different operating systems and environments and so not needing to supply this every time would be helpful.
+
+---
+
+_Comment by @albertferras-vrf on 2024-02-28 08:03_
+
+(These are my thoughts as a user of `uv`, I don't know the details of how uv works or what it was designed for)
+If uv is supposed to have the same syntax/behaviour than `pip` and you can use it just by adding `uv` as a prefix to the existing pip command, why not keep the same behaviour as pip? I never had to specify which python's site-packages I want to install something to, because `pip` is already part of either the system python or some virtualenv's pip.
+So, if `uv` is installed on a virtualenv, install packages there. If it's on system, install packages on system.
+
+---
+
+_Referenced in [zenml-io/zenml#2442](../../zenml-io/zenml/pulls/2442.md) on 2024-02-28 08:26_
+
+---
+
+_Referenced in [astral-sh/uv#2042](../../astral-sh/uv/issues/2042.md) on 2024-02-28 12:23_
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 15:19_
+
+I empathize with that perspective but we still want to guide users towards using virtual environments and make installing into the system Python an opt-in behavior. It's an intentional difference to have a virtual environment-focused workflow by default, and something we plan to continue to do. Manipulating the system Python is generally discouraged and even dangerous (see: [Externally Managed Environments](https://packaging.python.org/en/latest/specifications/externally-managed-environments/)), and I think it's good for us to take advantage of the opportunity to have some different defaults from `pip`, this being one of them.
+
+---
+
+_Comment by @henryiii on 2024-02-28 15:31_
+
+Also, I should point out that pip does have the ability to be used in this way - `pip --python <python>` allows you to target some other Python install, and using this actually speeds up tools like `build` - we reduced our `venv` based backend building an sdist and wheel from 10 seconds to 4 seconds by removing the pip install and instead using the outer pip instance (if possible). Historically, people have always installed pip and used pip wherever Python was (that's why people even push for `python -m pip` over `pip`, to ensure you are getting the "local" one, though `pip --python python` is actually just as valid), but that's not necessarily the best model.
+
+The big difference with uv is it's built for virtualenvs, and picks up on them automatically. I need to be _sure_ that `uv pip install <thing>` will install into `.venv`, not my system! I was really worried about that when I first started using uv, and love that it does ensure that I can't mess up my system by mistake.
+
+FYI, in GitHub Actions, especially if you were setting up a composite action, you could do it this way:
+
+```yaml
+    - uses: actions/setup-python@v5
+      id: python
+      with:
+        python-version: "3.12"
+        update-environment: false
+    - run: |
+        uv pip install --python "${{ steps.python.outputs.python-path }}" <...>
+```
+
+This is explicit and will not affect the environment of future steps.
+
+---
+
+_Referenced in [astral-sh/uv#2046](../../astral-sh/uv/pulls/2046.md) on 2024-02-28 16:11_
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 21:16_
+
+This is out now in [v0.1.12](https://github.com/astral-sh/uv/releases/tag/0.1.12). Broadly, there are two new flags:
+
+- `--python`: Provide a path to an arbitrary Python interpreter, and `uv` will install into that interpreter's environment. (This could be a virtualenv, or a system path.)
+- `--system`: Install into the "global" Python. Could be thought of as a platform-agnostic shorthand for `--python $(which python3)`.
+
+Folks that have historically set `VIRTUAL_ENV` in CI or a container to install into a system Python should be able to remove that setting, and instead pass `--system` to their `uv` commands.
+
+I would appreciate feedback. It's a big change and Python installations and setups are very diverse, so I'm sure I got a few things wrong.
+
+
+---
+
+_Comment by @astrojuanlu on 2024-02-28 23:00_
+
+Thanks for the quick release!
+
+I just tested uv 0.1.12 and looks like `uv pip install --system ...` did its thing, but then neither `pytest` nor `python -m pytest` worked on Windows ("command not found" and "No module named pytest" respectively).
+
+https://github.com/kedro-org/kedro-plugins/actions/runs/8088151338/job/22101608421
+
+On Linux everything went fine!
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 23:02_
+
+Thanks @astrojuanlu -- I'm tracking that here: https://github.com/astral-sh/uv/issues/2056. It's something specific to Windows with Python versions prior to Python 3.12 (i.e., Python 3.12 seems to work).
+
+---
+
+_Referenced in [huggingface/huggingface_hub#2072](../../huggingface/huggingface_hub/pulls/2072.md) on 2024-03-01 12:48_
+
+---
+
+_Comment by @charliermarsh on 2024-03-04 14:50_
+
+Calling this complete! `--system` exists.
+
+---
+
+_Closed by @charliermarsh on 2024-03-04 14:50_
+
+---
+
+_Comment by @liiight on 2024-03-06 15:22_
+
+Not sure if this merits a new issue (it probably does) but can this be implemented for `uv pip compile` as well?
+
+---
+
+_Comment by @charliermarsh on 2024-03-06 15:23_
+
+I think `uv pip compile` will already discover a system Python if needed, since it doesn't modify the virtual environment. Are you seeing otherwise?
+
+---
+
+_Comment by @liiight on 2024-03-06 15:29_
+
+Well, yes and no.
+I actually had a broken `.venv` dir which it auto discovered:
+
+```bash
+$ uv pip compile be3_lib.txt
+error: Broken virtualenv `/repos/analytics_content/.venv`, it contains a pyvenv.cfg but no Python binary at `/repos/analytics_content/.venv/bin/python`
+```
+
+This is because I use this directory in a docker container which is mounted so it broke the venv symlink. After I removed the `.venv` dir it worked as expected.
+
+Maybe adding the same `--system` / `--python` flags here as well in order to explicitly set it?
+
+Thanks for the swift response, it's very much on brand with uv & ruff 😆
+
+---
+
+_Comment by @charliermarsh on 2024-03-06 15:29_
+
+Yeah, it could make sense to include it for consistency.
+
+---
+
+_Comment by @liiight on 2024-03-06 15:31_
+
+Cool, do you want me to open a separate issue for this?
+
+---
+
+_Comment by @charliermarsh on 2024-03-06 15:31_
+
+Yes please, you can just link to your comment above, no need to write an extensive description.
+
+---
+
+_Referenced in [astral-sh/uv#2242](../../astral-sh/uv/issues/2242.md) on 2024-03-06 15:38_
+
+---
+
+_Referenced in [astral-sh/uv#2387](../../astral-sh/uv/issues/2387.md) on 2024-03-12 17:40_
+
+---
+
+_Referenced in [commaai/agnos-builder#248](../../commaai/agnos-builder/pulls/248.md) on 2024-07-18 10:35_
+
+---
+
+_Referenced in [astral-sh/uv#8085](../../astral-sh/uv/issues/8085.md) on 2024-10-10 12:14_
+
+---
+
+_Comment by @jgehrcke on 2024-10-10 12:15_
+
+Great thread. I came here because I want to install dependencies in CI using `uv sync`.
+
+Do we want to support `--system` for `uv sync`? I am proposing this here: https://github.com/astral-sh/uv/issues/8085
+
+---
+
+_Referenced in [kedro-org/kedro#4713](../../kedro-org/kedro/issues/4713.md) on 2025-05-29 04:19_
+
+---
+
+_Comment by @ramchandra-st on 2025-08-26 08:27_
+
+Thank you, @henryiii; your solution worked for me as well.
+
+
+---

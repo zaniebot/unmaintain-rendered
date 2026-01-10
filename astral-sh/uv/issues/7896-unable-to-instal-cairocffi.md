@@ -1,0 +1,110 @@
+---
+number: 7896
+title: Unable to instal cairocffi
+type: issue
+state: closed
+author: peterbe
+labels: []
+assignees: []
+created_at: 2024-10-03T13:57:30Z
+updated_at: 2024-10-03T14:32:11Z
+url: https://github.com/astral-sh/uv/issues/7896
+synced_at: 2026-01-10T01:24:20Z
+---
+
+# Unable to instal cairocffi
+
+---
+
+_Issue opened by @peterbe on 2024-10-03 13:57_
+
+```bash
+/tmp
+❯ rm uv.lock pyproject.toml
+
+/tmp
+❯ mkdir foo && cd foo
+
+/tmp/foo
+❯ uv init && uv add cairocffi
+Initialized project `foo`
+Using CPython 3.12.5
+Creating virtual environment at: .venv
+Resolved 4 packages in 4ms
+Installed 3 packages in 10ms
+ + cairocffi==1.7.1
+ + cffi==1.17.1
+ + pycparser==2.22
+```
+
+Looking good, but I can't use it
+
+```bash
+❯ uv run python
+Python 3.12.5 (main, Aug 14 2024, 04:32:18) [Clang 18.1.8 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cairocffi
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/private/tmp/foo/.venv/lib/python3.12/site-packages/cairocffi/__init__.py", line 60, in <module>
+    cairo = dlopen(
+            ^^^^^^^
+  File "/private/tmp/foo/.venv/lib/python3.12/site-packages/cairocffi/__init__.py", line 57, in dlopen
+    raise OSError(error_message)  # pragma: no cover
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: no library called "cairo-2" was found
+no library called "cairo" was found
+no library called "libcairo-2" was found
+cannot load library 'libcairo.so.2': dlopen(libcairo.so.2, 0x0002): tried: 'libcairo.so.2' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibcairo.so.2' (no such file), '/usr/lib/libcairo.so.2' (no such file, not in dyld cache), 'libcairo.so.2' (no such file).  Additionally, ctypes.util.find_library() did not manage to locate a library called 'libcairo.so.2'
+cannot load library 'libcairo.2.dylib': dlopen(libcairo.2.dylib, 0x0002): tried: 'libcairo.2.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibcairo.2.dylib' (no such file), '/usr/lib/libcairo.2.dylib' (no such file, not in dyld cache), 'libcairo.2.dylib' (no such file).  Additionally, ctypes.util.find_library() did not manage to locate a library called 'libcairo.2.dylib'
+cannot load library 'libcairo-2.dll': dlopen(libcairo-2.dll, 0x0002): tried: 'libcairo-2.dll' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibcairo-2.dll' (no such file), '/usr/lib/libcairo-2.dll' (no such file, not in dyld cache), 'libcairo-2.dll' (no such file).  Additionally, ctypes.util.find_library() did not manage to locate a library called 'libcairo-2.dll'
+```
+
+I don't know if this is "uv's fault" but if `pip` could it install it, perhaps it is. Sorry, I'm new to `uv`. 
+
+---
+
+_Comment by @peterbe on 2024-10-03 13:58_
+
+I'm testing this on a macOS Sonoma 14.6
+
+---
+
+_Comment by @peterbe on 2024-10-03 14:13_
+
+oh curious. It could be a macOS thing because the code that I was working on just worked in GitHub Actions, which is ubuntu-latest. 
+
+
+---
+
+_Comment by @peterbe on 2024-10-03 14:23_
+
+This fixes the problem:
+
+```
+❯ DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run python
+Python 3.12.5 (main, Aug 14 2024, 04:32:18) [Clang 18.1.8 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cairocffi
+>>>
+```
+
+---
+
+_Closed by @peterbe on 2024-10-03 14:23_
+
+---
+
+_Comment by @charliermarsh on 2024-10-03 14:32_
+
+Thanks for following up!
+
+---
+
+_Referenced in [astral-sh/uv#8576](../../astral-sh/uv/issues/8576.md) on 2024-10-25 20:25_
+
+---
+
+_Referenced in [inveniosoftware/docs-invenio-rdm#843](../../inveniosoftware/docs-invenio-rdm/pulls/843.md) on 2025-10-30 13:52_
+
+---

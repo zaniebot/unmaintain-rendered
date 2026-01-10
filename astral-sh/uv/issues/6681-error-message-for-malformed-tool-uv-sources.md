@@ -1,0 +1,72 @@
+---
+number: 6681
+title: "Error message for malformed `tool.uv.sources` section"
+type: issue
+state: closed
+author: tpgillam
+labels:
+  - error messages
+assignees: []
+created_at: 2024-08-27T09:34:39Z
+updated_at: 2024-11-23T03:39:13Z
+url: https://github.com/astral-sh/uv/issues/6681
+synced_at: 2026-01-10T01:24:04Z
+---
+
+# Error message for malformed `tool.uv.sources` section
+
+---
+
+_Issue opened by @tpgillam on 2024-08-27 09:34_
+
+A feature / documentation request, applicable to uv 0.3.4.
+
+For reasons that I can't quite remember, I ended up with an extraneous `editable = true` in a workspace source. In an older version of `uv` (pre 0.3, but I'm afraid I can't recall which version) this 'worked', but the latest version complains.
+
+For example:
+
+```toml
+[project]
+name = "moo"
+
+[tool.uv.sources]
+foo = { workspace = true, editable = true}
+```
+
+Running `uv sync` with the above gives the error:
+```
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 5, column 7
+  |
+5 | moo = { workspace = true, editable = true}
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+data did not match any variant of untagged enum Source
+```
+
+By digging around in the source code I did find the `Source` enum that told me that it should have only the `workspace` field and not the `editable` field, but it'd be great if the error message specified what the expected fields are (or possibly a link to the appropriate docs section).
+
+---
+
+_Label `error messages` added by @zanieb on 2024-08-27 12:05_
+
+---
+
+_Comment by @charliermarsh on 2024-08-28 13:00_
+
+I actually thought we had a catch-all variant designed to catch this and give a better error message. The intent at least is to do better here!
+
+---
+
+_Comment by @charliermarsh on 2024-11-23 03:39_
+
+I believe this is now fixed.
+
+---
+
+_Closed by @charliermarsh on 2024-11-23 03:39_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-11-23 03:39_
+
+---

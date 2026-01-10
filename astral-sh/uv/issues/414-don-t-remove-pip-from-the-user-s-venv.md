@@ -1,0 +1,119 @@
+---
+number: 414
+title: "Don't remove pip from the user's venv"
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+assignees: []
+created_at: 2023-11-13T18:37:40Z
+updated_at: 2023-12-04T14:31:02Z
+url: https://github.com/astral-sh/uv/issues/414
+synced_at: 2026-01-10T01:23:04Z
+---
+
+# Don't remove pip from the user's venv
+
+---
+
+_Issue opened by @konstin on 2023-11-13 18:37_
+
+It seems `pip-sync` currently removes pip from the user's venv, we shouldn't do that
+
+---
+
+_Label `bug` added by @konstin on 2023-11-13 18:37_
+
+---
+
+_Comment by @charliermarsh on 2023-11-13 18:45_
+
+I’m not fully convinced that we shouldn’t.
+
+---
+
+_Comment by @charliermarsh on 2023-11-13 18:54_
+
+This would mean that adding a removing pip as a dependency via Puffin would no longer remove pip from your env. If you want pip in your env, should it not be a declared dependency?
+
+---
+
+_Comment by @konstin on 2023-11-13 19:01_
+
+If you create your venv with `virtualenv`, it has pip, setuptools and wheels since many people's workflow depend on them. When `puffin pip-sync` performs any action, it removes those, leaving the user with a pip-less venv. (This is different from a puffin-created venv, that is bare by default, but if you would ask puffin to create a venv with pip because your workflow requires it, this would lead to the same problem)
+
+```console
+$ virtualenv --clear .venv
+created virtual environment CPython3.10.13.final.0-64 in 47ms
+  creator CPython3Posix(dest=/home/konsti/projects/puffin/.venv, clear=True, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/konsti/.local/share/virtualenv)
+    added seed packages: pip==23.3.1, setuptools==68.2.2, wheel==0.41.3
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+$ echo "numpy" > numpy.in
+$ target/debug/puffin pip-compile -o numpy.txt numpy.in
+Resolved 1 package in 72ms
+$ target/debug/puffin pip-sync numpy.txt
+Uninstalled 3 packages in 11ms
+Installed 1 package in 13ms
+ + numpy==1.26.2
+ - pip==23.3.1
+ - setuptools==68.2.2
+ - wheel==0.41.3
+```
+
+I like bare venvs a lot but i expect many users don't like having their pip (or setuptools) removed.
+
+---
+
+_Comment by @charliermarsh on 2023-11-13 19:22_
+
+I do understand but if you use `pip` to modify the virtualenv, then run `pip-sync`, we're going to wipe away those changes anyway. What if instead we add a `pip-install` command with `pip install` semantics, so it doesn't remove packages but instead purely augments the virtualenv?
+
+---
+
+_Comment by @konstin on 2023-11-13 19:29_
+
+For me, it's the difference between "system packages" and "user packages": We don't touch system package, but we do sync user packages. Often people use pip for the hacky parts only anyway. But this has no urgency, we can keep doing this for the start and see if users even complain.
+
+---
+
+_Added to milestone `Future` by @konstin on 2023-11-13 19:29_
+
+---
+
+_Label `bug` removed by @konstin on 2023-11-13 19:29_
+
+---
+
+_Comment by @charliermarsh on 2023-11-13 19:56_
+
+I suspect that it will be confusing to users. Though I am wondering if we should somehow differentiate between virtualenvs that were created by Puffin vs. those that were not, so that we can correctly remove `pip` in a Puffin-managed environment.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-11-13 19:57_
+
+---
+
+_Comment by @konstin on 2023-11-14 11:22_
+
+We can use `pyvenv.cfg` if we want to differentiate venvs by creator
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-11-30 01:54_
+
+---
+
+_Referenced in [astral-sh/uv#535](../../astral-sh/uv/pulls/535.md) on 2023-12-04 04:33_
+
+---
+
+_Closed by @charliermarsh on 2023-12-04 14:31_
+
+---
+
+_Referenced in [astral-sh/uv#9860](../../astral-sh/uv/pulls/9860.md) on 2024-12-13 03:53_
+
+---

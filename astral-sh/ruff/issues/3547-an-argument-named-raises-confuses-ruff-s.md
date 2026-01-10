@@ -1,0 +1,127 @@
+---
+number: 3547
+title: "An argument named `raises` confuses ruff's pydocstyle rules"
+type: issue
+state: closed
+author: Julian
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2023-03-15T18:36:22Z
+updated_at: 2023-03-15T23:34:26Z
+url: https://github.com/astral-sh/ruff/issues/3547
+synced_at: 2026-01-10T01:22:42Z
+---
+
+# An argument named `raises` confuses ruff's pydocstyle rules
+
+---
+
+_Issue opened by @Julian on 2023-03-15 18:36_
+
+Running:
+
+```sh
+⊙  ruff check --select D417,D214,D405 =(printf '
+def f(a, raises) -> None:
+    """
+    Do really important stuff.
+
+    Arguments:
+
+        a:
+            a super important integer
+
+        raises:
+
+            uh oh, some exceptions!
+    """
+')
+```
+
+produces:
+
+```
+/tmp/zsh82UkZp:2:5: D417 Missing argument description in the docstring: `raises`
+/tmp/zsh82UkZp:3:5: D405 [*] Section name should be properly capitalized ("raises")
+/tmp/zsh82UkZp:3:5: D214 [*] Section is over-indented ("raises")
+Found 3 errors.
+```
+
+where `ruff` is expecting `raises:` to be a `Raises:` Napoleon block, but it isn't, it's simply the name of the argument, which indeed is described and properly capitalized.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-15 23:23_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2023-03-15 23:23_
+
+---
+
+_Comment by @charliermarsh on 2023-03-15 23:34_
+
+I think this is consistent with `pydocstyle`. If I run `pydocstyle foo.py --convention=google`, I get:
+
+```
+foo.py:1 at module level:
+        D100: Missing docstring in public module
+foo.py:2 in public function `f`:
+        D212: Multi-line docstring summary should start at the first line
+foo.py:2 in public function `f`:
+        D405: Section name should be properly capitalized ('Raises', not 'raises')
+foo.py:2 in public function `f`:
+        D214: Section is over-indented ('Raises')
+```
+
+The issue is the space between arguments which AFAICT is not "compliant" with the Google spec, although I'm not sure that part is "formally" defined anywhere. E.g., see this example from the [docs](https://google.github.io/styleguide/pyguide.html):
+
+```py
+def fetch_smalltable_rows(
+    table_handle: smalltable.Table,
+    keys: Sequence[bytes | str],
+    require_all_keys: bool = False,
+) -> Mapping[bytes, tuple[str, ...]]:
+    """Fetches rows from a Smalltable.
+
+    Retrieves rows pertaining to the given keys from the Table instance
+    represented by table_handle.  String keys will be UTF-8 encoded.
+
+    Args:
+        table_handle: An open smalltable.Table instance.
+        keys: A sequence of strings representing the key of each table
+          row to fetch.  String keys will be UTF-8 encoded.
+        require_all_keys: If True only rows with values set for all keys will be
+          returned.
+```
+
+So, e.g., this works as expected:
+
+```py
+def f(a, raises) -> None:
+    """
+    Do really important stuff.
+
+    Arguments:
+
+        a:
+            a super important integer
+        raises:
+            uh oh, some exceptions!
+    """
+```
+
+I'm gonna close just because these regexes are hard to get right and the goal is mostly to be consistent with pydocstyle right now (until we implement a formal parser for docstrings), so if pydocstyle behaves the same way, I don't want to mess with the regexes too much.
+
+
+---
+
+_Closed by @charliermarsh on 2023-03-15 23:34_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-15 23:34_
+
+---

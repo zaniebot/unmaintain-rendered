@@ -1,0 +1,184 @@
+---
+number: 2198
+title: 3.0.0 fails to compile on wasm32-unknown-unknown
+type: issue
+state: closed
+author: tamasfe
+labels:
+  - C-bug
+assignees: []
+created_at: 2020-11-02T15:48:35Z
+updated_at: 2020-11-06T20:50:07Z
+url: https://github.com/clap-rs/clap/issues/2198
+synced_at: 2026-01-10T01:27:14Z
+---
+
+# 3.0.0 fails to compile on wasm32-unknown-unknown
+
+---
+
+_Issue opened by @tamasfe on 2020-11-02 15:48_
+
+### Make sure you completed the following tasks
+
+- [x] Searched the [discussions](https://github.com/clap-rs/clap/discussions)
+- [x] Searched the closed issues
+
+### Steps to reproduce the issue
+
+1. Run `wasm-pack build`
+2. Count the pretty red lines
+
+### Version
+
+* **Rust**: 1.47.0-nightly
+* **Clap**: 3.0.0-beta.2
+
+### Actual Behavior Summary
+
+The dependency `os_str_bytes` doesn't compile on `wasm32` target, the dependency was introduced in `3.0.0`, and `2.x.x` compiles fine.
+
+A solution would be to either patch `os_str_bytes` to support `wasm32` (I don't know the complexity of this), or don't use it at all (at least for `wasm32` targets).
+
+
+---
+
+_Label `T: bug` added by @tamasfe on 2020-11-02 15:48_
+
+---
+
+_Comment by @pksunkara on 2020-11-02 16:16_
+
+@dylni Would you take a look at this please? I think we should be able to just use `String` when `wasm32` in `os_str_bytes` but you might have a better idea.
+
+---
+
+_Label `W: blocking on external` added by @pksunkara on 2020-11-02 16:17_
+
+---
+
+_Added to milestone `3.0` by @pksunkara on 2020-11-02 16:17_
+
+---
+
+_Comment by @dylni on 2020-11-02 18:33_
+
+Thanks for the ping @pksunkara.
+
+I agree converting to `str` should be the best option for now.
+
+JavaScript strings look very similar to Windows strings, so they should be representable using the same encoding. However, there's no lossless method I can use for that.
+
+That would be a problem if libstd ever received a string from JavaScript, but I can't find anywhere that it does. `OsStr` is also missing an implementation customized for that.
+
+So, this sounds very reasonable. I’ll try to add support this week.
+
+---
+
+_Comment by @dylni on 2020-11-03 04:36_
+
+@pksunkara Can clap add a "javascript" feature that it passes to os_str_bytes for compiling wasm32-unknown-unknown? That's how getrandom [can support the target](https://docs.rs/getrandom/0.2.0/getrandom/#webassembly-support), and it would be a great time to add it with the version bump to 3.0.
+
+The feature would let me change the implementation for different wasm targets, since Rust might support more in the future. Otherwise, I would assume that *every* wasm32 target uses UTF-8, which isn't true.
+
+Also @tamasfe am I right that you're compiling for JavaScript?
+
+---
+
+_Comment by @tamasfe on 2020-11-03 10:01_
+
+@dylni Yes, I'm wrapping a rust CLI tool for nodejs environments.
+
+> The feature would let me change the implementation for different wasm targets, since Rust might support more in the future. Otherwise, I would assume that every wasm32 target uses UTF-8, which isn't true.
+
+I believe the majority of the `wasm32` targets are javascript environments right now, so I would do the opposite, assume that everything is javascript until it is not, and only then figure out how to deal with that. *Any* implementation is better that works 99% of the time than no implementation at all.
+
+Having a `javascript` feature would require every library that uses `os_str_bytes` to pass it just to be able to compile on `wasm32`, even if they don't normally care whether they run in a javascript environment or not.
+
+**edit:**
+
+It is not guaranteed even for javascript for a string to use UTF-8 ([it migh use ucs2](https://github.com/nodejs/node-v0.x-archive/pull/644)), so the only way right now would be to use unchecked strings, but it involves unsafe code. However, I still say that you could go with an implementation that seems to work in most cases, until it turns out not to.
+
+I created a patch for `os_str_bytes` that just uses utf8 strings and panics otherwise and clap seems to work flawlessly with it so far.
+
+---
+
+_Comment by @pksunkara on 2020-11-03 10:44_
+
+I would actually prefer is `os_str_bytes` can intelligently discover without clap needing to pass the feature flag.
+
+Our v2 wasm support was added in https://github.com/clap-rs/clap/commit/689949e57d390bb61bc69f3ed91f60a2105738d0 in case you want to see how we did it without a feature flag.
+
+---
+
+_Comment by @dylni on 2020-11-03 15:57_
+
+> It is not guaranteed even for javascript for a string to use UTF-8 ([it migh use ucs2](https://github.com/nodejs/node-v0.x-archive/pull/644)), so the only way right now would be to use unchecked strings, but it involves unsafe code. However, I still say that you could go with an implementation that seems to work in most cases, until it turns out not to.
+
+Right, I should have been clearer. I meant that I can currently assume UTF-8 for JavaScript targets based on the implementation of libstd, but I can't make that assumption for wasi or possible future targets.
+
+However, thinking about this, it might not be possible for `OsStr` to support UCS-2 on wasm32-unknown-unknown, since libstd can't assume JavaScript strings will be used either. So, the feature should be unnecessary.
+
+> Our v2 wasm support was added in 689949e in case you want to see how we did it without a feature flag.
+
+Unfortunately, I can't generalize over wasm32 without being very likely to be incorrect in the future. For example, wasm32-wasi is also wasm32, but it's decoded more similarly to Unix. What I can do is strictly support wasm32-unknown-emscripten and wasm32-unknown-unknown. That should cover all wasm32 targets.
+
+---
+
+_Comment by @pksunkara on 2020-11-03 16:00_
+
+Sounds good.
+
+---
+
+_Comment by @dylni on 2020-11-06 02:40_
+
+Version v2.4.0 is published. @tamasfe Can you confirm it fixes this issue?
+
+---
+
+_Comment by @tamasfe on 2020-11-06 03:09_
+
+@dylni I haven't tested it with my app, but yes, it seems to align mostly with what I did, and compiles under wasm, thanks!
+
+---
+
+_Comment by @dylni on 2020-11-06 03:21_
+
+No problem! Let me know if you have any problems with it.
+
+---
+
+_Comment by @pksunkara on 2020-11-06 19:47_
+
+I tried to see if I can do CI for wasm, but it looks like the tests fail because some of them use `OsString` directly. https://github.com/clap-rs/clap/actions/runs/350099339
+
+---
+
+_Comment by @dylni on 2020-11-06 20:26_
+
+@pksunkara It looks like those tests need strings that aren't valid UTF-8 with a lossy decoding that can be asserted. Would adding this method to `os_str_bytes` help?
+
+```rust
+fn new_invalid(prefix: &str, suffix: &str) -> Option<OsString>;
+```
+
+Calling `OsStr::to_string_lossy` on the result would always return `prefix + "\u{FFFD}" + suffix`, and `Option` is required for platforms that can only create `OsString` from UTF-8.
+
+---
+
+_Comment by @pksunkara on 2020-11-06 20:28_
+
+Nah, I was just pointing out. I am not really interested in spending the effort to get them to work. I added a WASM compilation check and I think that should be good enough. Thanks for the help @dylni in solving this issue.
+
+---
+
+_Comment by @dylni on 2020-11-06 20:31_
+
+Ok, sounds good.
+
+---
+
+_Closed by @bors[bot] on 2020-11-06 20:50_
+
+---

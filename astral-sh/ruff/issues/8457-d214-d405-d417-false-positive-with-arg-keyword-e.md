@@ -1,0 +1,158 @@
+---
+number: 8457
+title: "[D214, D405, D417] False positive with arg keyword (e.g., `raises`)"
+type: issue
+state: closed
+author: JP-Ellis
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2023-11-03T02:57:54Z
+updated_at: 2024-01-08T14:59:29Z
+url: https://github.com/astral-sh/ruff/issues/8457
+synced_at: 2026-01-10T01:22:48Z
+---
+
+# [D214, D405, D417] False positive with arg keyword (e.g., `raises`)
+
+---
+
+_Issue opened by @JP-Ellis on 2023-11-03 02:57_
+
+## Summary
+
+If using Google style and putting the argument's description on a new line, then any argument which matches one of standard header names (such as `returns`, `raises`) causes false positives.
+
+## Example
+
+<details>
+<summary><code>ruff.toml</code></summary>
+
+```toml
+[pydocstyle]
+convention = "google"
+```
+
+</details> 
+
+```python
+def is_zero(x: int, *, raises: bool = True) -> bool:
+    """
+    Test if a number is zero.
+
+    Args:
+        x:
+            The number to test.
+
+        raises:
+            If True, raise an exception if x is non-zero
+
+    Raises:
+        ValueError:
+            If the number is non-zero and raises is True.
+
+    Returns:
+        True if x is zero, otherwise False.
+    """
+    if x == 0:
+        return True
+    if raises:
+        msg = f"{x} is not zero"
+        raise ValueError(msg)
+    return False
+```
+
+```console
+❯ ruff --config ruff.toml --select ALL test.py
+test.py:1:1: D100 Missing docstring in public module
+test.py:1:5: D417 Missing argument description in the docstring for `is_zero`: `raises`
+test.py:2:5: D212 [*] Multi-line docstring summary should start at the first line
+test.py:2:5: D405 [*] Section name should be properly capitalized ("raises")
+test.py:2:5: D214 [*] Section is over-indented ("raises")
+```
+
+I would like to note that the use of newline is following Google's convention as described in [§3.8.3](https://google.github.io/styleguide/pyguide.html#383-functions-and-methods) of their styleguide.
+
+The combined errors of "section is over-indented" and "missing argument description" (which has the same name) should hopefully be a reliable way to detect this false positive.
+
+I have tested the above with the keywords below and can reproduce it for all of them:
+
+- `args`
+- `raises`
+- `returns`
+- `yields`
+
+## Workarounds
+
+There are a couple of work arounds at present, though ultimately it would be nice of `ruff` could recognise that in the above example, `raises` is not a header.
+
+### Avoid new lines
+
+This issue only appears because of the newline and indentation. If placing the description on the same line as the argument name, then there is no issue:
+
+```python
+def is_zero(x: int, *, raises: bool = True) -> bool:
+    """
+    Test if a number is zero.
+
+    Args:
+        x: The number to test.
+
+        raises: If True, raise an exception if x is non-zero
+
+    Raises:
+        ValueError: If the number is non-zero and raises is True.
+
+    Returns:
+        True if x is zero, otherwise False.
+    """
+    if x == 0:
+        return True
+    if raises:
+        msg = f"{x} is not zero"
+        raise ValueError(msg)
+    return False
+```
+
+### Rename the variable
+
+The issue is specifically tied to specific keywords, so instead of `raises`, one could use `is_raising` or `will_raise`.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-11-03 03:02_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2023-11-03 03:02_
+
+---
+
+_Comment by @charliermarsh on 2023-11-03 03:03_
+
+Thanks for the clear issue. Probably hard to get right... though I agree it's a bug.
+
+---
+
+_Referenced in [astral-sh/ruff#9426](../../astral-sh/ruff/issues/9426.md) on 2024-01-08 01:07_
+
+---
+
+_Comment by @charliermarsh on 2024-01-08 14:59_
+
+Fixed in https://github.com/astral-sh/ruff/pull/9427!
+
+---
+
+_Closed by @charliermarsh on 2024-01-08 14:59_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-08 14:59_
+
+---
+
+_Referenced in [astral-sh/ruff#16007](../../astral-sh/ruff/issues/16007.md) on 2025-02-07 00:16_
+
+---

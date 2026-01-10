@@ -1,0 +1,39 @@
+---
+number: 5414
+title: Document use of existing lock as preferences
+type: issue
+state: open
+author: zanieb
+labels:
+  - documentation
+assignees: []
+created_at: 2024-07-24T15:41:41Z
+updated_at: 2024-07-25T09:38:18Z
+url: https://github.com/astral-sh/uv/issues/5414
+synced_at: 2026-01-10T01:23:48Z
+---
+
+# Document use of existing lock as preferences
+
+---
+
+_Issue opened by @zanieb on 2024-07-24 15:41_
+
+Not going to be obvious, we should discuss this in the lock file concept.
+
+---
+
+_Label `documentation` added by @zanieb on 2024-07-24 15:41_
+
+---
+
+_Comment by @konstin on 2024-07-25 09:38_
+
+I'm doing some changes to preferences atm, the strategy i'm implementing is:
+* `uv lock && uv lock` should always be idempotent. If it had forked before, we running the next resolution with the same forks again
+* If the requirements changed, we preserve the forks (this may be bad, we skip a change to collapse forks - but i think we don't have good way to check for requirements changes?)
+* If something like the python version requirement changed, we resolve without preserved forks, but we use existing preferences, and first use preferences whose markers match the current resolution and then use preferences whose markers mismatch. We use the marker-mismatch-preferences in hopes that we don't upgrade if can avoid it and we may match with a different fork this way, creating fewer diverging versions, or even better, resolve two forks identically so we can collapse them.
+
+There's two levels to this, a surface one of "We use preferences from the lockfiles and resolve those environments from the `environment-markers` field in your lockfile separately" that helps you square `uv lock` with the git diff of `uv.lock` that you see and an in-depth one about how uv's resolution works that's relevant if you debugging, security or another detail oriented thing.
+
+---
