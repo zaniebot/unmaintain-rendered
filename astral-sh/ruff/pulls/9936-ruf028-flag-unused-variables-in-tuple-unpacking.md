@@ -1,0 +1,332 @@
+```yaml
+number: 9936
+title: RUF028 - Flag unused variables in tuple unpacking.
+type: pull_request
+state: closed
+author: Tsdevendra1
+labels: []
+assignees: []
+base: main
+head: unused-tuple-element
+created_at: 2024-02-11T21:41:20Z
+updated_at: 2024-03-28T17:25:24Z
+url: https://github.com/astral-sh/ruff/pull/9936
+synced_at: 2026-01-10T22:47:01Z
+```
+
+# RUF028 - Flag unused variables in tuple unpacking.
+
+---
+
+_Pull request opened by @Tsdevendra1 on 2024-02-11 21:41_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+Related to https://github.com/astral-sh/ruff/issues/8884
+
+## Summary
+
+It was suggested in https://github.com/astral-sh/ruff/issues/8884 that we have a separate rule for tuple unpacking. There was a bit of back and forth so I wasn't sure what the final requirements were. The following is what I went with:
+
+Requirements implemented:
+- Create a new rule
+- In the error message make it clear that the error can be fixed by prefixing the variable with an underscore
+- Provide an autofix which prefixes unused variables with an underscore
+- Ignore tuples which are entirely unused in favour of F841
+
+Things I was unsure of:
+- Was F841 meant to be refactored to remove the underscore fix so that it is only performed by this new rule?
+- Should F841 be modified to allow disabling the remove left-hand side part of it?
+- If there is a tuple `a, b = c, d = foo()` and only `a` is used, `c` and `d` will be flagged for a fix. But in [#8884](https://github.com/astral-sh/ruff/issues/8884) it was mentioned that this new rule should only flag if the entire tuple is unused. Since the `c, d` tuple is entirely unused, should it be ignored in this rule?
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+`cargo test`
+
+
+---
+
+_Closed by @Tsdevendra1 on 2024-02-11 21:41_
+
+---
+
+_Reopened by @Tsdevendra1 on 2024-02-11 21:45_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2024-02-11 21:52_
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/Tsdevendra1:unused-tuple-element)
+
+### Merging #9936 will **not alter performance**
+
+<sub>Comparing <code>Tsdevendra1:unused-tuple-element</code> (88c3db5) with <code>main</code> (a50e278)</sub>
+
+
+
+### Summary
+
+`✅ 30` untouched benchmarks
+
+
+
+
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-02-11 21:58_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+327 -0 violations, +0 -0 fixes in 12 projects; 31 projects unchanged)
+
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+35 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/telemetry.py#L594'>rasa/telemetry.py:594:30:</a> RUF028 Local variable `tb` is assigned to but never used. Consider renaming to `_tb`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/telemetry.py#L594'>rasa/telemetry.py:594:9:</a> RUF028 Local variable `exc_type` is assigned to but never used. Consider renaming to `_exc_type`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_rasa_export.py#L278'>tests/cli/test_rasa_export.py:278:5:</a> RUF028 Local variable `events` is assigned to but never used. Consider renaming to `_events`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/evaluation/test_marker.py#L287'>tests/core/evaluation/test_marker.py:287:13:</a> RUF028 Local variable `expected` is assigned to but never used. Consider renaming to `_expected`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/evaluation/test_marker.py#L307'>tests/core/evaluation/test_marker.py:307:13:</a> RUF028 Local variable `expected` is assigned to but never used. Consider renaming to `_expected`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/evaluation/test_marker.py#L558'>tests/core/evaluation/test_marker.py:558:13:</a> RUF028 Local variable `expected_size` is assigned to but never used. Consider renaming to `_expected_size`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/evaluation/test_marker.py#L583'>tests/core/evaluation/test_marker.py:583:13:</a> RUF028 Local variable `expected_size` is assigned to but never used. Consider renaming to `_expected_size`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/test_evaluation.py#L152'>tests/core/test_evaluation.py:152:23:</a> RUF028 Local variable `num_stories` is assigned to but never used. Consider renaming to `_num_stories`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/test_evaluation.py#L319'>tests/core/test_evaluation.py:319:23:</a> RUF028 Local variable `num_stories` is assigned to but never used. Consider renaming to `_num_stories`.
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/training/test_interactive.py#L818'>tests/core/training/test_interactive.py:818:11:</a> RUF028 Local variable `kwargs` is assigned to but never used. Consider renaming to `_kwargs`.
+... 25 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+61 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/configuration.py#L683'>airflow/configuration.py:683:25:</a> RUF028 Local variable `should_continue` is assigned to but never used. Consider renaming to `_should_continue`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/providers/cncf/kubernetes/operators/spark_kubernetes.py#L223'>airflow/providers/cncf/kubernetes/operators/spark_kubernetes.py:223:21:</a> RUF028 Local variable `spark_obj_spec` is assigned to but never used. Consider renaming to `_spark_obj_spec`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/providers/google/cloud/log/gcs_task_handler.py#L177'>airflow/providers/google/cloud/log/gcs_task_handler.py:177:33:</a> RUF028 Local variable `stackinfo` is assigned to but never used. Consider renaming to `_stackinfo`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/providers/google/cloud/transfers/s3_to_gcs.py#L228'>airflow/providers/google/cloud/transfers/s3_to_gcs.py:228:9:</a> RUF028 Local variable `gcs_bucket` is assigned to but never used. Consider renaming to `_gcs_bucket`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/providers/google/cloud/transfers/s3_to_gcs.py#L242'>airflow/providers/google/cloud/transfers/s3_to_gcs.py:242:9:</a> RUF028 Local variable `gcs_bucket` is assigned to but never used. Consider renaming to `_gcs_bucket`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/providers/google/cloud/transfers/s3_to_gcs.py#L250'>airflow/providers/google/cloud/transfers/s3_to_gcs.py:250:30:</a> RUF028 Local variable `dest_gcs_object_prefix` is assigned to but never used. Consider renaming to `_dest_gcs_object_prefix`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/airflow/utils/log/task_context_logger.py#L104'>airflow/utils/log/task_context_logger.py:104:37:</a> RUF028 Local variable `stackinfo` is assigned to but never used. Consider renaming to `_stackinfo`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/dev/breeze/src/airflow_breeze/commands/ci_image_commands.py#L384'>dev/breeze/src/airflow_breeze/commands/ci_image_commands.py:384:13:</a> RUF028 Local variable `child_pid` is assigned to but never used. Consider renaming to `_child_pid`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/dev/breeze/src/airflow_breeze/commands/ci_image_commands.py#L660'>dev/breeze/src/airflow_breeze/commands/ci_image_commands.py:660:22:</a> RUF028 Local variable `info` is assigned to but never used. Consider renaming to `_info`.
++ <a href='https://github.com/apache/airflow/blob/af5fa6ed7cddb90d05ec165b90a000bcf15ee4a0/dev/breeze/src/airflow_breeze/commands/production_image_commands.py#L590'>dev/breeze/src/airflow_breeze/commands/production_image_commands.py:590:22:</a> RUF028 Local variable `info` is assigned to but never used. Consider renaming to `_info`.
+... 51 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+23 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:34:</a> RUF028 Local variable `arglist` is assigned to but never used. Consider renaming to `_arglist`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:43:</a> RUF028 Local variable `retann` is assigned to but never used. Consider renaming to `_retann`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L121'>src/bokeh/sphinxext/bokeh_model.py:121:9:</a> RUF028 Local variable `name_prefix` is assigned to but never used. Consider renaming to `_name_prefix`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:36:</a> RUF028 Local variable `arglist` is assigned to but never used. Consider renaming to `_arglist`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:45:</a> RUF028 Local variable `retann` is assigned to but never used. Consider renaming to `_retann`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_options.py#L108'>src/bokeh/sphinxext/bokeh_options.py:108:9:</a> RUF028 Local variable `name_prefix` is assigned to but never used. Consider renaming to `_name_prefix`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_plot.py#L254'>src/bokeh/sphinxext/bokeh_plot.py:254:15:</a> RUF028 Local variable `lineno` is assigned to but never used. Consider renaming to `_lineno`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_settings.py#L84'>src/bokeh/sphinxext/bokeh_settings.py:84:32:</a> RUF028 Local variable `arglist` is assigned to but never used. Consider renaming to `_arglist`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_settings.py#L84'>src/bokeh/sphinxext/bokeh_settings.py:84:41:</a> RUF028 Local variable `retann` is assigned to but never used. Consider renaming to `_retann`.
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_settings.py#L84'>src/bokeh/sphinxext/bokeh_settings.py:84:9:</a> RUF028 Local variable `name_prefix` is assigned to but never used. Consider renaming to `_name_prefix`.
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/3f24b89e137c9ff5b07688f76dac39d96916b278/ibis/backends/tests/test_set_ops.py#L40'>ibis/backends/tests/test_set_ops.py:40:12:</a> RUF028 Local variable `c` is assigned to but never used. Consider renaming to `_c`.
++ <a href='https://github.com/ibis-project/ibis/blob/3f24b89e137c9ff5b07688f76dac39d96916b278/ibis/backends/tests/test_set_ops.py#L40'>ibis/backends/tests/test_set_ops.py:40:25:</a> RUF028 Local variable `dc` is assigned to but never used. Consider renaming to `_dc`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/24558a34fab812cc742b7885ed3296caa2c25ca3/examples/collection.py#L144'>examples/collection.py:144:5:</a> RUF028 Local variable `raw_vectors` is assigned to but never used. Consider renaming to `_raw_vectors`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+75 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/doc/make.py#L80'>doc/make.py:80:9:</a> RUF028 Local variable `base_name` is assigned to but never used. Consider renaming to `_base_name`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/doc/source/conf.py#L615'>doc/source/conf.py:615:18:</a> RUF028 Local variable `parent` is assigned to but never used. Consider renaming to `_parent`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/doc/source/conf.py#L615'>doc/source/conf.py:615:26:</a> RUF028 Local variable `modname` is assigned to but never used. Consider renaming to `_modname`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/_numba/kernels/mean_.py#L172'>pandas/core/_numba/kernels/mean_.py:172:23:</a> RUF028 Local variable `comp_arr` is assigned to but never used. Consider renaming to `_comp_arr`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/_numba/kernels/sum_.py#L224'>pandas/core/_numba/kernels/sum_.py:224:23:</a> RUF028 Local variable `comp_arr` is assigned to but never used. Consider renaming to `_comp_arr`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/arrays/datetimelike.py#L1105'>pandas/core/arrays/datetimelike.py:1105:19:</a> RUF028 Local variable `o_mask` is assigned to but never used. Consider renaming to `_o_mask`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/arrays/datetimelike.py#L1168'>pandas/core/arrays/datetimelike.py:1168:19:</a> RUF028 Local variable `o_mask` is assigned to but never used. Consider renaming to `_o_mask`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/arrays/datetimelike.py#L1232'>pandas/core/arrays/datetimelike.py:1232:19:</a> RUF028 Local variable `o_mask` is assigned to but never used. Consider renaming to `_o_mask`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/computation/expr.py#L741'>pandas/core/computation/expr.py:741:17:</a> RUF028 Local variable `op_class` is assigned to but never used. Consider renaming to `_op_class`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/frame.py#L1102'>pandas/core/frame.py:1102:16:</a> RUF028 Local variable `height` is assigned to but never used. Consider renaming to `_height`.
++ <a href='https://github.com/pandas-dev/pandas/blob/4e40afd9d9a6206a1cab83b4fdb0365cd739f576/pandas/core/frame.py#L7751'>pandas/core/frame.py:7751:9:</a> RUF028 Local variable `cols` is assigned to but never used. Consider renaming to `_cols`.
+... 64 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/build">pypa/build</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/build/blob/2369cc89cb84470e109e558daa39cb8e6fb2fe06/tests/test_main.py#L119'>tests/test_main.py:119:10:</a> RUF028 Local variable `err` is assigned to but never used. Consider renaming to `_err`.
++ <a href='https://github.com/pypa/build/blob/2369cc89cb84470e109e558daa39cb8e6fb2fe06/tests/test_main.py#L306'>tests/test_main.py:306:13:</a> RUF028 Local variable `stderr` is assigned to but never used. Consider renaming to `_stderr`.
++ <a href='https://github.com/pypa/build/blob/2369cc89cb84470e109e558daa39cb8e6fb2fe06/tests/test_projectbuilder.py#L417'>tests/test_projectbuilder.py:417:10:</a> RUF028 Local variable `err` is assigned to but never used. Consider renaming to `_err`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/cibuildwheel/blob/81b0a578df5f32edbd87392d8629117da4a024fe/unit_test/architecture_test.py#L31'>unit_test/architecture_test.py:31:5:</a> RUF028 Local variable `platform_name` is assigned to but never used. Consider renaming to `_platform_name`.
++ <a href='https://github.com/pypa/cibuildwheel/blob/81b0a578df5f32edbd87392d8629117da4a024fe/unit_test/architecture_test.py#L55'>unit_test/architecture_test.py:55:5:</a> RUF028 Local variable `platform_name` is assigned to but never used. Consider renaming to `_platform_name`.
++ <a href='https://github.com/pypa/cibuildwheel/blob/81b0a578df5f32edbd87392d8629117da4a024fe/unit_test/architecture_test.py#L71'>unit_test/architecture_test.py:71:5:</a> RUF028 Local variable `platform_name` is assigned to but never used. Consider renaming to `_platform_name`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-poetry/poetry">python-poetry/poetry</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-poetry/poetry/blob/4bd4587f32d541b6679161293ef72d0169610db9/src/poetry/repositories/link_sources/base.py#L80'>src/poetry/repositories/link_sources/base.py:80:19:</a> RUF028 Local variable `ext` is assigned to but never used. Consider renaming to `_ext`.
++ <a href='https://github.com/python-poetry/poetry/blob/4bd4587f32d541b6679161293ef72d0169610db9/src/poetry/utils/helpers.py#L258'>src/poetry/utils/helpers.py:258:10:</a> RUF028 Local variable `type` is assigned to but never used. Consider renaming to `_type`.
++ <a href='https://github.com/python-poetry/poetry/blob/4bd4587f32d541b6679161293ef72d0169610db9/tests/console/test_application.py#L126'>tests/console/test_application.py:126:10:</a> RUF028 Local variable `name` is assigned to but never used. Consider renaming to `_name`.
++ <a href='https://github.com/python-poetry/poetry/blob/4bd4587f32d541b6679161293ef72d0169610db9/tests/console/test_application.py#L126'>tests/console/test_application.py:126:16:</a> RUF028 Local variable `args` is assigned to but never used. Consider renaming to `_args`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/bbd0bd0436d85951386292c3413027d4364319d7/tests/test_command_line.py#L28'>tests/test_command_line.py:28:10:</a> RUF028 Local variable `err` is assigned to but never used. Consider renaming to `_err`.
++ <a href='https://github.com/scikit-build/scikit-build/blob/bbd0bd0436d85951386292c3413027d4364319d7/tests/test_command_line.py#L36'>tests/test_command_line.py:36:10:</a> RUF028 Local variable `err` is assigned to but never used. Consider renaming to `_err`.
++ <a href='https://github.com/scikit-build/scikit-build/blob/bbd0bd0436d85951386292c3413027d4364319d7/tests/test_command_line.py#L45'>tests/test_command_line.py:45:10:</a> RUF028 Local variable `err` is assigned to but never used. Consider renaming to `_err`.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+116 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/analytics/management/commands/populate_analytics_db.py#L291'>analytics/management/commands/populate_analytics_db.py:291:23:</a> RUF028 Local variable `created` is assigned to but never used. Consider renaming to `_created`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/analytics/tests/test_counts.py#L1722'>analytics/tests/test_counts.py:1722:17:</a> RUF028 Local variable `recipient` is assigned to but never used. Consider renaming to `_recipient`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/analytics/tests/test_counts.py#L952'>analytics/tests/test_counts.py:952:9:</a> RUF028 Local variable `stream2` is assigned to but never used. Consider renaming to `_stream2`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/analytics/views/stats.py#L161'>analytics/views/stats.py:161:13:</a> RUF028 Local variable `ignored_sub` is assigned to but never used. Consider renaming to `_ignored_sub`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/lib/stripe.py#L3407'>corporate/lib/stripe.py:3407:23:</a> RUF028 Local variable `created` is assigned to but never used. Consider renaming to `_created`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L1308'>corporate/tests/test_stripe.py:1308:24:</a> RUF028 Local variable `invoice1` is assigned to but never used. Consider renaming to `_invoice1`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L1308'>corporate/tests/test_stripe.py:1308:34:</a> RUF028 Local variable `invoice2` is assigned to but never used. Consider renaming to `_invoice2`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2588'>corporate/tests/test_stripe.py:2588:30:</a> RUF028 Local variable `invoice2` is assigned to but never used. Consider renaming to `_invoice2`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2588'>corporate/tests/test_stripe.py:2588:40:</a> RUF028 Local variable `invoice3` is assigned to but never used. Consider renaming to `_invoice3`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2588'>corporate/tests/test_stripe.py:2588:50:</a> RUF028 Local variable `invoice4` is assigned to but never used. Consider renaming to `_invoice4`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2706'>corporate/tests/test_stripe.py:2706:20:</a> RUF028 Local variable `invoice1` is assigned to but never used. Consider renaming to `_invoice1`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2706'>corporate/tests/test_stripe.py:2706:30:</a> RUF028 Local variable `invoice2` is assigned to but never used. Consider renaming to `_invoice2`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2879'>corporate/tests/test_stripe.py:2879:20:</a> RUF028 Local variable `invoice1` is assigned to but never used. Consider renaming to `_invoice1`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L2879'>corporate/tests/test_stripe.py:2879:30:</a> RUF028 Local variable `invoice2` is assigned to but never used. Consider renaming to `_invoice2`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L5091'>corporate/tests/test_stripe.py:5091:20:</a> RUF028 Local variable `invoice1` is assigned to but never used. Consider renaming to `_invoice1`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L5147'>corporate/tests/test_stripe.py:5147:20:</a> RUF028 Local variable `invoice1` is assigned to but never used. Consider renaming to `_invoice1`.
++ <a href='https://github.com/zulip/zulip/blob/d3b5a76a675e3a95804c682f7b793efe1ccef62c/corporate/tests/test_stripe.py#L5877'>corporate/tests/test_stripe.py:5877:9:</a> RUF028 Local variable `flat_discount` is assigned to but never used. Consider renaming to `_flat_discount`.
+... 99 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF028 | 327 | 327 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Review requested from @charliermarsh by @charliermarsh on 2024-03-09 12:50_
+
+---
+
+_Comment by @MichaReiser on 2024-03-28 17:25_
+
+Thanks for opening this PR and I'm sorry that it took us so long to get back to you.
+
+We discussed this rule internally, and we haven't come to an agreement if it's the right call to split `unused-variables` (and changing the intent of  `unused-variables`) to allow opting into fixing `unused-tuple-elements` but not other unused variables). We concluded that we need a more formal guideline on when it is okay to have multiple rules that catch the same or a very similar code smell and when it should be a single rule. 
+
+I prefer not to merge this PR today because we lack that agreement. I would rather keep the status quo than change the rule and risk having to change it back in a few months. 
+
+I'm sorry that we gave the wrong impression and that it took us so long to get back to you. Thanks again for your work. 
+
+---
+
+_Closed by @MichaReiser on 2024-03-28 17:25_
+
+---

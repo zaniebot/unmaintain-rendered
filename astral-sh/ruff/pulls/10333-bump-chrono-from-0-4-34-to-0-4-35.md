@@ -1,0 +1,172 @@
+```yaml
+number: 10333
+title: Bump chrono from 0.4.34 to 0.4.35
+type: pull_request
+state: merged
+author: dependabot
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: dependabot/cargo/chrono-0.4.35
+created_at: 2024-03-11T08:35:10Z
+updated_at: 2024-03-11T14:57:31Z
+url: https://github.com/astral-sh/ruff/pull/10333
+synced_at: 2026-01-10T22:47:01Z
+```
+
+# Bump chrono from 0.4.34 to 0.4.35
+
+---
+
+_Pull request opened by @dependabot on 2024-03-11 08:35_
+
+Bumps [chrono](https://github.com/chronotope/chrono) from 0.4.34 to 0.4.35.
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/chronotope/chrono/releases">chrono's releases</a>.</em></p>
+<blockquote>
+<h2>v0.4.35</h2>
+<p>Most of our efforts have shifted to improving the API for a 0.5 release, for which cleanups and refactorings are landing on the 0.4.x branch.</p>
+<p>The most significant changes in this release are two sets of deprecations.</p>
+<ul>
+<li>
+<p>We deprecated all timestamp-related methods on <code>NaiveDateTime</code>. The reason is that a timestamp is defined to be in UTC. The <code>NaiveDateTime</code> type doesn't know the offset from UTC, so it was technically wrong to have these methods. The alternative is to use the similar methods on the <code>DateTime&lt;Utc&gt;</code> type, or from the <code>TimeZone</code> trait.</p>
+<p>Converting from <code>NaiveDateTime</code> to <code>DateTime&lt;Utc&gt;</code> is simple with <code>.and_utc()</code>, and in the other direction with <code>.naive_utc()</code>.</p>
+</li>
+<li>
+<p>The panicking constructors of <code>TimeDelta</code> (the new name of the <code>Duration</code> type) are deprecated. This was the last part of chrono that defaulted to panicking on error, dating from before rust 1.0.</p>
+</li>
+<li>
+<p>A nice change is that <code>NaiveDate</code> now includes a niche. So now <code>Option&lt;NaiveDate&gt;</code>, <code>Option&lt;NaiveDateTime&gt;</code> and <code>Option&lt;DateTime&lt;Tz&gt;&gt;</code> are the same size as their base types.</p>
+</li>
+<li>
+<p><code>format::Numeric</code> and <code>format::Fixed</code> are marked as <code>non_exhaustive</code>. This will allow us to improve our formatting and parsing support, and we have reason to believe this breaking change will have little to no impact on users.</p>
+</li>
+</ul>
+<h1>Additions</h1>
+<ul>
+<li>Add <code>DateTime::{from_timestamp_micros, from_timestamp_nanos}</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1234">#1234</a>)</li>
+<li>Add getters to <code>Parsed</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1465">#1465</a>)</li>
+</ul>
+<h1>Deprecations</h1>
+<ul>
+<li>Deprecate timestamp methods on <code>NaiveDateTime</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1473">#1473</a>)</li>
+<li>Deprecate panicking constructors of <code>TimeDelta</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1450">#1450</a>)</li>
+</ul>
+<h1>Changes/fixes</h1>
+<ul>
+<li>Use <code>NonZeroI32</code> inside <code>NaiveDate</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1207">#1207</a>)</li>
+<li>Mark <code>format::Numeric</code> and <code>format::Fixed</code> as <code>non_exhaustive</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1430">#1430</a>)</li>
+<li><code>Parsed</code> fixes to error values (<a href="https://redirect.github.com/chronotope/chrono/issues/1439">#1439</a>)</li>
+<li>Use <code>overflowing_naive_local</code> in <code>DateTime::checked_add*</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1333">#1333</a>)</li>
+<li>Do complete range checks in <code>Parsed::set_*</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1465">#1465</a>)</li>
+</ul>
+<h1>Documentation</h1>
+<ul>
+<li>Rustfmt doctests (<a href="https://redirect.github.com/chronotope/chrono/issues/1452">#1452</a>)</li>
+<li>Improve docs for crate features (<a href="https://redirect.github.com/chronotope/chrono/issues/1455">#1455</a>, thanks <a href="https://github.com/edmorley"><code>@​edmorley</code></a>)</li>
+<li>Add more documentation and examples to <code>Parsed</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1439">#1439</a>)</li>
+</ul>
+<h1>Internal</h1>
+<ul>
+<li>Refactor <code>internals</code> module (<a href="https://redirect.github.com/chronotope/chrono/issues/1428">#1428</a>, <a href="https://redirect.github.com/chronotope/chrono/issues/1429">#1429</a>, <a href="https://redirect.github.com/chronotope/chrono/issues/1431">#1431</a>, <a href="https://redirect.github.com/chronotope/chrono/issues/1432">#1432</a>, <a href="https://redirect.github.com/chronotope/chrono/issues/1433">#1433</a>, <a href="https://redirect.github.com/chronotope/chrono/issues/1438">#1438</a>)</li>
+<li>CI: test cross-compiling to <code>x86_64-unknown-illumos</code> instead of Solaris (<a href="https://redirect.github.com/chronotope/chrono/issues/1437">#1437</a>)</li>
+<li>CI: lint Windows target, fix clippy warning (<a href="https://redirect.github.com/chronotope/chrono/issues/1441">#1441</a>)</li>
+<li>CI: only run <code>cargo hack check</code> on Linux (<a href="https://redirect.github.com/chronotope/chrono/issues/1442">#1442</a>)</li>
+<li>Update windows-bindgen to 0.54 (<a href="https://redirect.github.com/chronotope/chrono/issues/1462">#1462</a>, <a href="https://redirect.github.com/chronotope/chrono/issues/1483">#1483</a>)</li>
+<li>Simplify error value of <code>parse_internal</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1459">#1459</a>)</li>
+<li>Simplify <code>SerdeError</code> (<a href="https://redirect.github.com/chronotope/chrono/issues/1458">#1458</a>)</li>
+<li>Simplify <code>NaiveDate::from_isoywd</code> a bit (<a href="https://redirect.github.com/chronotope/chrono/issues/1464">#1464</a>)</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/chronotope/chrono/commit/9fdb59638eda6b0e605edfeb59499730a2094a9b"><code>9fdb596</code></a> Prepare 0.4.35</li>
+<li><a href="https://github.com/chronotope/chrono/commit/9e667b606e4f4896dea157a8f498d41511c54f7b"><code>9e667b6</code></a> Deprecate panicking <code>TimeDelta</code> constructors</li>
+<li><a href="https://github.com/chronotope/chrono/commit/2c1b0bea947ca322aa17b79c26c1d0ddc1505488"><code>2c1b0be</code></a> Tests: replace <code>TimeDelta::milliseconds</code> with <code>try_milliseconds</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/2bf3302ce58aadaae06a8a1fb6342295292863da"><code>2bf3302</code></a> Tests: replace <code>TimeDelta::seconds</code> with <code>try_seconds</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/f93508ffd9bff4c0eac1332b4c2c25b03955985b"><code>f93508f</code></a> Tests: replace <code>TimeDelta::minutes</code> with <code>try_minutes</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/9fc931a394054f183200f1c6bdc2bdfd475937d0"><code>9fc931a</code></a> Tests: replace <code>TimeDelta::hours</code> with <code>try_hours</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/9f23c08e10241f03637b0a52591c65705dda9b19"><code>9f23c08</code></a> Tests: replace <code>TimeDelta::days</code> with <code>try_days</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/e8f9b5e0414eb7232d6cf916f5ecd3b46839b15c"><code>e8f9b5e</code></a> Tests: replace <code>TimeDelta::weeks</code> with <code>try_weeks</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/51a1aa27bd27c04d914c3f01e899e55189b5197b"><code>51a1aa2</code></a> Tests: use <code>Days</code> type when it is more appropriate than <code>TimeDelta</code></li>
+<li><a href="https://github.com/chronotope/chrono/commit/4251bd1eb172d30af41be1a7e8893dd84046fe3c"><code>4251bd1</code></a> Replace <code>TimeDelta::seconds</code> with <code>try_seconds</code></li>
+<li>Additional commits viewable in <a href="https://github.com/chronotope/chrono/compare/v0.4.34...v0.4.35">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=chrono&package-manager=cargo&previous-version=0.4.34&new-version=0.4.35)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+
+
+</details>
+
+---
+
+_Label `internal` added by @dependabot[bot] on 2024-03-11 08:35_
+
+---
+
+_Comment by @github-actions[bot] on 2024-03-11 08:53_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2024-03-11 14:57_
+
+---
+
+_Closed by @charliermarsh on 2024-03-11 14:57_
+
+---
+
+_Branch deleted on 2024-03-11 14:57_
+
+---
