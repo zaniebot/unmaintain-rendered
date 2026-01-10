@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split `add_noqa` process into distinctive edit generation and edit application stages - astral-sh/ruff #11265</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split <code>add_noqa</code> process into distinctive edit generation and edit application stages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11265">#11265</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-05-03 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-03 16:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>--add-noqa</code> now runs in two stages: first, the linter finds all diagnostics that need noqa comments and generate edits on a per-line basis. Second, these edits are applied, in order, to the document.</p>
+<p>A public-facing function, <code>generate_noqa_edits</code>, has also been introduced, which returns noqa edits generated on a per-diagnostic basis. This will be used by <code>ruff server</code> for noqa comment quick-fixes.</p>
+<h2>Test Plan</h2>
+<p>Unit tests have been updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @snowsignal on 2024-05-03 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-03 16:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-03 16:18</div>
+            <div class="timeline-body"><p>Would you mind running some hyperfine benchmarks on this change. The <code>Contributing.md</code> explains how. I'm asking because hashing <code>Diagnostic</code> can be somewhat expensive.</p>
+<p>I wonder if we should do some manual testing. What's your experience @charliermarsh with this kind of change?</p>
+<p>I won't have time to review this today. I plan to look into it on Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-03 19:56</div>
+            <div class="timeline-body"><p>Is there an LSP PR that I can look at in tandem to understand how the API will be used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/noqa.rs</code>:1165 on 2024-05-03 20:06</div>
+            <div class="timeline-body"><p>Is this necessary? (Is the type not inferred from the RHS?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/noqa.rs</code>:27 on 2024-05-03 20:06</div>
+            <div class="timeline-body"><p>Rustdoc please :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/noqa.rs</code>:31 on 2024-05-03 20:10</div>
+            <div class="timeline-body"><p>I can't know without seeing the usage, but could this instead return <code>Vec&lt;Option&lt;Edit&gt;&gt;</code>, so that we don't need to hash? I.e., return a parallel array that can be zipped with <code>diagnostics</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-03 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-03 20:11</div>
+            <div class="timeline-body"><p>I think <code>--add-noqa</code> has effectively no tests... @snowsignal, would you minding first opening a PR on main to add a few basic tests to <code>crates/ruff/tests/lint.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-04 01:10</div>
+            <div class="timeline-body"><p>@charliermarsh Sure, I can do that 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/noqa.rs</code>:31 on 2024-05-04 01:11</div>
+            <div class="timeline-body"><p>I think that could work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-04 01:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-04 01:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there an LSP PR that I can look at in tandem to understand how the API will be used?</p>
+</blockquote>
+<p>I've opened it <a href="https://github.com/astral-sh/ruff/pull/11276">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-04 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/noqa.rs</code>:1165 on 2024-05-04 01:35</div>
+            <div class="timeline-body"><p>Nope, not necessary 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-04 02:11</div>
+            <div class="timeline-body"><blockquote>
+<p>@charliermarsh Sure, I can do that 😄</p>
+</blockquote>
+<p>Thanks, ultimately it will get this merged faster if we have some test coverage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-04 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/noqa.rs</code>:569 on 2024-05-04 13:33</div>
+            <div class="timeline-body"><p>What about something like...</p>
+<pre><code class="language-rust">let edits = build_noqa_edits_by_line(
+    comments
+        .into_iter()
+        .flatten()
+        .fold(BTreeMap::default(), |mut map, comment| {
+            map.entry(comment.line)
+                .or_insert_with(Vec::default)
+                .push(comment);
+            map
+        }),
+    locator,
+    line_ending,
+);
+</code></pre>
+<p>So the sorting, grouping, etc. is handled by the map creation, rather than beforehand?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:46 on 2024-05-06 08:51</div>
+            <div class="timeline-body"><p>Cloning the Directives doesn't seem to simplify the code because <code>NoqaComment</code> requires lifetimes anyway. That's why I recommend removing the <code>Clone</code> and instead work with references</p>
+<pre><code class="language-patch">Subject: [PATCH] Remove num-cpus dependency
+---
+Index: crates/ruff_linter/src/noqa.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/src/noqa.rs b/crates/ruff_linter/src/noqa.rs
+--- a/crates/ruff_linter/src/noqa.rs	(revision a4e8a3948d406c40d6a31cdbfb23a9b89757eb6d)
++++ b/crates/ruff_linter/src/noqa.rs	(date 1714985389072)
+@@ -43,7 +43,7 @@
+ 
+ /// A directive to ignore a set of rules for a given line of Python source code (e.g.,
+ /// `# noqa: F401, F841`).
+-#[derive(Debug, Clone)]
++#[derive(Debug)]
+ pub(crate) enum Directive&lt;'a&gt; {
+     /// The `noqa` directive ignores all rules (e.g., `# noqa`).
+     All(All),
+@@ -232,7 +232,7 @@
+     }
+ }
+ 
+-#[derive(Debug, Clone)]
++#[derive(Debug)]
+ pub(crate) struct Codes&lt;'a&gt; {
+     range: TextRange,
+     codes: Vec&lt;Code&lt;'a&gt;&gt;,
+@@ -634,7 +634,7 @@
+             continue;
+         }
+         let line = locator.full_line(offset);
+-        let directive = matches.first().unwrap().directive.clone();
++        let directive = matches.first().unwrap().directive;
+         let rules: Vec&lt;_&gt; = matches
+             .into_iter()
+             .map(|NoqaComment { diagnostic, .. }| diagnostic.kind.rule())
+@@ -656,7 +656,7 @@
+ struct NoqaComment&lt;'a&gt; {
+     line: TextSize,
+     diagnostic: &amp;'a Diagnostic,
+-    directive: Option&lt;Directive&lt;'a&gt;&gt;,
++    directive: Option&lt;&amp;'a Directive&lt;'a&gt;&gt;,
+ }
+ 
+ fn find_noqa_comments_by_line&lt;'a&gt;(
+@@ -722,7 +722,7 @@
+                         comments_by_line.push(Some(NoqaComment {
+                             line: directive_line.start(),
+                             diagnostic,
+-                            directive: Some(directive.clone()),
++                            directive: Some(directive),
+                         }));
+                     }
+                     continue;
+@@ -742,7 +742,7 @@
+ }
+ 
+ fn generate_noqa_edit(
+-    directive: Option&lt;Directive&gt;,
++    directive: Option&lt;&amp;Directive&gt;,
+     offset: TextSize,
+     rules: RuleSet,
+     line: &amp;str,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:569 on 2024-05-06 08:53</div>
+            <div class="timeline-body"><p>You both for sure love inline expressions :D</p>
+<p>I think it would help readability by moving whatever that thing collects or folds out into a variable. We could then even use a regular loop instead of <code>fold</code>.</p>
+<p>I would probably even move the construction of this <code>comments_by_line</code> struct into <code>build_noqa_edits_by_line</code>, considering that it isn't used anywhere else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:638 on 2024-05-06 09:04</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let Some(first_match) = matches.first() else {
+            continue;
+        };
+        let line = locator.full_line(offset);
+        let directive = first_match.directive;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:646 on 2024-05-06 09:07</div>
+            <div class="timeline-body"><p>Nit: <code>RuleSet</code> implements <code>FromIter</code></p>
+<pre><code class="language-suggestion">        let rules: RuleSet = matches
+            .into_iter()
+            .map(|NoqaComment { diagnostic, .. }| diagnostic.kind.rule())
+            .collect();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:647 on 2024-05-06 09:12</div>
+            <div class="timeline-body"><p>I think I would avoid passing <code>line</code> and <code>line_start</code> to <code>generate_noqa_edit</code> and instead move the logic to determining the entire line to <code>generate_noqa_edit</code>. It reduces the number of parameters and ensures that the <code>generate_noqa_edit</code> is in full control.</p>
+<p>You can also avoid scanning the line multiple times by using <code>let full_line_range = locator.full_line_range(offset);</code> and then use the <code>locator.slice(full_line_range)</code> if you need access to the text</p>
+<p>It further enables optimisations where reading the full text isn't even necessary in most code paths (you can get the length by calling full_line_range.len()).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:656 on 2024-05-06 09:14</div>
+            <div class="timeline-body"><p>I think this should be called <code>find_noqa_comments</code>. It doesn't seem to group comments by line any more.</p>
+<pre><code class="language-suggestion">fn find_noqa_comments_by_line&lt;'a&gt;(
+    diagnostics: &amp;'a [Diagnostic],
+    locator: &amp;'a Locator,
+    exemption: &amp;Option&lt;FileExemption&gt;,
+    directives: &amp;'a NoqaDirectives,
+    noqa_line_for: &amp;NoqaMapping,
+) -&gt; Vec&lt;Option&lt;NoqaComment&lt;'a&gt;&gt;&gt; {
+    // List of noqa comments
+    let mut comments_by_line: Vec&lt;Option&lt;NoqaComment&lt;'a&gt;&gt;&gt; = vec![];
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:752 on 2024-05-06 09:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let mut edit_content = String::with_capacity(line.len());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:744 on 2024-05-06 09:23</div>
+            <div class="timeline-body"><p>Should we make <code>NoqaEdit</code> a struct instead with two functions:</p>
+<ul>
+<li><code>write</code>: It writes the edit into a writer. This avoids allocating a string in the CLI use case</li>
+<li><code>into_edit() -&gt; Option&lt;Edit&gt;</code>: Returns an edit</li>
+</ul>
+<p>I think this would help to closer match the performance of the CLI today where we allocate a single string to apply all edits (where this solution creates a string for each edit, and one for the merged output).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-07 06:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/noqa.rs</code>:744 on 2024-05-07 06:24</div>
+            <div class="timeline-body"><p>I like this idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-05-07 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 03:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/noqa.rs</code>:591 on 2024-05-08 03:12</div>
+            <div class="timeline-body"><p>Should we zip here instead? (I suppose the diagnostics could be omitted entirely?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-08 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:195 on 2024-05-08 05:38</div>
+            <div class="timeline-body"><p>We can undo the <code>Clone</code> change here and for <code>Code</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-08 05:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-08 05:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-08 17:40</div>
+            <div class="timeline-body"><p>I'm holding off on merging this until I investigate the root cause of <a href="https://github.com/astral-sh/ruff/pull/11276#issuecomment-2097773069">this issue</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-10 23:10</div>
+            <div class="timeline-body"><p>The root of the related issue in the follow-up PR appears to be caused by noqa mappings not generated/passed through to the edit generation function. I've added a test to show that this does work correctly when the proper <code>NoqaMapping</code> is given.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-05-10 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-05-10 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-10 23:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

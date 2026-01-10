@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `Lexer` lazy - astral-sh/ruff #11244</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>Lexer</code> lazy</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11244">#11244</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-02 09:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-02 09:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the <code>Lexer</code> to make it lazy in the sense that the tokens are emitted only when it's requested.</p>
+<h3>Lexer</h3>
+<ul>
+<li>Remove <code>Iterator</code> implementation</li>
+<li>Remove <code>SoftkeywordTransformer</code></li>
+<li>Collect all <code>LexicalError</code> in the lexer and return it on <code>finish</code> call</li>
+<li>Store the <code>current</code> token and provide methods to query it</li>
+<li>Implement a new <code>TokenValue</code> struct which stores the owned value for certain tokens [^1]</li>
+<li>Update all <code>lex_*</code> methods to return the token instead of <code>Result</code></li>
+<li>Update <code>Lexer::new</code> to take a <code>start_offset</code> parameter<ul>
+<li>This will be used to start lexing from a specific offset</li>
+</ul>
+</li>
+<li>Add checkpoint - rewind logic for the lexer, f-strings and indentation stack</li>
+</ul>
+<h3>Token Source</h3>
+<ul>
+<li>Remove <code>Iterator</code> implementation</li>
+<li>Provide lookahead via checkpoint - rewind logic on the <code>Lexer</code></li>
+<li>Store all the lexed tokens</li>
+</ul>
+<h3>Parser</h3>
+<ul>
+<li>Update the soft keywords to identifier when parsing as an identifier</li>
+<li>Add <code>bump_value</code> to bump the given token kind and return the corresponding owned value</li>
+<li>Add <code>bump_any</code> to bump any token except for end of file</li>
+</ul>
+<p>[^1]: At the end, we'll remove the <code>Tok</code> completely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-02 09:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1331 on 2024-05-02 09:15</div>
+            <div class="timeline-body"><p>I think we also need to store the current token or <code>.current()</code> will return a stale token after rewinding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-02 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/indentation.rs</code>:136 on 2024-05-02 09:16</div>
+            <div class="timeline-body"><p>Nit: We may want to use newtype wrappers here and call the methods <code>snapshot</code> and <code>rewind</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-02 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1331 on 2024-05-02 09:21</div>
+            <div class="timeline-body"><p>If it's after rewinding then I think we should be fine because I introduced a <code>next_token_with_context</code> method for it with <code>LexerContext::Peeking</code>. We won't be overriding <code>current</code> if the lexer is in peeking context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-02 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1331 on 2024-05-02 09:29</div>
+            <div class="timeline-body"><p>But what if we do speculative parsing? In that case the parser might call into <code>token_value</code> or <code>current</code> to get the kind of the current token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-02 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1331 on 2024-05-02 09:54</div>
+            <div class="timeline-body"><p>Yeah, in that case we'd need to store it. This would make caching lookahead a requirement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-09 07:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/cursor.rs</code>:6 on 2024-05-09 07:39</div>
+            <div class="timeline-body"><p>I love it how you add documentation as you go! It's very obvious on what code you've been working or that you touched. It's the code that is well documented. Thanks for doing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-09 07:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:463 on 2024-05-09 07:40</div>
+            <div class="timeline-body"><p>This is nice.</p>
+<p>Would you see an advantage of having a <code>TokenValueKind</code> to avoid the case that no value exists for the given token kind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:475 on 2024-05-09 07:47</div>
+            <div class="timeline-body"><p>Nit: I would recommend using <code>TokenKind::is_soft_keyword</code> method here (you'll have to add <code>type</code>).</p>
+<p>Nit: You could consider implementing the soft keyword check as a range comparison by:</p>
+<ul>
+<li>Implement <code>Ord</code> on <code>TokenKind</code></li>
+<li>Have all keywords come first</li>
+<li>Followed by soft keywords</li>
+</ul>
+<p>You can then implement different test methods:</p>
+<ul>
+<li><code>is_keyword</code>: Compare if the <code>TokenKind</code> is in between the first keyword and the last soft keyword (inclusive)</li>
+<li><code>is_soft_keyword</code>: Compare if the <code>TokenKind</code> is between the first and last soft keyword (inclusive)</li>
+<li><code>is_non_soft_keyword</code>: Compare if the <code>TokenKind</code> is between the first keyword and the first soft keyword (exclusive)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:117 on 2024-05-09 07:51</div>
+            <div class="timeline-body"><p>Do we need to update <code>prev_token_end</code> as well? I think I would make this a constructor function as well to avoid any other invariants</p>
+<p>Related. Do we need to offset the tokens by <code>start_offset</code>? I think the current <code>lex_starts_at</code> doesn't do that but I think it's odd if the AST nodes are all offseted by <code>start_offset</code> and the tokens arent. Or is this also not the case?</p>
+<p>I think we also just have to do it or all range operations will return rather obscure results. For example, <code>src_text</code> computes <code>range - self.start_offset</code> but if <code>range</code> is relative to the start, than the offset underflows.</p>
+<p>I think the way I would expect this to work is that we pass <code>start_offset</code> right through to the lexer and the lexer sets its current position to <code>start_offset</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:373 on 2024-05-09 07:59</div>
+            <div class="timeline-body"><p>Okay, I see why it takes a <code>kind</code> :)</p>
+<p>Maybe call it <code>bump_value</code> to make it clear that we bump the token AND take the value (although the taking the value is abstracted away and, therefore, less important).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:407 on 2024-05-09 08:00</div>
+            <div class="timeline-body"><p>It looks a bit strange to create a tuple here just to destruct again. I think I would inline the expression now.</p>
+<pre><code class="language-suggestion">        let (found, range) = (self.current_token_kind(), self.current_token_range());
+        self.add_error(
+        	ParseErrorType::ExpectedToken { found: self.current_token_kind(), expected },
+        	self.current_token_range()
+      	);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:1 on 2024-05-09 08:01</div>
+            <div class="timeline-body"><p>It almost makes me sad to say goodby to @charliermarsh's genius implementation for supporting soft keywords with lalrpop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-09 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:463 on 2024-05-09 08:06</div>
+            <div class="timeline-body"><p>By <code>TokenValueKind</code>, do you mean that instead of <code>TokenValue::None</code>, we'd have a <code>TokenValue::Other(TokenValueKind)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:112 on 2024-05-09 08:15</div>
+            <div class="timeline-body"><p>Ah nice, we can finally move the errors into the lexer where they belong!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:825 on 2024-05-09 08:21</div>
+            <div class="timeline-body"><p>I'm not sure what this will do to performance. It adds some additional branches to every <code>next_token</code> call even when the error case is extremely rare.</p>
+<p>I think I would prefer if we instead change all lex methods to simply return <code>TokenKind</code> and add a new <code>error_token(error)</code> method that returns <code>TokenKind::Unknown</code> and pushes the error. I think this has a few advantages</p>
+<ul>
+<li>We move out the error branching from the very hot <code>next_token</code> function to the few places where errors can happen and we already have an error branch there (we only pay the cost of an error branch once instead of twice)</li>
+<li>The lexer can now push multiple errors for a single <code>next_token</code> call. It even gets the option to push an error, but continue lexing (e.g. push an error for an unterminated string literal but continue lexing)</li>
+<li>We drastically reduce the return type size of all lex functions because I think <code>LexicalError</code> is somewhat heavy. It certainly is heavier than a single <code>TokenKind</code> :)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1326 on 2024-05-09 08:22</div>
+            <div class="timeline-body"><p>Nit: You can use <code>std::mem::take</code> if you implement <code>Default</code> for <code>TokenValue</code></p>
+<pre><code class="language-suggestion">        std::mem::take(&amp;mut self.value)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1333 on 2024-05-09 08:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            current: self.current,
+</code></pre>
+<p>I don't think the <code>clone</code> call is needed here because <code>Token</code> implements <code>Copy</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1568 on 2024-05-09 08:25</div>
+            <div class="timeline-body"><p>I believe this is no longer used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-09 08:27</div>
+            <div class="timeline-body"><p>I like this a lot! Nice work.</p>
+<p>I think we can improve the lexer performance by change how we handle errors in <code>next_token</code> (see inline comment).</p>
+<p>We also need to think about how <code>parse_expression_at</code> should work. I think we need to pass the offset through to the lexer so that it can offset all token ranges and start lexing after <code>offset</code> in the source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-09 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:825 on 2024-05-09 09:22</div>
+            <div class="timeline-body"><p>Yeah, actually I had the same plan but I did this just to simplify the implementation for now. I should've made that clear 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-09 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:463 on 2024-05-09 10:27</div>
+            <div class="timeline-body"><p>What I had in mind is to add a <code>TokenValueKind</code> that has a variant for each variant in <code>TokenValue</code>. It would ensure that <code>take_value</code> is never called for a <code>TokenKind</code> that has no associated value. However, I'm no longer sure if it's worth the effort, considering that <code>take_value</code> also calls <code>bump</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-10 05:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:463 on 2024-05-10 05:41</div>
+            <div class="timeline-body"><p>Yeah, I'm not sure either as it'll still involve converting to <code>TokenKind</code> because of the <code>bump</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-10 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:463 on 2024-05-10 06:46</div>
+            <div class="timeline-body"><p>Yeah. The only benefit I see is that it would help to find e.g. all usages of <code>TokenValueKind::String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-10 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:117 on 2024-05-10 07:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Related. Do we need to offset the tokens by <code>start_offset</code>? I think the current <code>lex_starts_at</code> doesn't do that but I think it's odd if the AST nodes are all offseted by <code>start_offset</code> and the tokens arent. Or is this also not the case?</p>
+</blockquote>
+<p>Yes, that is true. I missed that.</p>
+<blockquote>
+<p>I think the way I would expect this to work is that we pass <code>start_offset</code> right through to the lexer and the lexer sets its current position to <code>start_offset</code>.</p>
+</blockquote>
+<p>Yes, it should be passed directly to the <code>Lexer</code> which will set the correct range for the tokens and then the parser can just use the range.</p>
+<p>I'll still store the offset on the parser to correctly extract the source code for <code>src_text</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-10 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:117 on 2024-05-10 08:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need to update <code>prev_token_end</code> as well? I think I would make this a constructor function as well to avoid any other invariants</p>
+</blockquote>
+<p>Yeah, that makes sense. That should be updated as well, I'll make it a separate constructor function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-15 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:117 on 2024-05-15 11:31</div>
+            <div class="timeline-body"><p>Fixed in #11433</p>
+<p>I'm going to test this out in the local fork of the parser to make sure the ranges are correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-17 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:121 on 2024-05-17 10:06</div>
+            <div class="timeline-body"><p>This is how the lexer will start lexing from the given offset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-17 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Make `Lexer` lazy" to "Make `Lexer` lazy" by @dhruvmanila on 2024-05-17 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-17 11:33</div>
+            <div class="timeline-body"><p>I'm going to merge this into another PR to keep going. I'm finding it difficult to refactor with changes separated in different branches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-17 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-17 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-17 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-17 11:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

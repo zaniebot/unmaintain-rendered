@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] fix re-hashing in Files and SymbolTable - astral-sh/ruff #11327</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] fix re-hashing in Files and SymbolTable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11327">#11327</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-05-07 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-05-07 21:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In both <code>FilesInner</code> and <code>SymbolTable</code>, we pull this hashmap trick where we keep a <code>HashMap&lt;Id, ()&gt;</code> that is not actually hashed by the Id, but by a name, so it works like a <code>HashMap&lt;Name, Id&gt;</code> (allows looking up an id by name), but without double-storing the name (since we also keep a separate id-to-name map.)</p>
+<p>This was breaking as soon as these hashmaps hit size 4+. As it turns out, this is sort of my fault, due to this comment: https://github.com/astral-sh/ruff/pull/10849/commits/2bfbb59aad3b96767d9043240f2f8a68c65a40f3#r1560182319</p>
+<p>The hasher provided to <code>insert_with_hasher</code> is not specific to the entry -- it isn't stored, but will be used immediately to rehash <em>all</em> entries in the hashmap, if a resize is needed to make room for the new entry. Reusing the hash we just calculated meant that on resize we were rehashing all existing entries to exactly the same hash (the one from the new entry), which of course broke lookup for all the older entries.</p>
+<h2>Test Plan</h2>
+<p>Added tests for both FilesInner and SymbolTable, to test them with 4+ entries. These tests failed before this PR, and pass with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-05-07 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-07 21:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-05-07 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-08 05:35</div>
+            <div class="timeline-body"><p>Uhh right. I'm anyway inclined to remove this trick :laughing: at least for files...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-05-08 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-05-08 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-08 12:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

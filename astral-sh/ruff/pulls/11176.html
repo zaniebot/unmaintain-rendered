@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] record dependencies when resolving across imports - astral-sh/ruff #11176</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] record dependencies when resolving across imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11176">#11176</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-27 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 14:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Record dependencies when resolving type of a symbol that depends on type of another symbol.</p>
+<p>If a symbol in another module can't be resolved, then we record a dependency on the entire module (if it changes, maybe then the type can be resolved, so we would need to invalidate.)</p>
+<p>Also corrects unnecessary mutable references to db/jar/type_store. (I know this was done in another outstanding PR too, but it was bugging me so I did it here too; I don't mind rebasing if the other one lands first.)</p>
+<h2>Test Plan</h2>
+<p>cargo test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-27 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 15:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-04-27 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:9 on 2024-04-29 07:08</div>
+            <div class="timeline-body"><p>Hmm. I was sure I added a FIXME here to figure out locking...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:10 on 2024-04-29 07:08</div>
+            <div class="timeline-body"><p>Should we add some documentation explaining what the <code>file_id</code> and <code>symbol_id</code> paramters are?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:44 on 2024-04-29 07:13</div>
+            <div class="timeline-body"><p>I think I already commented this on the other PR. I think it would be nice if we had a struct that combines <code>file_id</code> and <code>symbol_id</code>. I find that clearer than unnamed two-element tuples. We may then even change the <code>infer_symbol_type</code> method to take such an instance as the argument instead of a file id and symbol id pair.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-29 07:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:156 on 2024-04-29 07:16</div>
+            <div class="timeline-body"><p>Should this track the <code>ModuleId</code> instead of the <code>ModuleName</code>? For exampel, what if the module name remains unchanged, but it now resolves to a different module:</p>
+<ul>
+<li>Before: <code>namespace1/foo/bar.py</code> and <code>namespace2/foo/baz.py</code> where <code>foo</code> has no <code>__init__.py</code> and the <code>ModuleName</code> is <code>foo.baz</code></li>
+<li>After: Add a <code>__init__</code>.py to <code>namespace1/foo</code>, now <code>foo.baz</code> no longer resolves.</li>
+</ul>
+<p>Even without this limitation. Storing <code>ModuleId</code>s would be cheaper over <code>ModuleName</code>s. However, <code>ModuleId</code>s have the downside that they're less stable. So storing <code>ModuleName</code>s might, after all, be desired.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 07:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 07:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:287 on 2024-04-29 07:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// the inferred type for symbol K depends on the type of symbols in V
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:291 on 2024-04-29 07:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// the inferred type for symbol K depends on the modules in V; this type of dependency is
+    /// recorded when e.g. the target symbol doesn't exist in the module, so we can't record a
+    /// dependency on a symbol, but if the module changes it could still change our resolution)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:517 on 2024-04-29 07:20</div>
+            <div class="timeline-body"><p>Nit: Adding some whitespace to these tests could help readability. I'm not a purist that a unit test always needs to be structured in Arrange, Act, and assert, and that each test is only allowed to have one of each section, but I do find that grouping the individual sections helps improve readability (or parseability):</p>
+<pre><code class="language-rust">        let store = TypeStore::default();
+        let files = Files::default();
+        let file_id = files.intern(Path::new(&quot;/foo&quot;));
+        
+        let c1 = store.add_class(file_id, &quot;C1&quot;);
+        let c2 = store.add_class(file_id, &quot;C2&quot;);
+        let elems = vec![Type::Instance(c1), Type::Instance(c2)];
+        let id = store.add_union(file_id, &amp;elems);
+        
+        assert_eq!(
+            store.get_union(id).elements,
+            elems.into_iter().collect::&lt;FxIndexSet&lt;_&gt;&gt;()
+        );
+        
+        let union = Type::Union(id);
+        assert_eq!(format!(&quot;{}&quot;, union.display(&amp;store)), &quot;(C1 | C2)&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:9 on 2024-04-29 13:23</div>
+            <div class="timeline-body"><p>You did. I pushed this on Sat morning, it wasn't rebased on your landed PRs yet. I rebased it now, and your comment is there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:44 on 2024-04-29 13:24</div>
+            <div class="timeline-body"><p>Yep, agreed, will push that new type in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:156 on 2024-04-29 13:35</div>
+            <div class="timeline-body"><p>The case that you outline (same module name referring to a different file) is precisely why I think this needs to store a <code>ModuleName</code>. The dependency here is on &quot;whatever this module name resolves to&quot; -- if we have a dependency on <code>foo.bar</code>, and <code>foo/bar.py</code> doesn't change, but <code>foo/bar/__init__.py</code> is added so <code>foo.bar</code> now resolves there, we must invalidate the dependency on <code>foo.bar</code>. So the dependency is on the module name, not on the file ID.</p>
+<p>Whether it could be on the module ID instead (i.e. type <code>Module</code>), or not, is unclear to me. That depends whether we guarantee stable 1:1 mapping between <code>FileId</code> and <code>Module</code>, or between <code>ModuleName</code> and <code>Module</code> (or neither?). If it's the latter (stable 1:1 mapping between <code>ModuleName</code> and <code>Module</code>), then I could store a dependency to <code>Module</code> here and it would be a little cheaper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:517 on 2024-04-29 13:37</div>
+            <div class="timeline-body"><p>Good call-out, I usually do try to do that, but for some reason didn't here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:156 on 2024-04-29 13:53</div>
+            <div class="timeline-body"><p>The <code>ModuleId</code> mapping is stable between <code>ModuleName</code> and <code>ModuleId</code>. Although it is not guaranteed to be stable across runs (but that's not your concern, but something that the persistent caching layer must patch up).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:156 on 2024-04-29 13:55</div>
+            <div class="timeline-body"><p>Hmm, maybe it would work out to keep this dependency to <code>FileId</code>, too? As long as in the case where a file is shadowed by a different file for the same module name, we always remove the now-shadowed file, invalidating all its data?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:156 on 2024-04-29 13:57</div>
+            <div class="timeline-body"><p>We might. However, I'm also happy to use <code>ModuleId</code> when we know that it always comes from a <code>Module</code>. It gives the id more semantic meaning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-08 17:43</div>
+            <div class="timeline-body"><p>I don't think I'm going to merge this as-is, want to redo it based on further discussion, and also depends on the salsa-or-no-salsa decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-05-08 17:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

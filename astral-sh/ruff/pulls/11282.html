@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] @override lint rule - astral-sh/ruff #11282</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] @override lint rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11282">#11282</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-05-04 17:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-05-04 17:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Lots of TODOs and things to clean up here, but it demonstrates the working lint rule.</p>
+<h2>Test Plan</h2>
+<pre><code>➜ cat main.py
+from typing import override
+from base import B
+
+class C(B):
+    @override
+    def method(self): pass
+
+➜ cat base.py
+class B: pass
+
+➜ cat typing.py
+def override(func):
+    return func
+</code></pre>
+<p>(We provide our own <code>typing.py</code> since we don't have typeshed vendored or type stub support yet.)</p>
+<pre><code>➜ ./target/debug/red_knot main.py
+...
+1   0.012086s TRACE red_knot Main Loop: Tick
+[crates/red_knot/src/main.rs:157:21] diagnostics = [
+    &quot;Method C.method is decorated with `typing.override` but does not override any base class method&quot;,
+]
+</code></pre>
+<p>If we add <code>def method(self): pass</code> to class <code>B</code> in <code>base.py</code> and run red_knot again, there is no lint error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-05-04 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @plredmond by @carljm on 2024-05-04 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-05-04 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-04 17:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-04 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/lint.rs</code>:146 on 2024-05-04 22:42</div>
+            <div class="timeline-body"><p>Yes, mypy special-cases a small number of &quot;fundamental&quot; stdlib modules (<code>builtins</code>, <code>typing</code>, <code>types</code>, <code>collections.abc</code>, there might be one or two more) such that if one of them is shadowed, that's a hard error and mypy will refuse to do any type-checking at all. I think it might make sense for us to do similarly. See e.g. https://github.com/python/mypy/pull/13155</p>
+<p>We may also want a more general way to be able to distinguish between &quot;<code>datetime.datetime</code>, where <code>datetime</code> is the stdlib <code>datetime</code> module&quot;, and &quot;<code>datetime.datetime</code>, where <code>datetime</code> is a first-party user module that shadows the stdlib <code>datetime</code> module&quot; though. For a type checker that distinction doesn't matter so much — as long as it can follow the module resolution and figure out the type, it's all good. But we probably <em>don't</em> want to e.g. emit our <code>flake8-datetimez</code> rules on code using functions from random user modules that shadow the stdlib <code>datetime</code> module. We probably <em>only</em> want to emit those violations on code using functions imported from the <em>actual stdlib</em> <code>datetime</code> module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-05 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types.rs</code>:334 on 2024-05-05 09:26</div>
+            <div class="timeline-body"><p>Code-style nit: I'd be inclined to &quot;unspool&quot; this a bit:</p>
+<pre><code class="language-suggestion">        if !matches!(scope.kind(), ScopeKind::Class) {
+            return Ok(None);
+        }
+        let Some(def) = scope.definition() else {
+            return Ok(None);
+        };
+        let Some(symbol_id) = scope.defining_symbol() else {
+            return Ok(None);
+        };
+	let Type::Class(class) = db.infer_definition_type(self.file_id, symbol_id, def)? else {
+	    return Ok(None);
+	};
+	Ok(Some(class))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-05 09:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/lint.rs</code>:170 on 2024-05-05 09:33</div>
+            <div class="timeline-body"><p>What's the motivation here for only panicking in a debug build, and letting the logical error pass silently in a release build? Ideally I feel like we wouldn't have to have an assertion like this, but if we do, I'd probably do something like this instead:</p>
+<pre><code class="language-suggestion">            unreachable!(&quot;type of a FunctionDef should always be a Function&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/lint.rs</code>:185 on 2024-05-05 16:14</div>
+            <div class="timeline-body"><p>This is slightly more verbose but feels slightly cleaner to me -- but it's just a stylistic preference, feel free to ignore</p>
+<pre><code class="language-suggestion">        let override_decorated = func
+            .function(context.db)?
+            .decorators()
+            .iter()
+            .filter_map(|deco_type| {
+                if let Type::Function(deco_func) = deco_type {
+                    Some(deco_func)
+                } else {
+                    None
+                }
+            })
+            .any(|deco_func| {
+                deco_func.file() == typing_file
+                    &amp;&amp; deco_func
+                        .symbol(context.db)
+                        .is_ok_and(|symbol| symbol == typing_override)
+            });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-05 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-05 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:185 on 2024-05-05 16:17</div>
+            <div class="timeline-body"><p>I played around with options like this for a while (including this very one), but I don't think it's good to just ignore an error result from the <code>.symbol(context.db)</code> call like this. The current code bubbles it up to the caller.</p>
+<p>I couldn't find any way to use an iterator-based approach here while also bubbling up any error. But if there is a way I'd like to learn about it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-05 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/lint.rs</code>:185 on 2024-05-05 16:26</div>
+            <div class="timeline-body"><p>That makes sense. You could <code>.collect()</code> them into a single <code>QueryResult&lt;Vec&lt;_&gt;&gt;</code> like this, and then bubble up the error to the caller. But I suppose it has the disadvantage that the code no longer short-circuits as soon as it sees a decorator that matches <code>typing.override</code>:</p>
+<pre><code class="language-suggestion">        let override_decorated = func
+            .function(context.db)?
+            .decorators()
+            .iter()
+            .filter_map(|deco_type| {
+                let Type::Function(deco_func) = deco_type else {
+                    return None;
+                };
+                if deco_func.file() != typing_file {
+                    return None;
+                }
+                Some(deco_func.symbol(context.db))
+            })
+            .collect::&lt;QueryResult&lt;Vec&lt;SymbolId&gt;&gt;&gt;()?
+            .iter()
+            .any(|symbol_id| *symbol_id == typing_override);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-05 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/lint.rs</code>:185 on 2024-05-05 16:57</div>
+            <div class="timeline-body"><p>Maybe something like this would be best -- it's pretty similar to your current code, but the <code>override_decorated</code> variable doesn't have to be marked as mutable in the main <code>for</code> loop, which I think is the main thing I didn't really like about your current code</p>
+<pre><code class="language-suggestion">        let override_decorated = {
+            let mut found_override_decorator = false;
+            for deco_ty in func.function(context.db)?.decorators() {
+                let Type::Function(deco_func) = deco_ty else {
+                    continue;
+                };
+                if deco_func.file() == typing_file
+                    &amp;&amp; deco_func.symbol(context.db)? == typing_override
+                {
+                    found_override_decorator = true;
+                    break;
+                }
+            }
+            found_override_decorator
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-05-06 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/mod.rs</code>:128 on 2024-05-06 07:37</div>
+            <div class="timeline-body"><p>Exposing <code>type_store</code> here feels off to me. It isn't really a query and I'm worried that giving direct access to it will make it more difficult to us to maintain cache invalidation and cooncurrency correctness.</p>
+<p>To my knowledge, this will also not work with salsa because either the type store or the types can be an ingredient but not both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/mod.rs</code>:107 on 2024-05-06 07:39</div>
+            <div class="timeline-body"><p>I think this information is now exposed in two ways:</p>
+<p><code>module.path().file()</code> and the method added here. We should only have one way to access the information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:15 on 2024-05-06 07:40</div>
+            <div class="timeline-body"><p>We should not expose the <code>type_store</code> as a query, because it isn't one. It gives access to the underlying storage, but it isn't querying any data. That means, it is leaking the abstraction of queries and abstractions where the way the data is stored (and even the fact that the information is cached) is transparent to callers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:98 on 2024-05-06 07:44</div>
+            <div class="timeline-body"><p>Could we add documentation to these fields. It's unclear to me what <code>Definition</code> points to and why it isn't sufficient to just store <code>SymbolId</code> and navigate from <code>SymbolId</code> to the definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:113 on 2024-05-06 07:46</div>
+            <div class="timeline-body"><p>To me it's unclear if we should use <code>Defininition</code> here or if we want to intern <code>Definition</code> too. The <code>ImportDefinition</code> node is the heaviest today, but it's unclear to me if <code>FunctionDefinition</code> will strore more information long-term, making it somewhat expensive to clone it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:367 on 2024-05-06 07:48</div>
+            <div class="timeline-body"><p>Nit: I think I would simply call this <code>parent_scopes</code> similar to <code>keys</code> and <code>values</code> on <code>HashMap</code> (or <code>root_symbols</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:476 on 2024-05-06 07:50</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        let Some(scope_id) = self.scope_id?;
+        let parent = self.table.scopes_by_id[scope_id].parent;
+        self.scope_id = parent;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:470 on 2024-05-06 07:52</div>
+            <div class="timeline-body"><p>Should we instead have a method <code>parent_scope(scope_id)</code>. It seems generall useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:460 on 2024-05-06 07:54</div>
+            <div class="timeline-body"><p>You could use <code>std::iter::successors</code> instead</p>
+<pre><code class="language-rust">    pub(crate) fn iter_parent_scopes(
+        &amp;self,
+        scope_id: ScopeId,
+    ) -&gt; ScopeIterator&lt;impl Iterator&lt;Item = ScopeId&gt; + '_&gt; {
+        ScopeIterator {
+            table: self,
+            ids: std::iter::successors(Some(scope_id), |scope| self.scopes_by_id[*scope].parent),
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:492 on 2024-05-06 07:55</div>
+            <div class="timeline-body"><p>Can we add some documentation to the iterator or use a named struct instead of an unnamed tuple. It's unclear to me now what the iterator now returns (what's the first scopeId)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:154 on 2024-05-06 08:00</div>
+            <div class="timeline-body"><p>I think this should be a query (or at least a trait method on <code>Db</code>. We can have methods on the trait that aren't cached. That's fine) instead of leaking <code>type_table</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:153 on 2024-05-06 08:16</div>
+            <div class="timeline-body"><p>It feels very low level to me that a lint rule has to resolve the symbol a module, it's symbol table, and then the name.</p>
+<p>I think I would expect a method more like <code>resolve_qualified_name(name)</code> or <code>resolve_qualified_name(module_name, symbol_name)</code> which does this internally. This would remove the need for calling <code>resolve_module</code>, <code>module_to_file</code>, <code>symbol_table</code> and <code>root_symbol_id_by_name</code> in this lint rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:167 on 2024-05-06 08:18</div>
+            <div class="timeline-body"><p>The fact that we need to clone <code>definition</code> on all call-sites seems problematic to me. Can we just pass the definition by reference? Do we even need to pass in the definition? Can we retrieve it instead from <code>symbol</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:185 on 2024-05-06 08:33</div>
+            <div class="timeline-body"><p>The closest I found for an iterator based implementation is:</p>
+<pre><code>        let decorated = func.function(context.db)?.decorators().iter().try_fold(
+            false,
+            |accumulator, deco_ty| {
+                if accumulator {
+                    return Ok(true);
+                }
+
+                let Type::Function(deco_func) = deco_ty else {
+                    return Ok(false);
+                };
+                Ok(deco_func.file() == typing_file
+                    &amp;&amp; deco_func.symbol(context.db)? == typing_override)
+            },
+        )?;
+</code></pre>
+<p>But what we really want is <code>try_find</code> but that's a nightly only feature.</p>
+<p>What I like to do in these situations is to define a function:</p>
+<pre><code> fn has_override_decorator&lt;Db&gt;(
+    db: &amp;Db,
+    func: FunctionTypeId,
+    typing_file: FileId,
+    typing_override: SymbolId,
+) -&gt; QueryResult&lt;bool&gt;
+where
+    Db: SemanticDb + HasJar&lt;SemanticJar&gt;,
+{
+    for deco_ty in func.function(db)?.decorators() {
+        let Type::Function(deco_func) = deco_ty else {
+            continue;
+        };
+        if deco_func.file() == typing_file &amp;&amp; deco_func.symbol(db)? == typing_override {
+            return Ok(true);
+        }
+    }
+
+    Ok(false)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:181 on 2024-05-06 08:34</div>
+            <div class="timeline-body"><p>I think we should re-think our API and avoid handing out any local symbol ids. The fact that the rule needs to manually test if <code>deco_func.file() == typing_file</code> is a footgun.</p>
+<p>Note: I think this is automatically <em>addressed</em> by having a query that allows resolving a global symbol, because that query would return a global symbol id.</p>
+<p>In general. I think lint rules should <strong>not</strong> have access to symbol tables other than the current file to avoid mixing local and global symbols, and even then, the API should probably hand out global ids.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 08:42</div>
+            <div class="timeline-body"><p>Nice that you managed to get this rule working for today!</p>
+<p>I think this PR shows a few issues that we need to address:</p>
+<ul>
+<li><code>SemanticLintContext</code> probably must be generic over <code>Db</code> to prevent that we need to leak the internal storage layout on the <code>Database</code> API. We should solve this as part of this PR.</li>
+<li>Our Database is somewhat awkward because it requires setting the right <code>HasJar</code> and <code>SemanticDb</code> type bounds. I think salsa doesn't have this problem because it can fallback to the <code>HasJarDyn</code> trait to resolve an ingredient. We need a better solution for that, but that's out of scope for this PR</li>
+<li>My ultimate goal was to prevent that lint rules get access to <code>db</code> and instead force them to go through the context. I can see now how this is challenging with e.g. <code>FunctionTypeId::name</code> taking a <code>db</code> as argument. I still think that not giving lint rules access to the <code>db</code> is desired, but I'm not aware of a good solution right now.</li>
+<li>This is related to not giving access to <code>db</code> to the semantic lint rules. I think that it's very easy today to mix local ids from different files. Ideally, lint rules would only ever get local ids for the current file or otherwise global ids.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:170 on 2024-05-06 13:06</div>
+            <div class="timeline-body"><p>Yeah, I wasn't sure about this, it's probably best to just use <code>unreachable</code>. Or even better to wrap this up in an API so most code doesn't have to make any assertion like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:185 on 2024-05-06 13:08</div>
+            <div class="timeline-body"><p>Yeah, I'd also considered the collect-to-a-Vec option, but allocating unnecessarily didn't seem worth it. The <code>try_fold</code> option is nice! And yeah I agree this should probably just be a <code>has_decorator</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/mod.rs</code>:128 on 2024-05-06 13:09</div>
+            <div class="timeline-body"><p>Yeah I agree, in general with this PR I was just trying to get the rule working however was fastest, but really all the uses of <code>type_store</code> should become their own queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/mod.rs</code>:107 on 2024-05-06 13:10</div>
+            <div class="timeline-body"><p>I added this because <code>module.path()</code> takes a concrete <code>Db</code> so I couldn't pass it <code>&amp;dyn SemanticDb</code>. But probably instead I can/should just change <code>.module.path()</code> to take <code>&amp;dyn SemanticDb</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:98 on 2024-05-06 13:11</div>
+            <div class="timeline-body"><p>Yes I can add docs for these.</p>
+<p>We cannot navigate from <code>SymbolId</code> to <code>Definition</code> because a symbol can have multiple definitions, and we need to know which specific definition. This is a general problem that affected a lot of things in the design of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:113 on 2024-05-06 13:16</div>
+            <div class="timeline-body"><p>I think we discussed this in comments on a previous PR. I don't see any reason <code>Definition</code> should ever become large; all of the information we might ever want to pass through it is already available on the AST node, and <code>Definition</code> should just be a thin wrapper around a <code>TypedNodeKey</code>.</p>
+<p>In fact I would like to make <code>Definition</code> <code>Copy</code>, but I ran into some difficulty with doing that -- I can't remember what the difficulty was anymore.</p>
+<p>If searching for <code>TypedNodeKey</code> becomes a perf bottleneck, we will have to reconsider the design here. Short of a directly-referenceable (i.e. Arc) AST, I don't see many great options. We can copy all the information we need out of the AST, but that's a lot of extra allocation (and then <code>Definition</code> will become quite large indeed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:470 on 2024-05-06 13:17</div>
+            <div class="timeline-body"><p>Maybe. Or maybe we should have <code>scope_id.parent_scope(&amp;table)</code>. I'm generally not sure which style API makes more sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:98 on 2024-05-06 13:19</div>
+            <div class="timeline-body"><p>I wonder if it would be worth using a dedicated <code>Vec</code> to store all definitions in the <code>SymbolTable</code> and use ids to reference the definitions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:113 on 2024-05-06 13:19</div>
+            <div class="timeline-body"><p>I suspect the problem is that <code>ImportDefinition</code> has a <code>name</code> which isn't copy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:492 on 2024-05-06 13:21</div>
+            <div class="timeline-body"><p>It used to return <code>Scope</code> objects, now it returns <code>(ScopeId, Scope)</code> pairs, since a <code>Scope</code> doesn't know its own id. I think this is a pretty natural pair and I don't really want to introduce a new struct for it, but I could document it.</p>
+<p>Maybe we don't need this iterator at all if we just implement all access of <code>Scope</code> data via methods exposed on <code>ScopeId</code> that take a <code>SymbolTable</code>. Then <code>Scope</code> becomes an internal implementation detail. The advantage here is that you always just work with <code>ScopeId</code> and don't worry about <code>ScopeId</code> vs <code>Scope</code>. The disadvantage is that you can only access data one field at a time, and if you need multiple you end up doing multiple lookups. But considering these lookups are just indexed access into an <code>IndexVec</code>, maybe they are so cheap this doesn't matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:153 on 2024-05-06 13:23</div>
+            <div class="timeline-body"><p>Yes, I think that's a good direction to move the API.</p>
+<p>I want to avoid over-fitting our API to our first few lint rules, so it was kind of intentional (also just that I was short on time) that I didn't do much API design thinking in this PR, just pushed to get it working. I want to abstract things when it is clear we have multiple needs for them. But I think this is a pretty clear case of something we will have many uses for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:167 on 2024-05-06 13:25</div>
+            <div class="timeline-body"><p>We can't retrieve definition from symbol because the relationship is one(symbol)-to-many(definitions).</p>
+<p>I would like to solve this issue by making <code>Definition</code> <code>Copy</code>, if I can resolve whatever problem stopped me from doing that already.</p>
+<p>I think we could also pass <code>Definition</code> by reference here. Whether <code>Copy</code> or reference makes more sense depends on whether we expect <code>Definition</code> to get any bigger, which I don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:470 on 2024-05-06 13:25</div>
+            <div class="timeline-body"><p>Yeah, I don't have a good answer to this yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-06 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:153 on 2024-05-06 13:26</div>
+            <div class="timeline-body"><p>yeah, that sounds reasonable to me. It might be an opportunity for Patrick to work out an API for this as part of the work he does on the new lint rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-06 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:181 on 2024-05-06 13:27</div>
+            <div class="timeline-body"><p>Yes, I agree this is a good direction to push the API.</p>
+<p>I think we can provide APIs that prevent a lint rule from <em>needing</em> to get another file's symbol table. I'm not sure how we prevent a lint rule from being <em>able</em> to do that, though. It seems like it will require not giving lint rules direct db access at all. Which may be feasible but will require a lot of duplication of parts of db API surface on lint-context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-06 13:36</div>
+            <div class="timeline-body"><p>Thanks for the review!</p>
+<blockquote>
+<p>SemanticLintContext probably must be generic over Db to prevent that we need to leak the internal storage layout on the Database API. We should solve this as part of this PR.</p>
+</blockquote>
+<p>Why does using a trait object db require us to leak the internal storage layout on the database API? I think it led to that in this PR just because I was cutting corners to get things working, but I don't think it requires it. Instead it requires that all data access we need available to lint rules must be implemented as queries on the Db trait interface. These queries don't need to leak implementation details, but it will mean there will be a lot of them.</p>
+<p>In some ways it seems like making everything generic over Db has more risk of leaking internals, because it means that the full <code>Db</code> interface is always available instead of just what we expose on the trait.</p>
+<p>(I don't have strong opinions here, I'm still working out the pros and cons of different patterns and trying to understand the reasoning for different options.)</p>
+<blockquote>
+<p>My ultimate goal was to prevent that lint rules get access to db and instead force them to go through the context. I can see now how this is challenging with e.g. FunctionTypeId::name taking a db as argument. I still think that not giving lint rules access to the db is desired, but I'm not aware of a good solution right now.</p>
+</blockquote>
+<p>Yes, I think this will be pretty challenging with the interning-based storage approach, because pretty much anything you might want to do requires a db.</p>
+<blockquote>
+<p>This is related to not giving access to db to the semantic lint rules. I think that it's very easy today to mix local ids from different files. Ideally, lint rules would only ever get local ids for the current file or otherwise global ids.</p>
+</blockquote>
+<p>Yeah, I agree we should try to avoid this footgun, though it's not clear to me how to actually make it impossible. (Even a global ID will contain local IDs, and making those inaccessible will make those global IDs quite difficult or impossible to use in the code that actually needs to break them apart to do the queries. Maybe we can address this with crate visibility boundaries, if in future we break lint rules into a separate crate from the db.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-08 00:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:98 on 2024-05-08 00:11</div>
+            <div class="timeline-body"><p>Yeah, that might make sense. I'll add a TODO and leave that for another PR though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-08 00:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:113 on 2024-05-08 00:12</div>
+            <div class="timeline-body"><p>I think the idea of interning Definitions is probably a good one. Adding a TODO for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-08 00:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:153 on 2024-05-08 00:26</div>
+            <div class="timeline-body"><p>I added a <code>resolve_global_symbol</code> query to encapsulate this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-08 00:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:167 on 2024-05-08 00:27</div>
+            <div class="timeline-body"><p>I think interning Definitions is probably a good direction here; I added a TODO for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-08 00:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:181 on 2024-05-08 00:32</div>
+            <div class="timeline-body"><p>I added a GlobalSymbolId type and a <code>resolve_global_symbol</code> API that returns it, as well as changing other queries (<code>infer_symbol_type</code>, <code>infer_definition_type</code>) to take it.</p>
+<p>We still use local SymbolIds some places, but fewer now.</p>
+<p>This doesn't really do anything to make it harder for a lint rule to get access to some other module's symbol table, but it provides an alternative API that should mean they don't need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-08 00:33</div>
+            <div class="timeline-body"><p>Addressed most review comments. Would like to discuss this more, as the right path isn't clear to me:</p>
+<blockquote>
+<p>SemanticLintContext probably must be generic over Db to prevent that we need to leak the internal storage layout on the Database API. We should solve this as part of this PR.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-05-09 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:55 on 2024-05-09 14:57</div>
+            <div class="timeline-body"><p>I think it's okay to add  <code>Eq</code> as well.</p>
+<pre><code class="language-suggestion">#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-09 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-05-09 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-05-09 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-09 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

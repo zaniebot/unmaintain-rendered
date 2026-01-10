@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for attribute docstring in the semantic model - astral-sh/ruff #11315</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for attribute docstring in the semantic model</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11315">#11315</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-07 03:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-07 03:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds updates the semantic model to detect attribute docstring.</p>
+<p>Refer to <a href="https://peps.python.org/pep-0258/#attribute-docstrings">PEP 258</a> for the definition of an attribute docstring.</p>
+<p>This PR doesn't add full support for it but only considers string literals as attribute docstring for the following cases:</p>
+<ol>
+<li>A string literal following an assignment statement in the <strong>global scope</strong>.</li>
+<li>A global class attribute</li>
+</ol>
+<p>For an assignment statement, it's considered an attribute docstring only if the target expression is a name expression (<code>x = 1</code>). So, chained assignment, multiple assignment or unpacking, and starred expression, which are all valid in the target position, aren't considered here.</p>
+<p>In <code>__init__</code> method, an assignment to the <code>self</code> variable like <code>self.x = 1</code> is also a candidate for an attribute docstring. <strong>This PR does not support this position.</strong></p>
+<h2>Test Plan</h2>
+<p>I used the following source code along with a print statement to verify that the attribute docstring detection is correct.</p>
+<details><summary>Source code to test against:</summary>
+<p>
+
+<pre><code class="language-py">a: int
+&quot;a: docstring&quot;
+
+b = 1
+&quot;b docstring&quot; &quot; continue&quot;
+&quot;b: not a docstring&quot;
+
+c: int = 1
+&quot;c: docstring&quot;
+
+_a: int
+&quot;_a: docstring&quot;
+
+if True:
+    d = 1
+    &quot;d: not a docstring&quot;
+
+(e := 1)
+&quot;e: not a docstring&quot;
+
+f = 0
+f += 1
+&quot;f: not a docstring&quot;
+
+g.h = 1
+&quot;g.h: not a docstring&quot;
+
+(i) = 1
+&quot;i: docstring&quot;
+
+(j): int = 1
+&quot;j: docstring&quot;
+
+(k): int
+&quot;k: docstring&quot;
+
+l = m = 1
+&quot;l m: not a docstring&quot;
+
+n.a = n.b = n.c = 1
+&quot;n.*: not a docstring&quot;
+
+(o, p) = (1, 2)
+&quot;o p: not a docstring&quot;
+
+[q, r] = [1, 2]
+&quot;q r: not a docstring&quot;
+
+*s = 1
+&quot;s: not a docstring&quot;
+
+
+class Foo:
+    a = 1
+    &quot;Foo.a: docstring&quot;
+
+    b: int
+    &quot;Foo.b: docstring&quot;
+    &quot;Foo.b: not a docstring&quot;
+
+    c: int = 1
+    &quot;Foo.c: docstring&quot;
+
+    def __init__(self) -&gt; None:
+        self.x = 1
+        &quot;self.x: docstring&quot;
+
+        t = 2
+        &quot;t: not a docstring&quot;
+
+    def random(self):
+        self.y = 2
+        &quot;self.y: not a docstring&quot;
+
+        u = 2
+        &quot;u: not a docstring&quot;
+
+    def add(self, y: int):
+        self.x += y
+
+
+def function():
+    v = 2
+    &quot;v: not a docstring&quot;
+
+
+function.a = 1
+&quot;function.a: not a docstring&quot;
+</code></pre>
+</p>
+</details> 
+
+<p>I'll add this in the follow-up PR (https://github.com/astral-sh/ruff/pull/11302) which uses this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-05-07 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @dhruvmanila on 2024-05-07 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-07 03:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-10 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-05-10 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-05-10 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 11:33</div>
+            <div class="timeline-body"><p>Should the <code>in_docstring()</code> function immediately above this one have its name changed to <code>in_non_attribute_docstring()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:2165 on 2024-05-10 11:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        /// ```
+        ///
+        /// Unlike other kinds of docstrings, attribute docstrings are discarded at runtime.
+        /// However, they are used by some documentation renderers and static-analysis tools.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-05-10 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-10 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 12:09</div>
+            <div class="timeline-body"><p>I'm not sure, I'd prefer to have a name which isn't a negation of the other 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-10 12:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 12:11</div>
+            <div class="timeline-body"><p>Yeah... <code>in_runtime_recognised_docstring()</code>? <code>in_runtime_stored_docstring()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-10 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 12:19</div>
+            <div class="timeline-body"><p>I guess <code>in_runtime_stored_docstring</code> could be used</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-10 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 12:23</div>
+            <div class="timeline-body"><p>Or alternatively, rather than having two functions, we could have one <code>docstring_state()</code> method that returns an enum:</p>
+<pre><code class="language-rs">enum DocstringState {
+    ClassOrModule,
+    Attribute,
+    None,
+}
+</code></pre>
+<p>This might also better reflect the fact that it's invalid to have both the <code>ATTRIBUTE_DOCSTRING</code> and <code>DOCSTRING</code> flags simultaneously set. We could add a <code>debug_assert</code> in the <code>docstring_state()</code> method to enforce that invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-10 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 13:19</div>
+            <div class="timeline-body"><p>I would prefer <code>in_pep_257_docstring</code> and <code>in_attribute_docstring</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-10 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1655 on 2024-05-10 14:40</div>
+            <div class="timeline-body"><p>I'm not sure about the enum solution as it already exists to detect the docstring. For now, I'm thinking of going with the names suggested by Charlie.</p>
+<p>Thank you for the suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> removed by @dhruvmanila on 2024-05-10 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-10 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-10 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-10 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Support Jupyter Notebook (`*.ipynb`) files - astral-sh/ruff #11206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code>: Support Jupyter Notebook (<code>*.ipynb</code>) files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11206">#11206</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-04-29 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-29 17:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/ruff/issues/10858.</p>
+<p><code>ruff server</code> now supports <code>*.ipynb</code> (aka Jupyter Notebook) files. Extensive internal changes have been made to facilitate this, which I've done some work to contextualize with documentation and an pre-review that highlights notable sections of the code.</p>
+<p><code>*.ipynb</code> cells should behave similarly to <code>*.py</code> documents, with one major exception. The format command <code>ruff.applyFormat</code> will only apply to the currently selected notebook cell - if you want to format an entire notebook document, use <code>Format Notebook</code> from the VS Code context menu.</p>
+<h2>Test Plan</h2>
+<p>The VS Code extension does not yet have Jupyter Notebook support enabled, so you'll first need to enable it manually. To do this, checkout the <code>pre-release</code> branch and modify <code>src/common/server.ts</code> as follows:</p>
+<p>Before:
+<img src="https://github.com/astral-sh/ruff/assets/19577865/c6a3c604-c405-4968-b8a2-5d670de89172" alt="Screenshot 2024-05-13 at 10 59 06 PM" /></p>
+<p>After:
+<img src="https://github.com/astral-sh/ruff/assets/19577865/94ab2e3d-0609-448d-9c8c-cd07c69a513b" alt="Screenshot 2024-05-13 at 10 58 24 PM" /></p>
+<p>I recommend testing this PR with large, complicated notebook files. I used notebook files from <a href="https://github.com/jakevdp/PythonDataScienceHandbook/tree/master/notebooks">this popular repository</a> in my preliminary testing.</p>
+<p>The main thing to test is ensuring that notebook cells behave the same as Python documents, besides the aforementioned issue with <code>ruff.applyFormat</code>. You should also test adding and deleting cells (in particular, deleting all the code cells and ensure that doesn't break anything), changing the kind of a cell (i.e. from markup -&gt; code or vice versa), and creating a new notebook file from scratch. Finally, you should also test that source actions work as expected (and across the entire notebook).</p>
+<p>Note: <code>ruff.applyAutofix</code> and <code>ruff.applyOrganizeImports</code> are currently broken for notebook files, and I suspect it has something to do with https://github.com/astral-sh/ruff/issues/11248. Once this is fixed, I will update the test plan accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-29 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Ruff Server: Beta" by @snowsignal on 2024-04-29 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-29 18:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/range.rs</code>:150 on 2024-05-14 05:19</div>
+            <div class="timeline-body"><p>Is there a better way we could handle this conversion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/index.rs</code>:29 on 2024-05-14 05:26</div>
+            <div class="timeline-body"><p>Some context for this:</p>
+<ul>
+<li>This is the replacement for <code>Workspaces</code>, which used to be the encapsulating struct that stored all documents.</li>
+<li><code>Index</code> uses a flat structure to store documents and workspace settings, which makes it marginally more efficient to look-up documents by URL. The big advantage, however, is that we can map arbitrary notebook cells to document paths really easily, without having to search each workspace in turn.</li>
+<li>I've moved the logic for mutating documents to here - in other words, <code>DocumentController</code> is private to <code>index.rs</code>, and to update documents you need to call the associated update function on <code>Index</code>. The reason why I made this change is because we need to update the notebook cell index after cells get added or deleted, and I wanted to centralize that logic here.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/index.rs</code>:104 on 2024-05-14 05:32</div>
+            <div class="timeline-body"><p>I need to consolidate this logic into a function, since we use this pattern in several places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/fix.rs</code>:89 on 2024-05-14 05:46</div>
+            <div class="timeline-body"><p>This needs some reworking to be easier to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/lint.rs</code>:34 on 2024-05-14 05:50</div>
+            <div class="timeline-body"><p>For context: we now generate the text edits in advance and store that in the associated data struct, instead of generating them later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/lint.rs</code>:81 on 2024-05-14 05:54</div>
+            <div class="timeline-body"><p>Notebook documents don't have a line index, so we need to build a new line index from the combined source. The side effect of this is that we also re-generate the line index for regular documents instead of using their existing one.</p>
+<p>(I'd like to eventually remove the line index from <code>TextDocument</code>, since at the moment we wastefully re-generate it whenever it gets updated - and we don't even use it in that many places now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/lint.rs</code>:222 on 2024-05-14 06:26</div>
+            <div class="timeline-body"><p>I also need to refactor this logic: it's used multiple times and isn't easy to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-14 06:37</div>
+            <div class="timeline-body"><p>I've left some comments to add context for a few parts of the code and also to remind myself to refactor a few things before we merge 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @snowsignal on 2024-05-14 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-05-14 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:94 on 2024-05-14 14:13</div>
+            <div class="timeline-body"><p>I'd prefer to move this over in <code>ruff_server</code> and expose the <code>from_raw_notebook</code> method. This way the separation between the <code>ruff_server</code> crate and <code>ruff_notebook</code> crate still remains.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:136 on 2024-05-14 14:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn from_raw_notebook(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit.rs</code>:48 on 2024-05-14 14:20</div>
+            <div class="timeline-body"><p>I'm assuming this works because VS Code chooses a different scheme (<code>notebook-cell</code> I think?) for Notebook cell documents. And, I thought of the same thing to do in <code>ruff-lsp</code> initially but it turns out that this is specific to VS Code and possibly wouldn't work across editors. The reason is that the spec mentions to not rely on the URI format:</p>
+<blockquote>
+<p>Cell text documents have an URI however servers should not rely on any format for this URI since it is up to the client on how it will create these URIs.</p>
+<p>Reference: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#notebookDocument_synchronization (Point 2)</p>
+</blockquote>
+<p>This would work today because I think only VS Code supports Jupyter Notebook natively in the editor. But, it might not work for other editors (possibly Zed in the future).</p>
+<p>The <code>ruff-lsp</code> implementation basically uses lookups to determine the document this URI belongs to. Basically, it'll check if there's a cell document with the URI and if it does, it's classified as a cell document. Similar lookup is done for Notebook document and at the end fall back to consider it as a text document.</p>
+<p>Looking at the changes in this PR, I'm assuming something like that can be implemented by querying the <code>Index</code> although you'll have better context on how can this be implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit.rs</code>:48 on 2024-05-14 14:23</div>
+            <div class="timeline-body"><p>Looking at the references of <code>DocumentKey::from_url</code>, it does seem that the references have access to the <code>Index</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit.rs</code>:59 on 2024-05-14 14:25</div>
+            <div class="timeline-body"><p>Based on your comment, does this need to be a runtime assertion or is it fine to keep it in the debug build?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:22 on 2024-05-14 14:28</div>
+            <div class="timeline-body"><p>nit: we could utilize <code>ruff_index::newtype_index</code> for <code>cells</code> and <code>cell_index</code>. This way the indexing would be in a type-safe manner. For example,</p>
+<p>https://github.com/astral-sh/ruff/blob/4ddd930c60cdda26b495bff0e4a22c72b1c682ab/crates/ruff_python_semantic/src/binding.rs#L330-L342</p>
+<p>In this case, it would be something like:</p>
+<pre><code class="language-rs">#[newtype_index]
+pub struct CellId;
+
+pub struct NotebookCells(IndexVec&lt;CellId, NotebookCell&gt;);
+</code></pre>
+<p>This way we use <code>CellId</code> instead of a random <code>usize</code> to index into the <code>NotebookCell</code> vector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:87 on 2024-05-14 14:29</div>
+            <div class="timeline-body"><p>nit: the panic would indicate a logic error, right? If so, can we include the <code>NotebookError</code> here just for context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:86 on 2024-05-14 14:31</div>
+            <div class="timeline-body"><p>As mentioned in the related comment above, we can directly utilize <code>from_raw_notebook</code> API here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:30 on 2024-05-14 14:39</div>
+            <div class="timeline-body"><p>I think this might be ok but an alternate way to model this would be to only store the URI of the text document in <code>document</code> field. The actual <code>TextDocument</code> would be stored centrally where the other <code>TextDocument</code> (representing the Python file) is being stored. This would introduce an indirection if we want to get the cell content but it would keep the representation similar to the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit.rs</code>:48 on 2024-05-14 14:41</div>
+            <div class="timeline-body"><p>It's also mentioned a bit below in the same reference section:</p>
+<blockquote>
+<p>Syncing the text content of a cell is relatively easy since clients should model them as text documents. However since the URI of a notebook cell’s text document should be opaque, servers can not know its scheme nor its path. However what is know is the notebook document itself. We therefore introduce a special filter for notebook cell documents:</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:107 on 2024-05-14 14:46</div>
+            <div class="timeline-body"><p>Are we sure that this unwrap is safe? Would it be better to use <code>unwrap_or_default</code>? I guess the latter could lead to an invalid internal state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:117 on 2024-05-14 14:47</div>
+            <div class="timeline-body"><p>nit: I wonder if we can utilize the information from the <code>structure</code> field to update the index instead of rebuilding it from scratch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:26 on 2024-05-14 14:49</div>
+            <div class="timeline-body"><p>I think it will be useful to add some documentation on the struct, fields and it's various methods. There are lots of methods and it's useful as a developer to know in what scenario would a certain method be useful 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-14 14:56</div>
+            <div class="timeline-body"><p>I've provided some initial comments and I plan to look at other changes soon. It's quite a big PR :)</p>
+<p>It would be helpful if you could briefly enumerate all the changes made in the PR description. I'd especially find the list of refactoring useful. It would be also useful for posterity to provide any context on the reasoning behind the implementation and if there were any other solutions that you thought of but didn't implement it.</p>
+<p>Can you also update the test plan with all the cases that you've tested this against? Ideally it could contain the VS Code settings used and the action performed (command, code action, etc.). There are so many VS Code settings, commands and code actions for Notebook 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-15 05:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit.rs</code>:59 on 2024-05-15 05:27</div>
+            <div class="timeline-body"><p>This assertion is more of a sanity check for a developer than something we'd actually want to crash the extension over, which is why I've left it in the debug build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-15 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:22 on 2024-05-15 08:14</div>
+            <div class="timeline-body"><p>I'm not sure if this approach works in this specific case, because <code>IndexVec</code> doesn't support insertions (which we need for notebook cell array updates).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-15 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:30 on 2024-05-15 08:21</div>
+            <div class="timeline-body"><p>This would add complexity to document queries, since we can't just fetch documents from the index dynamically in a background thread, so we'd have to fetch all cell text documents in advance and store them in a separate index in the query. I'm OK with our internal representation not matching the LSP specification if it makes things simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-15 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:107 on 2024-05-15 08:30</div>
+            <div class="timeline-body"><p>This is converting from <code>u32</code> to <code>usize</code>, so it should be safe as long as you aren't running this on a 16-bit architecture (and even then, you'd need to have a notebook with 65k+ indexes or more).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-15 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit.rs</code>:48 on 2024-05-15 08:33</div>
+            <div class="timeline-body"><p>You're right, we could utilize the <code>Index</code> here instead of looking for things that may vary by implementation 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:22 on 2024-05-15 12:39</div>
+            <div class="timeline-body"><p>By insertions, do you mean inserting a new cell in the vector? We can provide methods on <code>NotebookCells</code>:</p>
+<pre><code class="language-rs">pub struct NotebookCells(IndexVec&lt;CellId, NotebookCell&gt;);
+
+impl NotebookCells {
+	pub fn push(&amp;mut self, cell: NotebookCell) -&gt; CellId {
+		self.0.push(cell)
+	}
+}
+</code></pre>
+<p>Refer
+https://github.com/astral-sh/ruff/blob/2952263db62372df547dd9106d91ce8650697d25/crates/ruff_index/src/vec.rs#L61-L66</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:107 on 2024-05-15 12:43</div>
+            <div class="timeline-body"><p>Oh, then I think you can directly do <code>structure.array.start as usze</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/range.rs</code>:21 on 2024-05-15 12:53</div>
+            <div class="timeline-body"><p>nit: I would possibly introduce a new type or a struct here to indicate that the <code>usize</code> is the cell index and the range is for the corresponding cell:</p>
+<pre><code class="language-rs">pub struct NotebookRange {
+	cell: usize,
+	range: types::Range,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/range.rs</code>:150 on 2024-05-15 13:01</div>
+            <div class="timeline-body"><p>Yeah, I remember this. It's because the cell content are concatenated by a newline but the newline doesn't actually exists in the original source code. So, when an edit tries to remove the entire line, the range includes the newline. This means the edit range goes out of the cell. I thought we fixed this. Let me check the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:81 on 2024-05-15 13:35</div>
+            <div class="timeline-body"><p>Can we separate the logic for Notebook and text document to avoid building the index multiple times? But, I see that you want to get remove the index altogether for text document so maybe this isn't worth looking into right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:154 on 2024-05-15 13:37</div>
+            <div class="timeline-body"><p>nit: would it be possible to combine this in a single <code>if</code> condition? It would be easier to reason about when everything related to notebook is in the same block and has access to the notebook.</p>
+<pre><code class="language-rs">if let Some(notebook) = query.as_notebook() {
+	// .. do everything with the notebook
+} else {
+	// .. do everything with the text document
+}
+</code></pre>
+<p>You can possible store the LSP diagnostics in a variable:</p>
+<pre><code class="language-rs">    let mut lsp_diagnostics = data
+        .into_iter()
+        .zip(noqa_edits)
+        .map(|(diagnostic, noqa_edit)| {
+            to_lsp_diagnostic(diagnostic, &amp;noqa_edit, &amp;source_kind, &amp;index, encoding)
+        });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:260 on 2024-05-15 13:40</div>
+            <div class="timeline-body"><p>I think this should be <code>true</code>. The client should notify us when a Notebook is saved. This is true for <code>ruff-lsp</code>:</p>
+<p>https://github.com/astral-sh/ruff-lsp/blob/b8a48009f35756dc51268beb6bbc39c21a1e3a46/ruff_lsp/server.py#L139-L139</p>
+<p>Which then requires the server to implement the <code>notebookDocument/didSave</code> endpoint:</p>
+<p>https://github.com/astral-sh/ruff-lsp/blob/b8a48009f35756dc51268beb6bbc39c21a1e3a46/ruff_lsp/server.py#L533-L538</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:266 on 2024-05-15 13:44</div>
+            <div class="timeline-body"><p>Is this specific to VS Code? I'm referring to the &quot;jupyter-notebook&quot; type. For reference, we don't use any notebook document filter in <code>ruff-lsp</code>:</p>
+<p>https://github.com/astral-sh/ruff-lsp/blob/b8a48009f35756dc51268beb6bbc39c21a1e3a46/ruff_lsp/server.py#L129-L140</p>
+<p>This asks to only send the request to sync the Python code cells as we aren't interested in any kind of cell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api.rs</code>:95 on 2024-05-15 13:45</div>
+            <div class="timeline-body"><p>I might be missing some context here but can you tell me why is the <code>DidSaveNotebookDocument</code> not implemented?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/notifications/did_close.rs</code>:39 on 2024-05-15 13:50</div>
+            <div class="timeline-body"><p>Huh, I wasn't aware of this but it actually does send the requests to close each cell first and then the notebook:</p>
+<pre><code>2024-05-15 19:19:48.235 [info] [Trace - 7:19:48 PM] Sending notification 'textDocument/didClose'.
+2024-05-15 19:19:48.236 [info] [Trace - 7:19:48 PM] Sending notification 'textDocument/didClose'.
+2024-05-15 19:19:48.236 [info] [Trace - 7:19:48 PM] Sending notification 'textDocument/didClose'.
+2024-05-15 19:19:48.236 [info] [Trace - 7:19:48 PM] Sending notification 'textDocument/didClose'.
+2024-05-15 19:19:48.236 [info] [Trace - 7:19:48 PM] Sending notification 'textDocument/didClose'.
+2024-05-15 19:19:48.236 [info] [Trace - 7:19:48 PM] Sending notification 'notebookDocument/didClose'.
+</code></pre>
+<p>I guess it's not a problem in <code>ruff-lsp</code> because of the way the Notebook and cell documents are modeled in <code>pygls</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/notifications/did_open_notebook.rs</code>:40 on 2024-05-15 13:53</div>
+            <div class="timeline-body"><p>I'm not sure if we should use this guard. What's your motivation for this? I don't think we have anything like this in <code>ruff-lsp</code>. Did you try this with any other editor that supports Jupyter Notebook and can run ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session.rs</code>:78 on 2024-05-15 13:56</div>
+            <div class="timeline-body"><p>What happens if it doesn't? Is this function subject to a panic? If so, I'd add it in the function docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-15 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-15 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index.rs</code>:66 on 2024-05-15 14:01</div>
+            <div class="timeline-body"><p>By the comment, do you mean that the <code>Notebook</code> variant either represents a specific cell or an entire Notebook? I'd expand your comment, especially what does &quot;entire notebook file is selected&quot; mean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:22 on 2024-05-15 18:44</div>
+            <div class="timeline-body"><p>By 'insertions', I'm specifically referring to insertions at an index, like the <code>Vec::insert</code> method (which shifts up indexes after it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-15 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:107 on 2024-05-16 00:45</div>
+            <div class="timeline-body"><p>Okay! I'm used to using the <code>try_from + unwrap</code> convention over using <code>as</code>, but the latter does seem to be the convention for the rest of the codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:260 on 2024-05-16 01:01</div>
+            <div class="timeline-body"><p>Is there a reason we should listen for <code>didSave</code> in addition to <code>didChange</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 01:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api.rs</code>:95 on 2024-05-16 01:03</div>
+            <div class="timeline-body"><p>At the moment, I don't see a need for us to handle <code>didSave</code> notifications in general (we don't handle <code>didSaveTextDocument</code> either).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 01:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/notifications/did_open_notebook.rs</code>:40 on 2024-05-16 01:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you try this with any other editor that supports Jupyter Notebook and can run ruff?</p>
+</blockquote>
+<p>As far as I know the only other major editor that supports Jupyter Notebook is PyCharm, and we haven't got that working with <code>ruff server</code> yet.</p>
+<p>This is meant to be a quick sanity check to ensure that we're only working with Python notebooks, but it's not super necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 01:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session.rs</code>:78 on 2024-05-16 01:08</div>
+            <div class="timeline-body"><p>It throws an error - I'll add that to the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 01:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/index.rs</code>:66 on 2024-05-16 01:09</div>
+            <div class="timeline-body"><blockquote>
+<p>By the comment, do you mean that the Notebook variant either represents a specific cell or an entire Notebook?</p>
+</blockquote>
+<p>That's correct - I'll try to clarify this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 03:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:22 on 2024-05-16 03:48</div>
+            <div class="timeline-body"><p>I see, thanks for clarifying. I leave this up to you but I think we should at least use a newtype wrapper (<code>pub type CellId = usize</code>) instead of raw <code>usize</code> as I've seen it used in a lot of places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 04:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/notebook.rs</code>:22 on 2024-05-16 04:04</div>
+            <div class="timeline-body"><p>Sure, we can do that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 04:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/lint.rs</code>:81 on 2024-05-16 04:07</div>
+            <div class="timeline-body"><p>We could separate the logic but I don't think it's worth the technical investment IMO if we plan to eventually remove this anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 04:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:266 on 2024-05-16 04:38</div>
+            <div class="timeline-body"><p>I got this from the LSP specification:
+<img width="664" alt="Screenshot 2024-05-15 at 9 37 34 PM" src="https://github.com/astral-sh/ruff/assets/19577865/62f64858-46ed-4664-a8a3-b4be1a936012"></p>
+<p>I assume this would be the same across editors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-05-16 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 04:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:260 on 2024-05-16 04:57</div>
+            <div class="timeline-body"><p>For visibility, we discussed this on Discord and in conclusion it's fine to not implement the <code>didSave</code> handler because we <em>always</em> refresh the diagnostics on <code>didChange</code> event. And, the new server doesn't support the <code>lint.run</code> setting from <code>ruff-lsp</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 05:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:266 on 2024-05-16 05:07</div>
+            <div class="timeline-body"><p>I see. I'm not sure where does the <code>jupyter-notebook</code> type comes from.</p>
+<blockquote>
+<p>I assume this would be the same across editors.</p>
+</blockquote>
+<p>I think it depends - If it is set by VS Code, then I don't think it would be same.</p>
+<p>I don't think we need to worry about this now but, just to be on the safer side, I'd probably keep this same as <code>ruff-lsp</code>.</p>
+<p>Does this work on unsaved Notebook files? Like, a new notebook file is opened in VS Code but it doesn't exists on disk yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/notifications/did_open_notebook.rs</code>:40 on 2024-05-16 05:09</div>
+            <div class="timeline-body"><p>I'm fine leaving it for now but it seems like a duplicate given the notebook filter the server has already applied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/format.rs</code>:12 on 2024-05-16 05:24</div>
+            <div class="timeline-body"><p>I believe this comment is not needed now? Also, you'd need to use the <code>source_type</code> here to determine the parser mode because otherwise it errors for a notebook containing escape commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 05:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:266 on 2024-05-16 05:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Does this work on unsaved Notebook files? Like, a new notebook file is opened in VS Code but it doesn't exists on disk yet.</p>
+</blockquote>
+<p>This does fail - I think it might be because an unsaved URL isn't a valid file path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 05:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/notifications/did_open_notebook.rs</code>:40 on 2024-05-16 05:33</div>
+            <div class="timeline-body"><p>I'm fine with removing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 05:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:266 on 2024-05-16 05:36</div>
+            <div class="timeline-body"><p>Hmmm.... it seems like, in general, that the server doesn't support files created from <code>Ctrl+N</code> in VS Code if they aren't saved to the file system. I'll create a follow-up issue for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-16 05:44</div>
+            <div class="timeline-body"><p>I think there's another problem here. To demonstrate that refer:</p>
+<h3><code>ruff-lsp</code></h3>
+<p>https://github.com/astral-sh/ruff/assets/67177269/ea494142-a2dc-4d59-b0db-98a28589f480</p>
+<h3><code>ruff server</code></h3>
+<p>https://github.com/astral-sh/ruff/assets/67177269/0c6c2473-6bab-47ce-80d8-00d3b2588556</p>
+<p>You can see that there's an additional newline which gets added at the end for <code>ruff server</code>. The reason this is happening is because the cell content are concatenated by a newline but the newline doesn't actually exists in the original source code.</p>
+<p>The reason it doesn't happen in <code>ruff-lsp</code> is because we post-process the Notebook where we strip this additional newline before updating the cell content:</p>
+<p>https://github.com/astral-sh/ruff/blob/75f302298c2b6d481a466c463389ce770aa38f6b/crates/ruff_notebook/src/notebook.rs#L243-L273</p>
+<p>This post-processing doesn't happen for the new server because it uses a wrapper to lint / format (<code>lint.rs</code> and <code>format.rs</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 05:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:266 on 2024-05-16 05:49</div>
+            <div class="timeline-body"><blockquote>
+<p>This does fail, but only because new notebook cell url gets passed into <code>didOpenTextDocument</code>, which isn't expected. Do we need to support 'unattached' notebook cells?</p>
+</blockquote>
+<p>I just checked, we do support it. It's probably because we never touch the filesystem in <code>ruff-lsp</code> and always work with stdin with <code>ruff</code> command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-16 12:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/range.rs</code>:150 on 2024-05-16 12:20</div>
+            <div class="timeline-body"><p>@snowsignal Here is where I fix it:</p>
+<p>https://github.com/astral-sh/ruff/blob/75f302298c2b6d481a466c463389ce770aa38f6b/crates/ruff_linter/src/message/json.rs#L110-L152</p>
+<p>Related PR for additional context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-16 12:23</div>
+            <div class="timeline-body"><h2>Notes from testing</h2>
+<ol>
+<li><p>Did you implement the <code>notebook.*</code> variants of the source code actions? It doesn't seem to be working. They are <code>notebook.source.fixAll</code> and <code>notebook.source.organizeImports</code> which are specific to Notebook. Here, the server will receive only the first cell and we're responsible on returning the edits for the entire notebook. I'm using the following VS Code settings:</p>
+<pre><code class="language-json">  &quot;notebook.codeActionsOnSave&quot;: {
+    &quot;notebook.source.fixAll&quot;: &quot;explicit&quot;
+  }
+</code></pre>
+<p>For reference, https://github.com/astral-sh/ruff-lsp/blob/b8a48009f35756dc51268beb6bbc39c21a1e3a46/ruff_lsp/server.py#L219-L229</p>
+</li>
+<li><p>This might be unrelated to this PR but I'm getting the following error quite frequently:</p>
+<pre><code>2024-05-16 17:34:08.101 [info]  196.046579s WARN ruff_server::server::api Received notification $/setTrace which does not have a handler.
+
+2024-05-16 17:34:10.471 [info]  198.416243s ERROR ruff_server::server::api An error occurred while running textDocument/didClose: Unable to take snapshot for document with URL file:///Users/dhruv/.pyenv/versions/3.7.17/lib/python3.7/random.py
+</code></pre>
+<p>It's usually occurs after the <code>setTrace</code> notification. The confusing part is that I have no idea why is it occurring on <code>textDocument/didClose</code> when I haven't closed any document.</p>
+</li>
+<li><p>Based on this in the PR description:</p>
+<blockquote>
+<p>Note: <code>ruff.applyAutofix</code> and <code>ruff.applyOrganizeImports</code> are currently broken for notebook files, and I suspect it has something to do with #11248. Once this is fixed, I will update the test plan accordingly.</p>
+</blockquote>
+<p>Were you able to look into this and fix it? I'm unable to run any &quot;Ruff:&quot; prefixed commands except for &quot;Format Document&quot;.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-16 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit/range.rs</code>:150 on 2024-05-16 15:20</div>
+            <div class="timeline-body"><p>Thanks! So it looks like this is just something we'll have to deal with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-16 15:38</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<blockquote>
+<p>Did you implement the notebook.* variants of the source code actions?</p>
+</blockquote>
+<p>No, this still needs to be added.</p>
+<blockquote>
+<p>This might be unrelated to this PR but I'm getting the following error quite frequently</p>
+</blockquote>
+<p>This is an unrelated bug that I've seen several times before. I'll open a proper issue for it.</p>
+<blockquote>
+<p>Were you able to look into this and fix it? I'm unable to run any &quot;Ruff:&quot; prefixed commands except for &quot;Format Document&quot;.</p>
+</blockquote>
+<p>No, this still needs to be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-05-21 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit/range.rs</code>:139 on 2024-05-21 14:49</div>
+            <div class="timeline-body"><p>Can you provide a comment which documents these two cases and why they're necessary? It might be useful to provide a small example as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:51 on 2024-05-21 14:55</div>
+            <div class="timeline-body"><p>Does this handle the <code>\r\n</code> case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/edit.rs</code>:143 on 2024-05-21 14:56</div>
+            <div class="timeline-body"><p>I think we do have it enabled in <code>ruff-lsp</code>. What kind of problem are we facing here? If it's not critical, it might be useful to open an issue as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-21 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-05-21 15:26</div>
+            <div class="timeline-body"><p>This is great work! Thank you for being patient and addressing all the feedbacks. LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-21 15:27</div>
+            <div class="timeline-body"><p>You might want to rebase to make the CI green :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-21 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/format.rs</code>:51 on 2024-05-21 15:36</div>
+            <div class="timeline-body"><p>~~It should, since we strip the <code>\n</code> first and then the <code>\r</code>.~~ My bad, this actually needs some correction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-21 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/edit.rs</code>:143 on 2024-05-21 17:48</div>
+            <div class="timeline-body"><p>The issue here is that we pass in the notebook document version and use it as the cell version, which breaks commands like <code>applyAutofix</code> because that's not the version we're supposed to be using. The notebook API isn't set up yet to track the versions of individual cell documents and I'd rather handle this in a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-05-21 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-05-21 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-21 22:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `Tokens` newtype wrapper, `TokenKind` iterator - astral-sh/ruff #11361</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>Tokens</code> newtype wrapper, <code>TokenKind</code> iterator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11361">#11361</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-10 13:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-10 13:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Alternative to #11237</p>
+<p>This PR adds a new <code>Tokens</code> struct which is a newtype wrapper around a vector of lexer output. This allows us to add a <code>kinds</code> method which returns an iterator over the corresponding <code>TokenKind</code>. This iterator is implemented as a separate <code>TokenKindIter</code> struct to allow using the type and provide additional methods like <code>peek</code> directly on the iterator.</p>
+<p>This exposes the linter to access the stream of <code>TokenKind</code> instead of <code>Tok</code>.</p>
+<p>Edit: I've made the necessary downstream changes and plan to merge the entire stack at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-10 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-10 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-10 13:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>Failed to pull: From https://github.com/lnbits/lnbits
+ + 365f9a39...e9e69d9d main       -&gt; origin/main  (forced update)
+hint: You have divergent branches and need to specify how to reconcile them.
+hint: You can do so by running one of the following commands sometime before
+hint: your next pull:
+hint: 
+hint:   git config pull.rebase false  # merge
+hint:   git config pull.rebase true   # rebase
+hint:   git config pull.ff only       # fast-forward only
+hint: 
+hint: You can replace &quot;git config&quot; with &quot;git config --global&quot; to set a default
+hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+hint: or --ff-only on the command line to override the configured default per
+hint: invocation.
+fatal: Need to specify how to reconcile divergent branches.
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `Tokens` newtype wrapper" to "Add `Tokens` newtype wrapper, `TokenKind` iterator" by @dhruvmanila on 2024-05-14 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-05-14 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-14 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-14 04:00</div>
+            <div class="timeline-body"><p>I might possibly need to maintain a <code>Vec&lt;TokenKind&gt;</code> because certain references utilizes <code>lex_starts_at</code> which returns the tokens within a certain range. An iterator would make it a <code>O(n)</code> while a vector would allow us to do a binary search. I could possibly use a <code>BTreeMap</code> of token start to the <code>(TokenKind, TextRange)</code> to directly use the <code>range</code> method.</p>
+<p>Edit: I'm using binary search to get the start and end index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-14 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:378 on 2024-05-14 12:40</div>
+            <div class="timeline-body"><p>So, this isn't currently being used anywhere. This would basically replace the usages of <code>lex_starts_at</code> but it turns out all of the usages of the function is being done in the AST checker where we don't have access to the token stream.</p>
+<p>One solution here would be to store a <code>TokenKinds</code> struct which contains <code>Vec&lt;(TokenKind, TextRange)&gt;</code> on the <code>Checker</code>. This way the rules which utilizes the <code>lex_starts_at</code> or <code>lex</code> function can still get the tokens.</p>
+<p>Another would be to club this change with the parser. I'm leaning more towards this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-14 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-14 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-14 16:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

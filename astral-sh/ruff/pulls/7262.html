@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POC: Rust LSP - astral-sh/ruff #7262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>POC: Rust LSP</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7262">#7262</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-10 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-10 18:08</div>
+            <div class="timeline-body"><h1>Rust LSP</h1>
+<p>This PR adds a Rust-based LSP to ruff. You can start it by running <code>ruff lsp</code>. It receives messages over <code>stdin</code> and writes responses over <code>stdout</code>. <code>stderr</code> is used for logging.</p>
+<h2>Getting started</h2>
+<ol>
+<li>Create a debug build of ruff.</li>
+<li>Open the VS Code extension in VS Code (<code>editors/vscode</code>)</li>
+<li>Run <code>nom install</code> in <code>editors/vscode</code></li>
+<li>Install the recommended extensions</li>
+<li>Launch the extension (<code>F5</code>) or <em>Run and Debug</em> / <em>Run Extension</em></li>
+<li>Open the <em>User Settings</em> and configure the path to the ruff binary: <code>&quot;ruff.lspBin&quot;: &quot;&lt;path&gt;/target/debug/ruff&quot;</code></li>
+<li>Open a Python file</li>
+</ol>
+<h2>Advantages</h2>
+<ul>
+<li>Keeps all open files in memory to enable multi-file analysis (access to unsaved changes) eventually</li>
+<li>Avoids the overhead of starting a new process, discovering the configuration, etc., on every keystroke by using a long-running server instead</li>
+<li>One less dependency (ruff-lsp)</li>
+<li>Removes the need to expose information in our JSON output or CLI only for the VS code extension.</li>
+<li>Removes the Python dependency from the VS Code extension (including the extension depending on the Python extension), removing concerns about the minimal supported Python version.</li>
+</ul>
+<h2>Development tools</h2>
+<ul>
+<li>You can debug the VS code extension inside VS Code or by opening the developer tools: Cmd+Shift+P: <em>Developer: Toggle Developer Tools</em> in the VS Code instance running the extension.</li>
+<li>You can set the <code>ruff.trace.server</code> setting to <code>verbose</code> to get <code>trace</code> level <code>tracing</code> in the <code>Output: Ruff</code> panel and see all messages between client and server in the new <code>Output: Ruff Trace</code> panel.</li>
+</ul>
+<h2>Implemented functionality</h2>
+<ul>
+<li>UTF-8, UTF-16, and UTF-32 position encoding</li>
+<li>Incremental document updates. The LSP stores all open documents in memory</li>
+<li>Multi-workspace support</li>
+<li>Linting with code fixes</li>
+<li>Formatting: Only transmits changed lines instead of the whole file</li>
+<li>Configuration caching: Cache the workspace configurations. Reloads them on change.</li>
+</ul>
+<h2>Challenges and open questions</h2>
+<h3>Tower-LSP or LSP-server</h3>
+<p>The most known crates for building an LSP server with rust are <a href="https://crates.io/crates/tower-lsp">tower-lsp</a> and <a href="https://crates.io/crates/lsp-server/0.7.4">lsp-server</a>. This prototype uses tower-lsp, but I think it's worth considering lsp-server.</p>
+<h4>tower-lsp</h4>
+<ul>
+<li>A framework in the spirit of <em>You don't call us, we call you</em>. It controls the main loop and the messaging for you.</li>
+<li>Based on <code>async</code>. Uses <code>tokio</code> by default</li>
+<li>Provides a trait with methods for the most common operations. Giving you a sense of a typed API ;)</li>
+<li>Handles some invariants for you: Disallowing multiple <code>initialize</code> messages. Not accepting messages after <code>shutdown</code>.</li>
+<li>Long <a href="https://github.com/ebkalderon/tower-lsp/issues/284">standing issue</a> about concurrent handler execution (race conditions)</li>
+</ul>
+<h4>lsp-server</h4>
+<ul>
+<li>Used by rust-analyzer</li>
+<li>A library in the sense that it doesn't control the main loop. It only handles the message dispatching between client and server but leaves the scheduling to the user.</li>
+<li>Being in control of the main loop allows more advanced scheduling. E.g. <a href="https://github.com/rust-lang/rust-analyzer/blob/b3f45745ea0502e664711f130f9d01f87b99fd27/crates/rust-analyzer/src/main_loop.rs#L708-L787">rust-analzyer</a> does:<ul>
+<li>Uses the main thread to mutate the global plugin state.</li>
+<li>Uses a high-priority thread for on-type requests (format on type)</li>
+<li>Uses a dedicated formatter thread</li>
+<li>Use higher priority threads for latency-sensitive analysis</li>
+<li>Use lower-priority threads for everything else.</li>
+</ul>
+</li>
+<li>Doesn't use <code>async</code> Rust, which is less useful for code analysis because most tasks are CPU and not IO bound.</li>
+<li>Hypothesis: Controlling the scheduling may help to avoid thread-safe structures if it is known that some data is only ever accessed from the main thread.</li>
+</ul>
+<p><a href="https://github.com/rust-lang/rust-analyzer/blob/master/lib/lsp-server/examples/goto_def.rs">Example</a></p>
+<h3>VS Code Extension migration</h3>
+<p>This prototype doesn't explore how to support the old Python-based LSP and the ruff-integrated LSP in a single extension. It's further unclear how the new LSP would support the <code>args</code> setting (The setting is already problematic today because <code>format</code> and <code>check</code> don't support the same arguments).</p>
+<p>A possible approach could be that the extension detects the version of the ruff binary and either spawns <code>ruff-lsp</code> (Python LSP) or <code>ruff lsp</code> (Rust based LSP)</p>
+<h3>Ruff binary discovery</h3>
+<p>This prototype doesn't explore how to discover the <code>ruff</code> binary for the current project (and using the bundled version for untrusted workspaces). It defaults to <code>ruff.lspBin</code>.</p>
+<h3>Higher level <code>lint</code> and <code>format</code> abstractions</h3>
+<p>The <code>ruff_workspace</code> crate provides most functionality needed by the LSP, but not with the right granularity and laziness. This either results in code duplication between the CLI and the LSP or unnecessary work:</p>
+<ul>
+<li>The LSP resolves the settings for each open workspace by using <code>PyprojectConfig::resolve</code> and <code>python_files_in_path</code>.<ul>
+<li><code>python_files_in_path</code> resolves all settings <strong>and</strong> python files included in the project. However, the LSP only needs the settings. Building up a list of all files in the project is wasted work.</li>
+<li>Ideally, the <code>Setting</code> for a path would be resolved lazily rather than eagerly.</li>
+</ul>
+</li>
+<li>The LSP should only lint and format files that are part of the project (included and not excluded). There's no existing API to check whether a file is part of the Ruff project (the CLI uses the files returned by <code>python_files_in_path</code>)</li>
+<li>The detection of a file's source type would need to be replicated in the LSP.</li>
+</ul>
+<p>To sum it up. We lack high-level APIs for lazy linting or formatting of a file to avoid duplicating concerns performed by the CLI.</p>
+<h3>Concurrency</h3>
+<blockquote>
+<p>Note: I'm new to writing concurrent Rust code.</p>
+</blockquote>
+<p>The fact that tower-lsp uses tokio forces the implementation to use thread-safe (<code>Send</code> and <code>Sync</code>) data structure for the session state. This makes accessing and mutating the configuration awkward and introduces much complexity. It would be nice if we could minimize the need for thread-safe data structures and locking.</p>
+<p>However, this problem isn't only caused by tower-lsp. I see us facing similar issues when implementing multi-file analysis where we suddenly need a way to snapshot the project state and run the analysis on the snapshot (to avoid new user modifications causing inconsistent states).</p>
+<h2>Notes</h2>
+<p>It isn't necessary to integrate the VS code extension into this repository. I added it to this repository to have a single PR that includes all changes (from plugin to ruff)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-12 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2023-09-12 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid allocating in lex_decimal" to "POC: Rust LSP" by @MichaReiser on 2023-09-12 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-12 05:50</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7262</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7262" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7262?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-25 13:06</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/rust-based-lsp">CodSpeed Performance Report</a></h2>
+<h3>Merging #7262 will <strong>improve performances by 2.9%</strong></h3>
+<p><sub>Comparing <code>rust-based-lsp</code> (a670128) with <code>main</code> (8028de8)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 24</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>rust-based-lsp</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[numpy/ctypeslib.py]</code> | 18.6 ms | 18.1 ms | +2.9% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-12-14 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/micahscopes">@micahscopes</a> on 2024-01-29 14:59</div>
+            <div class="timeline-body"><p>This is a very nice writeup.  What did you end up deciding on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-29 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>This is a very nice writeup. What did you end up deciding on?</p>
+</blockquote>
+<p>Thanks. We have yet to decide. We hope that @InquisitivePenguin can work and this soon.</p>
+<p>Are you working on something similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/micahscopes">@micahscopes</a> on 2024-01-29 18:56</div>
+            <div class="timeline-body"><p>@MichaReiser Yes, I'm working on a language server for <a href="https://fe-lang.org/">Fe language</a>.  I recently prototyped a switch from lsp-server to tower-lsp and I've documented some of my thoughts so far here: https://github.com/ethereum/fe/pull/979</p>
+<p>Long story short, it seems that there's no way of making concurrency problems magically simple.  Waving <code>async/await</code> around at them isn't going to make them go away.  I'm tempted to try stream extensions for this because of my existing familiarity with javascript &quot;FRP&quot; libraries and for their flexibility and expressiveness.  In that case though the choice between tower-lsp and lsp-server probably doesn't matter too much.  Tower-lsp has that nice simple API for implementing LSP features and is simple to set up.</p>
+<p>We are using salsa2022 in our compiler libraries, which alleviates some of the pressure of getting this stuff perfect.  A lot of computations will be reused as long as inputs haven't changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-30 06:57</div>
+            <div class="timeline-body"><p>@micahscopes Thanks for sharing your findings and the pull request. It will help us evaluating tower-lsp and lsp-server.</p>
+<blockquote>
+<p>Long story short, it seems that there's no way of making concurrency problems magically simple.</p>
+</blockquote>
+<p>I didn't expect that. There's an inherent complexity that the LSP protocol allows multiple in-flight requests. I'm mainly wondering if there's an opportunity to avoid some complexity introduced by async and await (and async runtimes) because the LSP-server can give us more fine-grained control of when we want to run something on different threads to avoid concurrency-safe data structures potentially. The reason why I feel that async (or at least tokio) might not be the right fit is because most of our operations aren't IO bound and, therefore, shouldn't run in a regular tokio worker.</p>
+<p>That said. I'm sure your PR will help me understand why the trade of more fine grained control doesn't outweigh the first-class language integration that you get with async await.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/micahscopes">@micahscopes</a> on 2024-01-30 19:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I didn't expect that. There's an inherent complexity that the LSP protocol allows multiple in-flight requests.</p>
+</blockquote>
+<p>Exactly, regardless of lsp-server vs tower-lsp, it's still necessary to face this complexity!  Today I'm feeling curious about using tower-lsp along with separate thread(s) for long running tasks.</p>
+<blockquote>
+<p>I'm mainly wondering if there's an opportunity to avoid some complexity introduced by async and await (and async runtimes) because the LSP-server can give us more fine-grained control of when we want to run something on different threads to avoid concurrency-safe data structures potentially</p>
+</blockquote>
+<p>Using async/await wouldn't necessarily preclude that kind of fine-grained control, right?  For example, if you wanted some state to be on a thread and didn't want to share it, you could still use channels to communicate to/from tower-lsp handlers, couldn't you?  I.e. the channel endpoints would be the only &quot;shared state&quot; you allow in the tower-lsp object.</p>
+<p>But I hear your concern about the complexity of async/await/executors.  Is it possible to create something maintainable and easy to fix if things go wrong?  Does async/await still provide advantages even when using explicit channels and threads?</p>
+<p>By the way, you've probably seen this already but I found this to be very helpful: https://tokio.rs/tokio/tutorial/shared-state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morgante">@morgante</a> on 2024-01-31 04:10</div>
+            <div class="timeline-body"><p>In developing the Grit <a href="https://docs.grit.io/language/overview">language server</a> we faced some similar challenges with the async language server.</p>
+<p>We ended up moving all long-running or compute-intensive work to a separate thread which we communicate with via channels. So far this is working nicely, but you do need to do a bit of work to make sure state messages aren't sent to the client.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-31 08:22</div>
+            <div class="timeline-body"><p>Hy @morgante :wave: Oh that's interesting. Do I understand it correctly that you used the <code>async</code>/<code>await</code> only as the LSP facade (to handle async IO operations) but use your own scheduler (a separate thread for now) to do the work?</p>
+<p>That sounds very clever, making use of the async-await ergonomics where it matters but avoid it &quot;infecting&quot; all the downstream infrastructure and keeping some control over scheduling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morgante">@morgante</a> on 2024-01-31 08:30</div>
+            <div class="timeline-body"><p>Exactly, with the caveat that we do still keep some very fast things (ex. looking up available patterns) in the main LSP thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/micahscopes">@micahscopes</a> on 2024-01-31 15:13</div>
+            <div class="timeline-body"><p>@morgante thank you for sharing your experience, it's encouraging to hear that you've made this work. Async/await appeals to me in that it simplifies keeping track of pending requests and related responses; no need for extra data structures to keep track of pending request IDs or any of that.</p>
+<blockquote>
+<p>So far this is working nicely, but you do need to do a bit of work to make sure state messages aren't sent to the client</p>
+</blockquote>
+<p>Can you elaborate on the part about preventing state messages from being sent to the client? I don't understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morgante">@morgante</a> on 2024-02-15 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you elaborate on the part about preventing state messages from being sent to the client? I don't understand.</p>
+</blockquote>
+<p>Depending on how long async execution takes, documents will often have changed before the results are sent to the client. The <code>version</code> parameter can help with this, but it's even better to dedupe expensive in-progress work if you can and not even bother sending a diagnostic notification for an old version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-08 12:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

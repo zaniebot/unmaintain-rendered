@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use speculative parsing for `match` statement - astral-sh/ruff #11443</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use speculative parsing for <code>match</code> statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11443">#11443</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-05-16 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-16 09:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for parsing <code>match</code> statement based on whether <code>match</code> is used as a keyword or an identifier.</p>
+<p>The logic is as follows:</p>
+<ol>
+<li>Use two token lookahead to classify the kind of <code>match</code> token based on the table down below</li>
+<li>If we can't determine whether it's a keyword or an identifier, we'll use speculative parsing</li>
+<li>Assume that <code>match</code> is a keyword and parse the subject expression</li>
+<li>Then, based on certain heuristic, determine if our assumption is correct or not</li>
+</ol>
+<p>For (4), the heuristics are:</p>
+<ol>
+<li>If the current token is <code>:</code>, then it's a keyword</li>
+<li>If the current token is a newline, then<ol>
+<li>If the following two tokens are <code>Indent</code> and <code>Case</code>, it's a keyword</li>
+<li>Otherwise, it's an identifier</li>
+</ol>
+</li>
+<li>Otherwise, it's an identifier</li>
+</ol>
+<p>In the above heuristic, the (2) condition is so that the parser can correctly identify the following as a <code>match</code> statement in case of a missing <code>:</code>:</p>
+<pre><code class="language-py">match foo
+	case _:
+		pass
+</code></pre>
+<h3>Classification table</h3>
+<p>Here, the token is the one following the <code>match</code> token. We use two token lookahead for <code>not in</code> because using the <code>in</code> keyword we can classify it as an identifier or a keyword.</p>
+<p>Token                      | Keyword | Identifier | Either |
+--                         | --      | --         | --     |
+Name                       | ✅      |            |        |
+Int                        | ✅      |            |        |
+Float                      | ✅      |            |        |
+Complex                    | ✅      |            |        |
+String                     | ✅      |            |        |
+FStringStart               | ✅      |            |        |
+FStringMiddle              | -       | -          | -      |
+FStringEnd                 | -       | -          | -      |
+IpyEscapeCommand           | -       | -          | -      |
+Newline                    |         | ✅         |        |
+Indent                     | -       | -          | -      |
+Dedent                     | -       | -          | -      |
+EndOfFile                  |         | ✅         |        |
+<code>?</code>                        | -       | -          | -      |
+<code>!</code>                        |         | ✅         |        |
+<code>(</code>                        |         |            | ✅     |
+<code>)</code>                        |         | ✅         |        |
+<code>[</code>                        |         |            | ✅     |
+<code>]</code>                        |         | ✅         |        |
+<code>{</code>                        | ✅      |            |        |
+<code>}</code>                        |         | ✅         |        |
+<code>:</code>                        |         | ✅         |        |
+<code>,</code>                        |         | ✅         |        |
+<code>;</code>                        |         | ✅         |        |
+<code>.</code>                        |         | ✅         |        |
+<code>*</code>                        |         |            | ✅     |
+<code>+</code>                        |         |            | ✅     |
+<code>-</code>                        |         |            | ✅     |
+Other binary operators     |         | ✅         |        |
+<code>~</code>                        | ✅      |            |        |
+<code>not</code>                      | ✅      |            |        |
+<code>not in</code>                   |         | ✅         |        |
+Boolean operators          |         | ✅         |        |
+Comparison operators       |         | ✅         |        |
+Augmented assign operators |         | ✅         |        |
+<code>...</code>                      | ✅      |            |        |
+<code>lambda</code>                   | ✅      |            |        |
+<code>await</code>                    | ✅      |            |        |
+<code>yield</code>                    | ✅      |            |        |
+Other keywords             |         | ✅         |        |
+Soft keywords              | ✅      |            |        |
+Singletons                 | ✅      |            |        |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-20 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-20 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-20 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-20 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:129 on 2024-05-20 15:44</div>
+            <div class="timeline-body"><p>Is this effectively an optimization? E.g., could we <em>always</em> use <code>try_parse_match_statement</code> and fall back when it returns <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-20 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-05-20 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:129 on 2024-05-20 15:48</div>
+            <div class="timeline-body"><p>Yes, this is an optimization because if we're sure that it's a keyword, we can skip speculative parsing. The reason being that speculative parsing has some overhead of creating the checkpoint and possibly throwing away the parsed expression if it's not a keyword.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-20 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:129 on 2024-05-20 15:52</div>
+            <div class="timeline-body"><p>👍 Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-05-21 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-21 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-21 04:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>

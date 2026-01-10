@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move all module from the AST to the semantic crate - astral-sh/ruff #11330</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move all module from the AST to the semantic crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11330">#11330</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-05-08 06:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-08 06:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This commit moves the <code>all</code> module from the <code>ruff_python_ast</code> crate to the <code>ruff_python_semantic</code> crate. The <code>all</code> module contains the <code>DunderAllName</code> struct and related functionality, which is more semantically related and thus fits better in the <code>ruff_python_semantic</code> crate.</p>
+<p>The changes include updates to the import paths in the <code>ruff_linter</code> and <code>ruff_python_semantic</code> crates to reflect the new location of the <code>all</code> module. The <code>ruff_python_ast</code> crate no longer exports the <code>all</code> module.</p>
+<p>This refactoring improves the organization of the codebase, making it easier to understand and maintain. It also ensures that each crate has a clear and distinct responsibility.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-05-08 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-05-08 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-08 07:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-08 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/all.rs</code>:127 on 2024-05-08 08:04</div>
+            <div class="timeline-body"><p>Did you consider making this function a method on the <code>SemanticModel</code> struct? It would mean you could easily make use of the <code>semantic.resolve_builtin_symbol()</code> method. That would have two advantages:</p>
+<ol>
+<li>We wouldn't have to pass in the <code>is_builtin</code> closure to this function, which feels slightly awkward if the function is now in the same crate as the <code>SemanticModel</code></li>
+<li>It's more accurate, as we would recognise <code>__all__ = builtins.list([&quot;foo&quot;, &quot;bar&quot;])</code> as a valid <code>__all__</code> definition, as well as <code>__all__ = list([&quot;foo&quot;, &quot;bar&quot;])</code></li>
+</ol>
+<pre><code class="language-suggestion">                    if self
+                        .resolve_builtin_symbol(map_subscript(func))
+                        .is_some_and(|symbol| matches!(symbol, &quot;tuple&quot; | &quot;list&quot;)) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-08 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/all.rs</code>:83 on 2024-05-08 08:06</div>
+            <div class="timeline-body"><p>micro-nit: I personally prefer referring to all AST nodes by their fully qualified names outside the <code>ruff_python_ast</code> crate, as it means that you don't have to continually update the <code>use ruff_python_ast::{x, y, z, ...}</code> line at the top when you discover in a future refactor that you need access to more nodes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-08 08:06</div>
+            <div class="timeline-body"><p>Thanks for doing this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-08 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/all.rs</code>:127 on 2024-05-08 08:44</div>
+            <div class="timeline-body"><p>I prefer not to make any code changes other than moving the module in this PR. Moving seemed a quick win to me to improve code separation but I don't want to spend any significant time on the <code>all</code> module otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-08 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/all.rs</code>:127 on 2024-05-08 08:49</div>
+            <div class="timeline-body"><p>Makes sense, I agree that this change by itself is an improvement!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-05-08 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-05-08 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-05-08 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-08 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:05:57 UTC
+    </footer>
+</body>
+</html>
